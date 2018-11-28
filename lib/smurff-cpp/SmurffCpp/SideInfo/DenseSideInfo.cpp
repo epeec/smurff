@@ -1,5 +1,6 @@
 #include "DenseSideInfo.h"
 
+#include <SmurffCpp/Utils/Error.h>
 #include <SmurffCpp/Utils/linop.h>
 
 using namespace smurff;
@@ -47,7 +48,8 @@ Eigen::MatrixXf DenseSideInfo::A_mul_B(Eigen::MatrixXf& A)
 
 int DenseSideInfo::solve_blockcg(Eigen::MatrixXf& X, float reg, Eigen::MatrixXf& B, float tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
 {
-   return smurff::linop::solve_blockcg(X, *m_side_info, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
+    THROWERROR("Please use direct method for dense side info. -- CG solver is unsupported");
+    return -1;
 }
 
 Eigen::VectorXf DenseSideInfo::col_square_sum()

@@ -61,34 +61,12 @@ Eigen::MatrixXf SparseSideInfo::A_mul_B(Eigen::MatrixXf& A)
 int SparseSideInfo::solve_blockcg(Eigen::MatrixXf& X, float reg, Eigen::MatrixXf& B, float tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
 {
     COUNTER("solve_blockcg");
-    return smurff::linop::solve_blockcg(X, *this, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
-#if 0
-    int iter1, iter2;
-    Eigen::MatrixXd X1 = X;
-    {
-        COUNTER("eigen_cg");
-        smurff::linop::AtA A(F, reg);
-        Eigen::ConjugateGradient<smurff::linop::AtA, Eigen::Lower | Eigen::Upper> cg;
-        cg.setTolerance(tol);
-        cg.compute(A);
-        X1 = cg.solve(B.transpose()).transpose();
-        iter1 = cg.iterations();
-        SHOW(iter1);
-        SHOW((X1 - B).norm());
-    }
-
-    Eigen::MatrixXd X2 = X;
-    {
-        COUNTER("smurff_cg");
-        iter2 = smurff::linop::solve_blockcg(X2, *this, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
-        SHOW(iter2);
-        SHOW((X2 - B).norm());
-    }
-
-    SHOW((X2 - X1).norm());
-
-    return iter1;
-#endif
+    smurff::linop::AtA A(F, reg);
+    Eigen::ConjugateGradient<smurff::linop::AtA, Eigen::Lower | Eigen::Upper, Eigen::IdentityPreconditioner> cg;
+    cg.setTolerance(tol);
+    cg.compute(A);
+    X = cg.solve(B.transpose()).transpose();
+    return cg.iterations();
 }
 
 Eigen::VectorXf SparseSideInfo::col_square_sum()
