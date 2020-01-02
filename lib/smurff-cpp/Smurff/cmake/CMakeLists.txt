@@ -15,6 +15,7 @@ install(TARGETS ${PROJECT} RUNTIME DESTINATION bin)
 
 #LINK LIBRARIES
 target_link_libraries (${PROJECT} smurff-cpp
+                                  ${OpenMP_CXX_LIBRARIES}
                                   ${Boost_LIBRARIES}
                                   ${BOOST_RANDOM_LIBRARIES}
                                   ${ALGEBRA_LIBS}
