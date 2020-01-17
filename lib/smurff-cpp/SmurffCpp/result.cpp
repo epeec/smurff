@@ -82,9 +82,9 @@ void Result::init()
 }
 
 //--- output model to files
-void Result::save(std::shared_ptr<const StepFile> sf) const
+void Result::save(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const
 {
-   savePred(sf);
+   savePred(sf, saved_avg_var);
    savePredState(sf);
 }
 
@@ -106,8 +106,10 @@ std::shared_ptr<const MatrixConfig> Result::toMatrixConfig(const Accessor &acc) 
    return std::make_shared<MatrixConfig>(m_dims.at(0), m_dims.at(1), rows, cols, values, NoiseConfig(), false);
 }
 
-void Result::savePred(std::shared_ptr<const StepFile> sf) const
+void Result::savePred(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const
 {
+   saved_avg_var = false;
+   
    if (isEmpty())
       return;
 
@@ -129,6 +131,8 @@ void Result::savePred(std::shared_ptr<const StepFile> sf) const
          std::string pred_var_path = sf->makePredVarFileName();
          auto pred_var = toMatrixConfig([](const ResultItem &p) { return p.var; });
          smurff::matrix_io::write_matrix(pred_var_path, pred_var);
+
+         saved_avg_var = true;
       }
    }
    else

@@ -79,11 +79,11 @@ public:
    // general
 
 public:
-   void save(std::shared_ptr<const StepFile> sf) const;
+   void save(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const;
    void restore(std::shared_ptr<const StepFile> sf);
 
 private:
-   void savePred(std::shared_ptr<const StepFile> sf) const;
+   void savePred(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const;
    void savePredState(std::shared_ptr<const StepFile> sf) const;
 
    void restorePred(std::shared_ptr<const StepFile> sf);

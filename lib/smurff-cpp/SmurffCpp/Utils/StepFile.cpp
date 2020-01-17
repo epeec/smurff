@@ -283,13 +283,23 @@ void StepFile::savePred(std::shared_ptr<const Result> m_pred) const
    if (!m_pred->m_save_pred)
       return;
 
-   m_pred->save(shared_from_this());
+   bool saved_avg_pred;
+   m_pred->save(shared_from_this(), saved_avg_pred);
 
    //save predictions
    appendToStepFile(PRED_SEC_TAG, PRED_TAG, makePredFileName());
    appendToStepFile(PRED_SEC_TAG, PRED_STATE_TAG, makePredStateFileName());
-   appendToStepFile(PRED_SEC_TAG, PRED_AVG_TAG, makePredAvgFileName());
-   appendToStepFile(PRED_SEC_TAG, PRED_VAR_TAG, makePredVarFileName());
+   if (saved_avg_pred)
+   {
+      appendToStepFile(PRED_SEC_TAG, PRED_AVG_TAG, makePredAvgFileName());
+      appendToStepFile(PRED_SEC_TAG, PRED_VAR_TAG, makePredVarFileName());
+   }
+   else
+   {
+      appendToStepFile(PRED_SEC_TAG, PRED_AVG_TAG, NONE_TAG);
+      appendToStepFile(PRED_SEC_TAG, PRED_VAR_TAG, NONE_TAG);
+   }
+   
 }
 
 void StepFile::savePriors(const std::vector<std::shared_ptr<ILatentPrior> >& priors) const
