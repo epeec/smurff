@@ -43,8 +43,18 @@ class Sample:
 
         # predictions, rmse
         sample.pred_stats = dict(read_config_file(cp["predictions"]["pred_state"], dir_name)["global"].items())
-        sample.pred_avg = mio.read_matrix(os.path.join(dir_name, cp["predictions"]["pred_avg"]))
-        sample.pred_var = mio.read_matrix(os.path.join(dir_name, cp["predictions"]["pred_var"]))
+
+        file_name = cp["predictions"]["pred_avg"]
+        if (file_name != 'none'):
+            sample.pred_avg = mio.read_matrix(os.path.join(dir_name, file_name))
+        else:
+            sample.pred_avg = None
+
+        file_name = cp["predictions"]["pred_var"]
+        if (file_name != 'none'):
+            sample.pred_var = mio.read_matrix(os.path.join(dir_name, file_name))
+        else:
+            sample.pred_var = None
 
         # latent matrices
         for i in range(sample.nmodes):
