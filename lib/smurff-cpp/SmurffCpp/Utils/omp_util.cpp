@@ -42,9 +42,12 @@ namespace threads
             omp_set_num_threads(num_threads);
         } 
 
+        omp_set_max_active_levels(2);
+
         if (verbose)
         {
-            std::cout << "Using OpenMP with up to " << get_max_threads() << " threads.\n";
+            std::cout << "Using OpenMP with up to " << get_max_threads() << " threads" 
+                      << " for " << omp_get_max_active_levels() << " levels\n";
         }
     }
 

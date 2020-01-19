@@ -168,12 +168,17 @@ bool Session::step()
         THROWERROR_ASSERT(is_init);
 
         auto starti = tick();
-        for (auto &p : m_priors)
-            p->sample_latents();
+#pragma omp parallel
+#pragma omp single
+        {
+            for (auto &p : m_priors)
+            {
+                p->sample_latents();
+                #pragma omp task
+                p->update_prior();
+            }
+        }
 
-        for (auto &p : m_priors)
-            p->update_prior();
-        
         data().update(model());
         auto endi = tick();
 
