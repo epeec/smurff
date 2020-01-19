@@ -13,14 +13,15 @@
 #define COUNTER(name) Counter c(name)
 
 struct Counter {
-    std::string name;
+    Counter *parent;
+    std::string name, fullname;
     double start, stop, diff; // wallclock time
     long long count;
 
     bool total_counter;
 
     Counter(std::string name);
-    Counter();
+    Counter(); // needed for std::map in TotalsCounter
 
     ~Counter();
 
