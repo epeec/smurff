@@ -47,7 +47,7 @@ def gen_and_write(shape, num_latent, density, center = "none"):
     Y, X, W = gen_matrix(shape,num_latent,density)
     Ytrain, Ytest = make_train_test(Y, 0.8)
     shape_str = "_".join(map(str,shape))
-    dirname = "%s_%d_%d_%s" % (shape_str, num_latent, int(density * 100), center)
+    dirname = "data_%s_%d_%d_%s" % (shape_str, num_latent, int(density * 100), center)
 
     if os.path.exists(dirname):
         print("Already exists: %s. Skipping" % dirname)
