@@ -169,10 +169,10 @@ bool Session::step()
 
         auto starti = tick();
         for (auto &p : m_priors)
-        {
             p->sample_latents();
+
+        for (auto &p : m_priors)
             p->update_prior();
-        }
         
         data().update(model());
         auto endi = tick();
