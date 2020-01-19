@@ -13,6 +13,7 @@ fi
 
 
 cmake ../lib/smurff-cpp/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX \
+    -DENABLE_MPI=OFF \
     -DENABLE_MKL=ON $OPENMP_FLAGS
 
 make -j$CPU_COUNT

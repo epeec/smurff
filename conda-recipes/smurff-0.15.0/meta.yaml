@@ -7,7 +7,7 @@ source:
    git_rev: v0.15.0
 
 build:
-   number: 1
+   number: 2
 
 requirements:
    build:
@@ -16,7 +16,6 @@ requirements:
      - {{ compiler('c') }}
      - llvm-openmp              # [osx]
    host:
-     - llvm-openmp              # [osx]
      - intel-openmp
      - mkl-devel
      - eigen3
@@ -26,11 +25,9 @@ requirements:
      - setuptools
      - numpy >=1.13
    run:
-     - llvm-openmp              # [osx]
      - intel-openmp
      - mkl
      - libboost
-     - python
      - numpy >=1.13
      - scipy
      - pandas
