@@ -32,7 +32,7 @@ script:
     - cmake --version
     - cmake .. -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_INSTALL_PREFIX=$PWD/../prefix -DENABLE_BOOST_RANDOM=ON
     - make
-    - ./${BUILD_TYPE}/tests
+    - ./bin/tests
 
 after_success:
   - echo "success"
