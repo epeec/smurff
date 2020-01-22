@@ -35,14 +35,14 @@ struct Counter {
 struct TotalsCounter {
     private:
         std::map<std::string, Counter> data;
-        int procid, threadid;
+        int procid;
 
     public:
         //c-tor starts PAPI
         TotalsCounter(int = 0);
 
         //prints results
-        void print() const;
+        void print(int) const;
 
         Counter &operator[](const std::string &name) {
             return data[name];
@@ -52,8 +52,11 @@ struct TotalsCounter {
 extern smurff::thread_vector<TotalsCounter> perf_data;
 
 inline void perf_data_print() {
+    int threadid = 0;
     for(auto &p : perf_data)
-        p.print();
+    {
+        p.print(threadid++);
+    }
 }
 
 #else 

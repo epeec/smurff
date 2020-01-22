@@ -71,15 +71,15 @@ std::string Counter::as_string() const
 {
     std::ostringstream os;
     os << ">> " << name << ":\t" << std::fixed << std::setw(11)
-       << std::setprecision(4) << diff << "\n";
+       << std::setprecision(4) << diff << " in\t" << count << "\n";
     return os.str();
 }
 
 smurff::thread_vector<TotalsCounter> perf_data;
 
-TotalsCounter::TotalsCounter(int p) : procid(p), threadid(smurff::threads::get_thread_num()) {}
+TotalsCounter::TotalsCounter(int p) : procid(p) {}
 
-void TotalsCounter::print() const {
+void TotalsCounter::print(int threadid) const {
     if (data.empty()) return;
     char hostname[1024];
     gethostname(hostname, 1024);
