@@ -116,6 +116,8 @@ void Session::init()
     //initialize random generator
     initRng();
 
+    //init performance counters
+    perf_data_init();
 
     //initialize test set
     if (m_pred) m_pred->init();

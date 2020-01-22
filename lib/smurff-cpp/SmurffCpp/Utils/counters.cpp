@@ -18,12 +18,28 @@
 #include "counters.h"
 #include "SmurffCpp/Utils/omp_util.h"
 
-static smurff::thread_vector<Counter *> active_counter(0);
+static smurff::thread_vector<Counter *> active_counters(0);
+smurff::thread_vector<TotalsCounter> perf_data;
+
+void perf_data_init()
+{
+    active_counters.init();
+    perf_data.init();
+}
+
+void perf_data_print() {
+    int threadid = 0;
+    for(auto &p : perf_data)
+    {
+        p.print(threadid++);
+    }
+}
 
 Counter::Counter(std::string name)
     : name(name), diff(0), count(1), total_counter(false)
 {
-    parent = active_counter.local();
+    parent = active_counters.local();
+    active_counters.local() = this;
 
     fullname = (parent) ? parent->fullname + "/" + name : name; 
 
@@ -42,7 +58,7 @@ Counter::~Counter() {
     diff = stop - start;
 
     perf_data.local()[fullname] += *this;
-    active_counter.local() = parent;
+    active_counters.local() = parent;
 }
 
 void Counter::operator+=(const Counter &other) {
@@ -71,7 +87,6 @@ std::string Counter::as_string() const
     return os.str();
 }
 
-smurff::thread_vector<TotalsCounter> perf_data;
 
 TotalsCounter::TotalsCounter(int p) : procid(p) {}
 

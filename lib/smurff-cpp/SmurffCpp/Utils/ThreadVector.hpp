@@ -29,7 +29,6 @@ namespace smurff
                return _m.at(threads::get_thread_num());
            }
            void reset() {
-               _m.resize(threads::get_max_threads());
                for(auto &t: _m) t = _i;
            }
            template<typename F>
@@ -43,12 +42,14 @@ namespace smurff
                reset();
                return ret;
            }
-           void init(const T &t) {
+           void init(const T &t = T()) {
                _i = t;
+               _m.resize(threads::get_max_threads());
                reset();
            }
            void init(const std::vector<T> &v) {
                assert((int)v.size() == threads::get_max_threads());
+               _m.resize(threads::get_max_threads());
                _m = v;
            }
 
