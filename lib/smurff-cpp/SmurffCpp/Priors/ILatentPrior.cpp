@@ -104,20 +104,17 @@ void ILatentPrior::sample_latents()
    thread_vector<Eigen::VectorXd> Ucol(Eigen::VectorXd::Zero(num_latent()));
    thread_vector<Eigen::MatrixXd> UUcol(Eigen::MatrixXd::Zero(num_latent(), num_latent()));
 
-   #pragma omp parallel for schedule(guided)
+   #pragma omp taskloop
    for(int n = 0; n < U().cols(); n++)
    {
-       #pragma omp task
-       {
-           COUNTER("sample_latent");
-           sample_latent(n);
-           const auto& col = U().col(n);
-           Ucol.local().noalias() += col;
-           UUcol.local().noalias() += col * col.transpose();
+      COUNTER("sample_latent");
+      sample_latent(n);
+      const auto &col = U().col(n);
+      Ucol.local().noalias() += col;
+      UUcol.local().noalias() += col * col.transpose();
 
-           if (getSession().inSamplingPhase())
-             model().updateAggr(m_mode, n);
-       }
+      if (getSession().inSamplingPhase())
+         model().updateAggr(m_mode, n);
    }
 
    if (getSession().inSamplingPhase())
