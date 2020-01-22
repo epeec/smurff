@@ -12,7 +12,7 @@ int main(int argc, char** argv)
       session->run(); 
    }
    #ifdef PROFILING
-   perf_data.print();
+   perf_data_print();
    #endif
    return 0;
 }
