@@ -51,18 +51,13 @@ struct TotalsCounter {
 
 extern smurff::thread_vector<TotalsCounter> perf_data;
 
-inline void perf_data_print() {
-    int threadid = 0;
-    for(auto &p : perf_data)
-    {
-        p.print(threadid++);
-    }
-}
+void perf_data_init();
+void perf_data_print();
 
 #else 
 
 #define COUNTER(name) 
-
+inline void perf_data_init() {}
 inline void perf_data_print() {}
 
 #endif //BPMF_PROFILING
