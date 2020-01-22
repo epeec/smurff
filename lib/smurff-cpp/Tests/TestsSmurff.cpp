@@ -331,6 +331,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -371,6 +372,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -415,6 +417,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -459,6 +462,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -501,6 +505,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -541,6 +546,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -585,6 +591,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -629,6 +636,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -671,6 +679,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -711,6 +720,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -755,6 +765,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -799,6 +810,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -846,6 +858,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -891,6 +904,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -939,6 +953,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -985,6 +1000,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1030,6 +1046,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1073,6 +1090,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1120,6 +1138,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    REQUIRE_THROWS(SessionFactory::create_session(config));
 }
@@ -1155,6 +1174,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    REQUIRE_THROWS(SessionFactory::create_session(config));
 }
@@ -1190,6 +1210,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    REQUIRE_THROWS(SessionFactory::create_session(config));
 }
@@ -1222,6 +1243,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1262,6 +1284,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1304,6 +1327,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1346,6 +1370,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1391,6 +1416,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1434,6 +1460,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1476,6 +1503,7 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1516,6 +1544,7 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1558,6 +1587,7 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1598,6 +1628,7 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1640,6 +1671,7 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1680,6 +1712,7 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1722,6 +1755,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1764,6 +1798,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1810,6 +1845,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1856,6 +1892,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1909,6 +1946,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -1921,6 +1959,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -1962,6 +2001,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -1974,6 +2014,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2015,6 +2056,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2027,6 +2069,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2068,6 +2111,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2080,6 +2124,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2121,6 +2166,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2133,6 +2179,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2174,6 +2221,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2186,6 +2234,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2227,6 +2276,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2239,6 +2289,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2280,6 +2331,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2292,6 +2344,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2335,6 +2388,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2347,6 +2401,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2388,6 +2443,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2400,6 +2456,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2441,6 +2498,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2453,6 +2511,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2494,6 +2553,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2506,6 +2566,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2547,6 +2608,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2559,6 +2621,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2600,6 +2663,7 @@ TEST_CASE(
    matrixSessionConfig.setNSamples(50);
    matrixSessionConfig.setVerbose(false);
    matrixSessionConfig.setRandomSeed(1234);
+   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
@@ -2612,6 +2676,7 @@ TEST_CASE(
    tensorSessionConfig.setNSamples(50);
    tensorSessionConfig.setVerbose(false);
    tensorSessionConfig.setRandomSeed(1234);
+   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2661,6 +2726,7 @@ TEST_CASE(
    tensorRunConfig.setNSamples(50);
    tensorRunConfig.setVerbose(false);
    tensorRunConfig.setRandomSeed(1234);
+   tensorRunConfig.setNumThreads(1);
 
    Config matrixRunConfig;
    matrixRunConfig.setTrain(trainDenseMatrixConfig);
@@ -2673,6 +2739,7 @@ TEST_CASE(
    matrixRunConfig.setNSamples(50);
    matrixRunConfig.setVerbose(false);
    matrixRunConfig.setRandomSeed(1234);
+   matrixRunConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> tensorRunSession = SessionFactory::create_session(tensorRunConfig);
    tensorRunSession->run();
@@ -2727,6 +2794,7 @@ TEST_CASE(
    tensorRunConfig.setNSamples(50);
    tensorRunConfig.setVerbose(false);
    tensorRunConfig.setRandomSeed(1234);
+   tensorRunConfig.setNumThreads(1);
 
    Config matrixRunConfig;
    matrixRunConfig.setTrain(trainSparseMatrixConfig);
@@ -2739,6 +2807,7 @@ TEST_CASE(
    matrixRunConfig.setNSamples(50);
    matrixRunConfig.setVerbose(false);
    matrixRunConfig.setRandomSeed(1234);
+   matrixRunConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> tensorRunSession = SessionFactory::create_session(tensorRunConfig);
    tensorRunSession->run();
@@ -2793,6 +2862,7 @@ TEST_CASE(
    tensorRunConfig.setNSamples(50);
    tensorRunConfig.setVerbose(false);
    tensorRunConfig.setRandomSeed(1234);
+   tensorRunConfig.setNumThreads(1);
 
    Config matrixRunConfig;
    matrixRunConfig.setTrain(trainDenseMatrixConfig);
@@ -2805,6 +2875,7 @@ TEST_CASE(
    matrixRunConfig.setNSamples(50);
    matrixRunConfig.setVerbose(false);
    matrixRunConfig.setRandomSeed(1234);
+   matrixRunConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> tensorRunSession = SessionFactory::create_session(tensorRunConfig);
    tensorRunSession->run();
@@ -2859,6 +2930,7 @@ TEST_CASE(
    tensorRunConfig.setNSamples(50);
    tensorRunConfig.setVerbose(false);
    tensorRunConfig.setRandomSeed(1234);
+   tensorRunConfig.setNumThreads(1);
 
    Config matrixRunConfig;
    matrixRunConfig.setTrain(trainSparseMatrixConfig);
@@ -2871,6 +2943,7 @@ TEST_CASE(
    matrixRunConfig.setNSamples(50);
    matrixRunConfig.setVerbose(false);
    matrixRunConfig.setRandomSeed(1234);
+   matrixRunConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> tensorRunSession = SessionFactory::create_session(tensorRunConfig);
    tensorRunSession->run();
@@ -2902,6 +2975,7 @@ TEST_CASE("PredictSession/BPMF")
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
+   config.setNumThreads(1);
    config.setSaveFreq(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
@@ -2964,6 +3038,7 @@ TEST_CASE("PredictSession/Features/1"
     config.setVerbose(false);
     config.setNumThreads(1);
     config.setRandomSeed(1234);
+    config.setNumThreads(1);
     config.setSaveFreq(1);
 
     std::shared_ptr<ISession> session = SessionFactory::create_session(config);
