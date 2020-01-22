@@ -9,6 +9,7 @@
 
 #include <string>
 #include <map>
+#include <SmurffCpp/Utils/ThreadVector.hpp>
 
 #define COUNTER(name) Counter c(name)
 
@@ -27,30 +28,32 @@ struct Counter {
 
     void operator+=(const Counter &other);
 
-    std::string as_string(const Counter &total);
+    std::string as_string(const Counter &total) const;
+    std::string as_string() const;
 };
 
 struct TotalsCounter {
     private:
         std::map<std::string, Counter> data;
-        int procid;
+        int procid, threadid;
 
     public:
         //c-tor starts PAPI
         TotalsCounter(int = 0);
 
         //prints results
-        void print();
+        void print() const;
 
         Counter &operator[](const std::string &name) {
             return data[name];
         }
 };
 
-extern TotalsCounter perf_data;
+extern smurff::thread_vector<TotalsCounter> perf_data;
 
 inline void perf_data_print() {
-    perf_data.print();
+    for(auto &p : perf_data)
+        p.print();
 }
 
 #else 

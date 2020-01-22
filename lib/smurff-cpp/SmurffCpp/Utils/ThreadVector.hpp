@@ -51,8 +51,19 @@ namespace smurff
                assert((int)v.size() == threads::get_max_threads());
                _m = v;
            }
-   
-   
+
+           typedef typename std::vector<T>::const_iterator const_iterator;
+
+           const_iterator begin() const
+           {
+               return _m.begin();
+           }
+
+           const_iterator end() const
+           {
+               return _m.end();
+           }
+
        private:
            std::vector<T> _m;
            T _i;
