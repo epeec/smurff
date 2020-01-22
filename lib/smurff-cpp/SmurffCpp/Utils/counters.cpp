@@ -18,16 +18,12 @@
 #include "counters.h"
 #include "SmurffCpp/Utils/omp_util.h"
 
-static std::mutex mtx;
-static Counter *active_counter = 0;
+static smurff::thread_vector<Counter *> active_counter(0);
 
 Counter::Counter(std::string name)
     : name(name), diff(0), count(1), total_counter(false)
 {
-    mtx.lock();
-    parent = active_counter;
-    active_counter = this;
-    mtx.unlock();
+    parent = active_counter.local();
 
     fullname = (parent) ? parent->fullname + "/" + name : name; 
 
@@ -46,7 +42,7 @@ Counter::~Counter() {
     diff = stop - start;
 
     perf_data.local()[fullname] += *this;
-    active_counter = parent;
+    active_counter.local() = parent;
 }
 
 void Counter::operator+=(const Counter &other) {
@@ -70,7 +66,7 @@ std::string Counter::as_string(const Counter &total) const {
 std::string Counter::as_string() const
 {
     std::ostringstream os;
-    os << ">> " << name << ":\t" << std::fixed << std::setw(11)
+    os << ">> " << fullname << ":\t" << std::fixed << std::setw(11)
        << std::setprecision(4) << diff << " in\t" << count << "\n";
     return os.str();
 }

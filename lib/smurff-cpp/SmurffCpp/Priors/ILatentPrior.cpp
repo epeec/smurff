@@ -109,6 +109,7 @@ void ILatentPrior::sample_latents()
    {
        #pragma omp task
        {
+           COUNTER("sample_latent");
            sample_latent(n);
            const auto& col = U().col(n);
            Ucol.local().noalias() += col;
