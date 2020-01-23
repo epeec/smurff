@@ -58,11 +58,11 @@ void NormalOnePrior::sample_latent(int d)
    for(int k=0;k<K;++k) sample_latent(d, k, XX, yX);
 }
  
-std::pair<double,double> NormalOnePrior::sample_latent(int d, int k, const Matrix& XX, const Vector& yX)
+std::pair<float_type,float_type> NormalOnePrior::sample_latent(int d, int k, const Matrix& XX, const Vector& yX)
 {
     auto Ucol = U().col(d);
-    double lambda = XX(k,k);
-    double mu = (1/lambda) * (yX(k) - Ucol.transpose() * XX.col(k) + Ucol(k) * XX(k,k));
+    float_type lambda = XX(k,k);
+    float_type mu = (1/lambda) * (yX(k) - Ucol.transpose() * XX.col(k) + Ucol(k) * XX(k,k));
     Ucol(k) = mu + randn() / sqrt(lambda);
     return std::make_pair(mu, lambda);
 }

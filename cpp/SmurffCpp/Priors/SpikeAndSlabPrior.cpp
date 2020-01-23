@@ -51,7 +51,7 @@ void SpikeAndSlabPrior::update_prior()
        r.col(v) = ( Zkeep.col(v).array() + prior_beta ) / ( D + prior_beta * D ) ;
        auto ww = W2c.col(v).array() / 2 + prior_beta_0;
        auto tmpz = Zkeep.col(v).array() / 2 + prior_alpha_0 ;
-       alpha.col(v) = tmpz.binaryExpr(ww, [](double a, double b)->double {
+       alpha.col(v) = tmpz.binaryExpr(ww, [](float_type a, float_type b)->float_type {
                return rgamma(a, 1/b) + 1e-7;
        });
    }
@@ -92,19 +92,19 @@ void SpikeAndSlabPrior::restore(std::shared_ptr<const StepFile> sf)
   update_prior();
 }
 
-std::pair<double, double> SpikeAndSlabPrior::sample_latent(int d, int k, const Matrix& XX, const Vector& yX)
+std::pair<float_type, float_type> SpikeAndSlabPrior::sample_latent(int d, int k, const Matrix& XX, const Vector& yX)
 {
     const int v = data().view(m_mode, d);
-    double mu, lambda;
+    float_type mu, lambda;
 
     Matrix aXX = alpha.matrix().col(v).asDiagonal();
     aXX += XX;
     std::tie(mu, lambda) = NormalOnePrior::sample_latent(d, k, aXX, yX);
 
     auto Ucol = U().col(d);
-    double z1 = log_r(k,v) -  0.5 * (lambda * mu * mu - std::log(lambda) + log_alpha(k,v));
-    double z = 1 / (1 + exp(z1));
-    double p = rand_unif(0,1);
+    float_type z1 = log_r(k,v) -  0.5 * (lambda * mu * mu - std::log(lambda) + log_alpha(k,v));
+    float_type z = 1 / (1 + exp(z1));
+    float_type p = rand_unif(0,1);
     if (Zkeep(k,v) > 0 && p < z) {
         Zcol.local()(k,v)++;
         W2col.local()(k,v) += Ucol(k) * Ucol(k);

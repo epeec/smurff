@@ -41,7 +41,7 @@ public:
    virtual const Vector fullMu(int n) const;
 
    void sample_latent(int n) override;
-   virtual std::pair<double,double> sample_latent(int d, int k, const Matrix& XX, const Vector& yX);
+   virtual std::pair<float_type,float_type> sample_latent(int d, int k, const Matrix& XX, const Vector& yX);
 
    void update_prior() override;
 

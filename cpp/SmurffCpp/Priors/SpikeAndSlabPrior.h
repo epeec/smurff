@@ -36,7 +36,7 @@ public:
 
    void restore(std::shared_ptr<const StepFile> sf) override;
 
-   std::pair<double,double> sample_latent(int d, int k, const Matrix& XX, const Vector& yX) override;
+   std::pair<float_type,float_type> sample_latent(int d, int k, const Matrix& XX, const Vector& yX) override;
 
    void update_prior() override;
 
