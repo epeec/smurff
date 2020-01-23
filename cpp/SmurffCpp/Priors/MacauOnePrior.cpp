@@ -3,8 +3,6 @@
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/IO/GenericIO.h>
 
-#include <Utils/linop.h>
-
 namespace smurff {
 
 MacauOnePrior::MacauOnePrior(std::shared_ptr<Session> session, uint32_t mode)

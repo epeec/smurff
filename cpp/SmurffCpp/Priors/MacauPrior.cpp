@@ -7,8 +7,6 @@
 #include <Utils/Error.h>
 #include <Utils/counters.h>
 
-#include <Utils/linop.h>
-
 #include <ios>
 
 namespace smurff {
