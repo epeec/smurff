@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 #include <Eigen/IterativeLinearSolvers>
 
 #include <SmurffCpp/Utils/MatrixUtils.h>
@@ -19,7 +19,7 @@ namespace Eigen {
 namespace internal {
   // AtA looks-like a SparseMatrix, so let's inherits its traits:
   template<>
-  struct traits<smurff::linop::AtA> :  public Eigen::internal::traits<Eigen::SparseMatrix<double> >
+  struct traits<smurff::linop::AtA> :  public Eigen::internal::traits<SparseMatrix >
   {};
 }
 }
@@ -52,9 +52,9 @@ public:
     return Eigen::Product<AtA, Rhs, Eigen::AliasFreeProduct>(*this, x.derived());
   }
   // Custom API:
-  AtA(const Eigen::SparseMatrix<double> &A, double reg) : m_A(A), m_reg(reg) {}
+  AtA(const SparseMatrix &A, double reg) : m_A(A), m_reg(reg) {}
 
-  const Eigen::SparseMatrix<double> &m_A;
+  const SparseMatrix &m_A;
   double m_reg;
 };
 
@@ -85,26 +85,26 @@ namespace linop
 {
 
 template<typename T>
-int  solve_blockcg(Eigen::MatrixXd & X, T & t, double reg, Eigen::MatrixXd & B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error = false);
+int  solve_blockcg(Matrix & X, T & t, double reg, Matrix & B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error = false);
 template<typename T>
-int  solve_blockcg(Eigen::MatrixXd & X, T & t, double reg, Eigen::MatrixXd & B, double tol, bool throw_on_cholesky_error = false);
+int  solve_blockcg(Matrix & X, T & t, double reg, Matrix & B, double tol, bool throw_on_cholesky_error = false);
 
-inline void AtA_mul_B(Eigen::MatrixXd & out, SparseSideInfo & A, double reg, Eigen::MatrixXd & B);
-inline void AtA_mul_B(Eigen::MatrixXd & out, Eigen::MatrixXd & A, double reg, Eigen::MatrixXd & B);
+inline void AtA_mul_B(Matrix & out, SparseSideInfo & A, double reg, Matrix & B);
+inline void AtA_mul_B(Matrix & out, Matrix & A, double reg, Matrix & B);
 
-inline void makeSymmetric(Eigen::MatrixXd &A)
+inline void makeSymmetric(Matrix &A)
 {
   A = A.selfadjointView<Eigen::Lower>();
 }
 
 /** good values for solve_blockcg are blocksize=32 an excess=8 */
 template<typename T>
-inline int solve_blockcg(Eigen::MatrixXd & X, T & K, double reg, Eigen::MatrixXd & B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error) {
+inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error) {
   if (B.rows() <= excess + blocksize) {
     return solve_blockcg(X, K, reg, B, tol, throw_on_cholesky_error);
   }
   // split B into blocks of size <blocksize> (+ excess if needed)
-  Eigen::MatrixXd Xblock, Bblock;
+  Matrix Xblock, Bblock;
   int max_iter = 0;
   for (int i = 0; i < B.rows(); i += blocksize) {
     int nrows = blocksize;
@@ -131,7 +131,7 @@ inline int solve_blockcg(Eigen::MatrixXd & X, T & K, double reg, Eigen::MatrixXd
 //   B = n x m matrix
 //
 template<typename T>
-inline int solve_blockcg(Eigen::MatrixXd & X, T & K, double reg, Eigen::MatrixXd & B, double tol, bool throw_on_cholesky_error) {
+inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, bool throw_on_cholesky_error) {
   // initialize
   const int nfeat = B.cols();
   const int nrhs  = B.rows();
@@ -139,7 +139,7 @@ inline int solve_blockcg(Eigen::MatrixXd & X, T & K, double reg, Eigen::MatrixXd
 
   if (nfeat != K.cols()) {THROWERROR("B.cols() must equal K.cols()");}
 
-  Eigen::VectorXd norms(nrhs), inorms(nrhs); 
+  Vector norms(nrhs), inorms(nrhs); 
   norms.setZero();
   inorms.setZero();
   #pragma omp parallel for schedule(static)
@@ -153,9 +153,9 @@ inline int solve_blockcg(Eigen::MatrixXd & X, T & K, double reg, Eigen::MatrixXd
     norms(rhs)  = std::sqrt(sumsq);
     inorms(rhs) = 1.0 / norms(rhs);
   }
-  Eigen::MatrixXd R(nrhs, nfeat);
-  Eigen::MatrixXd P(nrhs, nfeat);
-  Eigen::MatrixXd Ptmp(nrhs, nfeat);
+  Matrix R(nrhs, nfeat);
+  Matrix P(nrhs, nfeat);
+  Matrix Ptmp(nrhs, nfeat);
   X.setZero();
   // normalize R and P:
   #pragma omp parallel for schedule(static) collapse(2)
@@ -167,15 +167,15 @@ inline int solve_blockcg(Eigen::MatrixXd & X, T & K, double reg, Eigen::MatrixXd
       P(rhs, feat) = R(rhs, feat);
     }
   }
-  Eigen::MatrixXd* RtR = new Eigen::MatrixXd(nrhs, nrhs);
-  Eigen::MatrixXd* RtR2 = new Eigen::MatrixXd(nrhs, nrhs);
+  Matrix* RtR = new Matrix(nrhs, nrhs);
+  Matrix* RtR2 = new Matrix(nrhs, nrhs);
 
-  Eigen::MatrixXd KP(nrhs, nfeat);
-  Eigen::MatrixXd PtKP(nrhs, nrhs);
+  Matrix KP(nrhs, nfeat);
+  Matrix PtKP(nrhs, nrhs);
   //Eigen::Matrix<double, N, N> A;
   //Eigen::Matrix<double, N, N> Psi;
-  Eigen::MatrixXd A;
-  Eigen::MatrixXd Psi;
+  Matrix A;
+  Matrix Psi;
 
   //A_mul_At_combo(*RtR, R);
   *RtR = R * R.transpose();
@@ -219,7 +219,7 @@ inline int solve_blockcg(Eigen::MatrixXd & X, T & K, double reg, Eigen::MatrixXd
     *RtR2 = R * R.transpose();
     makeSymmetric(*RtR2);
 
-    Eigen::VectorXd d = RtR2->diagonal();
+    Vector d = RtR2->diagonal();
     //std::cout << "[ iter " << iter << "] " << std::scientific << d.transpose() << " (max: " << d.maxCoeff() << " > " << tolsq << ")" << std::endl;
     //std::cout << iter << ":" << std::scientific << d.transpose() << std::endl;
     if ( (d.array() < tolsq).all()) {
@@ -240,7 +240,7 @@ inline int solve_blockcg(Eigen::MatrixXd & X, T & K, double reg, Eigen::MatrixXd
     {
       int col = block * 64;
       int bcols = std::min(64, nfeat - col);
-      Eigen::MatrixXd xtmp(nrhs, bcols);
+      Matrix xtmp(nrhs, bcols);
       xtmp = Psi *  P.block(0, col, nrhs, bcols);
       P.block(0, col, nrhs, bcols) = R.block(0, col, nrhs, bcols) + xtmp;
     }
@@ -253,7 +253,7 @@ inline int solve_blockcg(Eigen::MatrixXd & X, T & K, double reg, Eigen::MatrixXd
   
   if (iter == 1000)
   {
-    Eigen::VectorXd d = RtR2->diagonal().cwiseSqrt();
+    Vector d = RtR2->diagonal().cwiseSqrt();
     std::cerr << "warning: block_cg: could not find a solution in 1000 iterations; residual: ["
               << d.transpose() << " ].all() > " << tol << std::endl;
   }
@@ -273,11 +273,11 @@ inline int solve_blockcg(Eigen::MatrixXd & X, T & K, double reg, Eigen::MatrixXd
   return iter;
 }
 
-inline void AtA_mul_B(Eigen::MatrixXd & out, Eigen::MatrixXd & A, double reg, Eigen::MatrixXd & B) {
+inline void AtA_mul_B(Matrix & out, Matrix & A, double reg, Matrix & B) {
 	out.noalias() = (A.transpose() * (A * B.transpose())).transpose() + reg * B;
 }
 
-inline void AtA_mul_B(Eigen::MatrixXd& out, SparseSideInfo& A, double reg, Eigen::MatrixXd& B) {
+inline void AtA_mul_B(Matrix& out, SparseSideInfo& A, double reg, Matrix& B) {
   out.noalias() = (A.Ft * (A.F * B.transpose())).transpose() + reg * B;
 }
 
