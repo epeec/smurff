@@ -77,7 +77,7 @@ void Model::init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_t
    m_link_matrices.resize(nmodes());
    m_mus.resize(nmodes());
 
-   Pcache.init(Eigen::ArrayXd::Ones(m_num_latent));
+   Pcache.init(Array1D::Ones(m_num_latent));
 }
 
 void Model::setLinkMatrix(int mode, 
@@ -247,7 +247,7 @@ void Model::restore(std::shared_ptr<const StepFile> sf, int skip_mode)
 
    m_link_matrices.resize(nmodes);
    m_mus.resize(nmodes);
-   Pcache.init(Eigen::ArrayXd::Ones(m_num_latent));
+   Pcache.init(Array1D::Ones(m_num_latent));
 }
 
 std::ostream& Model::info(std::ostream &os, std::string indent) const

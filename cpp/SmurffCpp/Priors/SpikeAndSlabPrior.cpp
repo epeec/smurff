@@ -26,15 +26,15 @@ void SpikeAndSlabPrior::init()
    W2col.init(Matrix::Zero(K,nview));
 
    //-- prior params
-   Zkeep = Array::Constant(K, nview, D);
+   Zkeep = Array2D::Constant(K, nview, D);
 
-   alpha = Array::Ones(K,nview);
+   alpha = Array2D::Ones(K,nview);
    log_alpha.resize(K, nview);
    log_alpha = alpha.log();
 
-   r = Array::Constant(K,nview,.5);
+   r = Array2D::Constant(K,nview,.5);
    log_r.resize(K, nview);
-   log_r = - r.log() + (Array::Ones(K, nview) - r).log();
+   log_r = - r.log() + (Array2D::Ones(K, nview) - r).log();
 }
 
 void SpikeAndSlabPrior::update_prior()
@@ -60,7 +60,7 @@ void SpikeAndSlabPrior::update_prior()
    W2col.reset(); 
 
    log_alpha = alpha.log();
-   log_r = - r.log() + (Array::Ones(K, nview) - r).log();
+   log_r = - r.log() + (Array2D::Ones(K, nview) - r).log();
 }
 
 void SpikeAndSlabPrior::restore(std::shared_ptr<const StepFile> sf)
@@ -72,8 +72,8 @@ void SpikeAndSlabPrior::restore(std::shared_ptr<const StepFile> sf)
 
   //compute Zcol
   int d = 0;
-  Array Z(Array::Zero(K,nview));
-  Array W2(Array::Zero(K,nview));
+  Array2D Z(Array2D::Zero(K,nview));
+  Array2D W2(Array2D::Zero(K,nview));
   for(int v=0; v<data().nview(m_mode); ++v) 
   {
       for(int i=0; i<data().view_size(m_mode, v); ++i, ++d)

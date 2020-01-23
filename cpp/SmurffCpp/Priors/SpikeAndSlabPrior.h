@@ -20,9 +20,9 @@ public:
    thread_vector<Matrix> Zcol, W2col;
 
    // updated during update_prior
-   Array Zkeep;
-   Array alpha, log_alpha;
-   Array r, log_r;
+   Array2D Zkeep;
+   Array2D alpha, log_alpha;
+   Array2D r, log_r;
 
    //-- hyper params
    const double prior_beta = 1; //for r

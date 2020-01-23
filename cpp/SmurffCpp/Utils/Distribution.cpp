@@ -176,9 +176,9 @@ auto nrandn(int n) -> decltype(Vector::NullaryExpr(n, std::cref(randn)))
    return Vector::NullaryExpr(n, std::cref(randn));
 }
 
-auto nrandn(int n, int m) -> decltype(Array::NullaryExpr(n, m, std::cref(randn)))
+auto nrandn(int n, int m) -> decltype(Array2D::NullaryExpr(n, m, std::cref(randn)))
 {
-   return Array::NullaryExpr(n, m, std::cref(randn)); 
+   return Array2D::NullaryExpr(n, m, std::cref(randn)); 
 }
 
 

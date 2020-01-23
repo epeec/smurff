@@ -7,7 +7,7 @@ do
 	gsed -i -e "
 	s/Eigen::MatrixXd/Matrix/g;
 	s/Eigen::VectorXd/Vector/g;
-	s/Eigen::ArrayXXd/Array/g;
+	s/Eigen::Array2DXXd/Array2D/g;
 	s/Eigen::SparseMatrix<double>/SparseMatrix/g;
 	" $F
 

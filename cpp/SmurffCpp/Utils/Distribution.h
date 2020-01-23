@@ -29,7 +29,7 @@ namespace smurff
    // return a random matrix of size n, m
    
    auto nrandn(int n) -> decltype(Vector::NullaryExpr(n, std::cref(randn)) ); 
-   auto nrandn(int n, int m) -> decltype(Array::NullaryExpr(n, m, std::cref(randn)) );
+   auto nrandn(int n, int m) -> decltype(Array2D::NullaryExpr(n, m, std::cref(randn)) );
    
    // Wishart distribution
    

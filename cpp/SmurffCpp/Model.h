@@ -47,7 +47,7 @@ private:
    PVec<> m_dims; //dimensions of train data
 
    // to make predictions faster
-   mutable thread_vector<Eigen::ArrayXd> Pcache;
+   mutable thread_vector<Array1D> Pcache;
 
 public:
    Model();

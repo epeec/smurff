@@ -19,7 +19,7 @@ namespace Eigen {
 namespace internal {
   // AtA looks-like a SparseMatrix, so let's inherits its traits:
   template<>
-  struct traits<smurff::linop::AtA> :  public Eigen::internal::traits<SparseMatrix >
+  struct traits<smurff::linop::AtA> :  public Eigen::internal::traits<smurff::SparseMatrix>
   {};
 }
 }
