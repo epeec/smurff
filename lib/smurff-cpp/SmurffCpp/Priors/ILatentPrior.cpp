@@ -104,9 +104,9 @@ void ILatentPrior::sample_latents()
    thread_vector<Eigen::VectorXd> Ucol(Eigen::VectorXd::Zero(num_latent()));
    thread_vector<Eigen::MatrixXd> UUcol(Eigen::MatrixXd::Zero(num_latent(), num_latent()));
 
-   #pragma omp parallel 
-   #pragma omp taskloop
+   #pragma omp parallel for schedule(guided)
    for(int n = 0; n < U().cols(); n++)
+   #pragma omp task
    {
       COUNTER("sample_latent");
       sample_latent(n);
