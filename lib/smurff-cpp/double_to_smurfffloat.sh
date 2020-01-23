@@ -81,9 +81,7 @@ SmurffCpp/Utils/RootFile.cpp
 SmurffCpp/Utils/TruncNorm.h
 SmurffCpp/Utils/Distribution.h
 SmurffCpp/Utils/StepFile.h
-SmurffCpp/Utils/InvNormCdf.h
 SmurffCpp/Utils/StepFile.cpp
-SmurffCpp/Utils/InvNormCdf.cpp
 SmurffCpp/ResultItem.h
 SmurffCpp/SideInfo/DenseSideInfo.cpp
 SmurffCpp/SideInfo/DenseSideInfo.h
