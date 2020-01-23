@@ -3,8 +3,7 @@
 #include <memory>
 #include <set>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/PVec.hpp>
 #include <SmurffCpp/Utils/ThreadVector.hpp>

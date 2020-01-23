@@ -15,8 +15,6 @@ namespace linop {
   class AtA;
 } }
 
-using Eigen::SparseMatrix;
-
 namespace Eigen {
 namespace internal {
   // AtA looks-like a SparseMatrix, so let's inherits its traits:
@@ -56,7 +54,7 @@ public:
   // Custom API:
   AtA(const Eigen::SparseMatrix<double> &A, double reg) : m_A(A), m_reg(reg) {}
 
-  const SparseMatrix<double> &m_A;
+  const Eigen::SparseMatrix<double> &m_A;
   double m_reg;
 };
 
