@@ -259,10 +259,10 @@ TEST_CASE("Benchmark from old 'data.cpp' file", "[!hide]")
 
    {
        init_bmrng(1234);
-       Eigen::Matrix<double, K, Eigen::Dynamic> U(K,N);
+       Eigen::Matrix<float_type, K, Eigen::Dynamic> U(K,N);
        U = nrandn(K,N);
 
-       Eigen::Matrix<double,K,K> M;
+       Eigen::Matrix<float_type,K,K> M;
        //double start = tick();
        for(int i=0; i<R; ++i) {
            M.setZero();

@@ -16,7 +16,8 @@ Matrix matrix_utils::dense_to_eigen(const MatrixConfig& matrixConfig)
       THROWERROR("matrix config should be dense");
    }
 
-   return Eigen::Map<const Matrix>(matrixConfig.getValues().data(), matrixConfig.getNRow(), matrixConfig.getNCol());
+   std::vector<float_type> float_values(matrixConfig.getValues().begin(), matrixConfig.getValues().end());
+   return Eigen::Map<const Matrix>(float_values.data(), matrixConfig.getNRow(), matrixConfig.getNCol());
 }
 
 std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_dense(const Matrix &eigenMatrix, NoiseConfig n)
@@ -40,14 +41,14 @@ struct sparse_vec_iterator
 
   sparse_vec_iterator &operator++() { pos++; return *this; }
 
-  typedef Eigen::Triplet<double> T;
+  typedef Eigen::Triplet<float_type> T;
   T v;
 
   T* operator->() {
      // also convert from 1-base to 0-base
      uint32_t row = config.getRows()[pos];
      uint32_t col = config.getCols()[pos];
-     double val = config.getValues()[pos];
+     float_type val = config.getValues()[pos];
      v = T(row, col, val);
      return &v;
   }

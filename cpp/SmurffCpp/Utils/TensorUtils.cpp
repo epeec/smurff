@@ -18,7 +18,8 @@ Matrix tensor_utils::dense_to_eigen(const TensorConfig& tensorConfig)
       THROWERROR("Invalid number of dimensions. Tensor can not be converted to matrix.");
    }
 
-   return Eigen::Map<const Matrix>(tensorConfig.getValues().data(), tensorConfig.getDims()[0], tensorConfig.getDims()[1]);
+   std::vector<float_type> values(tensorConfig.getValues().begin(), tensorConfig.getValues().end());
+   return Eigen::Map<const Matrix>(values.data(), tensorConfig.getDims()[0], tensorConfig.getDims()[1]);
 }
 
 SparseMatrix tensor_utils::sparse_to_eigen(const TensorConfig& tensorConfig)
@@ -38,13 +39,13 @@ SparseMatrix tensor_utils::sparse_to_eigen(const TensorConfig& tensorConfig)
 
    SparseMatrix out(tensorConfig.getDims()[0], tensorConfig.getDims()[1]);
 
-   std::vector<Eigen::Triplet<double> > triplets;
+   std::vector<Eigen::Triplet<float_type> > triplets;
    for(std::uint64_t i = 0; i < tensorConfig.getNNZ(); i++)
    {
-      double val = values[i];
+      float_type val = values[i];
       std::uint32_t row = columns[i];
       std::uint32_t col = columns[i + tensorConfig.getNNZ()];
-      triplets.push_back(Eigen::Triplet<double>(row, col, val));
+      triplets.push_back(Eigen::Triplet<float_type>(row, col, val));
    }
 
    out.setFromTriplets(triplets.begin(), triplets.end());

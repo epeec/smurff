@@ -35,8 +35,8 @@ class AtA : public Eigen::EigenBase<AtA>
 {
 public:
   // Required typedefs, constants, and method:
-  typedef double Scalar;
-  typedef double RealScalar;
+  typedef float_type Scalar;
+  typedef float_type RealScalar;
   typedef int StorageIndex;
   enum
   {
