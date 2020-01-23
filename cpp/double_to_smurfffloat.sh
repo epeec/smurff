@@ -9,13 +9,9 @@ SmurffMPI/mpi_smurff.cpp
 SmurffMPI/MPIPriorFactory.cpp
 SmurffMPI/MPISession.cpp
 SmurffMPI/MPIPriorFactory.h
-Tests/TestsLinop.cpp
+
 Tests/TestsSmurff.cpp
-Tests/TestsMatrixUtils.cpp
-Tests/TestsTensor.cpp
-Tests/TestsPVec.cpp
-Tests/tests.cpp
-Tests/TestsSparseDoubleFeatSideInfo.cpp
+
 SmurffCpp/DataMatrices/DataCreatorBase.cpp
 SmurffCpp/DataMatrices/DataCreator.cpp
 SmurffCpp/DataMatrices/Data.h
@@ -35,6 +31,7 @@ SmurffCpp/DataMatrices/MatrixDataFactory.cpp
 SmurffCpp/DataMatrices/DenseMatrixData.h
 SmurffCpp/DataMatrices/MatricesData.h
 SmurffCpp/DataMatrices/IDataCreator.h
+
 SmurffCpp/Noises/FixedGaussianNoise.cpp
 SmurffCpp/Noises/AdaptiveGaussianNoise.cpp
 SmurffCpp/Noises/GaussianNoise.h
@@ -51,7 +48,9 @@ SmurffCpp/Noises/SampledGaussianNoise.cpp
 SmurffCpp/Noises/UnusedNoise.h
 SmurffCpp/Noises/AdaptiveGaussianNoise.h
 SmurffCpp/Noises/NoiseFactory.cpp
+
 SmurffCpp/Version.h
+
 SmurffCpp/Priors/SpikeAndSlabPrior.cpp
 SmurffCpp/Priors/NormalPrior.h
 SmurffCpp/Priors/MacauPrior.h
@@ -67,20 +66,7 @@ SmurffCpp/Priors/MacauOnePrior.h
 SmurffCpp/Priors/MacauPrior.cpp
 SmurffCpp/Priors/MacauOnePrior.cpp
 SmurffCpp/Priors/ILatentPrior.cpp
-SmurffCpp/Version.cpp
-SmurffCpp/result.h
-SmurffCpp/Utils/Error.h
-SmurffCpp/Utils/Distribution.cpp
-SmurffCpp/Utils/omp_util.h
-SmurffCpp/Utils/linop.h
-SmurffCpp/Utils/TensorUtils.h
-SmurffCpp/Utils/omp_util.cpp
-SmurffCpp/Utils/RootFile.h
-SmurffCpp/Utils/RootFile.cpp
-SmurffCpp/Utils/Distribution.h
-SmurffCpp/Utils/StepFile.h
-SmurffCpp/Utils/StepFile.cpp
-SmurffCpp/ResultItem.h
+
 SmurffCpp/SideInfo/DenseSideInfo.cpp
 SmurffCpp/SideInfo/DenseSideInfo.h
 SmurffCpp/SideInfo/ISideInfo.h
@@ -101,13 +87,16 @@ SmurffCpp/Sessions/ISession.cpp
 SmurffCpp/Model.h
 SmurffCpp/Model.cpp
 SmurffCpp/result.cpp
+
 SmurffCpp/DataTensors/TensorData.h
 SmurffCpp/DataTensors/TensorDataFactory.h
 SmurffCpp/DataTensors/TensorDataFactory.cpp
 SmurffCpp/DataTensors/TensorData.cpp
 SmurffCpp/DataTensors/SparseMode.cpp
 SmurffCpp/DataTensors/SparseMode.h
+
 Tests/expected_results/*.h
+
 SmurffCpp/DataMatrices/FullMatrixData.hpp
 SmurffCpp/DataMatrices/MatrixDataTempl.hpp
 SmurffCpp/ConstVMatrixExprIterator.hpp
@@ -116,7 +105,7 @@ SmurffCpp/Utils/ThreadVector.hpp
 SmurffCpp/ConstVMatrixIterator.hpp
 SmurffCpp/VMatrixIterator.hpp
 SmurffCpp/VMatrixExprIterator.hpp
-Tests/catch.hpp"
+"
 
 for F in $FILES
 do
