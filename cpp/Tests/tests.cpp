@@ -16,7 +16,6 @@
 #include <SmurffCpp/Utils/Distribution.h>
 #include <Utils/counters.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <Utils/linop.h>
 
 #include <SmurffCpp/Configs/MatrixConfig.h>
 

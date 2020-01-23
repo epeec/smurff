@@ -2,7 +2,6 @@
 
 #include <SmurffCpp/SideInfo/SparseSideInfo.h>
 #include <SmurffCpp/Utils/Distribution.h>
-#include <SmurffCpp/Utils/linop.h>
 
 namespace smurff {
 

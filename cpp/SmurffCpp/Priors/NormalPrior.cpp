@@ -2,7 +2,7 @@
 
 #include <iomanip>
 
-#include <Utils/linop.h>
+#include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <Utils/counters.h>
 
