@@ -36,11 +36,16 @@ namespace threads
     void init(int verbose, int num_threads) 
     {
         m_verbose = verbose;
+        static int default_num_threads = get_max_threads();
 
         if (num_threads > 0)
         {
             omp_set_num_threads(num_threads);
-        } 
+        }
+        else
+        {
+            omp_set_num_threads(default_num_threads);
+        }
 
         if (verbose)
         {
