@@ -31,8 +31,6 @@
 #define SAMPLE_ITER_TAG "sample_iter"
 #define BURNIN_ITER_TAG "burnin_iter"
 
-using namespace std;
-
 using namespace smurff;
 
 Result::Result() {}
@@ -149,10 +147,10 @@ void Result::savePred(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) c
       for (std::vector<ResultItem>::const_iterator it = m_predictions.begin(); it != m_predictions.end(); it++)
       {
          it->coords.save(predFile)
-             << "," << to_string(it->val)
-             << "," << to_string(it->pred_1sample)
-             << "," << to_string(it->pred_avg)
-             << "," << to_string(it->var)
+             << "," << std::to_string(it->val)
+             << "," << std::to_string(it->pred_1sample)
+             << "," << std::to_string(it->pred_avg)
+             << "," << std::to_string(it->var)
              << std::endl;
       }
    }
@@ -236,13 +234,13 @@ void Result::restorePred(std::shared_ptr<const StepFile> sf)
          std::size_t nCoords = m_dims.size();
 
          for (std::size_t c = 0; c < nCoords; c++)
-            coords.push_back(stoi(tokens[c].c_str()));
+            coords.push_back(std::stoi(tokens[c].c_str()));
 
          //parse other values
-         double val = stod(tokens.at(nCoords).c_str());
-         double pred_1sample = stod(tokens.at(nCoords + 1).c_str());
-         double pred_avg = stod(tokens.at(nCoords + 2).c_str());
-         double var = stod(tokens.at(nCoords + 3).c_str());
+         double val = std::stod(tokens.at(nCoords).c_str());
+         double pred_1sample = std::stod(tokens.at(nCoords + 1).c_str());
+         double pred_avg = std::stod(tokens.at(nCoords + 2).c_str());
+         double var = std::stod(tokens.at(nCoords + 3).c_str());
 
          //construct result item
          m_predictions.push_back(ResultItem(smurff::PVec<>(coords), val, pred_1sample, pred_avg, var, sample_iter));
@@ -268,22 +266,22 @@ void Result::restoreState(std::shared_ptr<const StepFile> sf)
    iniReader.open(predStateName);
 
    auto value = iniReader.get(GLOBAL_TAG, RMSE_AVG_TAG);
-   rmse_avg = stod(value.c_str());
+   rmse_avg = std::stod(value.c_str());
    
    value = iniReader.get(GLOBAL_TAG, RMSE_1SAMPLE_TAG);
-   rmse_1sample = stod(value.c_str());
+   rmse_1sample = std::stod(value.c_str());
    
    value = iniReader.get(GLOBAL_TAG, AUC_AVG_TAG);
-   auc_avg = stod(value.c_str());
+   auc_avg = std::stod(value.c_str());
    
    value = iniReader.get(GLOBAL_TAG, AUC_1SAMPLE_TAG);
-   auc_1sample = stod(value.c_str());
+   auc_1sample = std::stod(value.c_str());
    
    value = iniReader.get(GLOBAL_TAG, SAMPLE_ITER_TAG);
-   sample_iter = stoi(value.c_str());
+   sample_iter = std::stoi(value.c_str());
    
    value = iniReader.get(GLOBAL_TAG, BURNIN_ITER_TAG);
-   burnin_iter = stoi(value.c_str());
+   burnin_iter = std::stoi(value.c_str());
 }
 
 //--- update RMSE and AUC

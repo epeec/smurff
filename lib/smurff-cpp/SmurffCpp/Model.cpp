@@ -25,9 +25,7 @@
 
 #include <SmurffCpp/IO/GenericIO.h>
 
-using namespace std;
 using namespace smurff;
-
 
 Model::Model()
    : m_num_latent(-1), m_dims(0)

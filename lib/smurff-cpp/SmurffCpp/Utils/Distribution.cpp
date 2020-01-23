@@ -27,8 +27,6 @@
 
 #include "Distribution.h"
 
-using namespace Eigen;
-
 static smurff::thread_vector<MERSENNE_TWISTER> bmrngs;
 
 double smurff::randn0()
@@ -212,7 +210,7 @@ Eigen::MatrixXd WishartUnit(int m, int df)
    return ret;
 }
 
-MatrixXd Wishart(const Eigen::MatrixXd &sigma, const int df)
+Eigen::MatrixXd Wishart(const Eigen::MatrixXd &sigma, const int df)
 {
    //  Get R, the upper triangular Cholesky factor of SIGMA.
    auto chol = sigma.llt();
@@ -278,10 +276,10 @@ std::pair<Eigen::VectorXd, Eigen::MatrixXd> smurff::CondNormalWishart(const Eige
 }
 
 // Normal(0, Lambda^-1) for nn columns
-MatrixXd smurff::MvNormal_prec(const Eigen::MatrixXd & Lambda, int ncols)
+Eigen::MatrixXd smurff::MvNormal_prec(const Eigen::MatrixXd & Lambda, int ncols)
 {
    int nrows = Lambda.rows(); // Dimensionality (rows)
-   LLT<Eigen::MatrixXd> chol(Lambda);
+   Eigen::LLT<Eigen::MatrixXd> chol(Lambda);
 
    Eigen::MatrixXd r(nrows, ncols);
    smurff::bmrandn(r);
@@ -302,7 +300,7 @@ Eigen::MatrixXd smurff::MvNormal(const Eigen::MatrixXd covar, const Eigen::Vecto
    int size = mean.rows(); // Dimensionality (rows)
    Eigen::MatrixXd normTransform(size,size);
 
-   LLT<Eigen::MatrixXd> cholSolver(covar);
+   Eigen::LLT<Eigen::MatrixXd> cholSolver(covar);
    normTransform = cholSolver.matrixL();
 
    auto normSamples = Eigen::MatrixXd::NullaryExpr(size, nn, std::cref(randn));
