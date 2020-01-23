@@ -82,6 +82,7 @@ void Session::setFromBase()
     if (m_config.getTest())
     {
         m_pred = std::make_shared<Result>(m_config.getTest());
+        m_pred->setSavePred(m_config.getSavePred());
         if (m_config.getClassify())
             m_pred->setThreshold(m_config.getThreshold());
     }
@@ -116,11 +117,17 @@ void Session::init()
     //initialize random generator
     initRng();
 
+    //init performance counters
+    perf_data_init();
+
+    //initialize test set
+    if (m_pred) m_pred->init();
+
     //initialize train matrix (centring and noise model)
     data().init();
 
     //initialize model (samples)
-    model().init(m_config.getNumLatent(), data().dim(), m_config.getModelInitType());
+    model().init(m_config.getNumLatent(), data().dim(), m_config.getModelInitType(), m_config.getSaveModel());
 
     //initialize priors
     for (auto &p : m_priors)
@@ -165,7 +172,11 @@ bool Session::step()
 
         auto starti = tick();
         for (auto &p : m_priors)
+        {
             p->sample_latents();
+            p->update_prior();
+        }
+        
         data().update(model());
         auto endi = tick();
 
@@ -257,7 +268,7 @@ void Session::save(int iteration)
         else
         {
             //do save this iteration
-            std::shared_ptr<StepFile> stepFile = m_rootFile->createSampleStepFile(isample);
+            std::shared_ptr<StepFile> stepFile = m_rootFile->createSampleStepFile(isample, isample == m_config.getNSamples());
             saveInternal(stepFile);
         }
     }

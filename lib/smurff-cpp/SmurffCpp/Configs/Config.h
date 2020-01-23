@@ -63,6 +63,7 @@ public:
    static int NSAMPLES_DEFAULT_VALUE;
    static int NUM_LATENT_DEFAULT_VALUE;
    static int NUM_THREADS_DEFAULT_VALUE;
+   static bool POSTPROP_DEFAULT_VALUE;
    static ModelInitTypes INIT_MODEL_DEFAULT_VALUE;
    static const char* SAVE_PREFIX_DEFAULT_VALUE;
    static const char* SAVE_EXTENSION_DEFAULT_VALUE;
@@ -93,6 +94,10 @@ private:
 
    // -- priors
    std::vector<PriorTypes> m_prior_types;
+
+   // -- posterior propagation
+   std::map<int, std::shared_ptr<MatrixConfig> > m_mu_postprop;
+   std::map<int, std::shared_ptr<MatrixConfig> > m_lambda_postprop;
 
    //-- init model
    ModelInitTypes m_model_init_type;
@@ -254,6 +259,32 @@ public:
       }
       return m_prior_types;
    }
+
+   bool hasPropagatedPosterior(int mode) const
+   {
+       return m_mu_postprop.find(mode) != m_mu_postprop.end();
+   }
+
+   void addPropagatedPosterior(int mode,
+                         std::shared_ptr<MatrixConfig> mu,
+                         std::shared_ptr<MatrixConfig> lambda)
+   {
+       m_mu_postprop[mode] = mu;
+       m_lambda_postprop[mode] = lambda;
+   }
+
+   std::shared_ptr<MatrixConfig> getMuPropagatedPosterior(int mode) const
+   {
+       return m_mu_postprop.find(mode)->second;
+   }
+
+
+   std::shared_ptr<MatrixConfig> getLambdaPropagatedPosterior(int mode) const
+   {
+       return m_lambda_postprop.find(mode)->second;
+   }
+
+
 
    ModelInitTypes getModelInitType() const
    {

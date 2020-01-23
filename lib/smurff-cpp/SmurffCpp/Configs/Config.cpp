@@ -1,6 +1,8 @@
 #include "Config.h"
 
-#ifndef _WINDOWS
+#ifdef _WINDOWS
+#include <windows.h>
+#else
 #include <unistd.h>
 #endif
 
@@ -9,6 +11,7 @@
 #include <fstream>
 #include <iomanip>
 #include <ctime>
+#include <cstdio>
 #include <string>
 #include <memory>
 
@@ -20,6 +23,8 @@
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/Utils/StringUtils.h>
+
+#define NONE_TAG "none"
 
 #define GLOBAL_SECTION_TAG "global"
 #define TRAIN_SECTION_TAG "train"
@@ -45,6 +50,10 @@
 #define INIT_MODEL_TAG "init_model"
 #define CLASSIFY_TAG "classify"
 #define THRESHOLD_TAG "threshold"
+
+#define POSTPROP_PREFIX "prop_posterior"
+#define LAMBDA_TAG "Lambda"
+#define MU_TAG "mu"
 
 using namespace smurff;
 
@@ -165,13 +174,19 @@ Config::Config()
 std::string Config::getSavePrefix() const
 {
     auto &pfx = m_save_prefix;
-#ifndef _WINDOWS
     if (pfx == Config::SAVE_PREFIX_DEFAULT_VALUE || pfx.empty())
     {
+#ifdef _WINDOWS
+       char templ[1024];
+	   static int temp_counter = 0;
+       snprintf(templ, 1023, "%s\\smurff.%03d", getenv("TEMP"), temp_counter++);
+       CreateDirectory(templ, NULL);
+       pfx = templ;
+#else
         char templ[1024] = "/tmp/smurff.XXXXXX";
         pfx = mkdtemp(templ);
-    }
 #endif
+    }
 
     if (*pfx.rbegin() != '/') 
         pfx += "/";
@@ -350,7 +365,42 @@ bool Config::validate() const
 
    m_train->getNoiseConfig().validate();
 
+   // validate propagated posterior
+   for(uint64_t i=0; i<getTrain()->getNModes(); ++i)
+   {
+       if (hasPropagatedPosterior(i))
+       {
+           THROWERROR_ASSERT_MSG(
+               getMuPropagatedPosterior(i)->getNCol() == getTrain()->getDims().at(i),
+               "mu of propagated posterior in mode " + std::to_string(i) + 
+               " should have same number of columns as train in mode"
+           );
+           THROWERROR_ASSERT_MSG(
+               getLambdaPropagatedPosterior(i)->getNCol() == getTrain()->getDims().at(i),
+               "Lambda of propagated posterior in mode " + std::to_string(i) + 
+               " should have same number of columns as train in mode"
+           );
+           THROWERROR_ASSERT_MSG(
+               (int)getMuPropagatedPosterior(i)->getNRow() == getNumLatent(),
+               "mu of propagated posterior in mode " + std::to_string(i) + 
+               " should have num-latent rows"
+           );
+           THROWERROR_ASSERT_MSG(
+               (int)getLambdaPropagatedPosterior(i)->getNRow() == getNumLatent() * getNumLatent(),
+               "mu of propagated posterior in mode " + std::to_string(i) +
+                   " should have num-latent^2 rows"
+           );
+       }
+   }
+
    return true;
+}
+
+static std::string add_index(const std::string name, int idx = -1)
+{
+    if (idx >= 0)
+        return name + "_" + std::to_string(idx);
+    return name;
 }
 
 void Config::save(std::string fname) const
@@ -403,6 +453,7 @@ void Config::save(std::string fname) const
    ini.appendItem(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, std::to_string(m_random_seed));
    ini.appendItem(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(m_model_init_type));
 
+
    //probit prior data
    ini.appendComment("binary classification");
    ini.appendItem(GLOBAL_SECTION_TAG, CLASSIFY_TAG, std::to_string(m_classify));
@@ -432,6 +483,18 @@ void Config::save(std::string fname) const
    {
       TensorConfig::save_tensor_config(ini, AUX_DATA_PREFIX, sIndex, m_auxData.at(sIndex));
    }
+
+   //write posterior propagation
+   for (std::size_t pIndex = 0; pIndex < m_prior_types.size(); pIndex++)
+   {
+       if (hasPropagatedPosterior(pIndex))
+       {
+           auto section = add_index(POSTPROP_PREFIX, pIndex);
+           ini.startSection(section);
+           ini.appendItem(section, MU_TAG, getMuPropagatedPosterior(pIndex)->getFilename());
+           ini.appendItem(section, LAMBDA_TAG, getLambdaPropagatedPosterior(pIndex)->getFilename());
+       }
+   }
 }
 
 bool Config::restore(std::string fname)
@@ -447,12 +510,7 @@ bool Config::restore(std::string fname)
       return false;
    }
 
-   auto add_index = [](const std::string name, int idx = -1) -> std::string
-   {
-      if (idx >= 0)
-         return name + "_" + std::to_string(idx);
-      return name;
-   };
+
 
    //restore train data
    setTest(TensorConfig::restore_tensor_config(reader, TEST_SECTION_TAG));
@@ -492,6 +550,36 @@ bool Config::restore(std::string fname)
    for(std::size_t pIndex = 0; pIndex < num_aux_data; pIndex++)
    {
       m_auxData.push_back(TensorConfig::restore_tensor_config(reader, add_index(AUX_DATA_PREFIX, pIndex)));
+   }
+
+   // restore posterior propagated data
+   for(std::size_t pIndex = 0; pIndex < num_priors; pIndex++)
+   {
+       auto mu = std::shared_ptr<MatrixConfig>();
+       auto lambda = std::shared_ptr<MatrixConfig>();
+
+       {
+           std::string filename = reader.get(add_index(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_TAG);
+           if (filename != NONE_TAG)
+           {
+               mu = matrix_io::read_matrix(filename, false);
+               mu->setFilename(filename);
+           }
+       }
+
+       {
+           std::string filename = reader.get(add_index(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_TAG);
+           if (filename != NONE_TAG)
+           {
+               lambda = matrix_io::read_matrix(filename, false);
+               lambda->setFilename(filename);
+           }
+       }
+
+       if (mu && lambda)
+       {
+           addPropagatedPosterior(pIndex, mu, lambda);
+       }
    }
 
    //restore save data

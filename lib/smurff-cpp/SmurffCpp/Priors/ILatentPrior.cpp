@@ -20,12 +20,12 @@ void ILatentPrior::init()
 
 const Model& ILatentPrior::model() const
 {
-   return m_session->model();
+   return getSession().model();
 }
 
 Model& ILatentPrior::model()
 {
-   return m_session->model();
+   return getSession().model();
 }
 
 double ILatentPrior::predict(const PVec<> &pos) const
@@ -35,7 +35,7 @@ double ILatentPrior::predict(const PVec<> &pos) const
 
 Data& ILatentPrior::data() const
 {
-   return m_session->data();
+   return getSession().data();
 }
 
 INoiseModel& ILatentPrior::noise()
@@ -109,17 +109,22 @@ void ILatentPrior::sample_latents()
    {
        #pragma omp task
        {
+           COUNTER("sample_latent");
            sample_latent(n);
            const auto& col = U().col(n);
            Ucol.local().noalias() += col;
            UUcol.local().noalias() += col * col.transpose();
+
+           if (getSession().inSamplingPhase())
+             model().updateAggr(m_mode, n);
        }
    }
 
+   if (getSession().inSamplingPhase())
+      model().updateAggr(m_mode);
+
    Usum  = Ucol.combine();
    UUsum = UUcol.combine();
-
-   update_prior();
 }
 
 bool ILatentPrior::save(std::shared_ptr<const StepFile> sf) const

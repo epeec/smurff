@@ -28,8 +28,8 @@ void NormalPrior::init()
    ILatentPrior::init();
 
    const int K = num_latent();
-   mu.resize(K);
-   mu.setZero();
+   m_mu = std::make_shared<Eigen::VectorXd>(K);
+   hyperMu().setZero();
 
    Lambda.resize(K, K);
    Lambda.setIdentity();
@@ -42,22 +42,45 @@ void NormalPrior::init()
    mu0.setZero();
    b0 = 2;
    df = K;
+
+   const auto &config = getSession().getConfig();
+   if (config.hasPropagatedPosterior(getMode()))
+   {
+      mu_pp = std::make_shared<Eigen::MatrixXd>(matrix_utils::dense_to_eigen(*config.getMuPropagatedPosterior(getMode())));
+      Lambda_pp = std::make_shared<Eigen::MatrixXd>(matrix_utils::dense_to_eigen(*config.getLambdaPropagatedPosterior(getMode())));
+      m_name += " with posterior propagation";
+   }
 }
 
-const Eigen::VectorXd NormalPrior::getMu(int n) const
+const Eigen::VectorXd NormalPrior::fullMu(int n) const
 {
-   return mu;
+   if (getSession().getConfig().hasPropagatedPosterior(getMode()))
+   {
+      return mu_pp->col(n);
+   }
+   //else
+   return hyperMu();
 }
 
+const Eigen::MatrixXd NormalPrior::getLambda(int n) const
+{
+   if (getSession().getConfig().hasPropagatedPosterior(getMode()))
+   {
+      return Eigen::Map<Eigen::MatrixXd>(Lambda_pp->col(n).data(), num_latent(), num_latent());
+   }
+   //else
+   return Lambda;
+}
 void NormalPrior::update_prior()
 {
-   std::tie(mu, Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
+   std::tie(hyperMu(), Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
 }
 
 //n is an index of column in U matrix
 void  NormalPrior::sample_latent(int n)
 {
-   const auto &mu_u = getMu(n);
+   const auto &mu_u = fullMu(n);
+   const auto &Lambda_u = getLambda(n);
 
    Eigen::VectorXd &rr = rrs.local();
    Eigen::MatrixXd &MM = MMs.local();
@@ -69,8 +92,8 @@ void  NormalPrior::sample_latent(int n)
    data().getMuLambda(model(), m_mode, n, rr, MM);
 
    // add hyperparams
-   rr.noalias() += Lambda * mu_u;
-   MM.noalias() += Lambda;
+   rr.noalias() += Lambda_u * mu_u;
+   MM.noalias() += Lambda_u;
 
    //Solve system of linear equations for x: MM * x = rr - not exactly correct  because we have random part
    //Sample from multivariate normal distribution with mean rr and precision matrix MM
@@ -93,6 +116,7 @@ void  NormalPrior::sample_latent(int n)
 
 std::ostream &NormalPrior::status(std::ostream &os, std::string indent) const
 {
-   os << indent << m_name << ": mu = " <<  mu.norm() << std::endl;
+   os << indent << m_name << std::endl;
+   os << indent << "  mu: " <<  hyperMu().transpose() << std::endl;
    return os;
 }

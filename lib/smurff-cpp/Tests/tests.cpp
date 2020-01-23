@@ -80,7 +80,7 @@ TEST_CASE( "utils/eval_rmse", "Test if prediction variance is correctly calculat
   data->setNoiseModel(NoiseFactory::create_noise_model(fixed_ncfg));
 
   data->init();
-  model->init(2, PVec<>({1, 1}), ModelInitTypes::zero); //latent dimention has size 2
+  model->init(2, PVec<>({1, 1}), ModelInitTypes::zero, false); //latent dimention has size 2
 
   auto &t = p->m_predictions.at(0);
 
@@ -203,6 +203,8 @@ TEST_CASE("macauprior/make_dense_prior", "Making MacauPrior with MatrixConfig") 
     tmp.triangularView<Eigen::Lower>()  = prior->FtF_plus_precision;
     tmp.triangularView<Eigen::Lower>() -= Ftrue.transpose() * Ftrue;
     REQUIRE( tmp.norm() == Approx(0) );
+
+    delete prior;
 }
 
 TEST_CASE("inv_norm_cdf/inv_norm_cdf", "Inverse normal CDF") {
@@ -242,7 +244,7 @@ TEST_CASE("Benchmark from old 'data.cpp' file", "[!hide]")
        bmrandn(U);
 
        Eigen::MatrixXd M(K,K) ;
-       double start = tick();
+       //double start = tick();
        for(int i=0; i<R; ++i) {
            M.setZero();
            for(int j=0; j<N;++j) {
@@ -250,10 +252,10 @@ TEST_CASE("Benchmark from old 'data.cpp' file", "[!hide]")
                M.noalias() += col * col.transpose();
            }
        }
-       double stop = tick();
-       std::cout << "norm U: " << U.norm() << std::endl;
-       std::cout << "norm M: " << M.norm() << std::endl;
-       std::cout << "MatrixXd: " << stop - start << std::endl;
+       //double stop = tick();
+       //std::cout << "norm U: " << U.norm() << std::endl;
+       //std::cout << "norm M: " << M.norm() << std::endl;
+       //std::cout << "MatrixXd: " << stop - start << std::endl;
    }
 
    {
@@ -262,7 +264,7 @@ TEST_CASE("Benchmark from old 'data.cpp' file", "[!hide]")
        U = nrandn(K,N);
 
        Eigen::Matrix<double,K,K> M;
-       double start = tick();
+       //double start = tick();
        for(int i=0; i<R; ++i) {
            M.setZero();
            for(int j=0; j<N;++j) {
@@ -270,17 +272,26 @@ TEST_CASE("Benchmark from old 'data.cpp' file", "[!hide]")
                M.noalias() += col * col.transpose();
            }
        }
-       double stop = tick();
-       std::cout << "norm U: " << U.norm() << std::endl;
-       std::cout << "norm M: " << M.norm() << std::endl;
-       std::cout << "MatrixXd: " << stop - start << std::endl;
+       //double stop = tick();
+       //std::cout << "norm U: " << U.norm() << std::endl;
+       //std::cout << "norm M: " << M.norm() << std::endl;
+       //std::cout << "MatrixXd: " << stop - start << std::endl;
    }
 }
 
-TEST_CASE("randn", "Test random number generation")
+TEST_CASE("Test random number generation", "[random]")
 {
-   #ifdef USE_BOOST_RANDOM
-   std::cout << "Running boost" << std::endl;
+#if defined(USE_BOOST_RANDOM) 
+   #if defined(TEST_RANDOM_OK)
+      INFO("Testing with correct BOOST random - all testcases should pass\n");
+   #else
+      WARN("Wrong BOOST version (should be 1.5x) - expect many failures\n");
+   #endif
+#else
+   WARN("Testing with std random - expect many failures\n");
+#endif
+
+#if defined(USE_BOOST_RANDOM) 
    init_bmrng(1234);
 
    double rnd = 0.0;
@@ -351,8 +362,7 @@ TEST_CASE("randn", "Test random number generation")
    #endif
 }
 
-#ifdef TEST_RANDOM
-TEST_CASE("rgamma", "Test random number generation")
+TEST_CASE("rgamma", " [random]")
 {
    #ifdef USE_BOOST_RANDOM
    std::cout << "Running boost" << std::endl;
@@ -426,4 +436,3 @@ TEST_CASE("rgamma", "Test random number generation")
    
    #endif
 }
-#endif //TEST_RANDOM

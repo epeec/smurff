@@ -41,41 +41,80 @@ class Sample:
         iter = int(cp["global"]["number"])
         sample = cls(nmodes, iter)
 
+        # predictions, rmse
+        sample.pred_stats = dict(read_config_file(cp["predictions"]["pred_state"], dir_name)["global"].items())
+
+        file_name = cp["predictions"]["pred_avg"]
+        if (file_name != 'none'):
+            sample.pred_avg = mio.read_matrix(os.path.join(dir_name, file_name))
+        else:
+            sample.pred_avg = None
+
+        file_name = cp["predictions"]["pred_var"]
+        if (file_name != 'none'):
+            sample.pred_var = mio.read_matrix(os.path.join(dir_name, file_name))
+        else:
+            sample.pred_var = None
+
         # latent matrices
         for i in range(sample.nmodes):
             file_name = os.path.join(dir_name, cp["latents"]["latents_" + str(i)])
-            sample.add_latent(mio.read_matrix(file_name))
+            U = mio.read_matrix(file_name)
+            postMu = None
+            postLambda = None
 
-        # link matrices (beta)
-        for i in range(sample.nmodes):
+            file_name = cp["latents"]["post_mu_" + str(i)]
+            if (file_name != 'none'):
+                postMu = mio.read_matrix(os.path.join(dir_name, file_name))
+
+            file_name = cp["latents"]["post_lambda_" + str(i)]
+            if (file_name != 'none'):
+                postLambda = mio.read_matrix(os.path.join(dir_name, file_name))
+
+            sample.add_latent(U, postMu, postLambda)
+
+            # link matrices (beta) and hyper mus
+            beta = np.ndarray((0, 0))
+            mu = np.ndarray((0, 0))
+
             file_name = cp["link_matrices"]["link_matrix_" + str(i)]
             if (file_name != 'none'):
-                sample.add_beta(mio.read_matrix(os.path.join(dir_name, file_name)))
-            else:
-                sample.add_beta(np.ndarray((0, 0)))
+                beta = mio.read_matrix(os.path.join(dir_name, file_name))
+            file_name = cp["link_matrices"]["mu_" + str(i)]
+            if (file_name != 'none'):
+                mu = mio.read_matrix(os.path.join(dir_name, file_name))
+                mu = np.squeeze(mu)
+
+            sample.add_beta(beta, mu)
 
         return sample
 
-    def __init__(self, nmodes, iter):
+    def __init__(self, nmodes, it):
         assert nmodes == 2
         self.nmodes = nmodes
-        self.iter = iter
+        self.iter = it
         self.latents = []
-        self.latent_means = []
+
+        self.post_mu = []
+        self.post_Lambda = []
+
         self.betas = []
+        self.mus = []
 
     def check(self):
         for l, b in zip(self.latents, self.betas):
             assert l.shape[0] == self.num_latent()
             assert b.shape[0] == 0 or b.shape[0] == self.num_latent()
 
-    def add_beta(self, b):
+    def add_beta(self, b, mu):
         self.betas.append(b)
+        self.mus.append(mu)
         self.check()
 
-    def add_latent(self, U):
+    def add_latent(self, U, postMu, postLambda):
         self.latents.append(U)
-        self.latent_means.append(np.mean(U, axis=1))
+        self.post_mu.append(postMu)
+        self.post_Lambda.append(postLambda)
         self.check()
 
     def num_latent(self):
@@ -95,7 +134,7 @@ class Sample:
             None] * self.nmodes
 
         operands = []
-        for U, Umean, c, m in zip(self.latents, self.latent_means, cs, range(self.nmodes)):
+        for U, mu, c, m in zip(self.latents, self.mus, cs, range(self.nmodes)):
             # predict all in this dimension
             if c is None:
                 operands += [U, [0, m+1]]
@@ -103,9 +142,9 @@ class Sample:
                 # if side_info was specified for this dimension, we predict for this side_info
                 try:  # try to compute sideinfo * beta using dot
                     # compute latent vector from side_info
-                    uhat = c.dot(self.betas[m].transpose()) + Umean
-                    uhat = np.squeeze(uhat)
-                    operands += [uhat, [0]]
+                    uhat = c.dot(self.betas[m].transpose())
+                    uhat = np.squeeze(uhat) 
+                    operands += [uhat + mu, [0]]
                 except AttributeError:  # assume it is a coord
                     # if coords was specified for this dimension, we predict for this coord
                     operands += [U[:, c], [0]]
@@ -160,6 +199,41 @@ class PredictSession:
         for step_name, step_file in self.root_config["steps"].items():
             if (step_name.startswith("sample_step")):
                 yield Sample.fromStepFile(step_file, self.root_dir)
+
+    def lastSample(self):
+        steps = list(self.root_config["steps"].items())
+        last_step_name, last_step_file = steps[-1]
+        if last_step_name.startswith("sample_step"):
+            return Sample.fromStepFile(last_step_file, self.root_dir)
+        else:
+            return None
+
+    def postMuLambda(self, axis):
+        sample = self.lastSample()
+        if sample is not None:
+            postMu = sample.post_mu[axis]
+            postLambda = sample.post_Lambda[axis]
+            if postMu is not None and postLambda is not None:
+                nl = self.num_latent
+                assert postLambda.shape[0] == nl * nl
+                postLambda = np.reshape(postLambda, (nl, nl, postLambda.shape[1]))
+                return postMu, postLambda
+
+        return None, None
+
+    def predictionsYTest(self):
+        sample = self.lastSample()
+        if sample is not None:
+            return sample.pred_avg, sample.pred_var 
+
+        return None, None
+
+    def statsYTest(self):
+        sample = self.lastSample()
+        if sample is not None:
+            return sample.pred_stats 
+
+        return None
 
     def predict(self, coords_or_sideinfo=None):
         return np.stack([sample.predict(coords_or_sideinfo) for sample in self.samples()])

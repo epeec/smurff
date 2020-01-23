@@ -32,6 +32,7 @@ import scipy.sparse
 import numbers
 import tempfile
 import os
+import logging
 
 from .helper import SparseTensor, PyNoiseConfig, StatusItem as PyStatusItem
 from .prepare import make_train_test, make_train_test_df
@@ -267,7 +268,7 @@ cdef class TrainSession:
         Number of OpenMP threads to use for model building
 
     verbose: {0, 1, 2}
-        Verbosity level
+        Verbosity level for C++ library
 
     seed: float
         Random seed to use for sampling
@@ -297,6 +298,7 @@ cdef class TrainSession:
     cdef NoiseConfig noise_config
     cdef shared_ptr[StatusItem] status_item
     cdef readonly int nmodes
+    cdef readonly int num_latent
     cdef readonly int verbose
     cdef vector[string] prior_types
 
@@ -318,7 +320,7 @@ cdef class TrainSession:
         checkpoint_freq  = None,
         csv_status       = None):
 
-
+        self.num_latent = num_latent
         self.nmodes = len(priors)
         self.verbose = verbose
 
@@ -339,7 +341,7 @@ cdef class TrainSession:
         self.config.setNumThreads(num_threads)
         self.config.setBurnin(burnin)
         self.config.setNSamples(nsamples)
-        self.config.setVerbose(verbose - 1)
+        self.config.setVerbose(verbose)
 
         if seed:           self.config.setRandomSeed(seed)
         if threshold is not None:
@@ -404,6 +406,35 @@ cdef class TrainSession:
         self.noise_config = prepare_noise_config(noise)
         self.config.addSideInfoConfig(mode, prepare_sideinfo(Y, self.noise_config, tol, direct))
 
+    def addPropagatedPosterior(self, mode, mu, Lambda):
+        """Adds mu and Lambda from propagated posterior
+
+        mode : int
+            dimension to add side info (rows = 0, cols = 1)
+
+        mu : :class: `numpy.ndarray` matrix
+            mean matrix  
+            mu should have as many rows as `num_latent`
+            mu should have as many columns as size of dimension `mode` in `train`
+
+        Lambda : :class: `numpy.ndarray` matrix
+            co-variance matrix  
+            Lambda should be shaped like K x K x N 
+            Where K == `num_latent` and N == dimension `mode` in `train`
+        """
+        self.noise_config = prepare_noise_config(PyNoiseConfig())
+        if len(Lambda.shape) == 3:
+            assert Lambda.shape[0] == self.num_latent
+            assert Lambda.shape[1] == self.num_latent
+            Lambda = Lambda.reshape(self.num_latent * self.num_latent, Lambda.shape[2], order='F')
+
+        self.config.addPropagatedPosterior(
+            mode,
+            shared_ptr[MatrixConfig](prepare_dense_matrix(mu, self.noise_config)),
+            shared_ptr[MatrixConfig](prepare_dense_matrix(Lambda, self.noise_config))
+        )
+
+
     def addData(self, pos, Y, is_scarce = False, noise = PyNoiseConfig()):
         """Stacks more matrices/tensors next to the main train matrix.
 
@@ -448,10 +479,12 @@ cdef class TrainSession:
 
         self.ptr = SessionFactory.create_py_session_from_config(self.config)
         self.ptr_get().init()
-        if (self.verbose > 0):
-            print(self)
+        logging.info(self)
         return self.getStatus()
 
+    def __dealloc__(self):
+        if (self.ptr.get()):
+            self.ptr.reset()
 
     def step(self):
         """Does on sampling or burnin iteration.
@@ -518,8 +551,7 @@ cdef class TrainSession:
                 self.status_item.get().nnz_per_sec,
                 self.status_item.get().samples_per_sec)
 
-            if (self.verbose > 0):
-                print(status)
+            logging.info(status)
             
             return status
         else:
