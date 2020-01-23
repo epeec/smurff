@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Priors/NormalPrior.h>
 
@@ -19,16 +19,16 @@ namespace smurff {
 class MacauPrior : public NormalPrior
 {
 public:
-   std::shared_ptr<Eigen::MatrixXd> 
+   std::shared_ptr<Matrix> 
                    m_beta;            // num_latent x num_feat -- link matrix
 
-   Eigen::MatrixXd Uhat;             // num_latent x num_items
-   Eigen::MatrixXd Udelta;           // num_latent x num_items
-   Eigen::MatrixXd FtF_plus_precision;    // num_feat   x num feat
-   Eigen::MatrixXd HyperU;           // num_latent x num_items
-   Eigen::MatrixXd HyperU2;          // num_latent x num_feat
-   Eigen::MatrixXd Ft_y;             // num_latent x num_feat -- RHS
-   Eigen::MatrixXd BBt;              // num_latent x num_latent
+   Matrix Uhat;             // num_latent x num_items
+   Matrix Udelta;           // num_latent x num_items
+   Matrix FtF_plus_precision;    // num_feat   x num feat
+   Matrix HyperU;           // num_latent x num_items
+   Matrix HyperU2;          // num_latent x num_feat
+   Matrix Ft_y;             // num_latent x num_feat -- RHS
+   Matrix BBt;              // num_latent x num_latent
 
    int blockcg_iter;
    
@@ -54,13 +54,13 @@ public:
 
    void update_prior() override;
 
-   const Eigen::VectorXd fullMu(int n) const override;
+   const Vector fullMu(int n) const override;
 
-   Eigen::MatrixXd &beta() const { return *m_beta; }
+   Matrix &beta() const { return *m_beta; }
  
    int num_feat() const { return Features->cols(); }
 
-   void compute_Ft_y(Eigen::MatrixXd& Ft_y);
+   void compute_Ft_y(Matrix& Ft_y);
    virtual void sample_beta();
 
 public:
@@ -76,8 +76,8 @@ public:
    std::ostream& status(std::ostream &os, std::string indent) const override;
 
 public:
-   static std::pair<double, double> posterior_beta_precision(const Eigen::MatrixXd & BBt, Eigen::MatrixXd & Lambda_u, double nu, double mu, int N);
-   static double sample_beta_precision(const Eigen::MatrixXd & BBt, Eigen::MatrixXd & Lambda_u, double nu, double mu, int N);
+   static std::pair<double, double> posterior_beta_precision(const Matrix & BBt, Matrix & Lambda_u, double nu, double mu, int N);
+   static double sample_beta_precision(const Matrix & BBt, Matrix & Lambda_u, double nu, double mu, int N);
 };
 
 }

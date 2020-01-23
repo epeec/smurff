@@ -3,20 +3,20 @@
 #include <array>
 #include <unordered_map>
 
-#include <Eigen/Core>
-#include <Eigen/SparseCore>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Configs/TensorConfig.h>
 #include <SmurffCpp/Configs/MatrixConfig.h>
 
 namespace smurff { namespace tensor_utils {
 
-Eigen::MatrixXd dense_to_eigen(const smurff::TensorConfig& tensorConfig);
+Matrix dense_to_eigen(const smurff::TensorConfig& tensorConfig);
 
 
 // Conversion of TensorConfig to sparse eigen matrix
 
-Eigen::SparseMatrix<double> sparse_to_eigen(const smurff::TensorConfig& tensorConfig);
+SparseMatrix sparse_to_eigen(const smurff::TensorConfig& tensorConfig);
 
 // Conversion of tensor config to matrix config
 
@@ -28,7 +28,7 @@ std::ostream& operator << (std::ostream& os, const TensorConfig& tc);
 
 // Take a matrix slice of tensor by fixing specific dimensions
 
-Eigen::MatrixXd slice(const TensorConfig& tensorConfig
+Matrix slice(const TensorConfig& tensorConfig
    , const std::array<std::uint64_t, 2>& fixedDims
    , const std::unordered_map<std::uint64_t, std::uint32_t>& dimCoords
     );

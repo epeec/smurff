@@ -100,14 +100,14 @@ double TensorData::train_rmse(const SubModel& model) const
 //this function selects d'th hyperplane from mode`th SparseMode
 //it does j multiplications
 //where each multiplication is a cwiseProduct of columns from each V matrix
-void TensorData::getMuLambda(const SubModel& model, uint32_t mode, int d, Eigen::VectorXd& rr, Eigen::MatrixXd& MM) const
+void TensorData::getMuLambda(const SubModel& model, uint32_t mode, int d, Vector& rr, Matrix& MM) const
 {
    std::shared_ptr<SparseMode> sview = Y(mode); //get tensor rotation for mode
    
    auto V0 = model.CVbegin(mode); //get first V matrix
    for (std::uint64_t j = sview->beginPlane(d); j < sview->endPlane(d); j++) //go through hyperplane in tensor rotation
    {
-      Eigen::VectorXd col = (*V0).col(sview->getIndices()(j, 0)); //create a copy of m'th column from V (m = 0)
+      Vector col = (*V0).col(sview->getIndices()(j, 0)); //create a copy of m'th column from V (m = 0)
       auto V = model.CVbegin(mode); //get V matrices for mode      
       for (std::uint64_t m = 1; m < sview->getNCoords(); m++) //go through each coordinate of value
       {

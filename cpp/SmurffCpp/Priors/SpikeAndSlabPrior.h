@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/Distribution.h>
 #include <Utils/ThreadVector.hpp>
@@ -17,12 +17,12 @@ class SpikeAndSlabPrior : public NormalOnePrior
 {
 public:
    // updated by every thread during sample_latents
-   thread_vector<Eigen::MatrixXd> Zcol, W2col;
+   thread_vector<Matrix> Zcol, W2col;
 
    // updated during update_prior
-   Eigen::ArrayXXd Zkeep;
-   Eigen::ArrayXXd alpha, log_alpha;
-   Eigen::ArrayXXd r, log_r;
+   Array Zkeep;
+   Array alpha, log_alpha;
+   Array r, log_r;
 
    //-- hyper params
    const double prior_beta = 1; //for r
@@ -36,7 +36,7 @@ public:
 
    void restore(std::shared_ptr<const StepFile> sf) override;
 
-   std::pair<double,double> sample_latent(int d, int k, const Eigen::MatrixXd& XX, const Eigen::VectorXd& yX) override;
+   std::pair<double,double> sample_latent(int d, int k, const Matrix& XX, const Vector& yX) override;
 
    void update_prior() override;
 

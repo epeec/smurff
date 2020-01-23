@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Priors/NormalOnePrior.h>
 
@@ -17,11 +17,11 @@ namespace smurff {
 class MacauOnePrior : public NormalOnePrior
 {
 public:
-   Eigen::MatrixXd Uhat;
+   Matrix Uhat;
 
-   Eigen::VectorXd F_colsq;   // sum-of-squares for every feature (column)
+   Vector F_colsq;   // sum-of-squares for every feature (column)
 
-   Eigen::MatrixXd beta;      // link matrix
+   Matrix beta;      // link matrix
    
    double beta_precision_a0; // Hyper-prior for beta_precision
    double beta_precision_b0; // Hyper-prior for beta_precision
@@ -39,7 +39,7 @@ public:
    //old values
 
    std::shared_ptr<ISideInfo> Features;  // side information
-   Eigen::VectorXd beta_precision;
+   Vector beta_precision;
    double bp0;
    bool enable_beta_precision_sampling;
 
@@ -50,7 +50,7 @@ public:
 
    void update_prior() override;
     
-   const Eigen::VectorXd fullMu(int n) const override;
+   const Vector fullMu(int n) const override;
 
 public:
    //FIXME: tolerance_a and direct_a are not really used. 
@@ -62,11 +62,11 @@ public:
 
    //used in update_prior
 
-   void sample_beta(const Eigen::MatrixXd &U);
+   void sample_beta(const Matrix &U);
 
    //used in update_prior
 
-   void sample_mu_lambda(const Eigen::MatrixXd &U);
+   void sample_mu_lambda(const Matrix &U);
 
    //used in update_prior
 

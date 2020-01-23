@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/Distribution.h>
 
@@ -16,11 +16,11 @@ class NormalOnePrior : public ILatentPrior
 {
 public:
   // hyperparams
-  std::shared_ptr<Eigen::VectorXd> m_mu; 
-  Eigen::VectorXd& hyperMu() const { return *m_mu; }
-  Eigen::MatrixXd Lambda;
-  Eigen::MatrixXd WI;
-  Eigen::VectorXd mu0;
+  std::shared_ptr<Vector> m_mu; 
+  Vector& hyperMu() const { return *m_mu; }
+  Matrix Lambda;
+  Matrix WI;
+  Vector mu0;
 
   // constants
   int b0;
@@ -38,10 +38,10 @@ public:
    //mu in NormalPrior does not depend on column index
    //however successors of this class can override this method
    //for example in MacauPrior mu depends on Uhat.col(n)
-   virtual const Eigen::VectorXd fullMu(int n) const;
+   virtual const Vector fullMu(int n) const;
 
    void sample_latent(int n) override;
-   virtual std::pair<double,double> sample_latent(int d, int k, const Eigen::MatrixXd& XX, const Eigen::VectorXd& yX);
+   virtual std::pair<double,double> sample_latent(int d, int k, const Matrix& XX, const Vector& yX);
 
    void update_prior() override;
 

@@ -20,12 +20,12 @@ void MacauOnePrior::init()
    NormalOnePrior::init();
 
    // init SideInfo related
-   Uhat = Eigen::MatrixXd::Constant(num_latent(), Features->rows(), 0.0);
-   beta = Eigen::MatrixXd::Constant(num_latent(), Features->cols(), 0.0);
+   Uhat = Matrix::Constant(num_latent(), Features->rows(), 0.0);
+   beta = Matrix::Constant(num_latent(), Features->cols(), 0.0);
 
    // initial value (should be determined automatically)
    // Hyper-prior for beta_precision (mean 1.0):
-   beta_precision = Eigen::VectorXd::Constant(num_latent(), bp0);
+   beta_precision = Vector::Constant(num_latent(), bp0);
    beta_precision_a0 = 0.1;
    beta_precision_b0 = 0.1;
 }
@@ -40,7 +40,7 @@ void MacauOnePrior::update_prior()
       sample_beta_precision();
 }
 
-const Eigen::VectorXd MacauOnePrior::fullMu(int n) const
+const Vector MacauOnePrior::fullMu(int n) const
 {
    return this->hyperMu() + Uhat.col(n);
 }
@@ -67,14 +67,14 @@ void MacauOnePrior::addSideInfo(const std::shared_ptr<ISideInfo>& side_info_a, d
    F_colsq = Features->col_square_sum();
 }
 
-void MacauOnePrior::sample_beta(const Eigen::MatrixXd &U)
+void MacauOnePrior::sample_beta(const Matrix &U)
 {
    // updating beta and beta_var
    const int nfeat = beta.cols();
    const int N = U.cols();
    const int blocksize = 4;
 
-   Eigen::MatrixXd Z;
+   Matrix Z;
 
    #pragma omp parallel for private(Z) schedule(static, 1)
    for (int dstart = 0; dstart < num_latent(); dstart += blocksize)
@@ -93,7 +93,7 @@ void MacauOnePrior::sample_beta(const Eigen::MatrixXd &U)
 
       for (int f = 0; f < nfeat; f++)
       {
-         Eigen::VectorXd zx(dcount), delta_beta(dcount), randvals(dcount);
+         Vector zx(dcount), delta_beta(dcount), randvals(dcount);
          // zx = Z[dstart : dstart + dcount, :] * F[:, f]
          Features->At_mul_Bt(zx, f, Z);
          // TODO: check if sampling randvals for whole [nfeat x dcount] matrix works faster
@@ -116,13 +116,13 @@ void MacauOnePrior::sample_beta(const Eigen::MatrixXd &U)
    }
 }
 
-void MacauOnePrior::sample_mu_lambda(const Eigen::MatrixXd &U)
+void MacauOnePrior::sample_mu_lambda(const Matrix &U)
 {
-   Eigen::MatrixXd WI(num_latent(), num_latent());
+   Matrix WI(num_latent(), num_latent());
    WI.setIdentity();
    int N = U.cols();
 
-   Eigen::MatrixXd Udelta(num_latent(), N);
+   Matrix Udelta(num_latent(), N);
    #pragma omp parallel for schedule(static)
    for (int i = 0; i < N; i++)
    {
@@ -131,18 +131,18 @@ void MacauOnePrior::sample_mu_lambda(const Eigen::MatrixXd &U)
          Udelta(d, i) = U(d, i) - Uhat(d, i);
       }
    }
-   std::tie(hyperMu(), Lambda) = CondNormalWishart(Udelta, Eigen::VectorXd::Constant(num_latent(), 0.0), 2.0, WI, num_latent());
+   std::tie(hyperMu(), Lambda) = CondNormalWishart(Udelta, Vector::Constant(num_latent(), 0.0), 2.0, WI, num_latent());
 }
 
 void MacauOnePrior::sample_beta_precision()
 {
    double beta_precision_a = beta_precision_a0 + beta.cols() / 2.0;
-   Eigen::VectorXd beta_precision_b = Eigen::VectorXd::Constant(beta.rows(), beta_precision_b0);
+   Vector beta_precision_b = Vector::Constant(beta.rows(), beta_precision_b0);
    const int D = beta.rows();
    const int F = beta.cols();
    #pragma omp parallel
    {
-      Eigen::VectorXd tmp(D);
+      Vector tmp(D);
       tmp.setZero();
       #pragma omp for schedule(static)
       for (int f = 0; f < F; f++)

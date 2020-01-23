@@ -5,8 +5,8 @@
 #include <cstdint>
 #include <vector>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include "SparseMode.h"
 #include <SmurffCpp/Configs/TensorConfig.h>
@@ -41,7 +41,7 @@ public:
 
 public:
    double train_rmse(const SubModel& model) const override;
-   void getMuLambda(const SubModel& model, uint32_t mode, int d, Eigen::VectorXd& rr, Eigen::MatrixXd& MM) const override;
+   void getMuLambda(const SubModel& model, uint32_t mode, int d, Vector& rr, Matrix& MM) const override;
    void update_pnm(const SubModel& model, uint32_t mode) override;
 
 public:

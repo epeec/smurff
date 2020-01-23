@@ -11,8 +11,8 @@
 
 #include <SmurffCpp/Configs/MatrixConfig.h>
 
-#include <Eigen/Sparse>
-#include <Eigen/Dense>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 //
 // GitHub issue #34:
@@ -64,21 +64,21 @@ namespace smurff { namespace matrix_io
    void write_matrix_market(std::ostream& out, std::shared_ptr<const MatrixConfig> matrixConfig);
 
    namespace eigen{
-      void read_matrix(const std::string& filename, Eigen::VectorXd& V);
+      void read_matrix(const std::string& filename, Vector& V);
 
-      void read_matrix(const std::string& filename, Eigen::MatrixXd& X);
+      void read_matrix(const std::string& filename, Matrix& X);
 
-      void read_matrix(const std::string& filename, Eigen::SparseMatrix<double>& X);
-
-      // ===
-
-      void write_matrix(const std::string& filename, const Eigen::MatrixXd& X);
-
-      void write_matrix(const std::string& filename, const Eigen::SparseMatrix<double>& X);
+      void read_matrix(const std::string& filename, SparseMatrix& X);
 
       // ===
-      void read_dense_float64_bin(std::istream &in, Eigen::MatrixXd &X);
-      void read_dense_float64_csv(std::istream &in, Eigen::MatrixXd &X);
-      void read_matrix_market(std::istream &in, Eigen::MatrixXd &X);
+
+      void write_matrix(const std::string& filename, const Matrix& X);
+
+      void write_matrix(const std::string& filename, const SparseMatrix& X);
+
+      // ===
+      void read_dense_float64_bin(std::istream &in, Matrix &X);
+      void read_dense_float64_csv(std::istream &in, Matrix &X);
+      void read_matrix_market(std::istream &in, Matrix &X);
    }
 }}

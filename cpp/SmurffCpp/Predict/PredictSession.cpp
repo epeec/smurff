@@ -1,7 +1,7 @@
 #include <memory>
 
-#include <Eigen/Sparse>
-#include <Eigen/Core>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <Utils/counters.h>
 #include <SmurffCpp/Utils/RootFile.h>

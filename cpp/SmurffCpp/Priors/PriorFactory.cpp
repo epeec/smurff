@@ -1,6 +1,6 @@
 #include "PriorFactory.h"
 
-#include <Eigen/Core>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Priors/NormalPrior.h>
 #include <SmurffCpp/Priors/NormalOnePrior.h>

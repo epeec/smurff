@@ -6,8 +6,8 @@
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <Utils/counters.h>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/Distribution.h>
 #include <Utils/Error.h>
@@ -28,7 +28,7 @@ void NormalPrior::init()
    ILatentPrior::init();
 
    const int K = num_latent();
-   m_mu = std::make_shared<Eigen::VectorXd>(K);
+   m_mu = std::make_shared<Vector>(K);
    hyperMu().setZero();
 
    Lambda.resize(K, K);
@@ -46,13 +46,13 @@ void NormalPrior::init()
    const auto &config = getSession().getConfig();
    if (config.hasPropagatedPosterior(getMode()))
    {
-      mu_pp = std::make_shared<Eigen::MatrixXd>(matrix_utils::dense_to_eigen(*config.getMuPropagatedPosterior(getMode())));
-      Lambda_pp = std::make_shared<Eigen::MatrixXd>(matrix_utils::dense_to_eigen(*config.getLambdaPropagatedPosterior(getMode())));
+      mu_pp = std::make_shared<Matrix>(matrix_utils::dense_to_eigen(*config.getMuPropagatedPosterior(getMode())));
+      Lambda_pp = std::make_shared<Matrix>(matrix_utils::dense_to_eigen(*config.getLambdaPropagatedPosterior(getMode())));
       m_name += " with posterior propagation";
    }
 }
 
-const Eigen::VectorXd NormalPrior::fullMu(int n) const
+const Vector NormalPrior::fullMu(int n) const
 {
    if (getSession().getConfig().hasPropagatedPosterior(getMode()))
    {
@@ -62,11 +62,11 @@ const Eigen::VectorXd NormalPrior::fullMu(int n) const
    return hyperMu();
 }
 
-const Eigen::MatrixXd NormalPrior::getLambda(int n) const
+const Matrix NormalPrior::getLambda(int n) const
 {
    if (getSession().getConfig().hasPropagatedPosterior(getMode()))
    {
-      return Eigen::Map<Eigen::MatrixXd>(Lambda_pp->col(n).data(), num_latent(), num_latent());
+      return Eigen::Map<Matrix>(Lambda_pp->col(n).data(), num_latent(), num_latent());
    }
    //else
    return Lambda;
@@ -82,8 +82,8 @@ void  NormalPrior::sample_latent(int n)
    const auto &mu_u = fullMu(n);
    const auto &Lambda_u = getLambda(n);
 
-   Eigen::VectorXd &rr = rrs.local();
-   Eigen::MatrixXd &MM = MMs.local();
+   Vector &rr = rrs.local();
+   Matrix &MM = MMs.local();
 
    rr.setZero();
    MM.setZero();
@@ -98,7 +98,7 @@ void  NormalPrior::sample_latent(int n)
    //Solve system of linear equations for x: MM * x = rr - not exactly correct  because we have random part
    //Sample from multivariate normal distribution with mean rr and precision matrix MM
 
-   Eigen::LLT<Eigen::MatrixXd> chol;
+   Eigen::LLT<Matrix> chol;
    {
       chol = MM.llt(); // compute the Cholesky decomposition X = L * U
       if(chol.info() != Eigen::Success)

@@ -6,7 +6,7 @@ namespace smurff {
 
 DenseSideInfo::DenseSideInfo(const std::shared_ptr<MatrixConfig> &side_info)
 {
-   m_side_info = std::make_shared<Eigen::MatrixXd>(matrix_utils::dense_to_eigen(*side_info));
+   m_side_info = std::make_shared<Matrix>(matrix_utils::dense_to_eigen(*side_info));
 }
 
 int DenseSideInfo::cols() const
@@ -30,43 +30,43 @@ bool DenseSideInfo::is_dense() const
    return true;
 }
 
-void DenseSideInfo::compute_uhat(Eigen::MatrixXd& uhat, Eigen::MatrixXd& beta)
+void DenseSideInfo::compute_uhat(Matrix& uhat, Matrix& beta)
 {
    uhat = beta * m_side_info->transpose();
 }
 
-void DenseSideInfo::At_mul_A(Eigen::MatrixXd& out)
+void DenseSideInfo::At_mul_A(Matrix& out)
 {
    out = m_side_info->transpose() * *m_side_info;
 }
 
-Eigen::MatrixXd DenseSideInfo::A_mul_B(Eigen::MatrixXd& A)
+Matrix DenseSideInfo::A_mul_B(Matrix& A)
 {
    return A * *m_side_info;
 }
 
-int DenseSideInfo::solve_blockcg(Eigen::MatrixXd& X, double reg, Eigen::MatrixXd& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
+int DenseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
 {
    return linop::solve_blockcg(X, *m_side_info, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
 }
 
-Eigen::VectorXd DenseSideInfo::col_square_sum()
+Vector DenseSideInfo::col_square_sum()
 {
     return m_side_info->array().square().colwise().sum();
 }
 
 
-void DenseSideInfo::At_mul_Bt(Eigen::VectorXd& Y, const int col, Eigen::MatrixXd& B)
+void DenseSideInfo::At_mul_Bt(Vector& Y, const int col, Matrix& B)
 {
    Y = B * m_side_info->col(col);
 }
 
-void DenseSideInfo::add_Acol_mul_bt(Eigen::MatrixXd& Z, const int col, Eigen::VectorXd& b)
+void DenseSideInfo::add_Acol_mul_bt(Matrix& Z, const int col, Vector& b)
 {
    Z += (m_side_info->col(col) * b.transpose()).transpose();
 }
 
-std::shared_ptr<Eigen::MatrixXd> DenseSideInfo::get_features()
+std::shared_ptr<Matrix> DenseSideInfo::get_features()
 {
    return m_side_info;
 }

@@ -17,6 +17,7 @@ do
 	s@include <Eigen/SparseCore>@include <SmurffCpp/Types.h>@;
 	s@include <Eigen/Sparse>@include <SmurffCpp/Types.h>@;
 	" $F
-
 done
+
+git checkout SmurffCpp/Types.h
 

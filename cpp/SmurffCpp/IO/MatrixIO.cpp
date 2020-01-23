@@ -610,15 +610,15 @@ void matrix_io::write_matrix_market(std::ostream& out, std::shared_ptr<const Mat
 
 // ======================================================================================================
 
-void matrix_io::eigen::read_matrix(const std::string& filename, Eigen::VectorXd& V)
+void matrix_io::eigen::read_matrix(const std::string& filename, Vector& V)
 {
-   Eigen::MatrixXd X;
+   Matrix X;
    matrix_io::eigen::read_matrix(filename, X);
    V = X; // this will fail if X has more than one column
 }
 
 
-void matrix_io::eigen::read_dense_float64_bin(std::istream& in, Eigen::MatrixXd& X)
+void matrix_io::eigen::read_dense_float64_bin(std::istream& in, Matrix& X)
 {
    std::uint64_t nrow = 0;
    std::uint64_t ncol = 0;
@@ -627,10 +627,10 @@ void matrix_io::eigen::read_dense_float64_bin(std::istream& in, Eigen::MatrixXd&
    in.read(reinterpret_cast<char*>(&ncol), sizeof(std::uint64_t));
 
    X.resize(nrow, ncol);
-   in.read(reinterpret_cast<char*>(X.data()), nrow * ncol * sizeof(typename Eigen::MatrixXd::Scalar));
+   in.read(reinterpret_cast<char*>(X.data()), nrow * ncol * sizeof(typename Matrix::Scalar));
 }
 
-void matrix_io::eigen::read_dense_float64_csv(std::istream& in, Eigen::MatrixXd& X)
+void matrix_io::eigen::read_dense_float64_csv(std::istream& in, Matrix& X)
 {
    std::stringstream ss;
    std::string line;
@@ -682,7 +682,7 @@ void matrix_io::eigen::read_dense_float64_csv(std::istream& in, Eigen::MatrixXd&
 
 // MatrixMarket format specification
 // https://github.com/ExaScience/smurff/files/1398286/MMformat.pdf
-void matrix_io::eigen::read_matrix_market(std::istream& in, Eigen::MatrixXd& X)
+void matrix_io::eigen::read_matrix_market(std::istream& in, Matrix& X)
 {
    // Check that stream has MatrixMarket format data
    std::array<char, 15> matrixMarketArr;
@@ -743,7 +743,7 @@ void matrix_io::eigen::read_matrix_market(std::istream& in, Eigen::MatrixXd& X)
 
    if (format != MM_FMT_ARRAY)
    {
-      THROWERROR("Cannot read a sparse matrix as Eigen::MatrixXd");
+      THROWERROR("Cannot read a sparse matrix as Matrix");
    }
 
    std::uint64_t nrows;
@@ -776,7 +776,7 @@ void matrix_io::eigen::read_matrix_market(std::istream& in, Eigen::MatrixXd& X)
    }
 }
 
-void matrix_io::eigen::read_matrix(const std::string& filename, Eigen::MatrixXd& X)
+void matrix_io::eigen::read_matrix(const std::string& filename, Matrix& X)
 {
    matrix_io::MatrixType matrixType = matrix_io::ExtensionToMatrixType(filename);
 
@@ -824,7 +824,7 @@ void matrix_io::eigen::read_matrix(const std::string& filename, Eigen::MatrixXd&
    }
 }
 
-void matrix_io::eigen::read_matrix(const std::string& filename, Eigen::SparseMatrix<double>& X)
+void matrix_io::eigen::read_matrix(const std::string& filename, SparseMatrix& X)
 {
    auto ptr = matrix_io::read_matrix(filename, false);
    X = matrix_utils::sparse_to_eigen(*ptr);
@@ -832,12 +832,12 @@ void matrix_io::eigen::read_matrix(const std::string& filename, Eigen::SparseMat
 
 // ======================================================================================================
 
-void matrix_io::eigen::write_matrix(const std::string& filename, const Eigen::MatrixXd& X)
+void matrix_io::eigen::write_matrix(const std::string& filename, const Matrix& X)
 {
    matrix_io::write_matrix(filename, matrix_utils::eigen_to_dense(X));
 }
 
-void matrix_io::eigen::write_matrix(const std::string& filename, const Eigen::SparseMatrix<double>& X)
+void matrix_io::eigen::write_matrix(const std::string& filename, const SparseMatrix& X)
 {
    matrix_io::write_matrix(filename, matrix_utils::eigen_to_sparse(X));
 }

@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-#include <Eigen/Core>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/PVec.hpp>
 

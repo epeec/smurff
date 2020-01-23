@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Sessions/Session.h>
 #include <SmurffCpp/Noises/INoiseModel.h>
@@ -31,8 +31,8 @@ public:
    std::uint32_t m_mode;
    std::string m_name = "xxxx";
 
-   thread_vector<Eigen::VectorXd> rrs;
-   thread_vector<Eigen::MatrixXd> MMs;
+   thread_vector<Vector> rrs;
+   thread_vector<Matrix> MMs;
 
 protected:
    ILatentPrior(){}
@@ -51,23 +51,23 @@ public:
 
    INoiseModel& noise();
 
-   Eigen::MatrixXd &U();
-   const Eigen::MatrixXd &U() const;
+   Matrix &U();
+   const Matrix &U() const;
 
    //return V matrices in the model opposite to mode
-   VMatrixIterator<Eigen::MatrixXd> Vbegin();
+   VMatrixIterator<Matrix> Vbegin();
    
-   VMatrixIterator<Eigen::MatrixXd> Vend();
+   VMatrixIterator<Matrix> Vend();
 
-   ConstVMatrixIterator<Eigen::MatrixXd> CVbegin() const;
+   ConstVMatrixIterator<Matrix> CVbegin() const;
    
-   ConstVMatrixIterator<Eigen::MatrixXd> CVend() const;
+   ConstVMatrixIterator<Matrix> CVend() const;
 
    int num_latent() const;
    int num_item() const;
 
-   const Eigen::VectorXd& getUsum() { return Usum; } 
-   const Eigen::MatrixXd& getUUsum()  { return UUsum; }
+   const Vector& getUsum() { return Usum; } 
+   const Matrix& getUUsum()  { return UUsum; }
 
    virtual bool save(std::shared_ptr<const StepFile> sf) const;
    virtual void restore(std::shared_ptr<const StepFile> sf);
@@ -84,8 +84,8 @@ public:
 
 private:
    void init_Usum();
-   Eigen::VectorXd Usum;
-   Eigen::MatrixXd UUsum;
+   Vector Usum;
+   Matrix UUsum;
 
 public:
    void setMode(std::uint32_t value)

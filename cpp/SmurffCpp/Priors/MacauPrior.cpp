@@ -48,7 +48,7 @@ void MacauPrior::init()
    Uhat.resize(num_latent(), Features->rows());
    Uhat.setZero();
 
-   m_beta = std::make_shared<Eigen::MatrixXd>(num_latent(), num_feat());
+   m_beta = std::make_shared<Matrix>(num_latent(), num_feat());
    beta().setZero();
 
    BBt = beta() * beta().transpose();
@@ -137,12 +137,12 @@ void MacauPrior::sample_beta()
     BBt = beta() * beta().transpose();
 }
 
-const Eigen::VectorXd MacauPrior::fullMu(int n) const
+const Vector MacauPrior::fullMu(int n) const
 {
    return hyperMu() + Uhat.col(n);
 }
 
-void MacauPrior::compute_Ft_y(Eigen::MatrixXd& Ft_y)
+void MacauPrior::compute_Ft_y(Matrix& Ft_y)
 {
     COUNTER("compute Ft_y");
    // Ft_y = (U .- mu + Normal(0, Lambda^-1)) * F + std::sqrt(beta_precision) * Normal(0, Lambda^-1)
@@ -236,7 +236,7 @@ std::ostream &MacauPrior::status(std::ostream &os, std::string indent) const
    return os;
 }
 
-std::pair<double, double> MacauPrior::posterior_beta_precision(const Eigen::MatrixXd & BBt, Eigen::MatrixXd & Lambda_u, double nu, double mu, int N)
+std::pair<double, double> MacauPrior::posterior_beta_precision(const Matrix & BBt, Matrix & Lambda_u, double nu, double mu, int N)
 {
    double nux = nu + N * BBt.cols();
    double mux = mu * nux / (nu + mu * (BBt.selfadjointView<Eigen::Lower>() * Lambda_u).trace());
@@ -245,7 +245,7 @@ std::pair<double, double> MacauPrior::posterior_beta_precision(const Eigen::Matr
    return std::make_pair(b, c);
 }
 
-double MacauPrior::sample_beta_precision(const Eigen::MatrixXd & BBt, Eigen::MatrixXd & Lambda_u, double nu, double mu, int N)
+double MacauPrior::sample_beta_precision(const Matrix & BBt, Matrix & Lambda_u, double nu, double mu, int N)
 {
    auto gamma_post = posterior_beta_precision(BBt, Lambda_u, nu, mu, N);
    return rgamma(gamma_post.first, gamma_post.second);

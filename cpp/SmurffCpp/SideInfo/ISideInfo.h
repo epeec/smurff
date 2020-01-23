@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <Eigen/Dense>
+#include <SmurffCpp/Types.h>
 
 namespace smurff {
 
@@ -22,19 +22,19 @@ namespace smurff {
    public:
       //linop
 
-      virtual void compute_uhat(Eigen::MatrixXd& uhat, Eigen::MatrixXd& beta) = 0;
+      virtual void compute_uhat(Matrix& uhat, Matrix& beta) = 0;
 
-      virtual void At_mul_A(Eigen::MatrixXd& out) = 0;
+      virtual void At_mul_A(Matrix& out) = 0;
 
-      virtual Eigen::MatrixXd A_mul_B(Eigen::MatrixXd& A) = 0;
+      virtual Matrix A_mul_B(Matrix& A) = 0;
 
-      virtual int solve_blockcg(Eigen::MatrixXd& X, double reg, Eigen::MatrixXd& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error = false) = 0;
+      virtual int solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error = false) = 0;
 
-      virtual Eigen::VectorXd col_square_sum() = 0;
+      virtual Vector col_square_sum() = 0;
 
-      virtual void At_mul_Bt(Eigen::VectorXd& Y, const int col, Eigen::MatrixXd& B) = 0;
+      virtual void At_mul_Bt(Vector& Y, const int col, Matrix& B) = 0;
 
-      virtual void add_Acol_mul_bt(Eigen::MatrixXd& Z, const int col, Eigen::VectorXd& b) = 0;
+      virtual void add_Acol_mul_bt(Matrix& Z, const int col, Vector& b) = 0;
    };
 
 }

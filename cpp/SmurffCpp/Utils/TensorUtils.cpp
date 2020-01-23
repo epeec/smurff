@@ -6,7 +6,7 @@
 
 namespace smurff {
 
-Eigen::MatrixXd tensor_utils::dense_to_eigen(const TensorConfig& tensorConfig)
+Matrix tensor_utils::dense_to_eigen(const TensorConfig& tensorConfig)
 {
    if(!tensorConfig.isDense())
    {
@@ -18,10 +18,10 @@ Eigen::MatrixXd tensor_utils::dense_to_eigen(const TensorConfig& tensorConfig)
       THROWERROR("Invalid number of dimensions. Tensor can not be converted to matrix.");
    }
 
-   return Eigen::Map<const Eigen::MatrixXd>(tensorConfig.getValues().data(), tensorConfig.getDims()[0], tensorConfig.getDims()[1]);
+   return Eigen::Map<const Matrix>(tensorConfig.getValues().data(), tensorConfig.getDims()[0], tensorConfig.getDims()[1]);
 }
 
-Eigen::SparseMatrix<double> tensor_utils::sparse_to_eigen(const TensorConfig& tensorConfig)
+SparseMatrix tensor_utils::sparse_to_eigen(const TensorConfig& tensorConfig)
 {
    if(tensorConfig.isDense())
    {
@@ -36,7 +36,7 @@ Eigen::SparseMatrix<double> tensor_utils::sparse_to_eigen(const TensorConfig& te
    const auto &columns = tensorConfig.getColumns();
    const auto &values = tensorConfig.getValues();
 
-   Eigen::SparseMatrix<double> out(tensorConfig.getDims()[0], tensorConfig.getDims()[1]);
+   SparseMatrix out(tensorConfig.getDims()[0], tensorConfig.getDims()[1]);
 
    std::vector<Eigen::Triplet<double> > triplets;
    for(std::uint64_t i = 0; i < tensorConfig.getNNZ(); i++)
@@ -100,7 +100,7 @@ std::ostream& tensor_utils::operator << (std::ostream& os, const TensorConfig& t
    {
       os << "dims: " << tc.getDims()[0] << " " << tc.getDims()[1] << std::endl;
 
-      Eigen::SparseMatrix<double> X(tc.getDims()[0], tc.getDims()[1]);
+      SparseMatrix X(tc.getDims()[0], tc.getDims()[1]);
 
       std::vector<Eigen::Triplet<double> > triplets;
       for(std::uint64_t i = 0; i < tc.getNNZ(); i++)
@@ -116,7 +116,7 @@ std::ostream& tensor_utils::operator << (std::ostream& os, const TensorConfig& t
    return os;
 }
 
-Eigen::MatrixXd tensor_utils::slice( const TensorConfig& tensorConfig
+Matrix tensor_utils::slice( const TensorConfig& tensorConfig
                                            , const std::array<std::uint64_t, 2>& fixedDims
                                            , const std::unordered_map<std::uint64_t, std::uint32_t>& dimCoords)
 {
@@ -163,7 +163,7 @@ Eigen::MatrixXd tensor_utils::slice( const TensorConfig& tensorConfig
       dimColumns[dc.first] = tensorConfig.getColumns().begin() + dimOffset;
    }
 
-   Eigen::MatrixXd sliceMatrix(tensorConfig.getDims()[fixedDims[0]], tensorConfig.getDims()[fixedDims[1]]);
+   Matrix sliceMatrix(tensorConfig.getDims()[fixedDims[0]], tensorConfig.getDims()[fixedDims[1]]);
    for (std::size_t i = 0; i < tensorConfig.getValues().size(); i++)
    {
       bool dimCoordsMatchColumns =

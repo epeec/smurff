@@ -11,8 +11,8 @@ ILatentPrior::ILatentPrior(std::shared_ptr<Session> session, uint32_t mode, std:
 
 void ILatentPrior::init()
 {
-   rrs.init(Eigen::VectorXd::Zero(num_latent()));
-   MMs.init(Eigen::MatrixXd::Zero(num_latent(), num_latent()));
+   rrs.init(Vector::Zero(num_latent()));
+   MMs.init(Matrix::Zero(num_latent(), num_latent()));
 
    //this is some new initialization
    init_Usum();
@@ -43,33 +43,33 @@ INoiseModel& ILatentPrior::noise()
    return data().noise();
 }
 
-Eigen::MatrixXd &ILatentPrior::U()
+Matrix &ILatentPrior::U()
 {
    return model().U(m_mode);
 }
 
-const Eigen::MatrixXd &ILatentPrior::U() const
+const Matrix &ILatentPrior::U() const
 {
    return model().U(m_mode);
 }
 
 //return V matrices in the model opposite to mode
-VMatrixIterator<Eigen::MatrixXd> ILatentPrior::Vbegin()
+VMatrixIterator<Matrix> ILatentPrior::Vbegin()
 {
    return model().Vbegin(m_mode);
 }
 
-VMatrixIterator<Eigen::MatrixXd> ILatentPrior::Vend()
+VMatrixIterator<Matrix> ILatentPrior::Vend()
 {
    return model().Vend();
 }
 
-ConstVMatrixIterator<Eigen::MatrixXd> ILatentPrior::CVbegin() const
+ConstVMatrixIterator<Matrix> ILatentPrior::CVbegin() const
 {
    return model().CVbegin(m_mode);
 }
 
-ConstVMatrixIterator<Eigen::MatrixXd> ILatentPrior::CVend() const
+ConstVMatrixIterator<Matrix> ILatentPrior::CVend() const
 {
    return model().CVend();
 }
@@ -101,8 +101,8 @@ void ILatentPrior::sample_latents()
    data().update_pnm(model(), m_mode);
 
    // for effiency, we keep + update Ucol and UUcol by every thread
-   thread_vector<Eigen::VectorXd> Ucol(Eigen::VectorXd::Zero(num_latent()));
-   thread_vector<Eigen::MatrixXd> UUcol(Eigen::MatrixXd::Zero(num_latent(), num_latent()));
+   thread_vector<Vector> Ucol(Vector::Zero(num_latent()));
+   thread_vector<Matrix> UUcol(Matrix::Zero(num_latent(), num_latent()));
 
    #pragma omp parallel for schedule(guided)
    for(int n = 0; n < U().cols(); n++)

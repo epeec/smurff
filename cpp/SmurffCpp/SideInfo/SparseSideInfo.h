@@ -2,7 +2,7 @@
 
 
 #include <memory>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
 #include <SmurffCpp/Configs/MatrixConfig.h>
 
 #include "ISideInfo.h"
@@ -12,8 +12,8 @@ class SparseSideInfo : public ISideInfo
 {
 
 public:
-   Eigen::SparseMatrix<double> F;
-   Eigen::SparseMatrix<double> Ft;
+   SparseMatrix F;
+   SparseMatrix Ft;
 
    SparseSideInfo(const std::shared_ptr<MatrixConfig> &);
    ~SparseSideInfo() override;
@@ -30,19 +30,19 @@ public:
 public:
    //linop
 
-   void compute_uhat(Eigen::MatrixXd& uhat, Eigen::MatrixXd& beta) override;
+   void compute_uhat(Matrix& uhat, Matrix& beta) override;
 
-   void At_mul_A(Eigen::MatrixXd& out) override;
+   void At_mul_A(Matrix& out) override;
 
-   Eigen::MatrixXd A_mul_B(Eigen::MatrixXd& A) override;
+   Matrix A_mul_B(Matrix& A) override;
 
-   int solve_blockcg(Eigen::MatrixXd& X, double reg, Eigen::MatrixXd& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error = false) override;
+   int solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error = false) override;
 
-   Eigen::VectorXd col_square_sum() override;
+   Vector col_square_sum() override;
 
-   void At_mul_Bt(Eigen::VectorXd& Y, const int col, Eigen::MatrixXd& B) override;
+   void At_mul_Bt(Vector& Y, const int col, Matrix& B) override;
 
-   void add_Acol_mul_bt(Eigen::MatrixXd& Z, const int col, Eigen::VectorXd& b) override;
+   void add_Acol_mul_bt(Matrix& Z, const int col, Vector& b) override;
 
 };
 

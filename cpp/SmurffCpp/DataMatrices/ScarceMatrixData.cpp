@@ -7,15 +7,15 @@
 
 namespace smurff {
 
-ScarceMatrixData::ScarceMatrixData(Eigen::SparseMatrix<double> Y)
-   : MatrixDataTempl<Eigen::SparseMatrix<double> >(Y)
+ScarceMatrixData::ScarceMatrixData(SparseMatrix Y)
+   : MatrixDataTempl<SparseMatrix >(Y)
 {
    name = "ScarceMatrixData [with NAs]";
 }
 
 void ScarceMatrixData::init_pre()
 {
-   MatrixDataTempl<Eigen::SparseMatrix<double> >::init_pre();
+   MatrixDataTempl<SparseMatrix >::init_pre();
 
    // check no rows, nor cols withouth data
    for(std::uint64_t mode = 0; mode < nmode(); ++mode)
@@ -37,13 +37,13 @@ double ScarceMatrixData::train_rmse(const SubModel& model) const
 
 std::ostream& ScarceMatrixData::info(std::ostream& os, std::string indent)
 {
-    MatrixDataTempl<Eigen::SparseMatrix<double> >::info(os, indent);
+    MatrixDataTempl<SparseMatrix >::info(os, indent);
     if (num_empty[0]) os << indent << "  Warning: " << num_empty[0] << " empty rows\n";
     if (num_empty[1]) os << indent << "  Warning: " << num_empty[1] << " empty cols\n";
     return os;
 }
 
-void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, int n, Eigen::VectorXd& rr, Eigen::MatrixXd& MM) const
+void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, int n, Vector& rr, Matrix& MM) const
 {
    auto &Y = this->Y(mode);
    const int num_latent = model.nlatent();
@@ -52,7 +52,7 @@ void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, in
    auto from = Y.outerIndexPtr()[n];
    auto to = Y.outerIndexPtr()[n+1];
 
-   auto getMuLambdaBasic = [&model, this, mode, n](int from, int to, Eigen::VectorXd& rr, Eigen::MatrixXd& MM) -> void
+   auto getMuLambdaBasic = [&model, this, mode, n](int from, int to, Vector& rr, Matrix& MM) -> void
    {
        auto &Y = this->Y(mode);
        auto Vf = *model.CVbegin(mode);
@@ -79,8 +79,8 @@ void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, in
    if (in_parallel) 
    {
        const int task_size = ceil(local_nnz / 100.0);
-       thread_vector<Eigen::VectorXd> rrs(Eigen::VectorXd::Zero(num_latent));
-       thread_vector<Eigen::MatrixXd> MMs(Eigen::MatrixXd::Zero(num_latent, num_latent));
+       thread_vector<Vector> rrs(Vector::Zero(num_latent));
+       thread_vector<Matrix> MMs(Matrix::Zero(num_latent, num_latent));
 
        for(int j = from; j < to; j += task_size) 
        {
@@ -95,8 +95,8 @@ void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, in
    } 
    else 
    {
-      Eigen::VectorXd my_rr = Eigen::VectorXd::Zero(num_latent);
-      Eigen::MatrixXd my_MM = Eigen::MatrixXd::Zero(num_latent, num_latent);
+      Vector my_rr = Vector::Zero(num_latent);
+      Matrix my_MM = Matrix::Zero(num_latent, num_latent);
 
       getMuLambdaBasic(from, to, my_rr, my_MM);
 
@@ -124,7 +124,7 @@ double ScarceMatrixData::var_total() const
    #pragma omp parallel for schedule(guided) reduction(+:se)
    for (int k = 0; k < Y().outerSize(); ++k)
    {
-      for (Eigen::SparseMatrix<double>::InnerIterator it(Y(), k); it; ++it)
+      for (SparseMatrix::InnerIterator it(Y(), k); it; ++it)
       {
          se += std::pow(it.value() - cwise_mean, 2);
       }
@@ -147,7 +147,7 @@ double ScarceMatrixData::sumsq(const SubModel& model) const
    #pragma omp parallel for schedule(guided) reduction(+:sumsq)
    for (int j = 0; j < Y().outerSize(); j++) 
    {
-      for (Eigen::SparseMatrix<double>::InnerIterator it(Y(), j); it; ++it) 
+      for (SparseMatrix::InnerIterator it(Y(), j); it; ++it) 
       {
          sumsq += std::pow(model.predict({static_cast<int>(it.row()), static_cast<int>(it.col())})- it.value(), 2);
       }

@@ -109,7 +109,7 @@ void MatricesData::update(const SubModel &model)
    }
 }
 
-void MatricesData::getMuLambda(const SubModel& model, uint32_t mode, int pos, Eigen::VectorXd& rr, Eigen::MatrixXd& MM) const
+void MatricesData::getMuLambda(const SubModel& model, uint32_t mode, int pos, Vector& rr, Matrix& MM) const
 {
    int count = 0;
    apply(mode, pos, [&model, mode, pos, &rr, &MM, &count](const Block &b) {

@@ -9,17 +9,17 @@
 
 namespace smurff {
 
-Eigen::MatrixXd matrix_utils::dense_to_eigen(const MatrixConfig& matrixConfig)
+Matrix matrix_utils::dense_to_eigen(const MatrixConfig& matrixConfig)
 {
    if(!matrixConfig.isDense())
    {
       THROWERROR("matrix config should be dense");
    }
 
-   return Eigen::Map<const Eigen::MatrixXd>(matrixConfig.getValues().data(), matrixConfig.getNRow(), matrixConfig.getNCol());
+   return Eigen::Map<const Matrix>(matrixConfig.getValues().data(), matrixConfig.getNRow(), matrixConfig.getNCol());
 }
 
-std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_dense(const Eigen::MatrixXd &eigenMatrix, NoiseConfig n)
+std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_dense(const Matrix &eigenMatrix, NoiseConfig n)
 {
    std::vector<double> values(eigenMatrix.data(),  eigenMatrix.data() + eigenMatrix.size());
    return std::make_shared<MatrixConfig>(eigenMatrix.rows(), eigenMatrix.cols(), values, n);
@@ -53,14 +53,14 @@ struct sparse_vec_iterator
   }
 };
 
-Eigen::SparseMatrix<double> matrix_utils::sparse_to_eigen(const MatrixConfig& matrixConfig)
+SparseMatrix matrix_utils::sparse_to_eigen(const MatrixConfig& matrixConfig)
 {
    if(matrixConfig.isDense())
    {
       THROWERROR("matrix config should be sparse");
    }
 
-   Eigen::SparseMatrix<double> out(matrixConfig.getNRow(), matrixConfig.getNCol());
+   SparseMatrix out(matrixConfig.getNRow(), matrixConfig.getNCol());
 
    sparse_vec_iterator begin(matrixConfig, 0);
    sparse_vec_iterator end(matrixConfig, matrixConfig.getNNZ());
@@ -72,7 +72,7 @@ Eigen::SparseMatrix<double> matrix_utils::sparse_to_eigen(const MatrixConfig& ma
    return out;
 }
 
-std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_sparse(const Eigen::SparseMatrix<double> &X, NoiseConfig n, bool isScarce)
+std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_sparse(const SparseMatrix &X, NoiseConfig n, bool isScarce)
 {
    std::uint64_t nrow = X.rows();
    std::uint64_t ncol = X.cols();
@@ -83,7 +83,7 @@ std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_sparse(const Eigen::SparseM
 
    for (int k = 0; k < X.outerSize(); ++k)
    {
-      for (Eigen::SparseMatrix<double>::InnerIterator it(X,k); it; ++it)
+      for (SparseMatrix::InnerIterator it(X,k); it; ++it)
       {
          rows.push_back(it.row());
          cols.push_back(it.col());
@@ -128,7 +128,7 @@ std::ostream& matrix_utils::operator << (std::ostream& os, const MatrixConfig& m
 
    os << "NRow: " << mc.getNRow() << " NCol: " << mc.getNCol() << std::endl;
 
-   Eigen::SparseMatrix<double> X(mc.getNRow(), mc.getNCol());
+   SparseMatrix X(mc.getNRow(), mc.getNCol());
 
    std::vector<Eigen::Triplet<double> > triplets;
    for(std::uint64_t i = 0; i < mc.getNNZ(); i++)
@@ -143,7 +143,7 @@ std::ostream& matrix_utils::operator << (std::ostream& os, const MatrixConfig& m
    return os;
 }
 
-bool matrix_utils::equals(const Eigen::MatrixXd& m1, const Eigen::MatrixXd& m2, double precision)
+bool matrix_utils::equals(const Matrix& m1, const Matrix& m2, double precision)
 {
    if (m1.rows() != m2.rows() || m1.cols() != m2.cols())
       return false;
@@ -152,8 +152,8 @@ bool matrix_utils::equals(const Eigen::MatrixXd& m1, const Eigen::MatrixXd& m2, 
    {
       for (Eigen::Index j = 0; j < m1.cols(); j++)
       {
-         Eigen::MatrixXd::Scalar m1_v = m1(i, j);
-         Eigen::MatrixXd::Scalar m2_v = m2(i, j);
+         Matrix::Scalar m1_v = m1(i, j);
+         Matrix::Scalar m2_v = m2(i, j);
 
          if (std::abs(m1_v - m2_v) > precision)
             return false;
@@ -163,7 +163,7 @@ bool matrix_utils::equals(const Eigen::MatrixXd& m1, const Eigen::MatrixXd& m2, 
    return true;
 }
 
-bool matrix_utils::equals_vector(const Eigen::VectorXd& v1, const Eigen::VectorXd& v2, double precision)
+bool matrix_utils::equals_vector(const Vector& v1, const Vector& v2, double precision)
 {
    if (v1.size() != v2.size())
       return false;

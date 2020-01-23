@@ -2,8 +2,8 @@
 
 #include <map>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 namespace smurff
 {
@@ -11,12 +11,12 @@ namespace smurff
    double randn(double = .0);
    
    void bmrandn(double* x, long n);
-   void bmrandn(Eigen::MatrixXd & X);
+   void bmrandn(Matrix & X);
    
    double bmrandn_single_thread();
    void bmrandn_single_thread(double* x, long n);
-   void bmrandn_single_thread(Eigen::VectorXd & x);
-   void bmrandn_single_thread(Eigen::MatrixXd & X);
+   void bmrandn_single_thread(Vector & x);
+   void bmrandn_single_thread(Matrix & X);
    
    void init_bmrng();
    void init_bmrng(int seed);
@@ -28,18 +28,18 @@ namespace smurff
    
    // return a random matrix of size n, m
    
-   auto nrandn(int n) -> decltype(Eigen::VectorXd::NullaryExpr(n, std::cref(randn)) ); 
-   auto nrandn(int n, int m) -> decltype(Eigen::ArrayXXd::NullaryExpr(n, m, std::cref(randn)) );
+   auto nrandn(int n) -> decltype(Vector::NullaryExpr(n, std::cref(randn)) ); 
+   auto nrandn(int n, int m) -> decltype(Array::NullaryExpr(n, m, std::cref(randn)) );
    
    // Wishart distribution
    
-   std::pair<Eigen::VectorXd, Eigen::MatrixXd> NormalWishart(const Eigen::VectorXd & mu, double kappa, const Eigen::MatrixXd & T, double nu);
-   std::pair<Eigen::VectorXd, Eigen::MatrixXd> CondNormalWishart(const Eigen::MatrixXd &U, const Eigen::VectorXd &mu, const double kappa, const Eigen::MatrixXd &T, const int nu);
-   std::pair<Eigen::VectorXd, Eigen::MatrixXd> CondNormalWishart(const int N, const Eigen::MatrixXd &NS, const Eigen::VectorXd &NU, const Eigen::VectorXd &mu, const double kappa, const Eigen::MatrixXd &T, const int nu);
+   std::pair<Vector, Matrix> NormalWishart(const Vector & mu, double kappa, const Matrix & T, double nu);
+   std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, const double kappa, const Matrix &T, const int nu);
+   std::pair<Vector, Matrix> CondNormalWishart(const int N, const Matrix &NS, const Vector &NU, const Vector &mu, const double kappa, const Matrix &T, const int nu);
    
    // Multivariate normal gaussian
 
-   Eigen::MatrixXd MvNormal_prec(const Eigen::MatrixXd & Lambda, int nn = 1);
-   Eigen::MatrixXd MvNormal_prec(const Eigen::MatrixXd & Lambda, const Eigen::VectorXd & mean, int nn = 1);
-   Eigen::MatrixXd MvNormal(const Eigen::MatrixXd covar, const Eigen::VectorXd mean, int nn = 1);
+   Matrix MvNormal_prec(const Matrix & Lambda, int nn = 1);
+   Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn = 1);
+   Matrix MvNormal(const Matrix covar, const Vector mean, int nn = 1);
 }

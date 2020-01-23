@@ -22,19 +22,19 @@ void SpikeAndSlabPrior::init()
    
    THROWERROR_ASSERT(D > 0);
 
-   Zcol.init(Eigen::MatrixXd::Zero(K,nview));
-   W2col.init(Eigen::MatrixXd::Zero(K,nview));
+   Zcol.init(Matrix::Zero(K,nview));
+   W2col.init(Matrix::Zero(K,nview));
 
    //-- prior params
-   Zkeep = Eigen::ArrayXXd::Constant(K, nview, D);
+   Zkeep = Array::Constant(K, nview, D);
 
-   alpha = Eigen::ArrayXXd::Ones(K,nview);
+   alpha = Array::Ones(K,nview);
    log_alpha.resize(K, nview);
    log_alpha = alpha.log();
 
-   r = Eigen::ArrayXXd::Constant(K,nview,.5);
+   r = Array::Constant(K,nview,.5);
    log_r.resize(K, nview);
-   log_r = - r.log() + (Eigen::ArrayXXd::Ones(K, nview) - r).log();
+   log_r = - r.log() + (Array::Ones(K, nview) - r).log();
 }
 
 void SpikeAndSlabPrior::update_prior()
@@ -60,7 +60,7 @@ void SpikeAndSlabPrior::update_prior()
    W2col.reset(); 
 
    log_alpha = alpha.log();
-   log_r = - r.log() + (Eigen::ArrayXXd::Ones(K, nview) - r).log();
+   log_r = - r.log() + (Array::Ones(K, nview) - r).log();
 }
 
 void SpikeAndSlabPrior::restore(std::shared_ptr<const StepFile> sf)
@@ -72,8 +72,8 @@ void SpikeAndSlabPrior::restore(std::shared_ptr<const StepFile> sf)
 
   //compute Zcol
   int d = 0;
-  Eigen::ArrayXXd Z(Eigen::ArrayXXd::Zero(K,nview));
-  Eigen::ArrayXXd W2(Eigen::ArrayXXd::Zero(K,nview));
+  Array Z(Array::Zero(K,nview));
+  Array W2(Array::Zero(K,nview));
   for(int v=0; v<data().nview(m_mode); ++v) 
   {
       for(int i=0; i<data().view_size(m_mode, v); ++i, ++d)
@@ -92,12 +92,12 @@ void SpikeAndSlabPrior::restore(std::shared_ptr<const StepFile> sf)
   update_prior();
 }
 
-std::pair<double, double> SpikeAndSlabPrior::sample_latent(int d, int k, const Eigen::MatrixXd& XX, const Eigen::VectorXd& yX)
+std::pair<double, double> SpikeAndSlabPrior::sample_latent(int d, int k, const Matrix& XX, const Vector& yX)
 {
     const int v = data().view(m_mode, d);
     double mu, lambda;
 
-    Eigen::MatrixXd aXX = alpha.matrix().col(v).asDiagonal();
+    Matrix aXX = alpha.matrix().col(v).asDiagonal();
     aXX += XX;
     std::tie(mu, lambda) = NormalOnePrior::sample_latent(d, k, aXX, yX);
 

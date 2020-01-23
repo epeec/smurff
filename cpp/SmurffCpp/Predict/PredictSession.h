@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <Eigen/Sparse>
-#include <Eigen/Core>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/PVec.hpp>
 #include <SmurffCpp/IO/MatrixIO.h>
@@ -89,14 +89,14 @@ private:
 
     // predict element or elements based on sideinfo
     template <class Feat>
-    std::shared_ptr<Eigen::MatrixXd> predict(int mode, const Feat &f, int save_freq = 0);
+    std::shared_ptr<Matrix> predict(int mode, const Feat &f, int save_freq = 0);
 };
 
 // predict element or elements based on sideinfo
 template <class Feat>
-std::shared_ptr<Eigen::MatrixXd> PredictSession::predict(int mode, const Feat &f, int save_freq)
+std::shared_ptr<Matrix> PredictSession::predict(int mode, const Feat &f, int save_freq)
 {
-    std::shared_ptr<Eigen::MatrixXd> average(nullptr);
+    std::shared_ptr<Matrix> average(nullptr);
 
     for (int step = 0; step < getNumSteps(); step++)
     {
@@ -108,7 +108,7 @@ std::shared_ptr<Eigen::MatrixXd> PredictSession::predict(int mode, const Feat &f
         const auto &sf = m_stepfiles.at(step);
         auto predictions = restoreModel(sf, mode)->predict(mode, f);
         if (!average)
-            average = std::make_shared<Eigen::MatrixXd>(predictions);
+            average = std::make_shared<Matrix>(predictions);
         else
             *average += predictions;
 

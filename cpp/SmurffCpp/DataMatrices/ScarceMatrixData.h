@@ -4,13 +4,13 @@
 
 namespace smurff
 {
-   class ScarceMatrixData : public MatrixDataTempl<Eigen::SparseMatrix<double> >
+   class ScarceMatrixData : public MatrixDataTempl<SparseMatrix >
    {
    private:
       int num_empty[2] = {0,0};
 
    public:
-      ScarceMatrixData(Eigen::SparseMatrix<double> Y);
+      ScarceMatrixData(SparseMatrix Y);
 
    public:
       void init_pre() override;
@@ -19,7 +19,7 @@ namespace smurff
 
       std::ostream& info(std::ostream& os, std::string indent) override;
 
-      void getMuLambda(const SubModel& model, std::uint32_t mode, int d, Eigen::VectorXd& rr, Eigen::MatrixXd& MM) const override;
+      void getMuLambda(const SubModel& model, std::uint32_t mode, int d, Vector& rr, Matrix& MM) const override;
       void update_pnm(const SubModel& model, std::uint32_t mode) override;
 
       std::uint64_t nna() const override;

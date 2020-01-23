@@ -4,11 +4,11 @@
 
 namespace smurff
 {
-   class DenseMatrixData : public FullMatrixData<Eigen::MatrixXd>
+   class DenseMatrixData : public FullMatrixData<Matrix>
    {
    public:
-      DenseMatrixData(Eigen::MatrixXd Y);
-      void getMuLambda(const SubModel& model, std::uint32_t mode, int d, Eigen::VectorXd& rr, Eigen::MatrixXd& MM) const override;
+      DenseMatrixData(Matrix Y);
+      void getMuLambda(const SubModel& model, std::uint32_t mode, int d, Vector& rr, Matrix& MM) const override;
 
    public:
       double train_rmse(const SubModel& model) const override;

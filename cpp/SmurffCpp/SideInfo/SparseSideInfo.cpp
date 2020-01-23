@@ -40,31 +40,31 @@ bool SparseSideInfo::is_dense() const
    return false;
 }
 
-void SparseSideInfo::compute_uhat(Eigen::MatrixXd& uhat, Eigen::MatrixXd& beta)
+void SparseSideInfo::compute_uhat(Matrix& uhat, Matrix& beta)
 {
     COUNTER("compute_uhat");
     uhat = beta * (Ft);
 }
 
-void SparseSideInfo::At_mul_A(Eigen::MatrixXd& out)
+void SparseSideInfo::At_mul_A(Matrix& out)
 {
     COUNTER("At_mul_A");
     out = Ft * F;
 }
 
-Eigen::MatrixXd SparseSideInfo::A_mul_B(Eigen::MatrixXd& A)
+Matrix SparseSideInfo::A_mul_B(Matrix& A)
 {
     COUNTER("A_mul_B");
     return (A * F);
 }
 
-int SparseSideInfo::solve_blockcg(Eigen::MatrixXd& X, double reg, Eigen::MatrixXd& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
+int SparseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
 {
     COUNTER("solve_blockcg");
     return linop::solve_blockcg(X, *this, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
 #if 0
     int iter1, iter2;
-    Eigen::MatrixXd X1 = X;
+    Matrix X1 = X;
     {
         COUNTER("eigen_cg");
         linop::AtA A(F, reg);
@@ -77,7 +77,7 @@ int SparseSideInfo::solve_blockcg(Eigen::MatrixXd& X, double reg, Eigen::MatrixX
         SHOW((X1 - B).norm());
     }
 
-    Eigen::MatrixXd X2 = X;
+    Matrix X2 = X;
     {
         COUNTER("smurff_cg");
         iter2 = linop::solve_blockcg(X2, *this, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
@@ -91,17 +91,17 @@ int SparseSideInfo::solve_blockcg(Eigen::MatrixXd& X, double reg, Eigen::MatrixX
 #endif
 }
 
-Eigen::VectorXd SparseSideInfo::col_square_sum()
+Vector SparseSideInfo::col_square_sum()
 {
     COUNTER("col_square_sum");
     // component-wise square
     auto E = F.unaryExpr([](const double &d) { return d * d; });
     // col-wise sum
-    return E.transpose() * Eigen::VectorXd::Ones(E.rows());
+    return E.transpose() * Vector::Ones(E.rows());
 }
 
 // Y = X[:,col]' * B'
-void SparseSideInfo::At_mul_Bt(Eigen::VectorXd& Y, const int col, Eigen::MatrixXd& B)
+void SparseSideInfo::At_mul_Bt(Vector& Y, const int col, Matrix& B)
 {
     COUNTER("At_mul_Bt");
     auto out = Ft.block(col, 0, col + 1, Ft.cols()) * B.transpose();
@@ -109,7 +109,7 @@ void SparseSideInfo::At_mul_Bt(Eigen::VectorXd& Y, const int col, Eigen::MatrixX
 }
 
 // computes Z += A[:,col] * b', where a and b are vectors
-void SparseSideInfo::add_Acol_mul_bt(Eigen::MatrixXd& Z, const int col, Eigen::VectorXd& b)
+void SparseSideInfo::add_Acol_mul_bt(Matrix& Z, const int col, Vector& b)
 {
     COUNTER("add_Acol_mul_bt");
     Z += (F.col(col) * b.transpose()).transpose();

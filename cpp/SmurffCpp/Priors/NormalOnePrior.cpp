@@ -16,7 +16,7 @@ void NormalOnePrior::init()
 
    const int K = num_latent();
 
-   m_mu = std::make_shared<Eigen::VectorXd>(K);
+   m_mu = std::make_shared<Vector>(K);
    hyperMu().setZero(); 
 
    Lambda.resize(K, K);
@@ -32,7 +32,7 @@ void NormalOnePrior::init()
    df = K;
 }
 
-const Eigen::VectorXd NormalOnePrior::fullMu(int n) const
+const Vector NormalOnePrior::fullMu(int n) const
 {
    return hyperMu();
 }
@@ -46,8 +46,8 @@ void NormalOnePrior::sample_latent(int d)
 {
    const int K = num_latent();
 
-   Eigen::MatrixXd XX = Eigen::MatrixXd::Zero(K, K);
-   Eigen::VectorXd yX = Eigen::VectorXd::Zero(K);
+   Matrix XX = Matrix::Zero(K, K);
+   Vector yX = Vector::Zero(K);
 
    data().getMuLambda(model(), m_mode, d, yX, XX);
 
@@ -58,7 +58,7 @@ void NormalOnePrior::sample_latent(int d)
    for(int k=0;k<K;++k) sample_latent(d, k, XX, yX);
 }
  
-std::pair<double,double> NormalOnePrior::sample_latent(int d, int k, const Eigen::MatrixXd& XX, const Eigen::VectorXd& yX)
+std::pair<double,double> NormalOnePrior::sample_latent(int d, int k, const Matrix& XX, const Vector& yX)
 {
     auto Ucol = U().col(d);
     double lambda = XX(k,k);
