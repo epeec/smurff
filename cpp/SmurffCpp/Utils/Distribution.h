@@ -10,11 +10,11 @@ namespace smurff
    double randn0();
    double randn(double = .0);
    
-   void bmrandn(double* x, long n);
+   void bmrandn(float_type* x, long n);
    void bmrandn(Matrix & X);
    
    double bmrandn_single_thread();
-   void bmrandn_single_thread(double* x, long n);
+   void bmrandn_single_thread(float_type* x, long n);
    void bmrandn_single_thread(Vector & x);
    void bmrandn_single_thread(Matrix & X);
    

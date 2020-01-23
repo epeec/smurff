@@ -39,7 +39,7 @@ double randn(double)
    return bmrandn_single_thread();
 }
 
-void bmrandn(double* x, long n) 
+void bmrandn(float_type* x, long n) 
 {
    #pragma omp parallel 
    {
@@ -93,7 +93,7 @@ double bmrandn_single_thread()
 }
 
 // to be called within OpenMP parallel loop (also from serial code is fine)
-void bmrandn_single_thread(double* x, long n) 
+void bmrandn_single_thread(float_type* x, long n) 
 {
    UNIFORM_REAL_DISTRIBUTION unif(-1.0, 1.0);
    auto& bmrng = bmrngs.local();
