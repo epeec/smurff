@@ -349,6 +349,6 @@ add_subdirectory (../Tests/cmake tests/Tests)
 
 if(ENABLE_PYTHON)
     configure_python()
-    add_subdirectory (../../../python/smurff python/Smurff)
+    add_subdirectory (../../python/smurff python/Smurff)
 endif()
 
