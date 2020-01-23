@@ -1,6 +1,5 @@
 #include "DenseSideInfo.h"
-
-#include <Utils/linop.h>
+#include "linop.h"
 
 namespace smurff {
 
