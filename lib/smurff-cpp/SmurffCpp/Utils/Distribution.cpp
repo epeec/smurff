@@ -6,10 +6,8 @@
 #include <chrono>
 #include <functional>
 
-
-#include "ThreadVector.hpp"
-
-#include "omp_util.h"
+#include "Utils/ThreadVector.hpp"
+#include "Utils/omp_util.h"
 
 #ifdef USE_BOOST_RANDOM
 #include <boost/random.hpp>

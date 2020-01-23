@@ -5,7 +5,7 @@
 #include <memory>
 
 #include <SmurffCpp/Utils/PVec.hpp>
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 #include "MatrixConfig.h"
 #include "SideInfoConfig.h"
 

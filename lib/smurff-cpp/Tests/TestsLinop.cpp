@@ -1,7 +1,7 @@
 #include "catch.hpp"
 
-#include <SmurffCpp/Utils/Error.h>
-#include <SmurffCpp/Utils/linop.h>
+#include <Utils/Error.h>
+#include <Utils/linop.h>
 #include <SmurffCpp/Utils/Distribution.h>
 
 namespace smurff {

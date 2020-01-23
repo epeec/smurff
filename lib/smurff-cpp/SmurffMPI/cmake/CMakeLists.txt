@@ -25,7 +25,7 @@ SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
 install(TARGETS ${PROJECT} RUNTIME DESTINATION bin)
 
 #LINK LIBRARIES
-target_link_libraries (${PROJECT} smurff-cpp
+target_link_libraries (${PROJECT} smurff-cpp smurff-utils
                                   ${OpenMP_CXX_LIBRARIES}
                                   ${Boost_LIBRARIES}
                                   ${BOOST_RANDOM_LIBRARIES}

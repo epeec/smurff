@@ -20,7 +20,7 @@
 #include <SmurffCpp/VMatrixExprIterator.hpp>
 #include <SmurffCpp/ConstVMatrixExprIterator.hpp>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 #include <SmurffCpp/Utils/StepFile.h>
 
 #include <SmurffCpp/IO/GenericIO.h>

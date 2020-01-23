@@ -329,16 +329,15 @@ message(STATUS "Creating folder structure...")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # libraries
-
+add_subdirectory (../Utils/cmake libraries/SmurffUtils)
 add_subdirectory (../SmurffCpp/cmake libraries/SmurffCpp)
 
 # utils
 add_subdirectory (../Smurff/cmake utils/Smurff)
 
 # MPI
-
 if(ENABLE_MPI)
-add_subdirectory (../SmurffMPI/cmake utils/SmurffMPI)
+  add_subdirectory (../SmurffMPI/cmake utils/SmurffMPI)
 endif()
 
 

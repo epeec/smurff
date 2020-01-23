@@ -3,7 +3,7 @@
 #include <Eigen/Sparse>
 #include <Eigen/Core>
 
-#include <SmurffCpp/Utils/counters.h>
+#include <Utils/counters.h>
 #include <SmurffCpp/Utils/RootFile.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/IO/MatrixIO.h>

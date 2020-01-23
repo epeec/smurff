@@ -1,4 +1,4 @@
-#include <SmurffCpp/Utils/StringUtils.h>
+#include "StringUtils.h"
 
 #include <algorithm> 
 #include <functional> 

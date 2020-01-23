@@ -5,7 +5,7 @@
 
 #include <SmurffCpp/Priors/ILatentPrior.h>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 namespace smurff {
 

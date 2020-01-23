@@ -9,7 +9,7 @@
 #include <SmurffCpp/Noises/INoiseModel.h>
 #include <SmurffCpp/DataMatrices/Data.h>
 #include <SmurffCpp/Utils/Distribution.h>
-#include <SmurffCpp/Utils/ThreadVector.hpp>
+#include <Utils/ThreadVector.hpp>
 
 #include <SmurffCpp/Model.h>
 

@@ -1,6 +1,6 @@
 #include "UnusedNoise.h"
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 namespace smurff {
 

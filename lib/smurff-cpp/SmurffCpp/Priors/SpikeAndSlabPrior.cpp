@@ -2,7 +2,7 @@
 
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/IO/GenericIO.h>
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 namespace smurff {
 

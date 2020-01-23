@@ -8,7 +8,7 @@
 #include <SmurffCpp/Configs/NoiseConfig.h>
 #include <SmurffCpp/Noises/NoiseFactory.h>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 #include <SmurffCpp/Utils/PVec.hpp>
 
 namespace smurff {

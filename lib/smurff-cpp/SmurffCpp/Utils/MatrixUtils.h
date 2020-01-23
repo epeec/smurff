@@ -8,7 +8,7 @@
 #include <SmurffCpp/Configs/MatrixConfig.h>
 #include <SmurffCpp/Configs/NoiseConfig.h>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 namespace smurff { namespace matrix_utils {
    // Conversion of MatrixConfig to/from sparse eigen matrix

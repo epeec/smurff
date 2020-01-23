@@ -4,9 +4,9 @@
 
 #include <SmurffCpp/IO/IDataWriter.h>
 #include <SmurffCpp/DataMatrices/IDataCreator.h>
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 #include <SmurffCpp/IO/GenericIO.h>
-#include <SmurffCpp/Utils/StringUtils.h>
+#include <Utils/StringUtils.h>
 
 #define POS_TAG "pos"
 #define FILE_TAG "file"

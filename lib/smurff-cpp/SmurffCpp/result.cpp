@@ -16,9 +16,9 @@
 #include <SmurffCpp/Model.h>
 #include <SmurffCpp/result.h>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 #include <SmurffCpp/Utils/StepFile.h>
-#include <SmurffCpp/Utils/StringUtils.h>
+#include <Utils/StringUtils.h>
 
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>

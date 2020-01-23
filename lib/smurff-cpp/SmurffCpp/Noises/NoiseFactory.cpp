@@ -6,7 +6,7 @@
 #include <SmurffCpp/Noises/ProbitNoise.h>
 #include <SmurffCpp/Noises/UnusedNoise.h>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 namespace smurff {
 

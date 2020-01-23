@@ -3,7 +3,7 @@
 #include <string>
 #include <set>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 namespace smurff {
 

@@ -1,8 +1,8 @@
 #include "SparseSideInfo.h"
 
-#include <SmurffCpp/Utils/linop.h>
+#include <Utils/linop.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <SmurffCpp/Utils/counters.h>
+#include <Utils/counters.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 
 #include <vector>

@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <array>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 
 #include <SmurffCpp/IO/GenericIO.h>

@@ -8,7 +8,7 @@
 #include "ini.h"
 #include "INIFile.h"
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 INIFile::INIFile()
    : m_error(0)

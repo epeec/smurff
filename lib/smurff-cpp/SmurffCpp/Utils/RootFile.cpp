@@ -3,8 +3,8 @@
 #include <iostream>
 #include <fstream>
 
-#include <SmurffCpp/Utils/Error.h>
-#include <SmurffCpp/Utils/StringUtils.h>
+#include <Utils/Error.h>
+#include <Utils/StringUtils.h>
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/StatusItem.h>
 

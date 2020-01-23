@@ -6,7 +6,7 @@
 #include <Eigen/Sparse>
 
 #include <SmurffCpp/Utils/Distribution.h>
-#include <SmurffCpp/Utils/ThreadVector.hpp>
+#include <Utils/ThreadVector.hpp>
 
 #include <SmurffCpp/Priors/ILatentPrior.h>
 

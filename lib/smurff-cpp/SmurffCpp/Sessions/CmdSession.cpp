@@ -11,13 +11,13 @@
 #include <SmurffCpp/Sessions/SessionFactory.h>
 
 #include <SmurffCpp/Configs/Config.h>
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 #include <SmurffCpp/Version.h>
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 
 #include <SmurffCpp/Utils/RootFile.h>
-#include <SmurffCpp/Utils/StringUtils.h>
+#include <Utils/StringUtils.h>
 
 namespace smurff {
 

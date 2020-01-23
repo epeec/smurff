@@ -1,6 +1,6 @@
 #include <SmurffCpp/Priors/ILatentPrior.h>
 #include <SmurffCpp/Sessions/CmdSession.h>
-#include <SmurffCpp/Utils/counters.h>
+#include <Utils/counters.h>
 
 int main(int argc, char** argv)
 {

@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-#include <SmurffCpp/Utils/InvNormCdf.h>
+#include <Utils/InvNormCdf.h>
 #include <SmurffCpp/Utils/Distribution.h>
 
 double norm_cdf(double x) {

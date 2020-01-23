@@ -3,7 +3,7 @@
 #include <SmurffCpp/VMatrixExprIterator.hpp>
 #include <SmurffCpp/ConstVMatrixExprIterator.hpp>
 
-#include <SmurffCpp/Utils/ThreadVector.hpp>
+#include <Utils/ThreadVector.hpp>
 
 namespace smurff {
 

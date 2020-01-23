@@ -8,7 +8,7 @@
 #include <numeric>
 #include <algorithm>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 namespace smurff
 {

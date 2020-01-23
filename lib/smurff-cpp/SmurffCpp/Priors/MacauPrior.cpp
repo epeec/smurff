@@ -4,10 +4,10 @@
 #include <SmurffCpp/IO/GenericIO.h>
 
 #include <SmurffCpp/Utils/Distribution.h>
-#include <SmurffCpp/Utils/Error.h>
-#include <SmurffCpp/Utils/counters.h>
+#include <Utils/Error.h>
+#include <Utils/counters.h>
 
-#include <SmurffCpp/Utils/linop.h>
+#include <Utils/linop.h>
 
 #include <ios>
 

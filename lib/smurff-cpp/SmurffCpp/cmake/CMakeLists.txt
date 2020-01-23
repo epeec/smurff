@@ -3,31 +3,19 @@ set (PROJECT smurff-cpp)
 message("Configuring " ${PROJECT} "...")
 project (${PROJECT})
 
-FILE (GLOB UTIL_FILES   "../Utils/TruncNorm.h"
-                        "../Utils/InvNormCdf.h"
+FILE (GLOB UTIL_FILES   
                         "../Utils/Distribution.h"
                         "../Utils/MatrixUtils.h"
                         "../Utils/TensorUtils.h"
                         "../Utils/PVec.hpp"
-                        "../Utils/counters.h"
-                        "../Utils/linop.h"
-                        "../Utils/omp_util.h"
-                        "../Utils/Error.h"
-                        "../Utils/ThreadVector.hpp"
                         "../Utils/RootFile.h"
                         "../Utils/StepFile.h"
-                        "../Utils/StringUtils.h"
 
-                        "../Utils/TruncNorm.cpp"
-                        "../Utils/InvNormCdf.cpp"
                         "../Utils/Distribution.cpp"
                         "../Utils/MatrixUtils.cpp"
                         "../Utils/TensorUtils.cpp"
-                        "../Utils/counters.cpp"
-                        "../Utils/omp_util.cpp"
                         "../Utils/RootFile.cpp"
                         "../Utils/StepFile.cpp"
-                        "../Utils/StringUtils.cpp"
                         )
 
 source_group ("Utils" FILES ${UTIL_FILES})
@@ -184,7 +172,7 @@ FILE (GLOB PREDICT_FILES "../Predict/PredictSession.h"
                          "../Predict/PredictSession.cpp"
                         )
                         
-source_group ("Side Info" FILES ${SIDE_INFO_FILES})
+source_group ("Prediction" FILES ${PREDICT_FILES})
 
 #SETUP OUTPUT
 add_library (${PROJECT} STATIC ${HEADER_FILES}

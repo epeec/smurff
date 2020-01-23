@@ -3,7 +3,7 @@
 #include <SmurffCpp/DataTensors/TensorData.h>
 #include <SmurffCpp/Noises/NoiseFactory.h>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 namespace smurff {
 

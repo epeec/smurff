@@ -1,6 +1,6 @@
 #include "MatricesData.h"
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 namespace smurff {
 

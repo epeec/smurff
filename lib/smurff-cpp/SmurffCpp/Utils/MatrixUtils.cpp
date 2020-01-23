@@ -5,7 +5,7 @@
 #include <vector>
 #include <iterator>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 Eigen::MatrixXd smurff::matrix_utils::dense_to_eigen(const smurff::MatrixConfig& matrixConfig)
 {

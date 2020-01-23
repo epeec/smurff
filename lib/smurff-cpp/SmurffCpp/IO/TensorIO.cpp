@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <numeric>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 #include <SmurffCpp/IO/GenericIO.h>
 

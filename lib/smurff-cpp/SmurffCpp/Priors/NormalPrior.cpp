@@ -2,15 +2,15 @@
 
 #include <iomanip>
 
-#include <SmurffCpp/Utils/linop.h>
+#include <Utils/linop.h>
 #include <SmurffCpp/IO/MatrixIO.h>
-#include <SmurffCpp/Utils/counters.h>
+#include <Utils/counters.h>
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
 #include <SmurffCpp/Utils/Distribution.h>
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 namespace smurff {
 

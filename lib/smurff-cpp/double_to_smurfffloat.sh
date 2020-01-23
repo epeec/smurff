@@ -75,10 +75,8 @@ SmurffCpp/Utils/omp_util.h
 SmurffCpp/Utils/linop.h
 SmurffCpp/Utils/TensorUtils.h
 SmurffCpp/Utils/omp_util.cpp
-SmurffCpp/Utils/TruncNorm.cpp
 SmurffCpp/Utils/RootFile.h
 SmurffCpp/Utils/RootFile.cpp
-SmurffCpp/Utils/TruncNorm.h
 SmurffCpp/Utils/Distribution.h
 SmurffCpp/Utils/StepFile.h
 SmurffCpp/Utils/StepFile.cpp

@@ -3,7 +3,7 @@
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/IO/GenericIO.h>
 
-#include <SmurffCpp/Utils/linop.h>
+#include <Utils/linop.h>
 
 namespace smurff {
 

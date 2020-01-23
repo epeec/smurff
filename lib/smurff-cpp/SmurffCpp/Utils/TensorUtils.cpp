@@ -2,7 +2,7 @@
 
 #include "TensorUtils.h"
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 Eigen::MatrixXd smurff::tensor_utils::dense_to_eigen(const smurff::TensorConfig& tensorConfig)
 {
