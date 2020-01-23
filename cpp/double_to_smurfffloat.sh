@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FILES=$(find SmurffCpp -name '*.cpp' -o -name '*.hpp' -o -name '*.h')
+FILES=$(find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h')
 
 for F in $FILES
 do

@@ -2,7 +2,7 @@
 
 #include "catch.hpp"
 
-#include <Eigen/Core>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Configs/Config.h>
 #include <SmurffCpp/Sessions/SessionFactory.h>
@@ -3155,7 +3155,7 @@ TEST_CASE("PredictSession/Features/2"
     {
         auto feat = sideInfoMatrix.row(r).transpose();
         auto out_of_matrix_predictions = predict_session_out.predict(0, feat);
-        //Eigen::VectorXd out_of_matrix_averages = out_of_matrix_predictions->colwise().mean();
+        //Vector out_of_matrix_averages = out_of_matrix_predictions->colwise().mean();
 
 #undef DEBUG_OOM_PREDICT
 #ifdef DEBUG_OOM_PREDICT

@@ -1,7 +1,7 @@
 #include "catch.hpp"
 
-#include <Eigen/Core>
-#include <Eigen/SparseCore>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/IO/TensorIO.h>
 #include <SmurffCpp/Utils/TensorUtils.h>
@@ -23,10 +23,10 @@ TEST_CASE("tensor_io/read_dense_float64_bin | tensor_io/write_dense_float64_bin"
    std::shared_ptr<TensorConfig> actualTensorConfig = tensor_io::read_dense_float64_bin(matrixConfigStream);
    MatrixConfig actualMatrixConfig = tensor_utils::tensor_to_matrix(*actualTensorConfig);
 
-   Eigen::MatrixXd actualMatrix0 = tensor_utils::dense_to_eigen(*actualTensorConfig);
-   Eigen::MatrixXd actualMatrix1 = matrix_utils::dense_to_eigen(actualMatrixConfig);
+   Matrix actualMatrix0 = tensor_utils::dense_to_eigen(*actualTensorConfig);
+   Matrix actualMatrix1 = matrix_utils::dense_to_eigen(actualMatrixConfig);
 
-   Eigen::MatrixXd expectedMatrix(3, 4);
+   Matrix expectedMatrix(3, 4);
    expectedMatrix << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
 
    REQUIRE(matrix_utils::equals(actualMatrix0, expectedMatrix));
@@ -46,10 +46,10 @@ TEST_CASE("tensor_io/read_sparse_float64_bin | tensor_io/write_sparse_float64_bi
    std::shared_ptr<TensorConfig> actualTensorConfig = tensor_io::read_sparse_float64_bin(tensorStream, false);
    MatrixConfig actualMatrixConfig = tensor_utils::tensor_to_matrix(*actualTensorConfig);
 
-   Eigen::SparseMatrix<double> actualMatrix0 = tensor_utils::sparse_to_eigen(*actualTensorConfig);
-   Eigen::SparseMatrix<double> actualMatrix1 = matrix_utils::sparse_to_eigen(actualMatrixConfig);
+   SparseMatrix actualMatrix0 = tensor_utils::sparse_to_eigen(*actualTensorConfig);
+   SparseMatrix actualMatrix1 = matrix_utils::sparse_to_eigen(actualMatrixConfig);
 
-   Eigen::SparseMatrix<double> expectedMatrix(3, 4);
+   SparseMatrix expectedMatrix(3, 4);
    std::vector<Eigen::Triplet<double> > expectedMatrixTriplets;
    expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 0, 1));
    expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 1, 2));
@@ -77,10 +77,10 @@ TEST_CASE("tensor_io/read_sparse_binary_bin | tensor_io/write_sparse_binary_bin"
    std::shared_ptr<TensorConfig> actualTensorConfig = tensor_io::read_sparse_binary_bin(tensorStream, false);
    MatrixConfig actualMatrixConfig = tensor_utils::tensor_to_matrix(*actualTensorConfig);
 
-   Eigen::SparseMatrix<double> actualMatrix0 = tensor_utils::sparse_to_eigen(*actualTensorConfig);
-   Eigen::SparseMatrix<double> actualMatrix1 = matrix_utils::sparse_to_eigen(actualMatrixConfig);
+   SparseMatrix actualMatrix0 = tensor_utils::sparse_to_eigen(*actualTensorConfig);
+   SparseMatrix actualMatrix1 = matrix_utils::sparse_to_eigen(actualMatrixConfig);
 
-   Eigen::SparseMatrix<double> expectedMatrix(3, 4);
+   SparseMatrix expectedMatrix(3, 4);
    std::vector<Eigen::Triplet<double> > expectedMatrixTriplets;
    expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 0, 1));
    expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 1, 1));
@@ -108,10 +108,10 @@ TEST_CASE("tensor_io/read_dense_float64_csv | tensor_io/write_dense_float64_csv"
    std::shared_ptr<TensorConfig> actualTensorConfig = tensor_io::read_dense_float64_csv(matrixConfigStream);
    MatrixConfig actualMatrixConfig = tensor_utils::tensor_to_matrix(*actualTensorConfig);
 
-   Eigen::MatrixXd actualMatrix0 = tensor_utils::dense_to_eigen(*actualTensorConfig);
-   Eigen::MatrixXd actualMatrix1 = matrix_utils::dense_to_eigen(actualMatrixConfig);
+   Matrix actualMatrix0 = tensor_utils::dense_to_eigen(*actualTensorConfig);
+   Matrix actualMatrix1 = matrix_utils::dense_to_eigen(actualMatrixConfig);
 
-   Eigen::MatrixXd expectedMatrix(3, 4);
+   Matrix expectedMatrix(3, 4);
    expectedMatrix << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
 
    REQUIRE(matrix_utils::equals(actualMatrix0, expectedMatrix));
@@ -131,10 +131,10 @@ TEST_CASE("tensor_io/read_sparse_float64_tns | tensor_io/write_sparse_float64_tn
    std::shared_ptr<TensorConfig> actualTensorConfig = tensor_io::read_sparse_float64_tns(tensorStream, false);
    MatrixConfig actualMatrixConfig = tensor_utils::tensor_to_matrix(*actualTensorConfig);
 
-   Eigen::SparseMatrix<double> actualMatrix0 = tensor_utils::sparse_to_eigen(*actualTensorConfig);
-   Eigen::SparseMatrix<double> actualMatrix1 = matrix_utils::sparse_to_eigen(actualMatrixConfig);
+   SparseMatrix actualMatrix0 = tensor_utils::sparse_to_eigen(*actualTensorConfig);
+   SparseMatrix actualMatrix1 = matrix_utils::sparse_to_eigen(actualMatrixConfig);
 
-   Eigen::SparseMatrix<double> expectedMatrix(3, 4);
+   SparseMatrix expectedMatrix(3, 4);
    std::vector<Eigen::Triplet<double> > expectedMatrixTriplets;
    expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 0, 1));
    expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 1, 2));

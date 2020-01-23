@@ -50,13 +50,13 @@ TEST_CASE( "mvnormal/rgamma", "generaring random gamma variable" ) {
 
 TEST_CASE( "latentprior/sample_beta_precision", "sampling beta precision from gamma distribution" ) {
   init_bmrng(1234);
-  Eigen::MatrixXd beta(2, 3), Lambda_u(2, 2);
+  Matrix beta(2, 3), Lambda_u(2, 2);
   beta << 3.0, -2.00,  0.5,
           1.0,  0.91, -0.2;
   Lambda_u << 0.5, 0.1,
               0.1, 0.3;
   
-  Eigen::MatrixXd BBt = beta * beta.transpose();                  
+  Matrix BBt = beta * beta.transpose();                  
   auto post = MacauPrior::posterior_beta_precision(BBt, Lambda_u, 0.01, 0.05, beta.cols());
   REQUIRE( post.first  == Approx(3.005) );
   REQUIRE( post.second == Approx(0.2631083888) );
@@ -164,7 +164,7 @@ TEST_CASE( "ScarceMatrixData/var_total", "Test if variance of Scarce Matrix is c
 }
 
 TEST_CASE( "DenseMatrixData/var_total", "Test if variance of Dense Matrix is correctly calculated") {
-  Eigen::MatrixXd Y(2, 2);
+  Matrix Y(2, 2);
   Y << 1., 2., 3., 4.;
 
   std::shared_ptr<Data> data(new DenseMatrixData(Y));
@@ -195,11 +195,11 @@ TEST_CASE("macauprior/make_dense_prior", "Making MacauPrior with MatrixConfig") 
     // ColMajor case
     auto prior = make_dense_prior(3, x, 3, 2, true);
 
-    Eigen::MatrixXd Ftrue(3, 2);
+    Matrix Ftrue(3, 2);
     Ftrue <<  0.1, 0.3, 0.4, 0.11, -0.7, 0.23;
     auto features_downcast1 = std::dynamic_pointer_cast<DenseSideInfo>(prior->Features); //for the purpose of the test
     REQUIRE( (*(features_downcast1->get_features()) - Ftrue).norm() == Approx(0) );
-    Eigen::MatrixXd tmp = Eigen::MatrixXd::Zero(2, 2);
+    Matrix tmp = Matrix::Zero(2, 2);
     tmp.triangularView<Eigen::Lower>()  = prior->FtF_plus_precision;
     tmp.triangularView<Eigen::Lower>() -= Ftrue.transpose() * Ftrue;
     REQUIRE( tmp.norm() == Approx(0) );
@@ -240,10 +240,10 @@ TEST_CASE("Benchmark from old 'data.cpp' file", "[!hide]")
 
    {
        init_bmrng(1234);
-       Eigen::MatrixXd U(K,N);
+       Matrix U(K,N);
        bmrandn(U);
 
-       Eigen::MatrixXd M(K,K) ;
+       Matrix M(K,K) ;
        //double start = tick();
        for(int i=0; i<R; ++i) {
            M.setZero();

@@ -4,8 +4,8 @@
 
 #include <mpi.h>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include <SmurffCpp/Types.h>
+#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Priors/MacauPrior.h>
 
@@ -26,7 +26,7 @@ private:
    double* rec     = NULL;
    int* sendcounts = NULL;
    int* displs     = NULL;
-   Eigen::MatrixXd Ft_y;
+   Matrix Ft_y;
 
 public:
    MPIMacauPrior(std::shared_ptr<Session> session, int mode);

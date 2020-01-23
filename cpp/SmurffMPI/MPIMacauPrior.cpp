@@ -59,7 +59,7 @@ void MPIMacauPrior::sample_beta()
    // sending Ft_y
    MPI_Scatterv(this->Ft_y.data(), sendcounts, displs, MPI_DOUBLE, rec, sendcounts[world_rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
    int nrhs = rhs_for_rank[world_rank];
-   Eigen::MatrixXd RHS(nrhs, num_feat), result(nrhs, num_feat);
+   Matrix RHS(nrhs, num_feat), result(nrhs, num_feat);
 
 #pragma omp parallel for schedule(static)
    for (int f = 0; f < num_feat; f++)
