@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd lib/smurff-cpp/cmake
+pushd cpp/cmake
 rm -rf build 
 mkdir build
 cd build
