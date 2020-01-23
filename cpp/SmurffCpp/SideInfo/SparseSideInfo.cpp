@@ -93,7 +93,7 @@ Vector SparseSideInfo::col_square_sum()
 {
     COUNTER("col_square_sum");
     // component-wise square
-    auto E = F.unaryExpr([](const double &d) { return d * d; });
+    auto E = F.unaryExpr([](const float_type &d) { return d * d; });
     // col-wise sum
     return E.transpose() * Vector::Ones(E.rows());
 }
