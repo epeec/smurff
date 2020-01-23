@@ -15,7 +15,7 @@
 #include <SmurffCpp/Configs/NoiseConfig.h>
 #include <SmurffCpp/Noises/NoiseFactory.h>
 
-using namespace smurff;
+namespace smurff {
 
 std::shared_ptr<MatrixData> create_matrix_data(std::shared_ptr<const MatrixConfig> matrixConfig)
 {
@@ -71,3 +71,4 @@ std::shared_ptr<Data> MatrixDataFactory::create_matrix_data(std::shared_ptr<cons
 
    return local_data_ptr;
 }
+} // end namespace smurff

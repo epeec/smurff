@@ -23,7 +23,7 @@
 #define SN_MAX_TAG "sn_max"
 #define NOISE_THRESHOLD_TAG "noise_threshold"
 
-using namespace smurff;
+namespace smurff {
 
 TensorConfig::TensorConfig ( bool isDense
                            , bool isBinary
@@ -493,7 +493,7 @@ void TensorConfig::save(INIFile& writer, const std::string& section_name) const
    auto &noise_config = this->getNoiseConfig();
    if (noise_config.getNoiseType() != NoiseTypes::unset)
    {
-      writer.appendItem(section_name, NOISE_MODEL_TAG, smurff::noiseTypeToString(noise_config.getNoiseType()));
+      writer.appendItem(section_name, NOISE_MODEL_TAG, noiseTypeToString(noise_config.getNoiseType()));
       writer.appendItem(section_name, PRECISION_TAG, std::to_string(noise_config.getPrecision()));
       writer.appendItem(section_name, SN_INIT_TAG, std::to_string(noise_config.getSnInit()));
       writer.appendItem(section_name, SN_MAX_TAG, std::to_string(noise_config.getSnMax()));
@@ -529,7 +529,7 @@ bool TensorConfig::restore(const INIFile& reader, const std::string& sec_name)
    if (pos_str != NONE_TAG)
    {
       std::vector<int> tokens;
-      smurff::split(pos_str, tokens, ',');
+      split(pos_str, tokens, ',');
 
       //assign position
       this->setPos(PVec<>(tokens));
@@ -538,7 +538,7 @@ bool TensorConfig::restore(const INIFile& reader, const std::string& sec_name)
    //restore noise model
    NoiseConfig noise;
 
-   NoiseTypes noiseType = smurff::stringToNoiseType(reader.get(sec_name, NOISE_MODEL_TAG, smurff::noiseTypeToString(NoiseTypes::unset)));
+   NoiseTypes noiseType = stringToNoiseType(reader.get(sec_name, NOISE_MODEL_TAG, noiseTypeToString(NoiseTypes::unset)));
    if (noiseType != NoiseTypes::unset)
    {
       noise.setNoiseType(noiseType);
@@ -563,3 +563,4 @@ void TensorConfig::write(std::shared_ptr<IDataWriter> writer) const
 {
    writer->write(shared_from_this());
 }
+} // end namespace smurff

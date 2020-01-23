@@ -1,7 +1,7 @@
 #include "NormalOnePrior.h"
 #include <SmurffCpp/IO/MatrixIO.h>
 
-using namespace smurff;
+namespace smurff {
 
 NormalOnePrior::NormalOnePrior(std::shared_ptr<Session> session, uint32_t mode, std::string name)
    : ILatentPrior(session, mode, name)
@@ -71,3 +71,4 @@ std::ostream &NormalOnePrior::status(std::ostream &os, std::string indent) const
 {
    return os;
 }
+} // end namespace smurff

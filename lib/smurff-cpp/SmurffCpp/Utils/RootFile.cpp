@@ -14,7 +14,7 @@
 #define CHECKPOINT_STEP_PREFIX "checkpoint_step_"
 #define SAMPLE_STEP_PREFIX "sample_step_"
 
-using namespace smurff;
+namespace smurff {
 
 RootFile::RootFile(std::string path)
 {
@@ -230,3 +230,4 @@ void RootFile::flushLast() const
 {
    m_iniReader->flush();
 }
+} // end namespace smurff

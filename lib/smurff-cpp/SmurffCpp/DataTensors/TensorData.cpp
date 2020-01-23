@@ -6,7 +6,7 @@
 
 #include <SmurffCpp/ConstVMatrixExprIterator.hpp>
 
-using namespace smurff;
+namespace smurff {
 
 //convert array of coordinates to [nnz x nmodes] matrix
 MatrixXui32 toMatrixNew(const std::vector<std::uint32_t>& columns, std::uint64_t nnz, std::uint64_t nmodes) 
@@ -22,7 +22,7 @@ MatrixXui32 toMatrixNew(const std::vector<std::uint32_t>& columns, std::uint64_t
    return idx;
 }
 
-TensorData::TensorData(const smurff::TensorConfig& tc) 
+TensorData::TensorData(const TensorConfig& tc) 
    : m_dims(tc.getDims()),
      m_nnz(tc.getNNZ()),
      m_Y(std::make_shared<std::vector<std::shared_ptr<SparseMode> > >())
@@ -212,3 +212,4 @@ std::ostream& TensorData::info(std::ostream& os, std::string indent)
    
    return os;
 }
+} // end namespace smurff

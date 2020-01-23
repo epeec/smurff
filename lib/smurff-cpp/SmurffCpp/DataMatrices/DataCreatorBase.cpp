@@ -14,7 +14,7 @@
 #include <SmurffCpp/Configs/NoiseConfig.h>
 #include <SmurffCpp/Noises/NoiseFactory.h>
 
-using namespace smurff;
+namespace smurff {
 
 std::shared_ptr<Data> DataCreatorBase::create(std::shared_ptr<const MatrixConfig> mc) const
 {
@@ -58,3 +58,4 @@ std::shared_ptr<Data> DataCreatorBase::create(std::shared_ptr<const TensorConfig
    tensorData->setNoiseModel(noise);
    return tensorData;
 }
+} // end namespace smurff

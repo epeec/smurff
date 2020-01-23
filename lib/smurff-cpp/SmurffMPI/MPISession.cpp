@@ -7,7 +7,7 @@
 
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 MPISession::MPISession()
 {
@@ -41,9 +41,10 @@ std::shared_ptr<IPriorFactory> MPISession::create_prior_factory() const
 
 //create mpi session
 //parses args with setFromArgs, then internally calls setFromConfig (to validate, save, set config)
-std::shared_ptr<ISession> smurff::create_mpi_session(int argc, char** argv)
+std::shared_ptr<ISession> create_mpi_session(int argc, char** argv)
 {
    std::shared_ptr<MPISession> session(new MPISession());
    session->fromConfig(parse_options(argc, argv));
    return session;
 }
+} // end namespace smurff

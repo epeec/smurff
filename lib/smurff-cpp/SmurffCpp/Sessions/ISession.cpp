@@ -2,8 +2,9 @@
 
 #include "ISession.h"
 
-using namespace smurff;
+namespace smurff {
 
 const std::vector<ResultItem>& ISession::getResultItems() const {
     return getResult()->m_predictions;
 }
+} // end namespace smurff

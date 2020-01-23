@@ -11,7 +11,7 @@
 
 #include <ios>
 
-using namespace smurff;
+namespace smurff {
 
 MacauPrior::MacauPrior()
     : NormalPrior()
@@ -176,9 +176,9 @@ bool MacauPrior::save(std::shared_ptr<const StepFile> sf) const
     NormalPrior::save(sf);
 
    std::string path0 = sf->makeLinkMatrixFileName(m_mode);
-   smurff::matrix_io::eigen::write_matrix(path0, beta());
+   matrix_io::eigen::write_matrix(path0, beta());
    std::string path1 = sf->makeMuFileName(m_mode);
-   smurff::matrix_io::eigen::write_matrix(path1, hyperMu());
+   matrix_io::eigen::write_matrix(path1, hyperMu());
 
     return true;
 }
@@ -189,7 +189,7 @@ void MacauPrior::restore(std::shared_ptr<const StepFile> sf)
 
     std::string path = sf->getLinkMatrixFileName(m_mode);
 
-   smurff::matrix_io::eigen::read_matrix(path, beta());
+   matrix_io::eigen::read_matrix(path, beta());
 }
 
 std::ostream& MacauPrior::info(std::ostream &os, std::string indent)
@@ -250,3 +250,4 @@ double MacauPrior::sample_beta_precision(const Eigen::MatrixXd & BBt, Eigen::Mat
    auto gamma_post = posterior_beta_precision(BBt, Lambda_u, nu, mu, N);
    return rgamma(gamma_post.first, gamma_post.second);
 }
+} // end namespace smurff

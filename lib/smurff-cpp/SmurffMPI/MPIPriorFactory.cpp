@@ -5,7 +5,7 @@
 #include <SmurffMPI/MPIPriorFactory.h>
 #include <SmurffMPI/MPIMacauPrior.h>
 
-using namespace smurff;
+namespace smurff {
 
 std::shared_ptr<ILatentPrior> MPIPriorFactory::create_macau_prior(std::shared_ptr<Session> session, PriorTypes prior_type, 
                                                                   const std::vector<std::shared_ptr<ISideInfo> >& side_infos,
@@ -27,3 +27,4 @@ std::shared_ptr<ILatentPrior> MPIPriorFactory::create_prior(std::shared_ptr<Sess
       return PriorFactory::create_prior(session, mode);
    }
 }
+} // end namespace smurff

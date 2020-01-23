@@ -6,7 +6,7 @@
 #include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/Utils/TensorUtils.h>
 
-using namespace smurff;
+namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
@@ -241,3 +241,4 @@ TEST_CASE("matrix_utils::slice : 5D tensor")
       REQUIRE(matrix_utils::equals(actualTensorSlice, expectedTensorSlice));
    }
 }
+} // end namespace smurff

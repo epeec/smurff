@@ -9,7 +9,7 @@
 #include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 
-using namespace smurff;
+namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
@@ -660,3 +660,4 @@ TEST_CASE("Genereate matrices for Python matrix_io tests", "[!hide]")
                                     );
    matrix_io::write_matrix("cpp_generated_sparse_matrix.sbm", sparseBinaryMatrixConfig);
 }
+} // end namespace smurff

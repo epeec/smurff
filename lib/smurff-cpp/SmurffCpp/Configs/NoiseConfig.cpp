@@ -5,7 +5,7 @@
 
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 #define NOISE_NAME_FIXED "fixed"
 #define NOISE_NAME_SAMPLED "sampled"
@@ -34,7 +34,7 @@ NoiseConfig::NoiseConfig(NoiseTypes nt)
    m_threshold = PROBIT_DEFAULT_VALUE;
 }
 
-NoiseTypes smurff::stringToNoiseType(std::string name)
+NoiseTypes stringToNoiseType(std::string name)
 {
    if(name == NOISE_NAME_FIXED)
       return NoiseTypes::fixed;
@@ -54,7 +54,7 @@ NoiseTypes smurff::stringToNoiseType(std::string name)
    }
 }
 
-std::string smurff::noiseTypeToString(NoiseTypes type)
+std::string noiseTypeToString(NoiseTypes type)
 {
    switch(type)
    {
@@ -131,3 +131,4 @@ void NoiseConfig::setThreshold(double value)
 {
    m_threshold = value;
 }
+} // end namespace smurff

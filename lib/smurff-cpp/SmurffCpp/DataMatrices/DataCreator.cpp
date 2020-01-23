@@ -11,7 +11,7 @@
 #include <SmurffCpp/Utils/Error.h>
 #include <SmurffCpp/Utils/PVec.hpp>
 
-using namespace smurff;
+namespace smurff {
 
 std::shared_ptr<Data> DataCreator::create(std::shared_ptr<const MatrixConfig> mc) const
 {
@@ -53,3 +53,4 @@ std::shared_ptr<Data> DataCreator::create(std::shared_ptr<const TensorConfig> tc
 
    return tc->create(creatorBase);
 }
+} // end namespace smurff

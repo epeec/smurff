@@ -2,7 +2,7 @@
 
 #include <SmurffCpp/Utils/PVec.hpp>
 
-using namespace smurff;
+namespace smurff {
 
 TEST_CASE("PVec<>::PVec(size_t n) | PVec<>::size() | PVec<>::operator[](size_t p)")
 {
@@ -264,3 +264,4 @@ TEST_CASE("PVec<>::dot()")
    PVec<5> p6({ 1, 2, 3, -4, -5 });
    REQUIRE(p6.dot() == 120);
 }
+} // end namespace smurff

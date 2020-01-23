@@ -25,7 +25,7 @@
 
 #include <SmurffCpp/IO/GenericIO.h>
 
-using namespace smurff;
+namespace smurff {
 
 Model::Model()
    : m_num_latent(-1), m_dims(0)
@@ -185,7 +185,7 @@ void Model::save(std::shared_ptr<const StepFile> sf, bool saveAggr) const
    for (auto U : m_factors)
    {
       auto path = sf->makeModelFileName(i++);
-      smurff::matrix_io::eigen::write_matrix(path, *U);
+      matrix_io::eigen::write_matrix(path, *U);
    }
 
    unsigned nmodes = sf->getNModes();
@@ -214,10 +214,10 @@ void Model::save(std::shared_ptr<const StepFile> sf, bool saveAggr) const
          }
 
          std::string mu_path = sf->makePostMuFileName(m);
-         smurff::matrix_io::eigen::write_matrix(mu_path, mu);
+         matrix_io::eigen::write_matrix(mu_path, mu);
 
          std::string prec_path = sf->makePostLambdaFileName(m);
-         smurff::matrix_io::eigen::write_matrix(prec_path, prec);
+         matrix_io::eigen::write_matrix(prec_path, prec);
       }
    }
 }
@@ -234,7 +234,7 @@ void Model::restore(std::shared_ptr<const StepFile> sf, int skip_mode)
       std::string path = sf->getModelFileName(i);
       if ((int)i != skip_mode) {
           THROWERROR_FILE_NOT_EXIST(path);
-          smurff::matrix_io::eigen::read_matrix(path, *U);
+          matrix_io::eigen::read_matrix(path, *U);
           m_dims.at(i) = U->cols();
           m_num_latent = U->rows();
       }
@@ -282,3 +282,4 @@ ConstVMatrixExprIterator<Eigen::MatrixXd::ConstBlockXpr> SubModel::CVend() const
 {
    return ConstVMatrixExprIterator<Eigen::MatrixXd::ConstBlockXpr>(m_model.nmodes());
 }
+} // end namespace smurff

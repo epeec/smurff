@@ -2,7 +2,7 @@
 
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 MatricesData::MatricesData()
    : total_dim(2)
@@ -267,3 +267,4 @@ int MatricesData::view_size(int mode, int v) const {
     const auto &M = mode_dim.at(mode);
     return M.at(v+1) - M.at(v);
 }
+} // end namespace smurff

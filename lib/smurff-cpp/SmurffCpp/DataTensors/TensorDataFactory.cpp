@@ -5,7 +5,7 @@
 
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 std::shared_ptr<Data> TensorDataFactory::create_tensor_data(std::shared_ptr<const TensorConfig> config,
                                                             const std::vector<std::vector<std::shared_ptr<MatrixConfig> > >& features)
@@ -28,3 +28,4 @@ std::shared_ptr<Data> TensorDataFactory::create_tensor_data(std::shared_ptr<cons
    tensorData->setNoiseModel(noise);
    return tensorData;
 }
+} // end namespace smurff

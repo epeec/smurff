@@ -1,7 +1,7 @@
 #include "ILatentPrior.h"
 #include <SmurffCpp/Utils/counters.h>
 
-using namespace smurff;
+namespace smurff {
 
 ILatentPrior::ILatentPrior(std::shared_ptr<Session> session, uint32_t mode, std::string name)
    : m_session(session), m_mode(mode), m_name(name)
@@ -141,3 +141,4 @@ void ILatentPrior::init_Usum()
     Usum = U().rowwise().sum();
     UUsum = U() * U().transpose(); 
 }
+} // end namespace smurff

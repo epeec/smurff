@@ -2,7 +2,7 @@
 
 #include <iomanip>
 
-using namespace smurff;
+namespace smurff {
 
 FixedGaussianNoise::FixedGaussianNoise(double a)
    : GaussianNoise()
@@ -25,3 +25,4 @@ void FixedGaussianNoise::setPrecision(double a)
 {
    alpha = a;
 }
+} // end namespace smurff

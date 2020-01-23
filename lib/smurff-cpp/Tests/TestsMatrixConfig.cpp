@@ -12,7 +12,7 @@
 #include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/Configs/MatrixConfig.h>
 
-using namespace smurff;
+namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
@@ -270,3 +270,4 @@ TEST_CASE("MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, std::shared_ptr<
 
    REQUIRE(matrix_utils::equals(actualMatrix, expectedMatrix));
 }
+} // end namespace smurff

@@ -2,7 +2,7 @@
 
 #include <SmurffCpp/DataMatrices/Data.h>
 
-using namespace smurff;
+namespace smurff {
 
 double INoiseModel::getAlpha() const
 {
@@ -13,3 +13,4 @@ double INoiseModel::sample(const SubModel& model, const PVec<> &pos, double val)
 {
     return getAlpha() * val;
 }
+} // end namespace smurff

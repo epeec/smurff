@@ -7,7 +7,7 @@
 #include <SmurffCpp/Utils/TensorUtils.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 
-using namespace smurff;
+namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
@@ -149,3 +149,4 @@ TEST_CASE("tensor_io/read_sparse_float64_tns | tensor_io/write_sparse_float64_tn
    REQUIRE(matrix_utils::equals(actualMatrix0, expectedMatrix));
    REQUIRE(matrix_utils::equals(actualMatrix1, expectedMatrix));
 }
+} // end namespace smurff

@@ -3,7 +3,7 @@
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/IO/TensorIO.h>
 
-using namespace smurff;
+namespace smurff {
 
 void DataWriter::write(std::shared_ptr<const MatrixConfig> mc) const
 {
@@ -14,3 +14,4 @@ void DataWriter::write(std::shared_ptr<const TensorConfig> tc) const
 {
    tensor_io::write_tensor(m_filename, tc);
 }
+} // end namespace smurff

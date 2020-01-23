@@ -1,6 +1,6 @@
 #include "DenseMatrixData.h"
 
-using namespace smurff;
+namespace smurff {
 
 DenseMatrixData::DenseMatrixData(Eigen::MatrixXd Y)
    : FullMatrixData<Eigen::MatrixXd>(Y)
@@ -62,3 +62,4 @@ double DenseMatrixData::sumsq(const SubModel& model) const
 
    return sumsq;
 }
+} // end namespace smurff

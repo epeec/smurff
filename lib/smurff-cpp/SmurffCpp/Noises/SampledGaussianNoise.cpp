@@ -2,7 +2,7 @@
 
 #include <iomanip>
 
-using namespace smurff;
+namespace smurff {
 
 SampledGaussianNoise::SampledGaussianNoise(double a)
    : FixedGaussianNoise(a)
@@ -19,3 +19,4 @@ std::string SampledGaussianNoise::getStatus()
 {
    return std::string("Sampled with fixed precision: ") + std::to_string(alpha);
 }
+} // end namespace smurff

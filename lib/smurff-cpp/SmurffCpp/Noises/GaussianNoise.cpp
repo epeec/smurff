@@ -3,9 +3,10 @@
 #include <SmurffCpp/Utils/Distribution.h>
 #include <SmurffCpp/DataMatrices/Data.h>
 
-using namespace smurff;
+namespace smurff {
 
 double GaussianNoise::getAlpha() const
 {
     return alpha;
 }
+} // end namespace smurff

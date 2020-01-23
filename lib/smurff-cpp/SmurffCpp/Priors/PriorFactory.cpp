@@ -13,7 +13,7 @@
 
 #include <SmurffCpp/Utils/MatrixUtils.h>
 
-using namespace smurff;
+namespace smurff {
 
 //create macau prior features
 
@@ -59,3 +59,4 @@ std::shared_ptr<ILatentPrior> PriorFactory::create_prior(std::shared_ptr<Session
       }
    }
 }
+} // end namespace smurff

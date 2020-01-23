@@ -19,7 +19,7 @@
 #include <SmurffCpp/Utils/RootFile.h>
 #include <SmurffCpp/Utils/StringUtils.h>
 
-using namespace smurff;
+namespace smurff {
 
 static const char *INI_NAME = "ini";
 static const char *ROOT_NAME = "root";
@@ -188,7 +188,7 @@ fill_config(const po::variables_map &vm)
 }
 
 // argc/argv -> variables_map -> Config
-Config smurff::parse_options(int argc, char *argv[])
+Config parse_options(int argc, char *argv[])
 {
     po::variables_map vm;
 
@@ -218,7 +218,7 @@ Config smurff::parse_options(int argc, char *argv[])
 
         if (vm.count(VERSION_NAME))
         {
-            std::cout << "SMURFF " << smurff::SMURFF_VERSION << std::endl;
+            std::cout << "SMURFF " << SMURFF_VERSION << std::endl;
             return Config();
         }
     }
@@ -257,7 +257,7 @@ Config smurff::parse_options(int argc, char *argv[])
 #else // no BOOST
 
 // argc/argv --> Config
-Config smurff::parse_options(int argc, char *argv[])
+Config parse_options(int argc, char *argv[])
 {
     auto usage = []() {
         std::cerr << "Usage:\n\tsmurff --[ini|root] <ini_file.ini>\n\n"
@@ -296,7 +296,7 @@ Config smurff::parse_options(int argc, char *argv[])
 
 //create cmd session
 //parses args with setFromArgs, then internally calls setFromConfig (to validate, save, set config)
-std::shared_ptr<ISession> smurff::create_cmd_session(int argc, char **argv)
+std::shared_ptr<ISession> create_cmd_session(int argc, char **argv)
 {
     std::shared_ptr<ISession> session;
 
@@ -310,3 +310,4 @@ std::shared_ptr<ISession> smurff::create_cmd_session(int argc, char **argv)
 
     return session;
 }
+} // end namespace smurff

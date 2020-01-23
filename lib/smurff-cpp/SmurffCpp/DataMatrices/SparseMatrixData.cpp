@@ -1,6 +1,6 @@
 #include "SparseMatrixData.h"
 
-using namespace smurff;
+namespace smurff {
 
 SparseMatrixData::SparseMatrixData(Eigen::SparseMatrix<double> Y)
    : FullMatrixData<Eigen::SparseMatrix<double>>(Y)
@@ -83,3 +83,4 @@ double SparseMatrixData::sumsq(const SubModel& model) const
 
    return sumsq;
 }
+} // end namespace smurff

@@ -5,7 +5,7 @@
 
 #include <SmurffCpp/Utils/ThreadVector.hpp>
 
-using namespace smurff;
+namespace smurff {
 
 ScarceMatrixData::ScarceMatrixData(Eigen::SparseMatrix<double> Y)
    : MatrixDataTempl<Eigen::SparseMatrix<double> >(Y)
@@ -155,3 +155,4 @@ double ScarceMatrixData::sumsq(const SubModel& model) const
 
    return sumsq;
 }
+} // end namespace smurff

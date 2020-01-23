@@ -5,7 +5,7 @@
 
 #include <SmurffCpp/Utils/linop.h>
 
-using namespace smurff;
+namespace smurff {
 
 MacauOnePrior::MacauOnePrior(std::shared_ptr<Session> session, uint32_t mode)
    : NormalOnePrior(session, mode, "MacauOnePrior")
@@ -168,7 +168,7 @@ bool MacauOnePrior::save(std::shared_ptr<const StepFile> sf) const
    NormalOnePrior::save(sf);
 
    std::string path = sf->makeLinkMatrixFileName(m_mode);
-   smurff::matrix_io::eigen::write_matrix(path, beta);
+   matrix_io::eigen::write_matrix(path, beta);
 
    return true;
 }
@@ -181,7 +181,7 @@ void MacauOnePrior::restore(std::shared_ptr<const StepFile> sf)
 
    THROWERROR_FILE_NOT_EXIST(path);
 
-   smurff::matrix_io::eigen::read_matrix(path, beta);
+   matrix_io::eigen::read_matrix(path, beta);
 }
 
 std::ostream& MacauOnePrior::status(std::ostream &os, std::string indent) const
@@ -189,3 +189,4 @@ std::ostream& MacauOnePrior::status(std::ostream &os, std::string indent) const
    os << indent << "  " << m_name << ": Beta = " << beta.norm() << std::endl;
    return os;
 }
+} // end namespace smurff

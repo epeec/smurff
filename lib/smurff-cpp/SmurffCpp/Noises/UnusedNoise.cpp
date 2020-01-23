@@ -2,7 +2,7 @@
 
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 UnusedNoise::UnusedNoise()
 : INoiseModel()
@@ -29,3 +29,4 @@ std::string UnusedNoise::getStatus()
 {
    return std::string("Unused");
 }
+} // end namespace smurff

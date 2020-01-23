@@ -2,7 +2,7 @@
 
 #include <SmurffCpp/Utils/Distribution.h>
 
-using namespace smurff;
+namespace smurff {
 
 MPIMacauPrior::MPIMacauPrior(std::shared_ptr<Session> session, int mode)
    : MacauPrior(session, mode)
@@ -120,3 +120,4 @@ void MPIMacauPrior::split_work_mpi(int num_latent, int num_nodes, int* work)
       i = (i + 1) % num_nodes;
    }
 }
+} // end namespace smurff

@@ -2,11 +2,11 @@
 #include <SmurffCpp/Sessions/CmdSession.h>
 #include <SmurffCpp/Utils/counters.h>
 
-using namespace smurff;
-
 int main(int argc, char** argv)
 {
-   std::shared_ptr<smurff::ISession> session = create_cmd_session(argc, argv);
+   using namespace smurff;
+
+   std::shared_ptr<ISession> session = create_cmd_session(argc, argv);
    { 
       COUNTER("main"); 
       session->run(); 

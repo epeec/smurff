@@ -5,7 +5,7 @@
 
 #include "StatusItem.h"
 
-using namespace smurff;
+namespace smurff {
 
 std::string StatusItem::asString() const
 {
@@ -28,3 +28,4 @@ std::string StatusItem::asString() const
 
     return output.str();
 }
+} // end namespace smurff

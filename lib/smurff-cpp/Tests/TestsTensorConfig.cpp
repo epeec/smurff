@@ -13,7 +13,7 @@
 #include <SmurffCpp/Utils/TensorUtils.h>
 #include <SmurffCpp/Configs/TensorConfig.h>
 
-using namespace smurff;
+namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
@@ -267,3 +267,4 @@ TEST_CASE("TensorConfig(std::shared_ptr<std::vector<std::uint64_t> > dims, std::
    REQUIRE(matrix_utils::equals(actualMatrix0, expectedMatrix));
    REQUIRE(matrix_utils::equals(actualMatrix1, expectedMatrix));
 }
+} // end namespace smurff

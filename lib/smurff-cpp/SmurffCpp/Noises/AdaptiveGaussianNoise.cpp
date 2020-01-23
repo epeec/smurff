@@ -5,7 +5,7 @@
 #include <SmurffCpp/Utils/Distribution.h>
 #include <SmurffCpp/DataMatrices/Data.h>
 
-using namespace smurff;
+namespace smurff {
 
 AdaptiveGaussianNoise::AdaptiveGaussianNoise(double sinit, double smax)
 : sn_max(smax), sn_init(sinit)
@@ -63,3 +63,4 @@ void AdaptiveGaussianNoise::setSNMax(double a)
 {
    sn_max  = a;
 }
+} // end namespace smurff

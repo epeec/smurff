@@ -16,7 +16,7 @@
 #define THROW_ON_CHOLESKY_ERROR_TAG "throw_on_cholesky_error"
 #define SIDE_INFO_PREFIX "side_info"
 
-using namespace smurff;
+namespace smurff {
 
 double SideInfoConfig::BETA_PRECISION_DEFAULT_VALUE = 10.0;
 double SideInfoConfig::TOL_DEFAULT_VALUE = 1e-6;
@@ -78,3 +78,4 @@ bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index, std
 
    return true;
 }
+} // end namespace smurff

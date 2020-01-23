@@ -5,7 +5,7 @@
 #include <SmurffCpp/DataMatrices/IDataCreator.h>
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 //
 // Dense double matrix constructos
@@ -377,3 +377,4 @@ void MatrixConfig::write(std::shared_ptr<IDataWriter> writer) const
    //have to use dynamic cast here but only because shared_from_this() can only return base pointer even from child
    writer->write(std::dynamic_pointer_cast<const MatrixConfig>(shared_from_this()));
 }
+} // end namespace smurff

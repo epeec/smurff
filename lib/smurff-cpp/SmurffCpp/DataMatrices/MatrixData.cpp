@@ -2,7 +2,7 @@
 
 #include <iomanip>
 
-using namespace smurff;
+namespace smurff {
 
 std::uint64_t MatrixData::nmode() const
 {
@@ -36,3 +36,4 @@ PVec<> MatrixData::pos(int mode, int n, int m) const
     assert(mode == 1);
     return PVec<>({m,n});
 }
+} // end namespace smurff

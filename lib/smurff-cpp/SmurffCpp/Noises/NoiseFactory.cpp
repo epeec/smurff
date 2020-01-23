@@ -8,7 +8,7 @@
 
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 std::shared_ptr<INoiseModel> NoiseFactory::create_noise_model(const NoiseConfig& config)
 {
@@ -30,3 +30,4 @@ std::shared_ptr<INoiseModel> NoiseFactory::create_noise_model(const NoiseConfig&
       }
    }
 }
+} // end namespace smurff

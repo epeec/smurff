@@ -4,7 +4,7 @@
 
 #include <SmurffCpp/Priors/ILatentPrior.h>
 
-using namespace smurff;
+namespace smurff {
 
 bool PythonSession::keepRunning = true;
 bool PythonSession::keepRunningVerbose = false;
@@ -49,3 +49,4 @@ void PythonSession::intHandler(int)
        std::cout << "[Received Ctrl-C. Stopping after finishing the current iteration.]\n";
    }
 }
+} // end namespace smurff

@@ -31,7 +31,7 @@
 #define SAMPLE_ITER_TAG "sample_iter"
 #define BURNIN_ITER_TAG "burnin_iter"
 
-using namespace smurff;
+namespace smurff {
 
 Result::Result() {}
 
@@ -124,11 +124,11 @@ void Result::savePred(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) c
       {
          std::string pred_avg_path = sf->makePredAvgFileName();
          auto pred_avg = toMatrixConfig([](const ResultItem &p) { return p.pred_avg; });
-         smurff::matrix_io::write_matrix(pred_avg_path, pred_avg);
+         matrix_io::write_matrix(pred_avg_path, pred_avg);
 
          std::string pred_var_path = sf->makePredVarFileName();
          auto pred_var = toMatrixConfig([](const ResultItem &p) { return p.var; });
-         smurff::matrix_io::write_matrix(pred_var_path, pred_var);
+         matrix_io::write_matrix(pred_var_path, pred_var);
 
          saved_avg_var = true;
       }
@@ -216,7 +216,7 @@ void Result::restorePred(std::shared_ptr<const StepFile> sf)
       getline(predFile, header);
 
       std::vector<std::string> headerTokens;
-      smurff::split(header, headerTokens, ',');
+      split(header, headerTokens, ',');
 
       //parse all lines
       std::vector<std::string> tokens;
@@ -226,7 +226,7 @@ void Result::restorePred(std::shared_ptr<const StepFile> sf)
       while (getline(predFile, line))
       {
          //split line
-         smurff::split(line, tokens, ',');
+         split(line, tokens, ',');
 
          //construct coordinates
          coords.clear();
@@ -243,7 +243,7 @@ void Result::restorePred(std::shared_ptr<const StepFile> sf)
          double var = std::stod(tokens.at(nCoords + 3).c_str());
 
          //construct result item
-         m_predictions.push_back(ResultItem(smurff::PVec<>(coords), val, pred_1sample, pred_avg, var, sample_iter));
+         m_predictions.push_back(ResultItem(PVec<>(coords), val, pred_1sample, pred_avg, var, sample_iter));
       }
 
       //just a sanity check, not sure if it is needed
@@ -395,3 +395,4 @@ bool Result::isEmpty() const
 {
    return m_predictions.empty();
 }
+} // end namespace smurff

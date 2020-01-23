@@ -55,9 +55,9 @@
 #define LAMBDA_TAG "Lambda"
 #define MU_TAG "mu"
 
-using namespace smurff;
+namespace smurff {
 
-PriorTypes smurff::stringToPriorType(std::string name)
+PriorTypes stringToPriorType(std::string name)
 {
    if(name == PRIOR_NAME_DEFAULT)
       return PriorTypes::default_prior;
@@ -77,7 +77,7 @@ PriorTypes smurff::stringToPriorType(std::string name)
    }
 }
 
-std::string smurff::priorTypeToString(PriorTypes type)
+std::string priorTypeToString(PriorTypes type)
 {
    switch(type)
    {
@@ -100,7 +100,7 @@ std::string smurff::priorTypeToString(PriorTypes type)
    }
 }
 
-ModelInitTypes smurff::stringToModelInitType(std::string name)
+ModelInitTypes stringToModelInitType(std::string name)
 {
    if(name == MODEL_INIT_NAME_RANDOM)
       return ModelInitTypes::random;
@@ -112,7 +112,7 @@ ModelInitTypes smurff::stringToModelInitType(std::string name)
    }
 }
 
-std::string smurff::modelInitTypeToString(ModelInitTypes type)
+std::string modelInitTypeToString(ModelInitTypes type)
 {
    switch(type)
    {
@@ -656,3 +656,4 @@ std::ostream& Config::info(std::ostream &os, std::string indent) const
 
    return os;
 }
+} // end namespace smurff

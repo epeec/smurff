@@ -27,7 +27,7 @@
 
 #include "Distribution.h"
 
-using namespace smurff;
+namespace smurff {
 
 static thread_vector<MERSENNE_TWISTER> bmrngs;
 
@@ -310,3 +310,4 @@ Eigen::MatrixXd MvNormal(const Eigen::MatrixXd covar, const Eigen::VectorXd mean
 
    return samples;
 }
+} // end namespace smurff

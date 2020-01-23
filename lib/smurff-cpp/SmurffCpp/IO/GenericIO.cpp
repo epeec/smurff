@@ -9,7 +9,7 @@
 
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 std::shared_ptr<TensorConfig> generic_io::read_data_config(const std::string& filename, bool isScarce)
 {
@@ -57,3 +57,4 @@ bool generic_io::file_exists(const std::string& filepath)
    std::ifstream infile(filepath.c_str());
    return infile.good();
 }
+} // end namespace smurff

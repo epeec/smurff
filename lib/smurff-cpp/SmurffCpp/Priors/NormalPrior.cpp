@@ -12,7 +12,7 @@
 #include <SmurffCpp/Utils/Distribution.h>
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 //  base class NormalPrior
 
@@ -120,3 +120,4 @@ std::ostream &NormalPrior::status(std::ostream &os, std::string indent) const
    os << indent << "  mu: " <<  hyperMu().transpose() << std::endl;
    return os;
 }
+} // end namespace smurff

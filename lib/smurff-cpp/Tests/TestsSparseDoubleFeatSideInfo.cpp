@@ -4,7 +4,7 @@
 #include <SmurffCpp/Utils/Distribution.h>
 #include <SmurffCpp/Utils/linop.h>
 
-using namespace smurff;
+namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
@@ -220,7 +220,7 @@ TEST_CASE( "SparseSideInfo/AtA_mul_B", "[AtA_mul_B] for SparseSideInfo" )
             0.56, -1.3, 0., 0., -0.43, -3.21; 
 
     Eigen::MatrixXd inner(6,6);
-    smurff::linop::AtA_mul_Bx<6>(out, A, reg, B, inner);
+    linop::AtA_mul_Bx<6>(out, A, reg, B, inner);
 
     Eigen::MatrixXd true_out(6,6);
     true_out << -7.10631, 11.1661, -20.3844, 28.4183, 121.97, -194.977,
@@ -236,3 +236,4 @@ TEST_CASE( "SparseSideInfo/AtA_mul_B", "[AtA_mul_B] for SparseSideInfo" )
         }
     }
 }
+} // end namespace smurff

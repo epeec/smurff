@@ -13,7 +13,7 @@
 #include <SmurffCpp/DataTensors/SparseMode.h>
 #include <SmurffCpp/DataTensors/TensorData.h>
 
-using namespace smurff;
+namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
@@ -254,3 +254,4 @@ TEST_CASE("macauoneprior/sample_tensor_uni", "Testing sampling tensor univariate
   prior.sample_latents(alpha, st, samples, 0, nlatent);
 }
 */
+} // end namespace smurff

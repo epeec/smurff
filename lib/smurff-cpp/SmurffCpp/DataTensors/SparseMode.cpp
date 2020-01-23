@@ -5,7 +5,7 @@
 
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 SparseMode::SparseMode() 
 : m_mode(0) 
@@ -176,3 +176,4 @@ PVec<> SparseMode::pos(std::uint64_t hyperplane, std::uint64_t item) const
 
    return coords;
 }
+} // end namespace smurff

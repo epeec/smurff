@@ -12,7 +12,7 @@
 
 #include <SmurffCpp/IO/GenericIO.h>
 
-using namespace smurff;
+namespace smurff {
 
 #define EXTENSION_SDM ".sdm" //sparse double matrix (binary file)
 #define EXTENSION_SBM ".sbm" //sparse binary matrix (binary file)
@@ -162,7 +162,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_dense_float64_bin(std::istream& in
    std::vector<double> values(nrow * ncol);
    in.read(reinterpret_cast<char*>(values.data()), values.size() * sizeof(double));
 
-   return std::make_shared<smurff::MatrixConfig>(nrow, ncol, std::move(values), smurff::NoiseConfig());
+   return std::make_shared<MatrixConfig>(nrow, ncol, std::move(values), NoiseConfig());
 }
 
 std::shared_ptr<MatrixConfig> matrix_io::read_dense_float64_csv(std::istream& in)
@@ -216,7 +216,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_dense_float64_csv(std::istream& in
       THROWERROR("invalid number of columns");
    }
 
-   return std::make_shared<smurff::MatrixConfig>(nrow, ncol, std::move(values), smurff::NoiseConfig());
+   return std::make_shared<MatrixConfig>(nrow, ncol, std::move(values), NoiseConfig());
 }
 
 std::shared_ptr<MatrixConfig> matrix_io::read_sparse_float64_bin(std::istream& in, bool isScarce)
@@ -255,7 +255,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_sparse_float64_bin(std::istream& i
       THROWERROR("Invalid number of columns");
    }
 
-   return std::make_shared<smurff::MatrixConfig>(nrow, ncol, std::move(rows), std::move(cols), std::move(values), smurff::NoiseConfig(), isScarce);
+   return std::make_shared<MatrixConfig>(nrow, ncol, std::move(rows), std::move(cols), std::move(values), NoiseConfig(), isScarce);
 }
 
 std::shared_ptr<MatrixConfig> matrix_io::read_sparse_binary_bin(std::istream& in, bool isScarce)
@@ -276,7 +276,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_sparse_binary_bin(std::istream& in
    in.read(reinterpret_cast<char*>(cols.data()), cols.size() * sizeof(std::uint32_t));
    std::for_each(cols.begin(), cols.end(), [](std::uint32_t& col){ col--; });
 
-   return std::make_shared<smurff::MatrixConfig>(nrow, ncol, std::move(rows), std::move(cols), smurff::NoiseConfig(), isScarce);
+   return std::make_shared<MatrixConfig>(nrow, ncol, std::move(rows), std::move(cols), NoiseConfig(), isScarce);
 }
 
 // MatrixMarket format specification
@@ -390,7 +390,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_matrix_market(std::istream& in, bo
          vals[i] = val;
       }
 
-      return std::make_shared<smurff::MatrixConfig>(nrows, ncols, std::move(rows), std::move(cols), std::move(vals), NoiseConfig(), isScarce);
+      return std::make_shared<MatrixConfig>(nrows, ncols, std::move(rows), std::move(cols), std::move(vals), NoiseConfig(), isScarce);
    }
    else if (format == MM_FMT_ARRAY)
    {
@@ -421,7 +421,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_matrix_market(std::istream& in, bo
          }
       }
 
-      return std::make_shared<smurff::MatrixConfig>(nrows, ncols, std::move(vals), NoiseConfig());
+      return std::make_shared<MatrixConfig>(nrows, ncols, std::move(vals), NoiseConfig());
    }
    else
    {
@@ -841,3 +841,4 @@ void matrix_io::eigen::write_matrix(const std::string& filename, const Eigen::Sp
 {
    matrix_io::write_matrix(filename, matrix_utils::eigen_to_sparse(X));
 }
+} // end namespace smurff

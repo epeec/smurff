@@ -8,7 +8,7 @@
 
 #include <SmurffCpp/IO/GenericIO.h>
 
-using namespace smurff;
+namespace smurff {
 
 #define EXTENSION_SDT ".sdt" //sparse double tensor (binary file)
 #define EXTENSION_SBT ".sbt" //sparse binary tensor (binary file)
@@ -546,3 +546,4 @@ void tensor_io::write_sparse_binary_bin(std::ostream& out, std::shared_ptr<const
    out.write(reinterpret_cast<const char*>(&nnz), sizeof(std::uint64_t));
    out.write(reinterpret_cast<const char*>(columns.data()), columns.size() * sizeof(std::uint32_t));
 }
+} // end namespace smurff

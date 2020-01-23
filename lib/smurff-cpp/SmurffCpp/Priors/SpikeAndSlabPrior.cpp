@@ -4,7 +4,7 @@
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 SpikeAndSlabPrior::SpikeAndSlabPrior(std::shared_ptr<Session> session, uint32_t mode)
    : NormalOnePrior(session, mode, "SpikeAndSlabPrior")
@@ -125,3 +125,4 @@ std::ostream &SpikeAndSlabPrior::status(std::ostream &os, std::string indent) co
    }
    return os;
 }
+} // end namespace smurff

@@ -2,7 +2,7 @@
 
 #include <SmurffCpp/Utils/linop.h>
 
-using namespace smurff;
+namespace smurff {
 
 DenseSideInfo::DenseSideInfo(const std::shared_ptr<MatrixConfig> &side_info)
 {
@@ -47,7 +47,7 @@ Eigen::MatrixXd DenseSideInfo::A_mul_B(Eigen::MatrixXd& A)
 
 int DenseSideInfo::solve_blockcg(Eigen::MatrixXd& X, double reg, Eigen::MatrixXd& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
 {
-   return smurff::linop::solve_blockcg(X, *m_side_info, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
+   return linop::solve_blockcg(X, *m_side_info, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
 }
 
 Eigen::VectorXd DenseSideInfo::col_square_sum()
@@ -70,3 +70,4 @@ std::shared_ptr<Eigen::MatrixXd> DenseSideInfo::get_features()
 {
    return m_side_info;
 }
+} // end namespace smurff

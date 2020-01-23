@@ -5,7 +5,7 @@
 #include <SmurffCpp/Utils/TruncNorm.h>
 #include <SmurffCpp/Model.h>
 
-using namespace smurff;
+namespace smurff {
 
 ProbitNoise::ProbitNoise(double t)
    : INoiseModel(), threshold(t)
@@ -37,3 +37,4 @@ std::string ProbitNoise::getStatus()
 {
    return std::string("Probit ") + std::to_string(threshold);
 }
+} // end namespace smurff

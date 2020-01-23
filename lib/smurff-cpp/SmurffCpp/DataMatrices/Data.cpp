@@ -2,7 +2,7 @@
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/Utils/Error.h>
 
-using namespace smurff;
+namespace smurff {
 
 Data::Data()
 {
@@ -87,3 +87,4 @@ std::ostream& Data::status(std::ostream& os, std::string indent) const
    os << indent << noise().getStatus() << std::endl;
    return os;
 }
+} // end namespace smurff

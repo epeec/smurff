@@ -37,7 +37,7 @@
 #define PRED_AVG_TAG "pred_avg"
 #define PRED_VAR_TAG "pred_var"
 
-using namespace smurff;
+namespace smurff {
 
 StepFile::StepFile(std::int32_t isample, std::string prefix, std::string extension, bool create, bool checkpoint, bool final)
    : m_isample(isample), m_prefix(prefix), m_extension(extension), m_checkpoint(checkpoint), m_final(final)
@@ -556,3 +556,4 @@ void StepFile::flushLast() const
 {
    m_iniReader->flush();
 }
+} // end namespace smurff

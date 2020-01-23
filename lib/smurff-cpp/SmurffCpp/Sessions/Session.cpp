@@ -21,7 +21,7 @@
 #include <SmurffCpp/result.h>
 #include <SmurffCpp/StatusItem.h>
 
-using namespace smurff;
+namespace smurff {
 Session::Session()
     : m_model(std::make_shared<Model>()), m_pred()
 {
@@ -470,3 +470,4 @@ std::shared_ptr<IPriorFactory> Session::create_prior_factory() const
 {
     return std::make_shared<PriorFactory>();
 }
+} // end namespace smurff

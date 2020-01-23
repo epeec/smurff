@@ -5,7 +5,7 @@
 
 #include <SmurffCpp/Sessions/PythonSession.h>
 
-using namespace smurff;
+namespace smurff {
 
 //create python session
 //parses args outside of c++ code (in python code)
@@ -31,3 +31,4 @@ std::shared_ptr<ISession> SessionFactory::create_session(Config& cfg)
    session->fromConfig(cfg);
    return session;
 }
+} // end namespace smurff
