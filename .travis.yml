@@ -26,7 +26,7 @@ addons:
 
 script:
     - cd "${TRAVIS_BUILD_DIR}"
-    - cd lib/smurff-cpp/cmake
+    - cd cpp/cmake
     - mkdir build
     - cd build
     - cmake --version
