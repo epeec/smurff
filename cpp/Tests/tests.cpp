@@ -33,10 +33,6 @@
 
 #include <SmurffCpp/SideInfo/DenseSideInfo.h>
 
-// https://github.com/catchorg/Catch2/blob/master/docs/assertions.md#floating-point-comparisons
-// By default Catch.hpp sets epsilon to std::numeric_limits<float>::epsilon()*100
-#define APPROX_EPSILON std::numeric_limits<float>::epsilon()*100
-
 namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);

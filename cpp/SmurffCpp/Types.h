@@ -5,6 +5,7 @@
 
 namespace smurff {
    typedef double float_type;
+   const double APPROX_EPSILON = std::numeric_limits<float>::epsilon()*100;
    typedef Eigen::Matrix<float_type, Eigen::Dynamic, Eigen::Dynamic> Matrix;
    typedef Eigen::Matrix<float_type, Eigen::Dynamic, 1> Vector;
    typedef Eigen::Array<float_type, Eigen::Dynamic, Eigen::Dynamic> Array2D;
