@@ -626,8 +626,10 @@ void matrix_io::eigen::read_dense_float64_bin(std::istream& in, Matrix& X)
    in.read(reinterpret_cast<char*>(&nrow), sizeof(std::uint64_t));
    in.read(reinterpret_cast<char*>(&ncol), sizeof(std::uint64_t));
 
-   X.resize(nrow, ncol);
-   in.read(reinterpret_cast<char*>(X.data()), nrow * ncol * sizeof(typename Matrix::Scalar));
+   Eigen::MatrixXd X_as_double(nrow, ncol);
+   in.read(reinterpret_cast<char*>(X_as_double.data()), nrow * ncol * sizeof(typename Eigen::MatrixXd::Scalar));
+
+   X = X_as_double.cast<Matrix::Scalar>();
 }
 
 void matrix_io::eigen::read_dense_float64_csv(std::istream& in, Matrix& X)

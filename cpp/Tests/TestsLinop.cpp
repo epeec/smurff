@@ -98,7 +98,7 @@ TEST_CASE( "linop/solve_blockcg_dense/ok", "BlockCG solver for dense (3rhs separ
 
    for (int i = 0; i < X.rows(); i++) {
      for (int j = 0; j < X.cols(); j++) {
-       REQUIRE( X(i,j) == Approx(X_true(i,j)) );
+       REQUIRE( X(i,j) == Approx(X_true(i,j)).epsilon(APPROX_EPSILON) );
      }
    }
 }
