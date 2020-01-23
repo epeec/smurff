@@ -28,7 +28,7 @@ namespace smurff
       {
          auto Vf = *model.CVbegin(mode);
          const int nl = model.nlatent();
-         smurff::thread_vector<Eigen::MatrixXd> VVs(Eigen::MatrixXd::Zero(nl, nl));
+         thread_vector<Eigen::MatrixXd> VVs(Eigen::MatrixXd::Zero(nl, nl));
 
          //for each column v of Vf - calculate v * vT and add to VVs
          #pragma omp parallel for schedule(guided) shared(VVs)

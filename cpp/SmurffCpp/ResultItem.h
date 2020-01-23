@@ -21,7 +21,7 @@ struct ResultItem
       pred_all.resize(n);
    }
 
-   smurff::PVec<> coords;
+   PVec<> coords;
 
    double val;
    double pred_1sample;

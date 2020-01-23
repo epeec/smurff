@@ -7,7 +7,9 @@
 
 #include <Utils/Error.h>
 
-Eigen::MatrixXd smurff::matrix_utils::dense_to_eigen(const smurff::MatrixConfig& matrixConfig)
+namespace smurff {
+
+Eigen::MatrixXd matrix_utils::dense_to_eigen(const MatrixConfig& matrixConfig)
 {
    if(!matrixConfig.isDense())
    {
@@ -17,18 +19,18 @@ Eigen::MatrixXd smurff::matrix_utils::dense_to_eigen(const smurff::MatrixConfig&
    return Eigen::Map<const Eigen::MatrixXd>(matrixConfig.getValues().data(), matrixConfig.getNRow(), matrixConfig.getNCol());
 }
 
-std::shared_ptr<smurff::MatrixConfig> smurff::matrix_utils::eigen_to_dense(const Eigen::MatrixXd &eigenMatrix, NoiseConfig n)
+std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_dense(const Eigen::MatrixXd &eigenMatrix, NoiseConfig n)
 {
    std::vector<double> values(eigenMatrix.data(),  eigenMatrix.data() + eigenMatrix.size());
-   return std::make_shared<smurff::MatrixConfig>(eigenMatrix.rows(), eigenMatrix.cols(), values, n);
+   return std::make_shared<MatrixConfig>(eigenMatrix.rows(), eigenMatrix.cols(), values, n);
 }
 
 struct sparse_vec_iterator
 {
-  sparse_vec_iterator(const smurff::MatrixConfig& matrixConfig, int pos)
+  sparse_vec_iterator(const MatrixConfig& matrixConfig, int pos)
      : config(matrixConfig), pos(pos) {}
 
-  const smurff::MatrixConfig& config;
+  const MatrixConfig& config;
   int pos;
 
   bool operator!=(const sparse_vec_iterator &other) const {
@@ -51,7 +53,7 @@ struct sparse_vec_iterator
   }
 };
 
-Eigen::SparseMatrix<double> smurff::matrix_utils::sparse_to_eigen(const smurff::MatrixConfig& matrixConfig)
+Eigen::SparseMatrix<double> matrix_utils::sparse_to_eigen(const MatrixConfig& matrixConfig)
 {
    if(matrixConfig.isDense())
    {
@@ -70,7 +72,7 @@ Eigen::SparseMatrix<double> smurff::matrix_utils::sparse_to_eigen(const smurff::
    return out;
 }
 
-std::shared_ptr<smurff::MatrixConfig> smurff::matrix_utils::eigen_to_sparse(const Eigen::SparseMatrix<double> &X, NoiseConfig n, bool isScarce)
+std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_sparse(const Eigen::SparseMatrix<double> &X, NoiseConfig n, bool isScarce)
 {
    std::uint64_t nrow = X.rows();
    std::uint64_t ncol = X.cols();
@@ -89,10 +91,10 @@ std::shared_ptr<smurff::MatrixConfig> smurff::matrix_utils::eigen_to_sparse(cons
       }
    }
 
-   return std::make_shared<smurff::MatrixConfig>(nrow, ncol, rows, cols, values, n, isScarce);
+   return std::make_shared<MatrixConfig>(nrow, ncol, rows, cols, values, n, isScarce);
 }
 
-std::ostream& smurff::matrix_utils::operator << (std::ostream& os, const MatrixConfig& mc)
+std::ostream& matrix_utils::operator << (std::ostream& os, const MatrixConfig& mc)
 {
    const std::vector<std::uint32_t>& rows = mc.getRows();
    const std::vector<std::uint32_t>& cols = mc.getCols();
@@ -141,7 +143,7 @@ std::ostream& smurff::matrix_utils::operator << (std::ostream& os, const MatrixC
    return os;
 }
 
-bool smurff::matrix_utils::equals(const Eigen::MatrixXd& m1, const Eigen::MatrixXd& m2, double precision)
+bool matrix_utils::equals(const Eigen::MatrixXd& m1, const Eigen::MatrixXd& m2, double precision)
 {
    if (m1.rows() != m2.rows() || m1.cols() != m2.cols())
       return false;
@@ -161,7 +163,7 @@ bool smurff::matrix_utils::equals(const Eigen::MatrixXd& m1, const Eigen::Matrix
    return true;
 }
 
-bool smurff::matrix_utils::equals_vector(const Eigen::VectorXd& v1, const Eigen::VectorXd& v2, double precision)
+bool matrix_utils::equals_vector(const Eigen::VectorXd& v1, const Eigen::VectorXd& v2, double precision)
 {
    if (v1.size() != v2.size())
       return false;
@@ -174,3 +176,5 @@ bool smurff::matrix_utils::equals_vector(const Eigen::VectorXd& v1, const Eigen:
 
    return true;
 }
+
+} // end namespace

@@ -31,8 +31,8 @@ public:
    std::uint32_t m_mode;
    std::string m_name = "xxxx";
 
-   smurff::thread_vector<Eigen::VectorXd> rrs;
-   smurff::thread_vector<Eigen::MatrixXd> MMs;
+   thread_vector<Eigen::VectorXd> rrs;
+   thread_vector<Eigen::MatrixXd> MMs;
 
 protected:
    ILatentPrior(){}

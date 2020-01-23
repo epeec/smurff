@@ -4,7 +4,9 @@
 
 #include <Utils/Error.h>
 
-Eigen::MatrixXd smurff::tensor_utils::dense_to_eigen(const smurff::TensorConfig& tensorConfig)
+namespace smurff {
+
+Eigen::MatrixXd tensor_utils::dense_to_eigen(const TensorConfig& tensorConfig)
 {
    if(!tensorConfig.isDense())
    {
@@ -19,7 +21,7 @@ Eigen::MatrixXd smurff::tensor_utils::dense_to_eigen(const smurff::TensorConfig&
    return Eigen::Map<const Eigen::MatrixXd>(tensorConfig.getValues().data(), tensorConfig.getDims()[0], tensorConfig.getDims()[1]);
 }
 
-Eigen::SparseMatrix<double> smurff::tensor_utils::sparse_to_eigen(const smurff::TensorConfig& tensorConfig)
+Eigen::SparseMatrix<double> tensor_utils::sparse_to_eigen(const TensorConfig& tensorConfig)
 {
    if(tensorConfig.isDense())
    {
@@ -50,7 +52,7 @@ Eigen::SparseMatrix<double> smurff::tensor_utils::sparse_to_eigen(const smurff::
    return out;
 }
 
-smurff::MatrixConfig smurff::tensor_utils::tensor_to_matrix(const smurff::TensorConfig& tensorConfig)
+MatrixConfig tensor_utils::tensor_to_matrix(const TensorConfig& tensorConfig)
 {
    if(tensorConfig.getNModes() != 2)
    {
@@ -59,27 +61,27 @@ smurff::MatrixConfig smurff::tensor_utils::tensor_to_matrix(const smurff::Tensor
 
    if(tensorConfig.isDense())
    {
-      return smurff::MatrixConfig(tensorConfig.getDims()[0], tensorConfig.getDims()[1],
+      return MatrixConfig(tensorConfig.getDims()[0], tensorConfig.getDims()[1],
          tensorConfig.getValues(),
          tensorConfig.getNoiseConfig());
    }
    else if(tensorConfig.isBinary())
    {
-      return smurff::MatrixConfig(tensorConfig.getDims()[0], tensorConfig.getDims()[1],
+      return MatrixConfig(tensorConfig.getDims()[0], tensorConfig.getDims()[1],
          tensorConfig.getColumns(),
          tensorConfig.getNoiseConfig(),
          tensorConfig.isScarce());
    }
    else
    {
-      return smurff::MatrixConfig(tensorConfig.getDims()[0], tensorConfig.getDims()[1],
+      return MatrixConfig(tensorConfig.getDims()[0], tensorConfig.getDims()[1],
          tensorConfig.getColumns(), tensorConfig.getValues(),
          tensorConfig.getNoiseConfig(),
          tensorConfig.isScarce());
    }
 }
 
-std::ostream& smurff::tensor_utils::operator << (std::ostream& os, const TensorConfig& tc)
+std::ostream& tensor_utils::operator << (std::ostream& os, const TensorConfig& tc)
 {
    const std::vector<double>& values = tc.getValues();
    const std::vector<std::uint32_t>& columns = tc.getColumns();
@@ -114,7 +116,7 @@ std::ostream& smurff::tensor_utils::operator << (std::ostream& os, const TensorC
    return os;
 }
 
-Eigen::MatrixXd smurff::tensor_utils::slice( const TensorConfig& tensorConfig
+Eigen::MatrixXd tensor_utils::slice( const TensorConfig& tensorConfig
                                            , const std::array<std::uint64_t, 2>& fixedDims
                                            , const std::unordered_map<std::uint64_t, std::uint32_t>& dimCoords)
 {
@@ -185,3 +187,5 @@ Eigen::MatrixXd smurff::tensor_utils::slice( const TensorConfig& tensorConfig
    }
    return sliceMatrix;
 }
+
+} // end namespace smurff

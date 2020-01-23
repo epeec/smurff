@@ -4,8 +4,6 @@
 
 #include <Utils/Error.h>
 
-namespace smurff
-{
 namespace threads
 {
 
@@ -69,6 +67,4 @@ namespace threads
     int  get_thread_num() { return 0; } 
 
     #endif // _OPENMP
-}
-
 }

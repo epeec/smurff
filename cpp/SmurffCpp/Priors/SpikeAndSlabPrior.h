@@ -17,7 +17,7 @@ class SpikeAndSlabPrior : public NormalOnePrior
 {
 public:
    // updated by every thread during sample_latents
-   smurff::thread_vector<Eigen::MatrixXd> Zcol, W2col;
+   thread_vector<Eigen::MatrixXd> Zcol, W2col;
 
    // updated during update_prior
    Eigen::ArrayXXd Zkeep;
