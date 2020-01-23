@@ -75,15 +75,10 @@ SmurffCpp/Utils/omp_util.h
 SmurffCpp/Utils/linop.h
 SmurffCpp/Utils/TensorUtils.h
 SmurffCpp/Utils/omp_util.cpp
-SmurffCpp/Utils/StringUtils.h
 SmurffCpp/Utils/TruncNorm.cpp
 SmurffCpp/Utils/RootFile.h
-SmurffCpp/Utils/StringUtils.cpp
 SmurffCpp/Utils/RootFile.cpp
-SmurffCpp/Utils/TensorUtils.cpp
 SmurffCpp/Utils/TruncNorm.h
-SmurffCpp/Utils/MatrixUtils.cpp
-SmurffCpp/Utils/MatrixUtils.h
 SmurffCpp/Utils/Distribution.h
 SmurffCpp/Utils/StepFile.h
 SmurffCpp/Utils/InvNormCdf.h
