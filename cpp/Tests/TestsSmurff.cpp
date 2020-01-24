@@ -167,7 +167,7 @@ std::shared_ptr<MatrixConfig> getColAuxDataDenseMatrixConfig()
 std::shared_ptr<MatrixConfig> getRowSideInfoDenseMatrixConfig()
 {
    NoiseConfig nc(NoiseTypes::sampled);
-   nc.setPrecision(10.0);
+   nc.setPrecision(30.0);
 
    std::vector<double> rowSideInfoDenseMatrixConfigVals = { 1, 2, 3 };
    std::shared_ptr<MatrixConfig> rowSideInfoDenseMatrixConfig =
@@ -178,7 +178,7 @@ std::shared_ptr<MatrixConfig> getRowSideInfoDenseMatrixConfig()
 std::shared_ptr<MatrixConfig> getColSideInfoDenseMatrixConfig()
 {
    NoiseConfig nc(NoiseTypes::sampled);
-   nc.setPrecision(10.0);
+   nc.setPrecision(30.0);
 
    std::vector<double> colSideInfoDenseMatrixConfigVals = { 1, 2, 3, 4 };
    std::shared_ptr<MatrixConfig> colSideInfoDenseMatrixConfig =
@@ -189,7 +189,7 @@ std::shared_ptr<MatrixConfig> getColSideInfoDenseMatrixConfig()
 std::shared_ptr<MatrixConfig> getRowSideInfoSparseMatrixConfig()
 {
    NoiseConfig nc(NoiseTypes::sampled);
-   nc.setPrecision(10.0);
+   nc.setPrecision(30.0);
 
    std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigRows = {0, 1, 2};
    std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigCols = {0, 0, 0};
@@ -202,7 +202,7 @@ std::shared_ptr<MatrixConfig> getRowSideInfoSparseMatrixConfig()
 std::shared_ptr<MatrixConfig> getColSideInfoSparseMatrixConfig()
 {
    NoiseConfig nc(NoiseTypes::sampled);
-   nc.setPrecision(10.0);
+   nc.setPrecision(30.0);
 
    std::vector<std::uint32_t> colSideInfoSparseMatrixConfigRows = {0, 1, 2, 3};
    std::vector<std::uint32_t> colSideInfoSparseMatrixConfigCols = {0, 0, 0, 0};
@@ -215,7 +215,7 @@ std::shared_ptr<MatrixConfig> getColSideInfoSparseMatrixConfig()
 std::shared_ptr<MatrixConfig> getRowSideInfoDenseMatrix3dConfig()
 {
    NoiseConfig nc(NoiseTypes::sampled);
-   nc.setPrecision(10.0);
+   nc.setPrecision(30.0);
 
    std::vector<double> rowSideInfoDenseMatrixConfigVals = { 1, 2, 3, 4, 5, 6 };
    std::shared_ptr<MatrixConfig> rowSideInfoDenseMatrixConfig =
@@ -295,7 +295,7 @@ void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem>& actualResultItems, cons
       const ResultItem& expectedResultItem = expectedResultItems[i];
       REQUIRE(actualResultItem.coords == expectedResultItem.coords);
       REQUIRE(actualResultItem.val == expectedResultItem.val);
-      REQUIRE(actualResultItem.pred_1sample == Approx(expectedResultItem.pred_1sample).epsilon(APPROX_EPSILON));
+      REQUIRE(actualResultItem.pred_1sample == Approx(expectedResultItem.pred_1sample).epsilon(APPROX_EPSILON*10));
       REQUIRE(actualResultItem.pred_avg == Approx(expectedResultItem.pred_avg).epsilon(APPROX_EPSILON));
       REQUIRE(actualResultItem.var == Approx(expectedResultItem.var).epsilon(APPROX_EPSILON));
    }
@@ -325,7 +325,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
+   config.setVerbose(0);
    config.setRandomSeed(1234);
    config.setNumThreads(1);
 
@@ -3113,7 +3113,7 @@ TEST_CASE("PredictSession/Features/2"
     std::shared_ptr<SideInfoConfig> rowSideInfoConfig;
     {
         NoiseConfig nc(NoiseTypes::sampled);
-        nc.setPrecision(10.0);
+        nc.setPrecision(30.0);
 
         std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigRows = {0, 1, 2, 3};
         std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigCols = {0, 0, 0, 0};
