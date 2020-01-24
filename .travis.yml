@@ -24,5 +24,5 @@ script:
     - cd "${TRAVIS_BUILD_DIR}"
     - cd cpp/cmake && mkdir build && cd build
     - cmake .. -DFLOAT_TYPE=${FLOAT_TYPE} -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_INSTALL_PREFIX=$PWD/../prefix -DENABLE_BOOST_RANDOM=ON
-    - make -j
+    - make -j2
     - ./bin/tests
