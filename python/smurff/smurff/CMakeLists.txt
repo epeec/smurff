@@ -5,7 +5,7 @@ add_library(wrapper MODULE ${wrapper})
 python_extension_module(wrapper)
 
 #LINK LIBRARIES
-target_link_libraries (wrapper smurff-cpp
+target_link_libraries (wrapper smurff-cpp smurff-utils
                             ${ALGEBRA_LIBS}
                             ${OpenMP_CXX_LIBRARIES}
                             ${CMAKE_THREAD_LIBS_INIT})

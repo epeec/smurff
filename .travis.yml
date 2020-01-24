@@ -1,21 +1,17 @@
 language: cpp
-matrix:
-  include:
-  - os: linux
-    dist: xenial
-    env: BUILD_TYPE="Debug"
-  - os: linux
-    dist: xenial
-    env: BUILD_TYPE="Release"
+os: linux
+dist: xenial
+
 env:
-  global:
-    - MAKEFLAGS="-j 2"
-    - OMP_NUM_THREADS=1
+  - FLOAT_TYPE=float  ALLOWED_FAILURES=10 BUILD_TYPE=Debug
+  - FLOAT_TYPE=float  ALLOWED_FAILURES=10 BUILD_TYPE=Release
+  - FLOAT_TYPE=double ALLOWED_FAILURES=0  BUILD_TYPE=Debug
+  - FLOAT_TYPE=double ALLOWED_FAILURES=0  BUILD_TYPE=Release
 
 addons:
   apt:
     sources:
-    - sourceline: 'ppa:lkoppel/robotics'
+      - sourceline: 'ppa:lkoppel/robotics'
     packages:
       - libblas-dev
       - liblapack-dev
@@ -27,16 +23,7 @@ addons:
 
 script:
     - cd "${TRAVIS_BUILD_DIR}"
-    - cd lib/smurff-cpp/cmake
-    - mkdir build
-    - cd build
-    - cmake --version
-    - cmake .. -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_INSTALL_PREFIX=$PWD/../prefix -DENABLE_BOOST_RANDOM=ON
-    - make
-    - ./bin/tests
-
-after_success:
-  - echo "success"
-
-after_failure:
-  - echo "failure"
+    - cd cpp/cmake && mkdir build && cd build
+    - cmake .. -DFLOAT_TYPE=${FLOAT_TYPE} -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_INSTALL_PREFIX=$PWD/../prefix -DENABLE_BOOST_RANDOM=ON
+    - make -j2
+    - ./bin/tests || [ $? -le $ALLOWED_FAILURES ]

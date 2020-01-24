@@ -1,0 +1,311 @@
+
+// From:
+// http://stackoverflow.com/questions/6142576/sample-from-multivariate-normal-gaussian-distribution-in-c
+ 
+#include <iostream>
+#include <chrono>
+#include <functional>
+
+#include "Utils/ThreadVector.hpp"
+#include "Utils/omp_util.h"
+
+#ifdef USE_BOOST_RANDOM
+#include <boost/random.hpp>
+#define MERSENNE_TWISTER boost::random::mt19937
+#define UNIFORM_REAL_DISTRIBUTION boost::random::uniform_real_distribution<double>
+#define GAMMA_DISTRIBUTION boost::random::gamma_distribution<double>
+#else
+#include <random>
+#define MERSENNE_TWISTER std::mt19937
+#define UNIFORM_REAL_DISTRIBUTION std::uniform_real_distribution<double>
+#define GAMMA_DISTRIBUTION std::gamma_distribution<double>
+#endif
+
+#include <SmurffCpp/Types.h>
+
+#include "Distribution.h"
+
+namespace smurff {
+
+static thread_vector<MERSENNE_TWISTER> bmrngs;
+
+double randn0()
+{
+   return bmrandn_single_thread();
+}
+
+double randn(double) 
+{
+   return bmrandn_single_thread();
+}
+
+void bmrandn(float_type* x, long n) 
+{
+   #pragma omp parallel 
+   {
+      UNIFORM_REAL_DISTRIBUTION unif(-1.0, 1.0);
+      auto& bmrng = bmrngs.local();
+      
+      #pragma omp for schedule(static)
+      for (long i = 0; i < n; i += 2) 
+      {
+         double x1, x2, w;
+         do 
+         {
+           x1 = unif(bmrng);
+           x2 = unif(bmrng);
+           w = x1 * x1 + x2 * x2;
+         } while ( w >= 1.0 );
+   
+         w = std::sqrt( (-2.0 * std::log( w ) ) / w );
+         x[i] = x1 * w;
+
+         if (i + 1 < n) 
+         {
+           x[i+1] = x2 * w;
+         }
+      }
+   }
+}
+   
+void bmrandn(Matrix & X) 
+{
+   long n = X.rows() * (long)X.cols();
+   bmrandn(X.data(), n);
+}
+
+double bmrandn_single_thread() 
+{
+   //TODO: add bmrng as input
+   UNIFORM_REAL_DISTRIBUTION unif(-1.0, 1.0);
+   auto& bmrng = bmrngs.local();
+  
+   double x1, x2, w;
+   do 
+   {
+      x1 = unif(bmrng);
+      x2 = unif(bmrng);
+      w = x1 * x1 + x2 * x2;
+   } while ( w >= 1.0 );
+
+   w = std::sqrt( (-2.0 * std::log( w ) ) / w );
+   return x1 * w;
+}
+
+// to be called within OpenMP parallel loop (also from serial code is fine)
+void bmrandn_single_thread(float_type* x, long n) 
+{
+   UNIFORM_REAL_DISTRIBUTION unif(-1.0, 1.0);
+   auto& bmrng = bmrngs.local();
+
+   for (long i = 0; i < n; i += 2) 
+   {
+      double x1, x2, w;
+
+      do 
+      {
+         x1 = unif(bmrng);
+         x2 = unif(bmrng);
+         w = x1 * x1 + x2 * x2;
+      } while ( w >= 1.0 );
+ 
+      w = std::sqrt( (-2.0 * std::log( w ) ) / w );
+      x[i] = x1 * w;
+
+      if (i + 1 < n) 
+      {
+         x[i+1] = x2 * w;
+      }
+   }
+}
+  
+void bmrandn_single_thread(Vector & x) 
+{
+   bmrandn_single_thread(x.data(), x.size());
+}
+ 
+void bmrandn_single_thread(Matrix & X) 
+{
+   long n = X.rows() * (long)X.cols();
+   bmrandn_single_thread(X.data(), n);
+}
+
+
+void init_bmrng() 
+{
+   using namespace std::chrono;
+   auto ms = (duration_cast< milliseconds >(system_clock::now().time_since_epoch())).count();
+   init_bmrng(ms);
+}
+
+void init_bmrng(int seed) 
+{
+    std::vector<MERSENNE_TWISTER> v;
+    for (int i = 0; i < threads::get_max_threads(); i++)
+    {
+        v.push_back(MERSENNE_TWISTER(seed + i * 1999));
+    }
+
+    bmrngs.init(v);
+}
+   
+double rand_unif() 
+{
+   UNIFORM_REAL_DISTRIBUTION unif(0.0, 1.0);
+   auto& bmrng = bmrngs.local();
+   return unif(bmrng);
+}
+ 
+double rand_unif(double low, double high) 
+{
+   UNIFORM_REAL_DISTRIBUTION unif(low, high);
+   auto& bmrng = bmrngs.local();
+   return unif(bmrng);
+}
+
+// returns random number according to Gamma distribution
+// with the given shape (k) and scale (theta). See wiki.
+double rgamma(double shape, double scale) 
+{
+   GAMMA_DISTRIBUTION gamma(shape, scale);
+   return gamma(bmrngs.local());
+}
+
+auto nrandn(int n) -> decltype(Vector::NullaryExpr(n, std::cref(randn))) 
+{
+   return Vector::NullaryExpr(n, std::cref(randn));
+}
+
+auto nrandn(int n, int m) -> decltype(Array2D::NullaryExpr(n, m, std::cref(randn)))
+{
+   return Array2D::NullaryExpr(n, m, std::cref(randn)); 
+}
+
+
+Matrix WishartUnit(int m, int df)
+{
+   Matrix c(m,m);
+   c.setZero();
+   auto& rng = bmrngs.local();
+
+   for ( int i = 0; i < m; i++ ) 
+   {
+      GAMMA_DISTRIBUTION gam(0.5*(df - i));
+      c(i,i) = std::sqrt(2.0 * gam(rng));
+      Vector r = nrandn(m-i-1);
+      c.block(i,i+1,1,m-i-1) = r.transpose();
+   }
+
+   Matrix ret = c.transpose() * c;
+
+   #ifdef TEST_MVNORMAL
+   cout << "WISHART UNIT {\n" << endl;
+   cout << "  m:\n" << m << endl;
+   cout << "  df:\n" << df << endl;
+   cout << "  ret;\n" << ret << endl;
+   cout << "  c:\n" << c << endl;
+   cout << "}\n" << ret << endl;
+   #endif
+
+   return ret;
+}
+
+Matrix Wishart(const Matrix &sigma, const int df)
+{
+   //  Get R, the upper triangular Cholesky factor of SIGMA.
+   auto chol = sigma.llt();
+   Matrix r = chol.matrixL();
+
+   //  Get AU, a sample from the unit Wishart distribution.
+   Matrix au = WishartUnit(sigma.cols(), df);
+
+   //  Construct the matrix A = R' * AU * R.
+   Matrix a = r * au * chol.matrixU();
+
+   #ifdef TEST_MVNORMAL
+   cout << "WISHART {\n" << endl;
+   cout << "  sigma:\n" << sigma << endl;
+   cout << "  r:\n" << r << endl;
+   cout << "  au:\n" << au << endl;
+   cout << "  df:\n" << df << endl;
+   cout << "  a:\n" << a << endl;
+   cout << "}\n" << endl;
+   #endif
+
+  return a;
+}
+
+// from julia package Distributions: conjugates/normalwishart.jl
+std::pair<Vector, Matrix> NormalWishart(const Vector & mu, double kappa, const Matrix & T, double nu)
+{
+   Matrix Lam = Wishart(T, nu);
+   Matrix mu_o = MvNormal_prec(Lam * kappa, mu);
+
+   #ifdef TEST_MVNORMAL
+   cout << "NORMAL WISHART {\n" << endl;
+   cout << "  mu:\n" << mu << endl;
+   cout << "  kappa:\n" << kappa << endl;
+   cout << "  T:\n" << T << endl;
+   cout << "  nu:\n" << nu << endl;
+   cout << "  mu_o\n" << mu_o << endl;
+   cout << "  Lam\n" << Lam << endl;
+   cout << "}\n" << endl;
+   #endif
+
+   return std::make_pair(mu_o , Lam);
+}
+
+std::pair<Vector, Matrix> CondNormalWishart(const int N, const Matrix &NS, const Vector &NU, const Vector &mu, const double kappa, const Matrix &T, const int nu)
+{
+   int nu_c = nu + N;
+
+   double kappa_c = kappa + N;
+   auto mu_c = (kappa * mu + NU) / (kappa + N);
+   auto X    = (T + NS + kappa * mu * mu.adjoint() - kappa_c * mu_c * mu_c.adjoint());
+   Matrix T_c = X.inverse();
+    
+   return NormalWishart(mu_c, kappa_c, T_c, nu_c);
+}
+
+std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, const double kappa, const Matrix &T, const int nu)
+{
+   auto N = U.cols();
+   auto NS = U * U.adjoint();
+   auto NU = U.rowwise().sum();
+   return CondNormalWishart(N, NS, NU, mu, kappa, T, nu);
+}
+
+// Normal(0, Lambda^-1) for nn columns
+Matrix MvNormal_prec(const Matrix & Lambda, int ncols)
+{
+   int nrows = Lambda.rows(); // Dimensionality (rows)
+   Eigen::LLT<Matrix> chol(Lambda);
+
+   Matrix r(nrows, ncols);
+   bmrandn(r);
+
+   return chol.matrixU().solve(r);
+}
+
+Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn)
+{
+   Matrix r = MvNormal_prec(Lambda, nn);
+   return r.colwise() + mean;
+}
+
+// Draw nn samples from a size-dimensional normal distribution
+// with a specified mean and covariance
+Matrix MvNormal(const Matrix covar, const Vector mean, int nn) 
+{
+   int size = mean.rows(); // Dimensionality (rows)
+   Matrix normTransform(size,size);
+
+   Eigen::LLT<Matrix> cholSolver(covar);
+   normTransform = cholSolver.matrixL();
+
+   auto normSamples = Matrix::NullaryExpr(size, nn, std::cref(randn));
+   Matrix samples = (normTransform * normSamples).colwise() + mean;
+
+   return samples;
+}
+} // end namespace smurff

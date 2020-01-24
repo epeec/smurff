@@ -4,7 +4,7 @@ message("Configuring " ${PROJECT} "...")
 project (${PROJECT})
 
 include_directories(${NUMPY_INCLUDE_DIR})
-include_directories(../../lib/smurff-cpp)
+include_directories(../../cpp)
 include_directories(include)
 
 # With CMake, a clean separation can be made between the source tree and the

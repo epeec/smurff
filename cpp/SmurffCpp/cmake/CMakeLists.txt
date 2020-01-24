@@ -1,0 +1,201 @@
+#SETUP PROJECT
+set (PROJECT smurff-cpp)
+message("Configuring " ${PROJECT} "...")
+project (${PROJECT})
+
+FILE (GLOB UTIL_FILES   
+                        "../Utils/Distribution.h"
+                        "../Utils/MatrixUtils.h"
+                        "../Utils/TensorUtils.h"
+                        "../Utils/PVec.hpp"
+                        "../Utils/RootFile.h"
+                        "../Utils/StepFile.h"
+
+                        "../Utils/Distribution.cpp"
+                        "../Utils/MatrixUtils.cpp"
+                        "../Utils/TensorUtils.cpp"
+                        "../Utils/RootFile.cpp"
+                        "../Utils/StepFile.cpp"
+                        )
+
+source_group ("Utils" FILES ${UTIL_FILES})
+
+FILE (GLOB IO_FILES     "../IO/ini.h"
+                        "../IO/INIFile.h"
+                        "../IO/GenericIO.h"
+                        "../IO/MatrixIO.h"
+                        "../IO/TensorIO.h"
+                        "../IO/IDataWriter.h"
+                        "../IO/DataWriter.h"
+
+                        "../IO/ini.c"
+                        "../IO/INIFile.cpp"
+                        "../IO/GenericIO.cpp"
+                        "../IO/MatrixIO.cpp"
+                        "../IO/TensorIO.cpp"
+                        "../IO/DataWriter.cpp"
+                        )
+
+source_group ("IO" FILES ${IO_FILES})
+
+FILE (GLOB CONFIG_FILES "../Configs/Config.h"
+                        "../Configs/MatrixConfig.h"
+                        "../Configs/TensorConfig.h"
+                        "../Configs/NoiseConfig.h"
+                        "../Configs/SideInfoConfig.h"
+
+                        "../Configs/Config.cpp"
+                        "../Configs/MatrixConfig.cpp"
+                        "../Configs/TensorConfig.cpp"
+                        "../Configs/NoiseConfig.cpp"
+                        "../Configs/SideInfoConfig.cpp"
+                        )
+
+source_group ("Configs" FILES ${CONFIG_FILES})
+
+FILE (GLOB NOISE_FILES  "../Noises/GaussianNoise.h"
+                        "../Noises/AdaptiveGaussianNoise.h"
+                        "../Noises/FixedGaussianNoise.h"
+                        "../Noises/SampledGaussianNoise.h"
+                        "../Noises/ProbitNoise.h"
+                        "../Noises/UnusedNoise.h"
+                        "../Noises/INoiseModel.h"
+                        "../Noises/NoiseFactory.h"
+
+                        "../Noises/INoiseModel.cpp"
+                        "../Noises/GaussianNoise.cpp"
+                        "../Noises/AdaptiveGaussianNoise.cpp"
+                        "../Noises/FixedGaussianNoise.cpp"
+                        "../Noises/SampledGaussianNoise.cpp"
+                        "../Noises/ProbitNoise.cpp"
+                        "../Noises/UnusedNoise.cpp"
+                        "../Noises/NoiseFactory.cpp"
+                        )
+
+source_group ("Noises" FILES ${NOISE_FILES})
+
+FILE (GLOB PRIOR_FILES  "../Priors/ILatentPrior.h"
+                        "../Priors/NormalPrior.h"
+                        "../Priors/NormalOnePrior.h"
+                        "../Priors/SpikeAndSlabPrior.h"
+                        "../Priors/MacauPrior.h"
+                        "../Priors/MacauOnePrior.h"
+                        "../Priors/IPriorFactory.h"
+                        "../Priors/PriorFactory.h"
+
+                        "../Priors/ILatentPrior.cpp"
+                        "../Priors/NormalPrior.cpp"
+                        "../Priors/NormalOnePrior.cpp"
+                        "../Priors/SpikeAndSlabPrior.cpp"
+                        "../Priors/MacauPrior.cpp"
+                        "../Priors/MacauOnePrior.cpp"
+                        "../Priors/PriorFactory.cpp"
+                        )
+
+source_group ("Priors" FILES ${PRIOR_FILES})
+
+FILE (GLOB MATRIX_FILES "../DataMatrices/Data.h"
+                        "../DataMatrices/DenseMatrixData.h"
+                        "../DataMatrices/FullMatrixData.hpp"
+                        "../DataMatrices/MatricesData.h"
+                        "../DataMatrices/MatrixData.h"
+                        "../DataMatrices/MatrixDataTempl.hpp"
+                        "../DataMatrices/ScarceMatrixData.h"
+                        "../DataMatrices/SparseMatrixData.h"
+                        "../DataMatrices/IDataCreator.h"
+                        "../DataMatrices/DataCreator.h"
+                        "../DataMatrices/DataCreatorBase.h"
+
+                        "../DataMatrices/Data.cpp"
+                        "../DataMatrices/DenseMatrixData.cpp"
+                        "../DataMatrices/MatricesData.cpp"
+                        "../DataMatrices/MatrixData.cpp"
+                        "../DataMatrices/ScarceMatrixData.cpp"
+                        "../DataMatrices/SparseMatrixData.cpp"
+                        "../DataMatrices/DataCreator.cpp"
+                        "../DataMatrices/DataCreatorBase.cpp"
+                        )
+
+source_group ("DataMatrices" FILES ${MATRIX_FILES})
+
+FILE (GLOB TENSOR_FILES "../DataTensors/TensorData.h"
+                        "../DataTensors/SparseMode.h"
+                        "../DataTensors/TensorData.cpp"
+                        "../DataTensors/SparseMode.cpp"
+                        )
+
+source_group ("DataTensors" FILES ${TENSOR_FILES})
+
+FILE (GLOB SESSION_FILES "../Sessions/ISession.h"
+                         "../Sessions/Session.h"
+                         "../Sessions/CmdSession.h"
+                         "../Sessions/PythonSession.h"
+                         "../Sessions/SessionFactory.h"
+
+                         "../Sessions/ISession.cpp"
+                         "../Sessions/Session.cpp"
+                         "../Sessions/CmdSession.cpp"
+                         "../Sessions/PythonSession.cpp"
+                         "../Sessions/SessionFactory.cpp")
+
+source_group ("Sessions" FILES ${SESSION_FILES})
+
+FILE (GLOB HEADER_FILES "../Version.h"
+                        "../Model.h"
+                        "../result.h"
+                        "../StatusItem.h"
+                        "../VMatrixIterator.hpp"
+                        "../ConstVMatrixIterator.hpp"
+                        "../VMatrixExprIterator.hpp"
+                        "../ConstVMatrixExprIterator.hpp"
+                        )
+
+source_group ("Header Files" FILES ${HEADER_FILES})
+
+FILE (GLOB SOURCE_FILES "../Version.cpp"
+                        "../Model.cpp"
+                        "../result.cpp"
+                        "../StatusItem.cpp"
+                        )
+source_group ("Source Files" FILES ${SOURCE_FILES})
+
+FILE (GLOB SIDE_INFO_FILES "../SideInfo/ISideInfo.h"
+                           "../SideInfo/DenseDoubleFeat.h"
+                           "../SideInfo/DenseSideInfo.h"
+                           "../SideInfo/DenseSideInfo.cpp"
+                           "../SideInfo/SparseSideInfo.h"
+                           "../SideInfo/SparseSideInfo.cpp"
+                        )
+source_group ("Side Info" FILES ${SIDE_INFO_FILES})
+
+FILE (GLOB PREDICT_FILES "../Predict/PredictSession.h"
+                         "../Predict/PredictSession.cpp"
+                        )
+                        
+source_group ("Prediction" FILES ${PREDICT_FILES})
+
+#SETUP OUTPUT
+add_library (${PROJECT} STATIC ${HEADER_FILES}
+                               ${SOURCE_FILES}
+                               ${UTIL_FILES}
+                               ${IO_FILES}
+                               ${CONFIG_FILES}
+                               ${NOISE_FILES}
+                               ${PRIOR_FILES}
+                               ${MATRIX_FILES}
+                               ${TENSOR_FILES}
+                               ${SESSION_FILES}
+                               ${SIDE_INFO_FILES}
+                               ${PREDICT_FILES}
+                               )
+set_property(TARGET ${PROJECT} PROPERTY FOLDER "Libraries")
+
+
+#SETUP INCLUDES
+include_directories(../)
+include_directories(../..)
+include_directories(${SMURFF_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${BOOST_RANDOM_INCLUDE_DIRS})
+
+

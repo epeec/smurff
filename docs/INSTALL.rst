@@ -48,7 +48,7 @@ Run CMake:
 
     # checkout and install Smurff
     git clone https://github.com/ExaScience/smurff.git
-    cd smurff/lib/smurff-cpp/
+    cd smurff/cpp/
     mkdir build
     cd build
     cmake ../cmake -DENABLE_OPENBLAS=ON -DCMAKE_BUILD_TYPE=Debug
