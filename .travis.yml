@@ -8,10 +8,6 @@ env:
   - FLOAT_TYPE=double BUILD_TYPE=Debug
   - FLOAT_TYPE=double BUILD_TYPE=Release
 
-env:
-  global:
-    - MAKEFLAGS="-j 2"
-
 addons:
   apt:
     sources:
@@ -26,16 +22,7 @@ addons:
 
 script:
     - cd "${TRAVIS_BUILD_DIR}"
-    - cd cpp/cmake
-    - mkdir build
-    - cd build
-    - cmake --version
-    - cmake .. -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_INSTALL_PREFIX=$PWD/../prefix -DENABLE_BOOST_RANDOM=ON
-    - make
+    - cd cpp/cmake && mkdir build && cd build
+    - cmake .. -DFLOAT_TYPE=${FLOAT_TYPE} -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_INSTALL_PREFIX=$PWD/../prefix -DENABLE_BOOST_RANDOM=ON
+    - make -j
     - ./bin/tests
-
-after_success:
-  - echo "success"
-
-after_failure:
-  - echo "failure"
