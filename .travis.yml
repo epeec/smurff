@@ -1,21 +1,21 @@
 language: cpp
-matrix:
-  include:
-  - os: linux
-    dist: xenial
-    env: BUILD_TYPE="Debug"
-  - os: linux
-    dist: xenial
-    env: BUILD_TYPE="Release"
+os: linux
+dist: xenial
+
+env:
+  - FLOAT_TYPE=float  BUILD_TYPE=Debug
+  - FLOAT_TYPE=float  BUILD_TYPE=Release
+  - FLOAT_TYPE=double BUILD_TYPE=Debug
+  - FLOAT_TYPE=double BUILD_TYPE=Release
+
 env:
   global:
     - MAKEFLAGS="-j 2"
-    - OMP_NUM_THREADS=1
 
 addons:
   apt:
     sources:
-    - sourceline: 'ppa:lkoppel/robotics'
+      - sourceline: 'ppa:lkoppel/robotics'
     packages:
       - libblas-dev
       - liblapack-dev
