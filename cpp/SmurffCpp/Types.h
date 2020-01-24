@@ -7,7 +7,7 @@ namespace smurff {
    typedef FLOAT_TYPE float_type;
 
 #if FLOAT_TYPE == float
-   const double APPROX_EPSILON = std::numeric_limits<float>::epsilon()*10000;
+   const double APPROX_EPSILON = 0.01; // allow 1% difference
 #elif FLOAT_TYPE == double
    const double APPROX_EPSILON = std::numeric_limits<float>::epsilon()*100;
 #else
