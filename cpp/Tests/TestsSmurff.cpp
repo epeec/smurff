@@ -41,7 +41,7 @@ void printActualResults(int nr, double actualRmseAvg, const std::vector<smurff::
 
 
 #define PRINT_ACTUAL_RESULTS(nr)
-//#define PRINT_ACTUAL_RESULTS(nr) printActualResults(nr, actualRmseAvg, actualResults);
+// #define PRINT_ACTUAL_RESULTS(nr) printActualResults(nr, actualRmseAvg, actualResults);
 
 using namespace smurff;
 
@@ -289,15 +289,16 @@ std::shared_ptr<SideInfoConfig> getRowSideInfoDenseMacauPrior3dConfig(bool direc
 void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem>& actualResultItems, const std::vector<ResultItem>& expectedResultItems)
 {
    REQUIRE(actualResultItems.size() == expectedResultItems.size());
+   double single_item_epsilon = APPROX_EPSILON * 10;
    for (std::vector<ResultItem>::size_type i = 0; i < actualResultItems.size(); i++)
    {
       const ResultItem& actualResultItem = actualResultItems[i];
       const ResultItem& expectedResultItem = expectedResultItems[i];
       REQUIRE(actualResultItem.coords == expectedResultItem.coords);
       REQUIRE(actualResultItem.val == expectedResultItem.val);
-      REQUIRE(actualResultItem.pred_1sample == Approx(expectedResultItem.pred_1sample).epsilon(APPROX_EPSILON*10));
-      REQUIRE(actualResultItem.pred_avg == Approx(expectedResultItem.pred_avg).epsilon(APPROX_EPSILON));
-      REQUIRE(actualResultItem.var == Approx(expectedResultItem.var).epsilon(APPROX_EPSILON));
+      REQUIRE(actualResultItem.pred_1sample == Approx(expectedResultItem.pred_1sample).epsilon(single_item_epsilon));
+      REQUIRE(actualResultItem.pred_avg == Approx(expectedResultItem.pred_avg).epsilon(single_item_epsilon));
+      REQUIRE(actualResultItem.var == Approx(expectedResultItem.var).epsilon(single_item_epsilon));
    }
 }
 
