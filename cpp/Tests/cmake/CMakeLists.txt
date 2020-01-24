@@ -19,6 +19,7 @@ FILE (GLOB SOURCE_FILES "../tests.cpp"
                         "../TestsSmurff.cpp"
                         "../TestsSparseSideInfo.cpp"
                         )
+                        
 source_group ("Source Files" FILES ${SOURCE_FILES})
 
 #SETUP OUTPUT
@@ -37,3 +38,9 @@ target_link_libraries (${PROJECT} smurff-cpp smurff-utils
 include_directories(../)
 include_directories(../..)
 include_directories(${EIGEN3_INCLUDE_DIR})
+
+if (USE_FLOAT)
+    include_directories("../expected_float_results")
+else()
+    include_directories("../expected_double_results")
+endif()

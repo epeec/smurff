@@ -18,7 +18,7 @@
 
 void printActualResults(int nr, double actualRmseAvg, const std::vector<smurff::ResultItem>& actualResults)
 {
-   std::ofstream os("expected_results/TestsSmurff_" + std::to_string(nr) + ".h", std::ofstream::out);
+   std::ofstream os("TestsSmurff_" + std::to_string(nr) + ".h", std::ofstream::out);
 
    os << "   double expectedRmseAvg = "
       << std::fixed << std::setprecision(16) << actualRmseAvg << ";" << std::endl
@@ -336,7 +336,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(359)
-   #include "expected_results/TestsSmurff_359.h"
+   #include "TestsSmurff_359.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -377,7 +377,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(411)
-   #include "expected_results/TestsSmurff_411.h"
+   #include "TestsSmurff_411.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -422,7 +422,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(467)
-   #include "expected_results/TestsSmurff_467.h"
+   #include "TestsSmurff_467.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -467,7 +467,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(523)
-   #include "expected_results/TestsSmurff_523.h"
+   #include "TestsSmurff_523.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -510,7 +510,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(577)
-   #include "expected_results/TestsSmurff_577.h"
+   #include "TestsSmurff_577.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -551,7 +551,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(629)
-   #include "expected_results/TestsSmurff_629.h"
+   #include "TestsSmurff_629.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -596,7 +596,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(685)
-   #include "expected_results/TestsSmurff_685.h"
+   #include "TestsSmurff_685.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -641,7 +641,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(741)
-   #include "expected_results/TestsSmurff_741.h"
+   #include "TestsSmurff_741.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -684,7 +684,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(795)
-   #include "expected_results/TestsSmurff_795.h"
+   #include "TestsSmurff_795.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -725,7 +725,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(847)
-   #include "expected_results/TestsSmurff_847.h"
+   #include "TestsSmurff_847.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -770,7 +770,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(903)
-   #include "expected_results/TestsSmurff_903.h"
+   #include "TestsSmurff_903.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -815,7 +815,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(959)
-   #include "expected_results/TestsSmurff_959.h"
+   #include "TestsSmurff_959.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -863,7 +863,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1018)
-   #include "expected_results/TestsSmurff_1018.h"
+   #include "TestsSmurff_1018.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -909,7 +909,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1075)
-   #include "expected_results/TestsSmurff_1075.h"
+   #include "TestsSmurff_1075.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -958,7 +958,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1135)
-   #include "expected_results/TestsSmurff_1135.h"
+   #include "TestsSmurff_1135.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1005,7 +1005,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1193)
-   #include "expected_results/TestsSmurff_1193.h"
+   #include "TestsSmurff_1193.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1051,7 +1051,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1250)
-   #include "expected_results/TestsSmurff_1250.h"
+   #include "TestsSmurff_1250.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1095,7 +1095,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1305)
-   #include "expected_results/TestsSmurff_1305.h"
+   #include "TestsSmurff_1305.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1248,7 +1248,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1466)
-   #include "expected_results/TestsSmurff_1466.h"
+   #include "TestsSmurff_1466.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1289,7 +1289,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1518)
-   #include "expected_results/TestsSmurff_1518.h"
+   #include "TestsSmurff_1518.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1332,7 +1332,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1572)
-   #include "expected_results/TestsSmurff_1572.h"
+   #include "TestsSmurff_1572.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1375,7 +1375,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1626)
-   #include "expected_results/TestsSmurff_1626.h"
+   #include "TestsSmurff_1626.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1421,7 +1421,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1683)
-   #include "expected_results/TestsSmurff_1683.h"
+   #include "TestsSmurff_1683.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1465,7 +1465,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1738)
-   #include "expected_results/TestsSmurff_1738.h"
+   #include "TestsSmurff_1738.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1508,7 +1508,7 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1792)
-   #include "expected_results/TestsSmurff_1792.h"
+   #include "TestsSmurff_1792.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1549,7 +1549,7 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1844)
-   #include "expected_results/TestsSmurff_1844.h"
+   #include "TestsSmurff_1844.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1592,7 +1592,7 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1898)
-   #include "expected_results/TestsSmurff_1898.h"
+   #include "TestsSmurff_1898.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1633,7 +1633,7 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(1950)
-   #include "expected_results/TestsSmurff_1950.h"
+   #include "TestsSmurff_1950.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1676,7 +1676,7 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(2004)
-   #include "expected_results/TestsSmurff_2004.h"
+   #include "TestsSmurff_2004.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1717,7 +1717,7 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(2056)
-   #include "expected_results/TestsSmurff_2056.h"
+   #include "TestsSmurff_2056.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1760,7 +1760,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(2110)
-   #include "expected_results/TestsSmurff_2110.h"
+   #include "TestsSmurff_2110.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1803,7 +1803,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(2164)
-   #include "expected_results/TestsSmurff_2164.h"
+   #include "TestsSmurff_2164.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1850,7 +1850,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(2222)
-   #include "expected_results/TestsSmurff_2222.h"
+   #include "TestsSmurff_2222.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
@@ -1898,7 +1898,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
    PRINT_ACTUAL_RESULTS(2280)
-   #include "expected_results/TestsSmurff_2280.h"
+   #include "TestsSmurff_2280.h"
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
    REQUIRE_RESULT_ITEMS(actualResults, expectedResults);

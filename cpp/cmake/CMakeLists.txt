@@ -21,8 +21,9 @@ OPTION(ENABLE_BOOST "Enable usage of Boost for program options" ON)
 OPTION(ENABLE_BOOST_RANDOM "Enable usage of Boost random library" OFF)
 
 OPTION(ENABLE_PYTHON "Enable Python Wrapper" ON)
-
 OPTION(ENABLE_MPI "Enable MPI Support" ON)
+
+OPTION(USE_FLOAT "Use 'float' instead of 'double' for internal compute" OFF)
 
 # INIT CMAKE
 
@@ -183,7 +184,6 @@ string(REGEX REPLACE "-[^-]+$"
 
 message(STATUS "Cleaned version: ${SMURFF_VERSION_CLEAN}")
 
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../SmurffCpp/Version.cpp.in ${CMAKE_CURRENT_SOURCE_DIR}/../SmurffCpp/Version.cpp)
 
 # CONFIGURE BUILD TYPE
@@ -240,6 +240,10 @@ SET(SCRIPT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts/")
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${SCRIPT_DIR}")
 
 include(scripts/DependenciesConfig.cmake)
+
+if(USE_FLOAT)
+  add_definitions(-DUSE_FLOAT)
+endif()
 
 if(MSVC)
   configure_eigen()
