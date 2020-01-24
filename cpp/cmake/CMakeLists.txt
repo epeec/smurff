@@ -243,6 +243,9 @@ include(scripts/DependenciesConfig.cmake)
 
 if(USE_FLOAT)
   add_definitions(-DUSE_FLOAT)
+  message("Using 'float' as main computing type")
+else()
+  message("Using 'double' as main computing type")
 endif()
 
 if(MSVC)
