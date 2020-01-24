@@ -241,12 +241,9 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${SCRIPT_DIR}")
 
 include(scripts/DependenciesConfig.cmake)
 
-if(USE_FLOAT)
-  add_definitions(-DUSE_FLOAT)
-  message("Using 'float' as main computing type")
-else()
-  message("Using 'double' as main computing type")
-endif()
+SET(FLOAT_TYPE "double" CACHE STRING "Main compute type")
+add_definitions(-DFLOAT_TYPE=${FLOAT_TYPE})
+message("Using '${FLOAT_TYPE}' as main computing type")
 
 if(MSVC)
   configure_eigen()
