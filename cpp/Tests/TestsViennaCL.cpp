@@ -4,7 +4,7 @@
 
 #include <Eigen/Core>
 
-#include <SmurffCpp/Utils/Error.h>
+#include <Utils/Error.h>
 
 TEST_CASE("RowMajor/ColMajor", "[viennacl]")
 {

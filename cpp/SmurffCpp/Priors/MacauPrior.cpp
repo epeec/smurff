@@ -130,14 +130,14 @@ void MacauPrior::sample_beta()
 
         if (use_ViennaCL)
         {
-            typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> EigenRowMajor;
+            typedef Eigen::Matrix<float_type, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> EigenRowMajor;
 
             using namespace viennacl;
             using namespace viennacl::linalg;
 
             //allocate
-            matrix<double> vcl_FtF(FtF_plus_precision.rows(), FtF_plus_precision.cols());
-            matrix<double> vcl_Ft_y_t(Ft_y.cols(), Ft_y.rows());
+            matrix<float_type> vcl_FtF(FtF_plus_precision.rows(), FtF_plus_precision.cols());
+            matrix<float_type> vcl_Ft_y_t(Ft_y.cols(), Ft_y.rows());
 
             //map
             Eigen::Map<EigenRowMajor> map_beta(beta().data(), beta().cols(), beta().rows());

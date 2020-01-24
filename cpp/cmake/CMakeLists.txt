@@ -244,18 +244,11 @@ include(scripts/DependenciesConfig.cmake)
 
 configure_eigen_viennacl()
 configure_boost()
+configure_openmp()
 
 SET(FLOAT_TYPE "double" CACHE STRING "Main compute type")
 add_definitions(-DFLOAT_TYPE=${FLOAT_TYPE})
 message("Using '${FLOAT_TYPE}' as main computing type")
-
-if(MSVC)
-  configure_eigen()
-  configure_boost()
-else()
-  configure_pthreads()
-  configure_openmp()
-endif()
 
 if(ENABLE_MPI)
   configure_mpi()

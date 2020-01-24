@@ -8,8 +8,6 @@
 #include "viennacl/ocl/backend.hpp"
 #endif
 
-namespace smurff
-{
 namespace threads
 {
 
