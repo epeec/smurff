@@ -26,10 +26,6 @@ namespace smurff
                    const NoiseConfig& noiseConfig);
 
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::vector<double>&& values,
-                   const NoiseConfig& noiseConfig);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
                    std::shared_ptr<std::vector<double> > values,
                    const NoiseConfig& noiseConfig);
 
@@ -39,10 +35,6 @@ namespace smurff
    public:
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
                    const std::vector<std::uint32_t>& rows, const std::vector<std::uint32_t>& cols, const std::vector<double>& values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::vector<std::uint32_t>&& rows, std::vector<std::uint32_t>&& cols, std::vector<double>&& values,
                    const NoiseConfig& noiseConfig, bool isScarce);
 
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
@@ -58,10 +50,6 @@ namespace smurff
                    const NoiseConfig& noiseConfig, bool isScarce);
 
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::vector<std::uint32_t>&& rows, std::vector<std::uint32_t>&& cols,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
                    std::shared_ptr<std::vector<std::uint32_t> > rows, std::shared_ptr<std::vector<std::uint32_t> > cols,
                    const NoiseConfig& noiseConfig, bool isScarce);
 
@@ -74,10 +62,6 @@ namespace smurff
                    const NoiseConfig& noiseConfig, bool isScarce);
 
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::vector<std::uint32_t>&& columns, std::vector<double>&& values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
                    std::shared_ptr<std::vector<std::uint32_t> > columns, std::shared_ptr<std::vector<double> > values,
                    const NoiseConfig& noiseConfig, bool isScarce);
 
@@ -87,10 +71,6 @@ namespace smurff
    public:
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
                    const std::vector<std::uint32_t>& columns,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::vector<std::uint32_t>&& columns,
                    const NoiseConfig& noiseConfig, bool isScarce);
 
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
