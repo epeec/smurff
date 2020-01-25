@@ -64,4 +64,7 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   steps:
+    - script: |
+        choco install visualstudio2015community
+      displayName: Install Visual Studio 2015
     - template: conda-steps.yml
