@@ -30,8 +30,8 @@ jobs:
         ninja
       displayName: 'Run ninja'
     - script: |
-        cd build.$(build.type)/$(build.type)
-        OMP_NUM_THREADS=1 ./tests
+        cd build.$(build.type)/bin
+        ./tests
       displayName: 'Run tests'
 
 - job: 'Conda_Linux'
