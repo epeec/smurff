@@ -24,15 +24,6 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
 
 MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , std::uint64_t ncol
-                          , std::vector<double>&& values
-                          , const NoiseConfig& noiseConfig
-                          )
-   : MatrixConfig(nrow, ncol, std::make_shared<std::vector<double> >(std::move(values)), noiseConfig)
-{
-}
-
-MatrixConfig::MatrixConfig( std::uint64_t nrow
-                          , std::uint64_t ncol
                           , std::shared_ptr<std::vector<double> > values
                           , const NoiseConfig& noiseConfig
                           )
@@ -93,24 +84,6 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
       m_columns->operator[](i + m_nnz) = cols[i];
       m_values->operator[](i) = values[i];
    }
-}
-
-MatrixConfig::MatrixConfig( std::uint64_t nrow
-                          , std::uint64_t ncol
-                          , std::vector<std::uint32_t>&& rows
-                          , std::vector<std::uint32_t>&& cols
-                          , std::vector<double>&& values
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : MatrixConfig( nrow
-                 , ncol
-                 , std::make_shared<std::vector<std::uint32_t> >(std::move(rows))
-                 , std::make_shared<std::vector<std::uint32_t> >(std::move(cols))
-                 , std::make_shared<std::vector<double> >(std::move(values))
-                 , noiseConfig, isScarce
-                 )
-{
 }
 
 MatrixConfig::MatrixConfig( std::uint64_t nrow
@@ -196,22 +169,6 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
 
 MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , std::uint64_t ncol
-                          , std::vector<std::uint32_t>&& rows
-                          , std::vector<std::uint32_t>&& cols
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : MatrixConfig( nrow
-                 , ncol
-                 , std::make_shared<std::vector<std::uint32_t> >(std::move(rows))
-                 , std::make_shared<std::vector<std::uint32_t> >(std::move(cols))
-                 , noiseConfig, isScarce
-                 )
-{
-}
-
-MatrixConfig::MatrixConfig( std::uint64_t nrow
-                          , std::uint64_t ncol
                           , std::shared_ptr<std::vector<std::uint32_t> > rows
                           , std::shared_ptr<std::vector<std::uint32_t> > cols
                           , const NoiseConfig& noiseConfig
@@ -267,17 +224,6 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
 
 MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , std::uint64_t ncol
-                          , std::vector<std::uint32_t>&& columns
-                          , std::vector<double>&& values
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : TensorConfig({ nrow, ncol }, std::move(columns), std::move(values), noiseConfig, isScarce)
-{
-}
-
-MatrixConfig::MatrixConfig( std::uint64_t nrow
-                          , std::uint64_t ncol
                           , std::shared_ptr<std::vector<std::uint32_t> > columns
                           , std::shared_ptr<std::vector<double> > values
                           , const NoiseConfig& noiseConfig
@@ -295,13 +241,6 @@ MatrixConfig::MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
                const std::vector<std::uint32_t>& columns,
                const NoiseConfig& noiseConfig, bool isScarce)
    : TensorConfig({ nrow, ncol }, columns, noiseConfig, isScarce)
-{
-}
-
-MatrixConfig::MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-               std::vector<std::uint32_t>&& columns,
-               const NoiseConfig& noiseConfig, bool isScarce)
-   : TensorConfig({ nrow, ncol }, std::move(columns), noiseConfig, isScarce)
 {
 }
 

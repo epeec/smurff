@@ -98,17 +98,6 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
 	}
 }
 
-TensorConfig::TensorConfig( std::vector<std::uint64_t>&& dims
-                          , std::vector<double>&& values
-                          , const NoiseConfig& noiseConfig
-                          )
-   : TensorConfig( std::make_shared<std::vector<std::uint64_t> >(std::move(dims))
-                 , std::make_shared<std::vector<double> >(std::move(values))
-                 , noiseConfig
-                 )
-{
-}
-
 TensorConfig::TensorConfig( std::shared_ptr<std::vector<std::uint64_t> > dims
                           , std::shared_ptr<std::vector<double> > values
                           , const NoiseConfig& noiseConfig
@@ -186,20 +175,6 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    m_values = std::make_shared<std::vector<double> >(values);
 }
 
-TensorConfig::TensorConfig( std::vector<std::uint64_t>&& dims
-                          , std::vector<std::uint32_t>&& columns
-                          , std::vector<double>&& values
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : TensorConfig( std::make_shared<std::vector<std::uint64_t> >(std::move(dims))
-                 , std::make_shared<std::vector<std::uint32_t> >(std::move(columns))
-                 , std::make_shared<std::vector<double> >(std::move(values))
-                 , noiseConfig, isScarce
-                 )
-{
-}
-
 TensorConfig::TensorConfig( std::shared_ptr<std::vector<std::uint64_t> > dims
                           , std::shared_ptr<std::vector<std::uint32_t> > columns
                           , std::shared_ptr<std::vector<double> > values
@@ -251,18 +226,6 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    m_dims = std::make_shared<std::vector<std::uint64_t> >(dims);
    m_columns = std::make_shared<std::vector<std::uint32_t> >(columns);
    m_values = std::make_shared<std::vector<double> >(m_nnz, 1);
-}
-
-TensorConfig::TensorConfig( std::vector<std::uint64_t>&& dims
-                          , std::vector<std::uint32_t>&& columns
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : TensorConfig( std::make_shared<std::vector<std::uint64_t> >(std::move(dims))
-                 , std::make_shared<std::vector<std::uint32_t> >(std::move(columns))
-                 , noiseConfig, isScarce
-                 )
-{
 }
 
 TensorConfig::TensorConfig( std::shared_ptr<std::vector<std::uint64_t> > dims

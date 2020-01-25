@@ -151,7 +151,7 @@ std::shared_ptr<TensorConfig> tensor_io::read_dense_float64_bin(std::istream& in
    std::vector<double> values(nnz);
    in.read(reinterpret_cast<char*>(values.data()), values.size() * sizeof(double));
 
-   return std::make_shared<TensorConfig>(std::move(dims), std::move(values), NoiseConfig());
+   return std::make_shared<TensorConfig>(dims, values, NoiseConfig());
 }
 
 std::shared_ptr<TensorConfig> tensor_io::read_dense_float64_csv(std::istream& in)
@@ -217,7 +217,7 @@ std::shared_ptr<TensorConfig> tensor_io::read_dense_float64_csv(std::istream& in
       THROWERROR("invalid number of values");
    }
 
-   return std::make_shared<TensorConfig>(std::move(dims), std::move(values), NoiseConfig());
+   return std::make_shared<TensorConfig>(dims, values, NoiseConfig());
 }
 
 std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_bin(std::istream& in, bool isScarce)
@@ -244,7 +244,7 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_bin(std::istream& i
    std::vector<double> values(nnz);
    in.read(reinterpret_cast<char*>(values.data()), values.size() * sizeof(double));
 
-   return std::make_shared<TensorConfig>(std::move(dims), std::move(columns), std::move(values), NoiseConfig(), isScarce);
+   return std::make_shared<TensorConfig>(dims, columns, values, NoiseConfig(), isScarce);
 }
 
 std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_tns(std::istream& in, bool isScarce)
@@ -343,7 +343,7 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_tns(std::istream& i
       THROWERROR("invalid number of values");
    }
 
-   return std::make_shared<TensorConfig>(std::move(dims), std::move(columns), std::move(values), NoiseConfig(), isScarce);
+   return std::make_shared<TensorConfig>(dims, columns, values, NoiseConfig(), isScarce);
 }
 
 std::shared_ptr<TensorConfig> tensor_io::read_sparse_binary_bin(std::istream& in, bool isScarce)
@@ -367,7 +367,7 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_binary_bin(std::istream& in
 
    std::for_each(columns.begin(), columns.end(), [](std::uint32_t& col){ col--; });
 
-   return std::make_shared<TensorConfig>(std::move(dims), std::move(columns), NoiseConfig(), isScarce);
+   return std::make_shared<TensorConfig>(dims, columns, NoiseConfig(), isScarce);
 }
 
 // ======================================================================================================

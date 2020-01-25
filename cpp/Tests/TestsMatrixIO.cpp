@@ -22,7 +22,7 @@ TEST_CASE("matrix_io/read_matrix | matrix_io/write_matrix | .ddm")
    std::vector<double> matrixConfigValues = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 };
    std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                             , matrixConfigNCol
-                            , std::move(matrixConfigValues)
+                            , matrixConfigValues
                             , fixed_ncfg
                             ));
 
@@ -46,7 +46,7 @@ TEST_CASE("matrix_io/read_matrix | matrix_io/write_matrix | .csv")
    std::vector<double> matrixConfigValues = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 };
    std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                             , matrixConfigNCol
-                            , std::move(matrixConfigValues)
+                            , matrixConfigValues
                             , fixed_ncfg
                             ));
 
@@ -73,9 +73,9 @@ TEST_CASE("matrix_io/read_matrix | matrix_io/write_matrix | .sdm")
    std::vector<double> matrixConfigValues      = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                             , matrixConfigNCol
-                            , std::move(matrixConfigRows)
-                            , std::move(matrixConfigCols)
-                            , std::move(matrixConfigValues)
+                            , matrixConfigRows
+                            , matrixConfigCols
+                            , matrixConfigValues
                             , fixed_ncfg
                             , false
                             ));
@@ -111,7 +111,7 @@ TEST_CASE("matrix_io/read_matrix | matrix_io/write_matrix | .mtx")
       std::vector<double> matrixConfigValues = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 };
       std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                                , matrixConfigNCol
-                               , std::move(matrixConfigValues)
+                               , matrixConfigValues
                                , fixed_ncfg
                                ));
 
@@ -138,9 +138,9 @@ TEST_CASE("matrix_io/read_matrix | matrix_io/write_matrix | .mtx")
       std::vector<double> matrixConfigValues      = { 1, 2, 3, 4, 9, 10, 11, 12 };
       std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                               , matrixConfigNCol
-                              , std::move(matrixConfigRows)
-                              , std::move(matrixConfigCols)
-                              , std::move(matrixConfigValues)
+                              , matrixConfigRows
+                              , matrixConfigCols
+                              , matrixConfigValues
                               , fixed_ncfg
                               , false
                               ));
@@ -176,8 +176,8 @@ TEST_CASE("matrix_io/read_matrix | matrix_io/write_matrix | .sbm")
    std::vector<std::uint32_t> matrixConfigCols = { 0, 1, 2, 3, 0, 1, 2, 3 };
    std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                             , matrixConfigNCol
-                            , std::move(matrixConfigRows)
-                            , std::move(matrixConfigCols)
+                            , matrixConfigRows
+                            , matrixConfigCols
                             , fixed_ncfg
                             , false
                             ));
@@ -211,7 +211,7 @@ TEST_CASE("matrix_io/read_matrix_market | matrix_io/write_matrix_market | dense"
    std::vector<double> matrixConfigValues = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 };
    std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                             , matrixConfigNCol
-                            , std::move(matrixConfigValues)
+                            , matrixConfigValues
                             , fixed_ncfg
                             ));
 
@@ -235,9 +235,9 @@ TEST_CASE("matrix_io/read_matrix_market | matrix_io/write_matrix_market | sparse
    std::vector<double> matrixConfigValues      = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                             , matrixConfigNCol
-                            , std::move(matrixConfigRows)
-                            , std::move(matrixConfigCols)
-                            , std::move(matrixConfigValues)
+                            , matrixConfigRows
+                            , matrixConfigCols
+                            , matrixConfigValues
                             , fixed_ncfg
                             , false
                             ));
@@ -271,8 +271,8 @@ TEST_CASE("matrix_io/read_matrix_market | matrix_io/write_matrix_market | sparse
    std::shared_ptr<MatrixConfig> matrixConfig =
       std::make_shared<MatrixConfig>( matrixConfigNRow
                                     , matrixConfigNCol
-                                    , std::move(matrixConfigRows)
-                                    , std::move(matrixConfigCols)
+                                    , matrixConfigRows
+                                    , matrixConfigCols
                                     , fixed_ncfg
                                     , false
                                     );
@@ -304,7 +304,7 @@ TEST_CASE("matrix_io/read_dense_float64_bin | matrix_io/write_dense_float64_bin"
    std::vector<double> matrixConfigValues = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12};
    std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                             , matrixConfigNCol
-                            , std::move(matrixConfigValues)
+                            , matrixConfigValues
                             , fixed_ncfg
                             ));
 
@@ -326,7 +326,7 @@ TEST_CASE("matrix_io/read_dense_float64_csv | matrix_io/write_dense_float64_csv"
    std::vector<double> matrixConfigValues = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12};
    std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                             , matrixConfigNCol
-                            , std::move(matrixConfigValues)
+                            , matrixConfigValues
                             , fixed_ncfg
                             ));
 
@@ -350,9 +350,9 @@ TEST_CASE("matrix_io/read_sparse_float64_bin | matrix_io/write_sparse_float64_bi
    std::vector<double> matrixConfigValues      = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                             , matrixConfigNCol
-                            , std::move(matrixConfigRows)
-                            , std::move(matrixConfigCols)
-                            , std::move(matrixConfigValues)
+                            , matrixConfigRows
+                            , matrixConfigCols
+                            , matrixConfigValues
                             , fixed_ncfg
                             , false
                             ));
@@ -385,8 +385,8 @@ TEST_CASE("matrix_io/read_sparse_binary_bin | matrix_io/write_sparse_binary_bin"
    std::vector<std::uint32_t> matrixConfigCols = { 0, 1, 2, 3, 0, 1, 2, 3 };
    std::shared_ptr<MatrixConfig> matrixConfig(new MatrixConfig(matrixConfigNRow
                             , matrixConfigNCol
-                            , std::move(matrixConfigRows)
-                            , std::move(matrixConfigCols)
+                            , matrixConfigRows
+                            , matrixConfigCols
                             , fixed_ncfg
                             , false
                             ));
@@ -620,7 +620,7 @@ TEST_CASE("Genereate matrices for Python matrix_io tests", "[!hide]")
    std::shared_ptr<MatrixConfig> denseMatrixConfig =
       std::make_shared<MatrixConfig>( denseMatrixConfigNRow
                                     , denseMatrixConfigNCol
-                                    , std::move(denseMatrixConfigValues)
+                                    , denseMatrixConfigValues
                                     , fixed_ncfg
                                     );
    matrix_io::write_matrix("cpp_generated_dense_matrix.ddm", denseMatrixConfig);
@@ -636,9 +636,9 @@ TEST_CASE("Genereate matrices for Python matrix_io tests", "[!hide]")
    std::shared_ptr<MatrixConfig> sparseMatrixConfig =
       std::make_shared<MatrixConfig>( sparseMatrixConfigNRow
                                     , sparseMatrixConfigNCol
-                                    , std::move(sparseMatrixConfigRows)
-                                    , std::move(sparseMatrixConfigCols)
-                                    , std::move(sparseMatrixConfigValues)
+                                    , sparseMatrixConfigRows
+                                    , sparseMatrixConfigCols
+                                    , sparseMatrixConfigValues
                                     , fixed_ncfg
                                     , false
                                     );
@@ -653,8 +653,8 @@ TEST_CASE("Genereate matrices for Python matrix_io tests", "[!hide]")
    std::shared_ptr<MatrixConfig> sparseBinaryMatrixConfig =
       std::make_shared<MatrixConfig>( sparseBinaryMatrixConfigNRow
                                     , sparseBinaryMatrixConfigNCol
-                                    , std::move(sparseBinaryMatrixConfigRows)
-                                    , std::move(sparseBinaryMatrixConfigCols)
+                                    , sparseBinaryMatrixConfigRows
+                                    , sparseBinaryMatrixConfigCols
                                     , fixed_ncfg
                                     , false
                                     );
