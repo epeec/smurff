@@ -14,19 +14,15 @@ namespace smurff
    class MatrixConfig : public TensorConfig
    {
    private:
-      mutable std::shared_ptr<std::vector<std::uint32_t> > m_rows;
-      mutable std::shared_ptr<std::vector<std::uint32_t> > m_cols;
+      mutable std::vector<std::uint32_t> m_rows;
+      mutable std::vector<std::uint32_t> m_cols;
 
    //
    // Dense double matrix constructos
    //
    public:
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   const std::vector<double>& values,
-                   const NoiseConfig& noiseConfig);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::shared_ptr<std::vector<double> > values,
+                   const double* values,
                    const NoiseConfig& noiseConfig);
 
    //
@@ -34,11 +30,7 @@ namespace smurff
    //
    public:
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   const std::vector<std::uint32_t>& rows, const std::vector<std::uint32_t>& cols, const std::vector<double>& values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::shared_ptr<std::vector<std::uint32_t> > rows, std::shared_ptr<std::vector<std::uint32_t> > cols, std::shared_ptr<std::vector<double> > values,
+                   const std::uint32_t* rows, const std::uint32_t* cols, const double* values,
                    const NoiseConfig& noiseConfig, bool isScarce);
 
    //
@@ -46,11 +38,7 @@ namespace smurff
    //
    public:
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   const std::vector<std::uint32_t>& rows, const std::vector<std::uint32_t>& cols,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::shared_ptr<std::vector<std::uint32_t> > rows, std::shared_ptr<std::vector<std::uint32_t> > cols,
+                   const std::uint32_t* rows, const std::uint32_t* cols,
                    const NoiseConfig& noiseConfig, bool isScarce);
 
    //
@@ -58,11 +46,7 @@ namespace smurff
    //
    public:
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   const std::vector<std::uint32_t>& columns, const std::vector<double>& values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::shared_ptr<std::vector<std::uint32_t> > columns, std::shared_ptr<std::vector<double> > values,
+                   const std::uint32_t* columns, const double* values,
                    const NoiseConfig& noiseConfig, bool isScarce);
 
    //
@@ -70,11 +54,7 @@ namespace smurff
    //
    public:
       MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   const std::vector<std::uint32_t>& columns,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::shared_ptr<std::vector<std::uint32_t> > columns,
+                   const std::uint32_t* columns,
                    const NoiseConfig& noiseConfig, bool isScarce);
 
    public:

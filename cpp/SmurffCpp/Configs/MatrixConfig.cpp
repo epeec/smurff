@@ -13,35 +13,13 @@ namespace smurff {
 
 MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , std::uint64_t ncol
-                          , const std::vector<double>& values
-                          , const NoiseConfig& noiseConfig
-                          )
-   : MatrixConfig(nrow, ncol, std::shared_ptr<std::vector<double> >(), noiseConfig)
-{
-   // Wait for nrow and ncol checks pass in constructor in initializer list to prevent wasteful vector copying
-   m_values = std::make_shared<std::vector<double> >(values);
-}
-
-MatrixConfig::MatrixConfig( std::uint64_t nrow
-                          , std::uint64_t ncol
-                          , std::shared_ptr<std::vector<double> > values
+                          , const double* values
                           , const NoiseConfig& noiseConfig
                           )
    : TensorConfig(true, false, false, 2, nrow * ncol, noiseConfig)
+   , m_values(values, values + (nrow*ncols))
+   , m_dims({nrow, ncol})
 {
-   if (nrow == 0)
-   {
-      THROWERROR("Cannot create MatrixConfig instance: 'nrow' cannot be zero.");
-   }
-
-   if (ncol == 0)
-   {
-      THROWERROR("Cannot create MatrixConfig instance: 'ncol' cannot be zero.");
-   }
-
-   m_dims->push_back(nrow);
-   m_dims->push_back(ncol);
-   m_values = values;
 }
 
 //
@@ -52,22 +30,13 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , std::uint64_t ncol
                           , const std::vector<std::uint32_t>& rows
                           , const std::vector<std::uint32_t>& cols
-                          , const std::vector<double>& values
+                          , const double* values
                           , const NoiseConfig& noiseConfig
                           , bool isScarce
                           )
    : TensorConfig(false, false, isScarce, 2, values.size(), noiseConfig)
+   , m_dims({nrow, ncol})
 {
-   if (nrow == 0)
-   {
-      THROWERROR("Cannot create MatrixConfig instance: 'nrow' cannot be zero.");
-   }
-
-   if (ncol == 0)
-   {
-      THROWERROR("Cannot create MatrixConfig instance: 'ncol' cannot be zero.");
-   }
-
    if (rows.size() != cols.size() || rows.size() != values.size())
    {
       THROWERROR("Cannot create MatrixConfig instance: 'rows', 'cols' and 'values' should all be the same size.");
@@ -83,46 +52,6 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
       m_columns->operator[](i) = rows[i];
       m_columns->operator[](i + m_nnz) = cols[i];
       m_values->operator[](i) = values[i];
-   }
-}
-
-MatrixConfig::MatrixConfig( std::uint64_t nrow
-                          , std::uint64_t ncol
-                          , std::shared_ptr<std::vector<std::uint32_t> > rows
-                          , std::shared_ptr<std::vector<std::uint32_t> > cols
-                          , std::shared_ptr<std::vector<double> > values
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : TensorConfig(false, false, isScarce, 2, values->size(), noiseConfig)
-{
-   if (nrow == 0)
-   {
-      THROWERROR("Cannot create MatrixConfig instance: 'nrow' cannot be zero.");
-   }
-
-   if (ncol == 0)
-   {
-      THROWERROR("Cannot create MatrixConfig instance: 'ncol' cannot be zero.");
-   }
-
-   if (rows->size() != cols->size() || rows->size() != values->size())
-   {
-      THROWERROR("Cannot create MatrixConfig instance: 'rows', 'cols' and 'values' should all be the same size.");
-   }
-
-   m_dims->push_back(nrow);
-   m_dims->push_back(ncol);
-   m_columns->resize(m_nnz * m_nmodes);
-   m_values = values;
-
-   m_rows = rows;
-   m_cols = cols;
-
-   for (std::uint64_t i = 0; i < m_nnz; i++)
-   {
-      m_columns->operator[](i) = rows->operator[](i);
-      m_columns->operator[](i + m_nnz) = cols->operator[](i);
    }
 }
 
@@ -167,46 +96,6 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
    }
 }
 
-MatrixConfig::MatrixConfig( std::uint64_t nrow
-                          , std::uint64_t ncol
-                          , std::shared_ptr<std::vector<std::uint32_t> > rows
-                          , std::shared_ptr<std::vector<std::uint32_t> > cols
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : TensorConfig(false, true, isScarce, 2, rows->size(), noiseConfig)
-{
-   if (nrow == 0)
-   {
-      THROWERROR("Cannot create MatrixConfig instance: 'nrow' cannot be zero.");
-   }
-
-   if (ncol == 0)
-   {
-      THROWERROR("Cannot create MatrixConfig instance: 'ncol' cannot be zero.");
-   }
-
-   if (rows->size() != cols->size())
-   {
-      THROWERROR("Cannot create MatrixConfig instance: 'rows' and 'cols' should all be the same size.");
-   }
-
-   m_dims->push_back(nrow);
-   m_dims->push_back(ncol);
-   m_columns->resize(m_nnz * m_nmodes);
-   m_values->resize(m_nnz);
-
-   m_rows = rows;
-   m_cols = cols;
-
-   for (std::uint64_t i = 0; i < m_nnz; i++)
-   {
-      m_columns->operator[](i) = rows->operator[](i);
-      m_columns->operator[](i + m_nnz) = cols->operator[](i);
-      m_values->operator[](i) = 1;
-   }
-}
-
 //
 // Constructors for constructing sparse matrix as a tensor
 //
@@ -214,22 +103,11 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
 MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , std::uint64_t ncol
                           , const std::vector<std::uint32_t>& columns
-                          , const std::vector<double>& values
+                          , const double* values
                           , const NoiseConfig& noiseConfig
                           , bool isScarce
                           )
    : TensorConfig({ nrow, ncol }, columns, values, noiseConfig, isScarce)
-{
-}
-
-MatrixConfig::MatrixConfig( std::uint64_t nrow
-                          , std::uint64_t ncol
-                          , std::shared_ptr<std::vector<std::uint32_t> > columns
-                          , std::shared_ptr<std::vector<double> > values
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : TensorConfig(std::make_shared<std::vector<std::uint64_t> >(std::initializer_list<std::uint64_t>({ nrow, ncol })), columns, values, noiseConfig, isScarce)
 {
 }
 
@@ -241,13 +119,6 @@ MatrixConfig::MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
                const std::vector<std::uint32_t>& columns,
                const NoiseConfig& noiseConfig, bool isScarce)
    : TensorConfig({ nrow, ncol }, columns, noiseConfig, isScarce)
-{
-}
-
-MatrixConfig::MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-               std::shared_ptr<std::vector<std::uint32_t> > columns,
-               const NoiseConfig& noiseConfig, bool isScarce)
-   : TensorConfig(std::make_shared<std::vector<std::uint64_t> >(std::initializer_list<std::uint64_t>({ nrow, ncol })), columns, noiseConfig, isScarce)
 {
 }
 

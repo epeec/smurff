@@ -38,18 +38,15 @@ TensorConfig::TensorConfig ( bool isDense
    , m_isScarce(isScarce)
    , m_nmodes(nmodes)
    , m_nnz(nnz)
-   , m_dims(std::make_shared<std::vector<std::uint64_t> >())
-   , m_columns(std::make_shared<std::vector<std::uint32_t> >())
-   , m_values(std::make_shared<std::vector<double> >())
+   , m_dims()
+   , m_columns()
+   , m_values()
 {
 }
 
-//
 // Dense double tensor constructors
-//
-
 TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
-                          , const std::vector<double> values
+                          , const double* values
                           , const NoiseConfig& noiseConfig
                           )
    : m_noiseConfig(noiseConfig)
@@ -58,202 +55,38 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    , m_isScarce(false)
    , m_nmodes(dims.size())
    , m_nnz(std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<std::uint64_t>()))
-{
-   if (dims.size() == 0)
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'dims' size cannot be zero");
-   }
-
-   if (values.size() == 0)
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'values' size cannot be zero");
-   }
-
-   if (values.size() != m_nnz)
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'values' size and 'nnz' must be the same");
-   }
-
-   m_dims = std::make_shared<std::vector<std::uint64_t> >(dims);
-   m_columns = std::make_shared<std::vector<std::uint32_t> >();
-   m_columns->reserve(m_dims->size() * m_nnz);
-   m_values = std::make_shared<std::vector<double> >(values);
-
-   //construct N dimentions
-
-	for (std::vector<uint64_t>::iterator it = m_dims->begin(); it != m_dims->end(); it++)
-	{
-		std::uint64_t i_max = std::accumulate(it + 1, m_dims->end(), 1, std::multiplies<std::uint64_t>());
-		for (std::uint64_t i = 0; i < i_max; i++)
-		{
-			for (std::uint64_t j = 0; j < *it; j++)
-			{
-				std::uint64_t k_max = std::accumulate(m_dims->begin(), it, 1, std::multiplies<std::uint64_t>());
-				for (std::uint64_t k = 0; k < k_max; k++)
-				{
-					m_columns->push_back(static_cast<std::uint32_t>(j));
-				}
-			}
-		}
-	}
-}
-
-TensorConfig::TensorConfig( std::shared_ptr<std::vector<std::uint64_t> > dims
-                          , std::shared_ptr<std::vector<double> > values
-                          , const NoiseConfig& noiseConfig
-                          )
-   : m_noiseConfig(noiseConfig)
-   , m_isDense(true)
-   , m_isBinary(false)
-   , m_isScarce(false)
-   , m_nmodes(dims->size())
-   , m_nnz(std::accumulate(dims->begin(), dims->end(), 1, std::multiplies<std::uint64_t>()))
    , m_dims(dims)
-   , m_values(values)
+   , m_columns()
+   , m_values(values, values + m_nnz)
 {
-   if (m_dims->size() == 0)
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'dims' size cannot be zero");
-   }
-
-   if (m_values->size() == 0)
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'values' size cannot be zero");
-   }
-
-   if (m_values->size() != m_nnz)
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'values' size and 'nnz' must be the same");
-   }
-
-   m_columns = std::make_shared<std::vector<std::uint32_t> >();
-   m_columns->reserve(m_dims->size() * m_nnz);
-
-   //construct N dimentions
-
-	for (std::vector<uint64_t>::iterator it = m_dims->begin(); it != m_dims->end(); it++)
-	{
-		std::uint64_t i_max = std::accumulate(it + 1, m_dims->end(), 1, std::multiplies<std::uint64_t>());
-		for (std::uint64_t i = 0; i < i_max; i++)
-		{
-			for (std::uint64_t j = 0; j < *it; j++)
-			{
-				std::uint64_t k_max = std::accumulate(m_dims->begin(), it, 1, std::multiplies<std::uint64_t>());
-				for (std::uint64_t k = 0; k < k_max; k++)
-				{
-					m_columns->push_back(static_cast<std::uint32_t>(j));
-				}
-			}
-		}
-	}
+   THROWERROR_ASSERT_MSG(dims.size() > 0, "Cannot create TensorConfig instance: 'dims' size cannot be zero");
+   THROWERROR_ASSERT_MSG(m_nnz > 0, "Cannot create TensorConfig instance: 'values' size cannot be zero");
 }
 
-//
 // Sparse double tensor constructors
-//
-
 TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
-                          , const std::vector<std::uint32_t>& columns
-                          , const std::vector<double>& values
+                          , std::uint64_t nnz,
+                          , const std::vector<std::uint32_t *>& columns
                           , const NoiseConfig& noiseConfig
                           , bool isScarce
                           )
    : m_noiseConfig(noiseConfig)
    , m_isDense(false)
-   , m_isBinary(false)
+   , m_isBinary(true)
    , m_isScarce(isScarce)
    , m_nmodes(dims.size())
-   , m_nnz(values.size())
-{
-   if (columns.size() != values.size() * dims.size())
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'columns' size should be the same as size of 'values' times size of 'dims'");
-   }
-
-   m_dims = std::make_shared<std::vector<std::uint64_t> >(dims);
-   m_columns = std::make_shared<std::vector<std::uint32_t> >(columns);
-   m_values = std::make_shared<std::vector<double> >(values);
-}
-
-TensorConfig::TensorConfig( std::shared_ptr<std::vector<std::uint64_t> > dims
-                          , std::shared_ptr<std::vector<std::uint32_t> > columns
-                          , std::shared_ptr<std::vector<double> > values
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : m_noiseConfig(noiseConfig)
-   , m_isDense(false)
-   , m_isBinary(false)
-   , m_isScarce(isScarce)
-   , m_nmodes(dims->size())
-   , m_nnz(values->size())
    , m_dims(dims)
-   , m_columns(columns)
-   , m_values(values)
+   , m_nnz(nnz)
+   , m_values()
 {
-   if (columns->size() != values->size() * dims->size())
+   for(auto col : columns)
    {
-      THROWERROR("Cannot create TensorConfig instance: 'columns' size should be the same as size of 'values' times size of 'dims'");
+      m_columns.push_back(std::vector<std::uint32_t>(col, col + nnz));
    }
 }
 
-//
 // Sparse binary tensor constructors
-//
 
-TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
-                          , const std::vector<std::uint32_t>& columns
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : m_noiseConfig(noiseConfig)
-   , m_isDense(false)
-   , m_isBinary(true)
-   , m_isScarce(isScarce)
-   , m_nmodes(dims.size())
-   , m_nnz(columns.size() / dims.size())
-{
-   if (dims.size() == 0)
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'dims' size cannot be zero");
-   }
-
-   if (columns.size() == 0)
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'columns' size cannot be zero");
-   }
-
-   m_dims = std::make_shared<std::vector<std::uint64_t> >(dims);
-   m_columns = std::make_shared<std::vector<std::uint32_t> >(columns);
-   m_values = std::make_shared<std::vector<double> >(m_nnz, 1);
-}
-
-TensorConfig::TensorConfig( std::shared_ptr<std::vector<std::uint64_t> > dims
-                          , std::shared_ptr<std::vector<std::uint32_t> > columns
-                          , const NoiseConfig& noiseConfig
-                          , bool isScarce
-                          )
-   : m_noiseConfig(noiseConfig)
-   , m_isDense(false)
-   , m_isBinary(true)
-   , m_isScarce(isScarce)
-   , m_nmodes(dims->size())
-   , m_nnz(columns->size() / dims->size())
-   , m_dims(dims)
-   , m_columns(columns)
-{
-   if (dims->size() == 0)
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'dims' size cannot be zero");
-   }
-
-   if (columns->size() == 0)
-   {
-      THROWERROR("Cannot create TensorConfig instance: 'columns' size cannot be zero");
-   }
-
-   m_values = std::make_shared<std::vector<double> >(m_nnz, 1);
-}
 
 TensorConfig::~TensorConfig()
 {
@@ -290,64 +123,42 @@ std::uint64_t TensorConfig::getNModes() const
 
 std::pair<PVec<>, double> TensorConfig::get(std::uint64_t pos) const
 {
-    double val = getValues()[pos];
-    PVec<> coords(getNModes());
-    for(unsigned j=0; j<getNModes(); ++j) 
-    {
-        coords[j] = getColumns()[pos];
-        pos += getNNZ();
-    }
+   THROWERROR_ASSERT(isSparse());
+   double val = m_values.at(pos);
+   PVec<> coords(getNModes());
+   for (unsigned j = 0; j < getNModes(); ++j)
+   {
+      coords[j] = getColumns()[pos];
+      pos += getNNZ();
+   }
 
-    return std::make_pair(PVec<>(coords), val);
+   return std::make_pair(PVec<>(coords), val);
 }
 
 void TensorConfig::set(std::uint64_t pos, PVec<> coords, double value)
 {
-    (*m_values)[pos] = value;
+    m_values[pos] = value;
     for(unsigned j=0; j<getNModes(); ++j) 
     {
-        (*m_columns)[pos] = coords[j];
+        m_columns[pos] = coords[j];
         pos += getNNZ();
     }
 }
 
 const std::vector<std::uint64_t>& TensorConfig::getDims() const
 {
-   return *m_dims;
+   return m_dims;
 }
 
 const std::vector<std::uint32_t>& TensorConfig::getColumns() const
 {
-   return *m_columns;
+   return m_columns;
 }
 
 const std::vector<double>& TensorConfig::getValues() const
 {
-   return *m_values;
-}
-
-/*
-std::shared_ptr<std::vector<std::uint64_t> > TensorConfig::getDimsPtr() const
-{
-   return m_dims;
-}
-
-std::shared_ptr<std::vector<std::uint32_t> > TensorConfig::getColumnsPtr() const
-{
-   return m_columns;
-}
-
-std::vector<std::uint32_t> &TensorConfig::getCoordsPtr(int mode) const
-{
-
-    
-}
-
-std::shared_ptr<std::vector<double> > TensorConfig::getValuesPtr() const
-{
    return m_values;
 }
-*/
 
 const NoiseConfig& TensorConfig::getNoiseConfig() const
 {

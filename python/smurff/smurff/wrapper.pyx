@@ -77,18 +77,16 @@ cdef MatrixConfig* prepare_sparse_matrix(X, NoiseConfig noise_config, is_scarce)
     cdef double* vals_end = vals_begin + vals.shape[0]
 
     # Create vectors from pointers
-    cdef vector[uint32_t]* rows_vector_ptr = new vector[uint32_t]()
-    rows_vector_ptr.assign(irows_begin, irows_end)
+    cdef vector[uint32_t] rows_vector = vector[uint32_t](irows_begin, irows_end)
     cdef vector[uint32_t]* cols_vector_ptr = new vector[uint32_t]()
     cols_vector_ptr.assign(icols_begin, icols_end)
     cdef vector[double]* vals_vector_ptr = new vector[double]()
     vals_vector_ptr.assign(vals_begin, vals_end)
 
-    cdef shared_ptr[vector[uint32_t]] rows_vector_shared_ptr = shared_ptr[vector[uint32_t]](rows_vector_ptr)
-    cdef shared_ptr[vector[uint32_t]] cols_vector_shared_ptr = shared_ptr[vector[uint32_t]](cols_vector_ptr)
-    cdef shared_ptr[vector[double]] vals_vector_shared_ptr = shared_ptr[vector[double]](vals_vector_ptr)
+    cdef MatrixConfig* matrix_config_ptr = new MatrixConfig(<uint64_t>(X.shape[0]), <uint64_t>(X.shape[1]), *rows_vector_ptr, *cols_vector_ptr, *vals_vector_ptr, noise_config, is_scarce)
 
-    cdef MatrixConfig* matrix_config_ptr = new MatrixConfig(<uint64_t>(X.shape[0]), <uint64_t>(X.shape[1]), rows_vector_shared_ptr, cols_vector_shared_ptr, vals_vector_shared_ptr, noise_config, is_scarce)
+    delete 
+
     return matrix_config_ptr
 
 cdef MatrixConfig* prepare_dense_matrix(X, NoiseConfig noise_config) except +:
@@ -97,8 +95,8 @@ cdef MatrixConfig* prepare_dense_matrix(X, NoiseConfig noise_config) except +:
     cdef double* vals_end = vals_begin + vals.shape[0]
     cdef vector[double]* vals_vector_ptr = new vector[double]()
     vals_vector_ptr.assign(vals_begin, vals_end)
-    cdef shared_ptr[vector[double]] vals_vector_shared_ptr = shared_ptr[vector[double]](vals_vector_ptr)
-    cdef MatrixConfig* matrix_config_ptr = new MatrixConfig(<uint64_t>(X.shape[0]), <uint64_t>(X.shape[1]), vals_vector_shared_ptr, noise_config)
+    cdef vector[double] vals_vector = vector[double](vals_vector_ptr)
+    cdef MatrixConfig* matrix_config_ptr = new MatrixConfig(<uint64_t>(X.shape[0]), <uint64_t>(X.shape[1]), vals_vector, noise_config)
     return matrix_config_ptr
 
 cdef shared_ptr[SideInfoConfig] prepare_sideinfo(side_info, NoiseConfig noise_config, tol, direct) except +:

@@ -12,12 +12,14 @@ cdef extern from "<SmurffCpp/Configs/MatrixConfig.h>" namespace "smurff":
         # Dense double matrix constructos
         #
         MatrixConfig(uint64_t nrow, uint64_t ncol,
-                     shared_ptr[vector[double]] values,
+                     const vector[double]& values,
                      const NoiseConfig& noiseConfig) except +
 
         #
         # Sparse double matrix constructors
         #
         MatrixConfig(uint64_t nrow, uint64_t ncol,
-                     shared_ptr[vector[uint32_t]] rows, shared_ptr[vector[uint32_t]] cols, shared_ptr[vector[double]] values,
+                     const vector[uint32_t]& rows,
+                     const vector[uint32_t]& cols, 
+                     const vector[double]& values,
                      const NoiseConfig& noiseConfig, bool isScarse) except +
