@@ -61,10 +61,9 @@ jobs:
   - template: conda-steps.yml
 
 - job: 'Conda_Windows'
+  variables:
+    WindowsSdkVer: 14.0
   pool:
     vmImage: 'vs2017-win2016'
   steps:
-    - script: |
-        choco install visualcppbuildtools
-      displayName: Install Visual Studio 2015 C++ Biuld Tools
     - template: conda-steps.yml
