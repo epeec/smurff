@@ -65,8 +65,9 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
 
 // Sparse double tensor constructors
 TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
-                          , std::uint64_t nnz,
+                          , std::uint64_t nnz
                           , const std::vector<std::uint32_t *>& columns
+                          , const double* values
                           , const NoiseConfig& noiseConfig
                           , bool isScarce
                           )
@@ -123,14 +124,12 @@ std::uint64_t TensorConfig::getNModes() const
 
 std::pair<PVec<>, double> TensorConfig::get(std::uint64_t pos) const
 {
-   THROWERROR_ASSERT(isSparse());
+   THROWERROR_ASSERT(!isDense());
+
    double val = m_values.at(pos);
    PVec<> coords(getNModes());
    for (unsigned j = 0; j < getNModes(); ++j)
-   {
-      coords[j] = getColumns()[pos];
-      pos += getNNZ();
-   }
+         coords[j] = getColumns()[j][pos];
 
    return std::make_pair(PVec<>(coords), val);
 }
@@ -140,8 +139,7 @@ void TensorConfig::set(std::uint64_t pos, PVec<> coords, double value)
     m_values[pos] = value;
     for(unsigned j=0; j<getNModes(); ++j) 
     {
-        m_columns[pos] = coords[j];
-        pos += getNNZ();
+        m_columns[j][pos] = coords[j];
     }
 }
 
@@ -150,7 +148,7 @@ const std::vector<std::uint64_t>& TensorConfig::getDims() const
    return m_dims;
 }
 
-const std::vector<std::uint32_t>& TensorConfig::getColumns() const
+const std::vector<std::vector<std::uint32_t>>& TensorConfig::getColumns() const
 {
    return m_columns;
 }
@@ -197,15 +195,15 @@ const PVec<>& TensorConfig::getPos() const
 
 std::ostream& TensorConfig::info(std::ostream& os) const
 {
-   if (!m_dims->size())
+   if (!m_dims.size())
    {
       os << "0";
    }
    else
    {
-      os << m_dims->operator[](0);
-      for (std::size_t i = 1; i < m_dims->size(); i++)
-         os << " x " << m_dims->operator[](i);
+      os << m_dims.operator[](0);
+      for (std::size_t i = 1; i < m_dims.size(); i++)
+         os << " x " << m_dims.operator[](i);
    }
    if (getFilename().size())
    {

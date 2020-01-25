@@ -27,6 +27,7 @@ namespace smurff
 
       std::uint64_t m_nmodes;
       std::uint64_t m_nnz;
+      std::vector<std::uint64_t> m_dims;
 
       std::vector<std::vector<std::uint32_t>> m_columns;
       std::vector<double>                     m_values;
@@ -41,11 +42,14 @@ namespace smurff
                    const NoiseConfig& noiseConfig);
 
       // Dense double tensor constructors
-      TensorConfig(const std::vector<std::uint64_t>& dims, const double values,
+      TensorConfig(const std::vector<std::uint64_t>& dims, const double* values,
                    const NoiseConfig& noiseConfig);
 
       // Sparse double tensor constructors
-      TensorConfig(const std::vector<std::uint64_t>& dims, const std::vector<std::uint32_t *> columns, const double* values,
+      TensorConfig(const std::vector<std::uint64_t>& dims,
+                   std::uint64_t nnz,
+                   const std::vector<std::uint32_t *>& columns,
+                   const double* values,
                    const NoiseConfig& noiseConfig, bool isScarce);
 
       // Sparse binary tensor constructors
@@ -70,7 +74,7 @@ namespace smurff
       void set(std::uint64_t, PVec<>, double);
 
       const std::vector<std::uint64_t>& getDims() const;
-      const std::vector<std::uint32_t>& getColumns() const;
+      const std::vector<std::vector<std::uint32_t>>& getColumns() const;
       const std::vector<double>& getValues() const;
 
       void setFilename(const std::string& f);

@@ -100,7 +100,7 @@ std::ostream& matrix_utils::operator << (std::ostream& os, const MatrixConfig& m
    const std::vector<std::uint32_t>& rows = mc.getRows();
    const std::vector<std::uint32_t>& cols = mc.getCols();
    const std::vector<double>& values = mc.getValues();
-   const std::vector<std::uint32_t>& columns = mc.getColumns();
+   const std::vector<std::vector<std::uint32_t>>& columns = mc.getColumns();
 
    if(rows.size() != cols.size() || rows.size() != values.size())
    {
@@ -119,7 +119,11 @@ std::ostream& matrix_utils::operator << (std::ostream& os, const MatrixConfig& m
 
    os << "columns: " << std::endl;
    for(std::uint64_t i = 0; i < columns.size(); i++)
-      os << columns[i] << ", ";
+   {
+      for(std::uint64_t j = 0; j<columns[i].size(); j++)
+         os << columns[i][j] << ", ";
+      os << std::endl;
+   }
    os << std::endl;
 
    os << "values: " << std::endl;
