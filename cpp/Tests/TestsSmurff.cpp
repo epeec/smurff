@@ -66,7 +66,7 @@ std::shared_ptr<TensorConfig> getTrainDenseTensor2dConfig()
 {
    std::vector<double> trainTensorConfigVals = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 };
    std::shared_ptr<TensorConfig> trainTensorConfig =
-      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 3, 4 }), trainTensorConfigVals, fixed_ncfg);
+      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 3, 4 }), trainTensorConfigVals.data(), fixed_ncfg);
    return trainTensorConfig;
 }
 

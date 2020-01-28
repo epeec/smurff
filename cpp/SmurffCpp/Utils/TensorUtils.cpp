@@ -1,96 +1,24 @@
 #include <numeric>
 
 #include "TensorUtils.h"
+#include "MatrixUtils.h"
 
 #include <Utils/Error.h>
 
 namespace smurff {
 
-Matrix tensor_utils::dense_to_eigen(const TensorConfig& tensorConfig)
-{
-   if(!tensorConfig.isDense())
-   {
-      THROWERROR("tensor config should be dense");
-   }
-
-   if(tensorConfig.getNModes() != 2)
-   {
-      THROWERROR("Invalid number of dimensions. Tensor can not be converted to matrix.");
-   }
-
-   std::vector<float_type> values(tensorConfig.getValues().begin(), tensorConfig.getValues().end());
-   return Eigen::Map<const Matrix>(values.data(), tensorConfig.getDims()[0], tensorConfig.getDims()[1]);
-}
-
-SparseMatrix tensor_utils::sparse_to_eigen(const TensorConfig& tensorConfig)
-{
-   if(tensorConfig.isDense())
-   {
-      THROWERROR("tensor config should be sparse");
-   }
-
-   if(tensorConfig.getNModes() != 2)
-   {
-      THROWERROR("Invalid number of dimensions. Tensor can not be converted to matrix.");
-   }
-
-   const auto &columns = tensorConfig.getColumns();
-   const auto &values = tensorConfig.getValues();
-
-   SparseMatrix out(tensorConfig.getDims()[0], tensorConfig.getDims()[1]);
-
-   std::vector<Eigen::Triplet<float_type> > triplets;
-   for(std::uint64_t i = 0; i < tensorConfig.getNNZ(); i++)
-   {
-      float_type val = values[i];
-      std::uint32_t row = columns[i];
-      std::uint32_t col = columns[i + tensorConfig.getNNZ()];
-      triplets.push_back(Eigen::Triplet<float_type>(row, col, val));
-   }
-
-   out.setFromTriplets(triplets.begin(), triplets.end());
-
-   return out;
-}
-
-MatrixConfig tensor_utils::tensor_to_matrix(const TensorConfig& tensorConfig)
-{
-   if(tensorConfig.getNModes() != 2)
-   {
-      THROWERROR("Invalid number of dimentions. Tensor can not be converted to matrix.");
-   }
-
-   if(tensorConfig.isDense())
-   {
-      return MatrixConfig(tensorConfig.getDims()[0], tensorConfig.getDims()[1],
-         tensorConfig.getValues(),
-         tensorConfig.getNoiseConfig());
-   }
-   else if(tensorConfig.isBinary())
-   {
-      return MatrixConfig(tensorConfig.getDims()[0], tensorConfig.getDims()[1],
-         tensorConfig.getColumns(),
-         tensorConfig.getNoiseConfig(),
-         tensorConfig.isScarce());
-   }
-   else
-   {
-      return MatrixConfig(tensorConfig.getDims()[0], tensorConfig.getDims()[1],
-         tensorConfig.getColumns(), tensorConfig.getValues(),
-         tensorConfig.getNoiseConfig(),
-         tensorConfig.isScarce());
-   }
-}
-
 std::ostream& tensor_utils::operator << (std::ostream& os, const TensorConfig& tc)
 {
    const std::vector<double>& values = tc.getValues();
-   const std::vector<std::uint32_t>& columns = tc.getColumns();
 
    os << "columns: " << std::endl;
-   for(std::uint64_t i = 0; i < columns.size(); i++)
-      os << columns[i] << ", ";
-   os << std::endl;
+   for (int j = 0; j < tc.getNModes(); ++j)
+   {
+      const std::vector<std::uint32_t> &column = tc.getColumn(j);
+      for (std::uint64_t i = 0; i < column.size(); i++)
+         os << column[i] << ", ";
+      os << std::endl;
+   }
 
    os << "values: " << std::endl;
    for(std::uint64_t i = 0; i < values.size(); i++)
@@ -101,16 +29,7 @@ std::ostream& tensor_utils::operator << (std::ostream& os, const TensorConfig& t
    {
       os << "dims: " << tc.getDims()[0] << " " << tc.getDims()[1] << std::endl;
 
-      SparseMatrix X(tc.getDims()[0], tc.getDims()[1]);
-
-      std::vector<Eigen::Triplet<double> > triplets;
-      for(std::uint64_t i = 0; i < tc.getNNZ(); i++)
-         triplets.push_back(Eigen::Triplet<double>(columns[i], columns[i + tc.getNNZ()], values[i]));
-
-      os << "NTriplets: " << triplets.size() << std::endl;
-
-      X.setFromTriplets(triplets.begin(), triplets.end());
-
+      SparseMatrix X = matrix_utils::sparse_to_eigen(tc);
       os << X << std::endl;
    }
 
@@ -118,8 +37,8 @@ std::ostream& tensor_utils::operator << (std::ostream& os, const TensorConfig& t
 }
 
 Matrix tensor_utils::slice( const TensorConfig& tensorConfig
-                                           , const std::array<std::uint64_t, 2>& fixedDims
-                                           , const std::unordered_map<std::uint64_t, std::uint32_t>& dimCoords)
+                           , const std::array<std::uint64_t, 2>& fixedDims
+                           , const std::unordered_map<std::uint64_t, std::uint32_t>& dimCoords)
 {
    if (fixedDims[0] == fixedDims[1])
    {
@@ -157,13 +76,6 @@ Matrix tensor_utils::slice( const TensorConfig& tensorConfig
       }
    }
 
-   std::unordered_map<std::uint64_t, std::vector<std::uint32_t>::const_iterator> dimColumns;
-   for (const std::unordered_map<std::uint64_t, std::uint32_t>::value_type& dc : dimCoords)
-   {
-      std::size_t dimOffset = dc.first * tensorConfig.getValues().size();
-      dimColumns[dc.first] = tensorConfig.getColumns().begin() + dimOffset;
-   }
-
    Matrix sliceMatrix(tensorConfig.getDims()[fixedDims[0]], tensorConfig.getDims()[fixedDims[1]]);
    for (std::size_t i = 0; i < tensorConfig.getValues().size(); i++)
    {
@@ -173,16 +85,14 @@ Matrix tensor_utils::slice( const TensorConfig& tensorConfig
                         , true
                         , [&](bool acc, const std::unordered_map<std::uint64_t, std::uint32_t>::value_type& dc)
                           {
-                             return acc & (*(dimColumns[dc.first] + i) == dc.second);
+                             return acc & (tensorConfig.getColumn(dc.first)[i] == dc.second);
                           }
                         );
 
       if (dimCoordsMatchColumns)
       {
-         std::uint32_t d0_coord =
-            tensorConfig.getColumns()[fixedDims[0] * tensorConfig.getValues().size() + i];
-         std::uint32_t d1_coord =
-            tensorConfig.getColumns()[fixedDims[1] * tensorConfig.getValues().size() + i];
+         std::uint32_t d0_coord = tensorConfig.getColumn(fixedDims[0])[i];
+         std::uint32_t d1_coord = tensorConfig.getColumn(fixedDims[1])[i];
          sliceMatrix(d0_coord, d1_coord) = tensorConfig.getValues()[i];
       }
    }

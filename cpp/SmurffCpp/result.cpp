@@ -90,9 +90,12 @@ void Result::save(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const
 template<typename Accessor>
 std::shared_ptr<const MatrixConfig> Result::toMatrixConfig(const Accessor &acc) const
 {
-   std::vector<std::uint32_t> rows;
-   std::vector<std::uint32_t> cols;
-   std::vector<double> values;
+   auto ret = std::make_shared<MatrixConfig>(false, false, false,     
+      m_dims.at(0), m_dims.at(1), m_predictions.size(), NoiseConfig());
+
+   std::vector<std::uint32_t> &rows = ret->getRows();
+   std::vector<std::uint32_t> &cols = ret->getCols();
+   std::vector<double> &values = ret->getValues();
 
    for (const auto &p : m_predictions)
    {
@@ -101,7 +104,7 @@ std::shared_ptr<const MatrixConfig> Result::toMatrixConfig(const Accessor &acc) 
       values.push_back(acc(p));
    }
 
-   return std::make_shared<MatrixConfig>(m_dims.at(0), m_dims.at(1), rows, cols, values, NoiseConfig(), false);
+   return ret;
 }
 
 void Result::savePred(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const

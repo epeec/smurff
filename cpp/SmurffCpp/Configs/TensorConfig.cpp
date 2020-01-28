@@ -37,8 +37,8 @@ TensorConfig::TensorConfig ( bool isDense
    , m_isBinary(isBinary)
    , m_isScarce(isScarce)
    , m_nmodes(nmodes)
-   , m_nnz(nnz)
    , m_dims()
+   , m_nnz(nnz)
    , m_columns()
    , m_values()
 {
@@ -54,8 +54,8 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    , m_isBinary(false)
    , m_isScarce(false)
    , m_nmodes(dims.size())
-   , m_nnz(std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<std::uint64_t>()))
    , m_dims(dims)
+   , m_nnz(std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<std::uint64_t>()))
    , m_columns()
    , m_values(values, values + m_nnz)
 {
@@ -66,7 +66,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
 // Sparse double tensor constructors
 TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
                           , std::uint64_t nnz
-                          , const std::vector<std::uint32_t *>& columns
+                          , const std::vector<const std::uint32_t *>& columns
                           , const double* values
                           , const NoiseConfig& noiseConfig
                           , bool isScarce
@@ -129,7 +129,7 @@ std::pair<PVec<>, double> TensorConfig::get(std::uint64_t pos) const
    double val = m_values.at(pos);
    PVec<> coords(getNModes());
    for (unsigned j = 0; j < getNModes(); ++j)
-         coords[j] = getColumns()[j][pos];
+         coords[j] = m_columns[j][pos];
 
    return std::make_pair(PVec<>(coords), val);
 }
@@ -137,10 +137,7 @@ std::pair<PVec<>, double> TensorConfig::get(std::uint64_t pos) const
 void TensorConfig::set(std::uint64_t pos, PVec<> coords, double value)
 {
     m_values[pos] = value;
-    for(unsigned j=0; j<getNModes(); ++j) 
-    {
-        m_columns[j][pos] = coords[j];
-    }
+    for(unsigned j=0; j<getNModes(); ++j) m_columns[j][pos] = coords[j];
 }
 
 const std::vector<std::uint64_t>& TensorConfig::getDims() const
@@ -148,9 +145,9 @@ const std::vector<std::uint64_t>& TensorConfig::getDims() const
    return m_dims;
 }
 
-const std::vector<std::vector<std::uint32_t>>& TensorConfig::getColumns() const
+const std::vector<std::uint32_t>& TensorConfig::getColumn(int i) const
 {
-   return m_columns;
+   return m_columns[i];
 }
 
 const std::vector<double>& TensorConfig::getValues() const

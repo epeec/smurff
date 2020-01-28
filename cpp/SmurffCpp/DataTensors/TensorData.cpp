@@ -9,14 +9,17 @@
 namespace smurff {
 
 //convert array of coordinates to [nnz x nmodes] matrix
-MatrixXui32 toMatrixNew(const std::vector<std::uint32_t>& columns, std::uint64_t nnz, std::uint64_t nmodes) 
+static MatrixXui32 toMatrixNew(const TensorConfig &tc)
 {
+   std::uint64_t nnz = tc.getNNZ();
+   std::uint64_t nmodes = tc.getNModes();
+
    MatrixXui32 idx(nnz, nmodes);
    for (std::uint64_t row = 0; row < nnz; row++) 
    {
       for (std::uint64_t col = 0; col < nmodes; col++) 
       {
-         idx(row, col) = columns[col * nnz + row];
+         idx(row, col) = tc.getColumn(col)[row];
       }
    }
    return idx;
@@ -28,7 +31,7 @@ TensorData::TensorData(const TensorConfig& tc)
      m_Y(std::make_shared<std::vector<std::shared_ptr<SparseMode> > >())
 {
    //combine coordinates into [nnz x nmodes] matrix
-   MatrixXui32 idx = toMatrixNew(tc.getColumns(), tc.getNNZ(), tc.getNModes());
+   MatrixXui32 idx = toMatrixNew(tc);
 
    for (std::uint64_t mode = 0; mode < tc.getNModes(); mode++) 
    {

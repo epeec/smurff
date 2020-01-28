@@ -17,6 +17,9 @@ namespace smurff
 
    class TensorConfig : public std::enable_shared_from_this<TensorConfig>
    {
+   public:
+      typedef std::vector<std::vector<std::uint32_t>> columns_type;
+
    private:
       NoiseConfig m_noiseConfig;
 
@@ -26,35 +29,41 @@ namespace smurff
       bool m_isScarce;
 
       std::uint64_t m_nmodes;
-      std::uint64_t m_nnz;
       std::vector<std::uint64_t> m_dims;
+      std::uint64_t m_nnz;
 
-      std::vector<std::vector<std::uint32_t>> m_columns;
-      std::vector<double>                     m_values;
+      columns_type         m_columns;
+      std::vector<double>  m_values;
 
    private:
       std::string m_filename;
       std::shared_ptr<PVec<>> m_pos;
 
-   protected:
+   public:
+      // Empty c'tor for filling later
       TensorConfig(bool isDense, bool isBinary, bool isScarce,
-                   std::uint64_t nmodes, std::uint64_t nnz,
+                   std::uint64_t nmodes, std::uint64_t nnz, 
                    const NoiseConfig& noiseConfig);
 
       // Dense double tensor constructors
-      TensorConfig(const std::vector<std::uint64_t>& dims, const double* values,
+      TensorConfig(const std::vector<std::uint64_t>& dims,
+                   const double* values,
                    const NoiseConfig& noiseConfig);
 
       // Sparse double tensor constructors
       TensorConfig(const std::vector<std::uint64_t>& dims,
                    std::uint64_t nnz,
-                   const std::vector<std::uint32_t *>& columns,
+                   const std::vector<const std::uint32_t *>& columns,
                    const double* values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
+                   const NoiseConfig& noiseConfig,
+                   bool isScarce);
 
       // Sparse binary tensor constructors
-      TensorConfig(const std::vector<std::uint64_t>& dims, const std::vector<std::uint32_t>& columns,
-                   const NoiseConfig& noiseConfig, bool isScarce);
+      TensorConfig(const std::vector<std::uint64_t>& dims,
+                   std::uint64_t nnz,
+                   const std::vector<const std::uint32_t *>& columns,
+                   const NoiseConfig& noiseConfig,
+                   bool isScarce);
 
    public:
       virtual ~TensorConfig();
@@ -74,8 +83,16 @@ namespace smurff
       void set(std::uint64_t, PVec<>, double);
 
       const std::vector<std::uint64_t>& getDims() const;
-      const std::vector<std::vector<std::uint32_t>>& getColumns() const;
+      std::uint64_t getNRow() const { return getDims().at(0); }
+      std::uint64_t getNCol() const { return getDims().at(1); }
+
+      const std::vector<std::uint32_t>& getColumn(int i) const;
+      const std::vector<std::uint32_t>& getRows() const { return getColumn(0); }
+      const std::vector<std::uint32_t>& getCols() const { return getColumn(1); }
       const std::vector<double>& getValues() const;
+
+      std::vector<std::uint32_t>& getColumn(int i);
+      std::vector<double>& getValues();
 
       void setFilename(const std::string& f);
       const std::string &getFilename() const;
