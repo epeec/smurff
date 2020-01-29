@@ -20,12 +20,12 @@ static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 TEST_CASE("test sparse view new 1")
 {
    std::vector<std::uint64_t> tensorConfigDims = {2, 3};
-   std::vector<std::uint32_t> tensorConfigColumns =
+   std::vector<std::vector<std::uint32_t>> tensorConfigColumns =
       {
          // 1D
-         0,  1,  0,  1,  0,  1,
+         { 0,  1,  0,  1,  0,  1 },
          // 2D
-         0,  0,  1,  1,  2,  2,
+         { 0,  0,  1,  1,  2,  2 },
       };
    std::vector<double> tensorConfigValues =
       {
@@ -33,7 +33,7 @@ TEST_CASE("test sparse view new 1")
       };
    TensorConfig tensorConfig(tensorConfigDims, tensorConfigColumns, tensorConfigValues, fixed_ncfg, false);
 
-   Matrix actualMatrix0 = tensor_utils::sparse_to_eigen(tensorConfig);
+   Matrix actualMatrix0 = matrix_utils::sparse_to_eigen(tensorConfig);
 
    //std::cout << actualMatrix0 << std::endl;
 
@@ -75,15 +75,15 @@ TEST_CASE("test sparse view new 1")
 TEST_CASE("test sparse view new 2")
 {
    std::vector<std::uint64_t> tensorConfigDims = { 2, 3, 4 };
-   std::vector<std::uint32_t> tensorConfigColumns =
+   std::vector<std::vector<std::uint32_t>> tensorConfigColumns =
       {
          //  1-st xy plane             //2-nd xy plane           //3-rd xy plane            //4-rd xy plane
          // 1D
-         0,  1,  0,  1,  0,  1,     0,  1,  0,  1,  0,  1,     0,  1,  0,  1,  0,  1,     0,  1,  0,  1,  0,  1,
+         { 0,  1,  0,  1,  0,  1,     0,  1,  0,  1,  0,  1,     0,  1,  0,  1,  0,  1,     0,  1,  0,  1,  0,  1 },
          // 2D
-         0,  0,  1,  1,  2,  2,     0,  0,  1,  1,  2,  2,     0,  0,  1,  1,  2,  2,     0,  0,  1,  1,  2,  2,
+         { 0,  0,  1,  1,  2,  2,     0,  0,  1,  1,  2,  2,     0,  0,  1,  1,  2,  2,     0,  0,  1,  1,  2,  2 },
          // 3D
-         0,  0,  0,  0,  0,  0,     1,  1,  1,  1,  1,  1,     2,  2,  2,  2,  2,  2,     3,  3,  3,  3,  3,  3,
+         { 0,  0,  0,  0,  0,  0,     1,  1,  1,  1,  1,  1,     2,  2,  2,  2,  2,  2,     3,  3,  3,  3,  3,  3 },
       };
    std::vector<double> tensorConfigValues =
       {

@@ -78,7 +78,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    , m_nmodes(dims.size())
    , m_dims(dims)
    , m_nnz(nnz)
-   , m_values()
+   , m_values(values, values + nnz)
 {
    for(auto col : columns)
    {
@@ -87,7 +87,26 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
 }
 
 // Sparse binary tensor constructors
-
+TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
+                          , std::uint64_t nnz
+                          , const std::vector<const std::uint32_t *>& columns
+                          , const NoiseConfig& noiseConfig
+                          , bool isScarce
+                          )
+   : m_noiseConfig(noiseConfig)
+   , m_isDense(false)
+   , m_isBinary(true)
+   , m_isScarce(isScarce)
+   , m_nmodes(dims.size())
+   , m_dims(dims)
+   , m_nnz(nnz)
+   , m_values()
+{
+   for(auto col : columns)
+   {
+      m_columns.push_back(std::vector<std::uint32_t>(col, col + nnz));
+   }
+}
 
 TensorConfig::~TensorConfig()
 {
@@ -143,16 +162,6 @@ void TensorConfig::set(std::uint64_t pos, PVec<> coords, double value)
 const std::vector<std::uint64_t>& TensorConfig::getDims() const
 {
    return m_dims;
-}
-
-const std::vector<std::uint32_t>& TensorConfig::getColumn(int i) const
-{
-   return m_columns[i];
-}
-
-const std::vector<double>& TensorConfig::getValues() const
-{
-   return m_values;
 }
 
 const NoiseConfig& TensorConfig::getNoiseConfig() const

@@ -53,16 +53,6 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
 // other methods
 //
 
-std::uint64_t MatrixConfig::getNRow() const
-{
-   return m_dims.operator[](0);
-}
-
-std::uint64_t MatrixConfig::getNCol() const
-{
-   return m_dims.operator[](1);
-}
-
 std::shared_ptr<Data> MatrixConfig::create(std::shared_ptr<IDataCreator> creator) const
 {
    //have to use dynamic cast here but only because shared_from_this() can only return base pointer even from child

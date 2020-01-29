@@ -92,10 +92,10 @@ std::shared_ptr<MatrixConfig> getTrainSparseMatrixConfig()
 
 std::shared_ptr<TensorConfig> getTrainSparseTensor2dConfig()
 {
-   std::vector<std::uint32_t> trainTensorConfigCols =
+   std::vector<std::vector<std::uint32_t>> trainTensorConfigCols =
       {
-         0, 0, 0, 0, 2, 2, 2, 2,
-         0, 1, 2, 3, 0, 1, 2, 3
+        { 0, 0, 0, 0, 2, 2, 2, 2 },
+        { 0, 1, 2, 3, 0, 1, 2, 3 }
       };
    std::vector<double> trainTensorConfigVals = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<TensorConfig> trainTensorConfig =
@@ -117,10 +117,10 @@ std::shared_ptr<MatrixConfig> getTestSparseMatrixConfig()
 
 std::shared_ptr<TensorConfig> getTestSparseTensor2dConfig()
 {
-   std::vector<std::uint32_t> testTensorConfigCols =
+    std::vector<std::vector<std::uint32_t>> testTensorConfigCols =
       {
-         0, 0, 0, 0, 2, 2, 2, 2,
-         0, 1, 2, 3, 0, 1, 2, 3
+         { 0, 0, 0, 0, 2, 2, 2, 2 },
+         { 0, 1, 2, 3, 0, 1, 2, 3 }
       };
    std::vector<double> testTensorConfigVals = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<TensorConfig> testTensorConfig =
@@ -130,11 +130,11 @@ std::shared_ptr<TensorConfig> getTestSparseTensor2dConfig()
 
 std::shared_ptr<TensorConfig> getTestSparseTensor3dConfig()
 {
-   std::vector<std::uint32_t> testTensorConfigCols =
+   std::vector<std::vector<std::uint32_t>> testTensorConfigCols =
       {
-         0, 0, 0, 0, 0, 0, 0, 0,
-         0, 0, 0, 0, 2, 2, 2, 2,
-         0, 1, 2, 3, 0, 1, 2, 3
+        { 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 2, 2, 2, 2 },
+        { 0, 1, 2, 3, 0, 1, 2, 3 }
       };
    std::vector<double> testTensorConfigVals = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<TensorConfig> testTensorConfig =

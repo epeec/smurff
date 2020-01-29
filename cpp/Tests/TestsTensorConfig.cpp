@@ -22,29 +22,25 @@ TEST_CASE("TensorConfig(const std::vector<std::uint64_t>& dims, const std::vecto
    std::vector<std::uint64_t> tensorConfigDims = { 3, 4 };
    std::vector<double> tensorConfigValues = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 };
    TensorConfig tensorConfig(tensorConfigDims, tensorConfigValues.data(), fixed_ncfg);
-   MatrixConfig matrixConfig = tensor_utils::tensor_to_matrix(tensorConfig);
 
-   Matrix actualMatrix0 = tensor_utils::dense_to_eigen(tensorConfig);
-   Matrix actualMatrix1 = matrix_utils::dense_to_eigen(matrixConfig);
+   Matrix actualMatrix = matrix_utils::dense_to_eigen(tensorConfig);
    Matrix expectedMatrix(3, 4);
    expectedMatrix << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
 
-   REQUIRE(matrix_utils::equals(actualMatrix0, expectedMatrix));
-   REQUIRE(matrix_utils::equals(actualMatrix1, expectedMatrix));
+   REQUIRE(matrix_utils::equals(actualMatrix, expectedMatrix));
 }
 
-TEST_CASE("TensorConfig(const std::vector<std::uint64_t>& dims, const std::vector<std::uint32_t>& columns, const std::vector<double>& values, const NoiseConfig& noiseConfig)")
+TEST_CASE("TensorConfig(const std::vector<std::uint64_t>& dims, const std::vector<std::vector<std::uint32_t>>& columns, const std::vector<double>& values, const NoiseConfig& noiseConfig)")
 {
    std::vector<std::uint64_t> tensorConfigDims = { 3, 4 };
-   std::vector<std::uint32_t> tensorConfigColumns = { 0, 0, 0, 0, 2, 2, 2, 2,
-                                                      0, 1, 2, 3, 0, 1, 2, 3
-                                                    };
+   std::vector<std::vector<std::uint32_t>> tensorConfigColumns = {
+      { 0, 0, 0, 0, 2, 2, 2, 2 },
+      { 0, 1, 2, 3, 0, 1, 2, 3 }
+   };
    std::vector<double> tensorConfigValues = { 1, 2, 3, 4, 9, 10, 11, 12 };
    TensorConfig tensorConfig(tensorConfigDims, tensorConfigColumns, tensorConfigValues, fixed_ncfg, false);
-   MatrixConfig matrixConfig = tensor_utils::tensor_to_matrix(tensorConfig);
 
-   SparseMatrix actualMatrix0 = tensor_utils::sparse_to_eigen(tensorConfig);
-   SparseMatrix actualMatrix1 = matrix_utils::sparse_to_eigen(matrixConfig);
+   SparseMatrix actualMatrix = matrix_utils::sparse_to_eigen(tensorConfig);
    SparseMatrix expectedMatrix(3, 4);
    std::vector<Eigen::Triplet<double> > expectedMatrixTriplets;
    expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 0, 1));
@@ -57,21 +53,19 @@ TEST_CASE("TensorConfig(const std::vector<std::uint64_t>& dims, const std::vecto
    expectedMatrixTriplets.push_back(Eigen::Triplet<double>(2, 3, 12));
    expectedMatrix.setFromTriplets(expectedMatrixTriplets.begin(), expectedMatrixTriplets.end());
 
-   REQUIRE(matrix_utils::equals(actualMatrix0, expectedMatrix));
-   REQUIRE(matrix_utils::equals(actualMatrix1, expectedMatrix));
+   REQUIRE(matrix_utils::equals(actualMatrix, expectedMatrix));
 }
 
-TEST_CASE("TensorConfig(const std::vector<std::uint64_t>& dims, const std::vector<std::uint32_t>& columns, const NoiseConfig& noiseConfig)")
+TEST_CASE("TensorConfig(const std::vector<std::uint64_t>& dims, const std::vector<std::vector<std::uint32_t>>& columns, const NoiseConfig& noiseConfig)")
 {
    std::vector<std::uint64_t> tensorConfigDims = { 3, 4 };
-   std::vector<std::uint32_t> tensorConfigColumns = { 0, 0, 0, 0, 2, 2, 2, 2,
-                                                      0, 1, 2, 3, 0, 1, 2, 3
-                                                    };
+   std::vector<std::vector<std::uint32_t>> tensorConfigColumns = { 
+      { 0, 0, 0, 0, 2, 2, 2, 2 },
+      { 0, 1, 2, 3, 0, 1, 2, 3 }
+   };
    TensorConfig tensorConfig(tensorConfigDims, tensorConfigColumns, fixed_ncfg, false);
-   MatrixConfig matrixConfig = tensor_utils::tensor_to_matrix(tensorConfig);
 
-   SparseMatrix actualMatrix0 = tensor_utils::sparse_to_eigen(tensorConfig);
-   SparseMatrix actualMatrix1 = matrix_utils::sparse_to_eigen(matrixConfig);
+   SparseMatrix actualMatrix = matrix_utils::sparse_to_eigen(tensorConfig);
    SparseMatrix expectedMatrix(3, 4);
    std::vector<Eigen::Triplet<double> > expectedMatrixTriplets;
    expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 0, 1));
@@ -84,8 +78,7 @@ TEST_CASE("TensorConfig(const std::vector<std::uint64_t>& dims, const std::vecto
    expectedMatrixTriplets.push_back(Eigen::Triplet<double>(2, 3, 1));
    expectedMatrix.setFromTriplets(expectedMatrixTriplets.begin(), expectedMatrixTriplets.end());
 
-   REQUIRE(matrix_utils::equals(actualMatrix0, expectedMatrix));
-   REQUIRE(matrix_utils::equals(actualMatrix1, expectedMatrix));
+   REQUIRE(matrix_utils::equals(actualMatrix, expectedMatrix));
 }
 
 } // end namespace smurff

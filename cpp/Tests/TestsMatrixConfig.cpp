@@ -75,25 +75,4 @@ TEST_CASE("MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vecto
    REQUIRE(matrix_utils::equals(actualMatrix, expectedMatrix));
 }
 
-//---
-
-TEST_CASE("MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<std::uint32_t>& columns, const std::vector<double>& values, const NoiseConfig& noiseConfig)")
-{
-   std::vector<std::uint32_t> actualMatrixConfigColumns = {
-         0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2,
-         0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3
-   };
-   std::vector<double> actualMatrixConfigValues = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 };
-
-   MatrixConfig actualMatrixConfig(3, 4, actualMatrixConfigColumns, actualMatrixConfigValues, fixed_ncfg, false);
-   Matrix actualMatrix = matrix_utils::sparse_to_eigen(actualMatrixConfig);
-
-   Matrix expectedMatrix(3, 4);
-   expectedMatrix(0, 0) = 1; expectedMatrix(0, 1) = 2; expectedMatrix(0, 2) = 3; expectedMatrix(0, 3) = 4;
-   expectedMatrix(1, 0) = 5; expectedMatrix(1, 1) = 6; expectedMatrix(1, 2) = 7; expectedMatrix(1, 3) = 8;
-   expectedMatrix(2, 0) = 9; expectedMatrix(2, 1) = 10; expectedMatrix(2, 2) = 11; expectedMatrix(2, 3) = 12;
-
-   REQUIRE(matrix_utils::equals(actualMatrix, expectedMatrix));
-}
-
 } // end namespace smurff
