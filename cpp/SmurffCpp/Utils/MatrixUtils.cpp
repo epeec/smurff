@@ -20,7 +20,8 @@ Matrix matrix_utils::dense_to_eigen(const TensorConfig& matrixConfig)
 
 std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_dense(const Matrix &eigenMatrix, NoiseConfig n)
 {
-   return std::make_shared<MatrixConfig>(eigenMatrix.rows(), eigenMatrix.cols(), eigenMatrix.data(), n);
+   std::vector<double> values(eigenMatrix.data(),  eigenMatrix.data() + eigenMatrix.size());
+   return std::make_shared<MatrixConfig>(eigenMatrix.rows(), eigenMatrix.cols(), values, n);
 }
 
 struct sparse_vec_iterator
