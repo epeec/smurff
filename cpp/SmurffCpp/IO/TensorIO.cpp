@@ -296,15 +296,13 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_tns(std::istream& i
 
    //columns
 
-   getline(in, line);
-   std::stringstream lineStream1(line);
-
    TensorConfig::columns_type column_vectors(nmodes);
-   std::vector<const std::uint32_t *> column_ptrs;
    for (std::uint64_t i = 0; i < nmodes; i++)
    {
       std::uint64_t j = 0;
       auto &col = column_vectors.at(i);
+      getline(in, line);
+      std::stringstream lineStream1(line);
       while (std::getline(lineStream1, cell, '\t') && j++ < nnz)
       {
          ss.clear();
@@ -315,7 +313,6 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_tns(std::istream& i
       }
 
       std::for_each(col.begin(), col.end(), [](std::uint32_t &c) { c--; });
-      column_ptrs.push_back(col.data());
    }
 
    //values
@@ -342,7 +339,7 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_tns(std::istream& i
       THROWERROR("invalid number of values");
    }
 
-   return std::make_shared<TensorConfig>(dims, nnz, column_ptrs, values.data(), NoiseConfig(), isScarce);
+   return std::make_shared<TensorConfig>(dims, column_vectors, values, NoiseConfig(), isScarce);
 }
 
 std::shared_ptr<TensorConfig> tensor_io::read_sparse_binary_bin(std::istream& in, bool isScarce)
@@ -515,12 +512,15 @@ void tensor_io::write_sparse_float64_tns(std::ostream& out, std::shared_ptr<cons
       const auto &column = tensorConfig->getColumn(i);
       for(std::uint64_t j = 0; j < column.size(); j++)
       {
-         out << column[j] + 1;
-         if (j < column.size() - 1) out << "\t";
+         if(j == column.size() - 1)
+            out << column[j] + 1;
+         else
+            out << column[j] + 1 << "\t";
       }
+
+      out << std::endl;
    }
 
-   out << std::endl;
 
    for(std::uint64_t i = 0; i < values.size(); i++)
    {
