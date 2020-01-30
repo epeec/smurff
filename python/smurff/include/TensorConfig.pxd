@@ -11,8 +11,7 @@ cdef extern from "<SmurffCpp/Configs/TensorConfig.h>" namespace "smurff":
         #
         # Sparse double tensor constructors
         #
-        TensorConfig(shared_ptr[vector[uint64_t]] dims,
-                     shared_ptr[vector[uint32_t]] columns, shared_ptr[vector[double]] values,
+        TensorConfig(vector[uint64_t] dims, vector[vector[uint32_t]] columns, vector[double] values,
                      const NoiseConfig& noiseConfig, bool isScarce) except +
 
         void setNoiseConfig(const NoiseConfig& value)
