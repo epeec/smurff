@@ -4,9 +4,11 @@
 
 #include <SmurffCpp/IO/IDataWriter.h>
 #include <SmurffCpp/DataMatrices/IDataCreator.h>
-#include <Utils/Error.h>
 #include <SmurffCpp/IO/GenericIO.h>
+
+#include <Utils/Error.h>
 #include <Utils/StringUtils.h>
+#include <Utils/PVec.hpp>
 
 #define POS_TAG "pos"
 #define FILE_TAG "file"
@@ -39,7 +41,7 @@ TensorConfig::TensorConfig ( bool isDense
    , m_nmodes(nmodes)
    , m_dims()
    , m_nnz(nnz)
-   , m_columns()
+   , m_columns(nmodes)
    , m_values()
 {
 }
@@ -73,7 +75,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
                           )
    : m_noiseConfig(noiseConfig)
    , m_isDense(false)
-   , m_isBinary(true)
+   , m_isBinary(false)
    , m_isScarce(isScarce)
    , m_nmodes(dims.size())
    , m_dims(dims)
@@ -100,7 +102,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    , m_nmodes(dims.size())
    , m_dims(dims)
    , m_nnz(nnz)
-   , m_values()
+   , m_values(nnz, 1.)
 {
    for(auto col : columns)
    {
