@@ -38,8 +38,7 @@ TensorData::TensorData(const TensorConfig& tc)
       m_Y->push_back(std::make_shared<SparseMode>(idx, tc.getValues(), mode, m_dims[mode]));
    }
 
-   std::uint64_t totalSize = std::accumulate(m_dims.begin(), m_dims.end(), (std::uint64_t)1, std::multiplies<std::uint64_t>());
-   this->name = totalSize == m_nnz ? "TensorData [fully known]" : "TensorData [with NAs]";
+   this->name = !tc.isScarce() ? "TensorData [fully known]" : "TensorData [with NAs]";
 }
 
 std::shared_ptr<SparseMode> TensorData::Y(std::uint64_t mode) const
