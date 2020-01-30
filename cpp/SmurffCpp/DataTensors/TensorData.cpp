@@ -20,9 +20,10 @@ static MatrixXui32 toMatrixNew(const TensorConfig &tc)
    if (tc.isDense())
    {
       std::uint64_t c = 0;
-      for (auto it = PVecIterator(tc.getDims()); !it.done(); ++it, c++)
+      auto rev_dims = std::vector<std::uint64_t>(tc.getDims().rbegin(), tc.getDims().rend());
+      for (auto it = PVecIterator(rev_dims); !it.done(); ++it, c++)
          for (int d = 0; d < tc.getNModes(); ++d)
-            idx(c, d) = (*it).at(d);
+            idx(c, d) = (*it).at(nmodes-1-d);
    }
    else
    {
@@ -30,6 +31,7 @@ static MatrixXui32 toMatrixNew(const TensorConfig &tc)
          for (std::uint64_t row = 0; row < nnz; row++)
             idx(row, col) = tc.getColumn(col)[row];
    }
+
    return idx;
 }
 
