@@ -230,6 +230,10 @@ public:
       std::cout << " hi = " << hi << std::endl;
    }
 
+   PVecIterator(PVec<> shape)
+      : lo(shape.size()), hi(shape), pos(lo)
+   { }
+
    PVecIterator &operator++()
    {
       std::cout << " pos = " << pos << std::endl;
