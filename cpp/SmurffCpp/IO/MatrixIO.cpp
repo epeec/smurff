@@ -158,13 +158,10 @@ std::shared_ptr<MatrixConfig> matrix_io::read_dense_float64_bin(std::istream& in
 
    in.read(reinterpret_cast<char*>(&nrow), sizeof(std::uint64_t));
    in.read(reinterpret_cast<char*>(&ncol), sizeof(std::uint64_t));
-
-   
-
    std::vector<double> values(nrow * ncol);
    in.read(reinterpret_cast<char*>(values.data()), values.size() * sizeof(double));
 
-   return std::make_shared<MatrixConfig>(nrow, ncol, values.data(), NoiseConfig());
+   return std::make_shared<MatrixConfig>(nrow, ncol, values, NoiseConfig());
 }
 
 std::shared_ptr<MatrixConfig> matrix_io::read_dense_float64_csv(std::istream& in)
@@ -218,7 +215,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_dense_float64_csv(std::istream& in
       THROWERROR("invalid number of columns");
    }
 
-   return std::make_shared<MatrixConfig>(nrow, ncol, values.data(), NoiseConfig());
+   return std::make_shared<MatrixConfig>(nrow, ncol, values, NoiseConfig());
 }
 
 std::shared_ptr<MatrixConfig> matrix_io::read_sparse_float64_bin(std::istream& in, bool isScarce)
@@ -257,7 +254,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_sparse_float64_bin(std::istream& i
       THROWERROR("Invalid number of columns");
    }
 
-   return std::make_shared<MatrixConfig>(nrow, ncol, values.size(), rows.data(), cols.data(), values.data(), NoiseConfig(), isScarce);
+   return std::make_shared<MatrixConfig>(nrow, ncol, rows, cols, values, NoiseConfig(), isScarce);
 }
 
 std::shared_ptr<MatrixConfig> matrix_io::read_sparse_binary_bin(std::istream& in, bool isScarce)
@@ -278,7 +275,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_sparse_binary_bin(std::istream& in
    in.read(reinterpret_cast<char*>(cols.data()), cols.size() * sizeof(std::uint32_t));
    std::for_each(cols.begin(), cols.end(), [](std::uint32_t& col){ col--; });
 
-   return std::make_shared<MatrixConfig>(nrow, ncol, rows.size(), rows.data(), cols.data(), NoiseConfig(), isScarce);
+   return std::make_shared<MatrixConfig>(nrow, ncol, rows, cols, NoiseConfig(), isScarce);
 }
 
 // MatrixMarket format specification
@@ -392,7 +389,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_matrix_market(std::istream& in, bo
          vals[i] = val;
       }
 
-      return std::make_shared<MatrixConfig>(nrows, ncols, vals.size(), rows.data(), cols.data(), vals.data(), NoiseConfig(), isScarce);
+      return std::make_shared<MatrixConfig>(nrows, ncols, rows, cols, vals, NoiseConfig(), isScarce);
    }
    else if (format == MM_FMT_ARRAY)
    {
@@ -423,7 +420,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_matrix_market(std::istream& in, bo
          }
       }
 
-      return std::make_shared<MatrixConfig>(nrows, ncols, vals.data(), NoiseConfig());
+      return std::make_shared<MatrixConfig>(nrows, ncols, vals, NoiseConfig());
    }
    else
    {
