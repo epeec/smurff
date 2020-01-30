@@ -114,12 +114,18 @@ namespace smurff
       const std::vector<std::uint32_t>& getRows() const { return getColumn(0); }
       const std::vector<std::uint32_t>& getCols() const { return getColumn(1); }
       const std::vector<double>& getValues() const { return m_values; }
-      const std::vector<std::uint32_t>& getColumn(int i) const{ return m_columns[i]; }
+      const std::vector<std::uint32_t>& getColumn(int i) const { 
+         THROWERROR_ASSERT_MSG(!isDense(), "Cannot get index-vector for dense TensorConfig");
+         return m_columns[i];
+      }
 
       std::vector<std::uint32_t>& getRows() { return getColumn(0); }
       std::vector<std::uint32_t>& getCols() { return getColumn(1); }
       std::vector<double>& getValues() { return m_values; }
-      std::vector<std::uint32_t>& getColumn(int i){ return m_columns[i]; } 
+      std::vector<std::uint32_t>& getColumn(int i)  { 
+         THROWERROR_ASSERT_MSG(!isDense(), "Cannot get index-vector for dense TensorConfig");
+         return m_columns[i];
+      }
 
       void setFilename(const std::string& f);
       const std::string &getFilename() const;
@@ -137,7 +143,6 @@ namespace smurff
 
    public:
       static void save_tensor_config(INIFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg);
-
       static std::shared_ptr<TensorConfig> restore_tensor_config(const INIFile& reader, const std::string& sec_name);
 
    public:
@@ -145,5 +150,9 @@ namespace smurff
 
    public:
       virtual void write(std::shared_ptr<IDataWriter> writer) const;
+
+
+   public:
+      void genColumns();
    };
 }
