@@ -13,14 +13,22 @@ static MatrixXui32 toMatrixNew(const TensorConfig &tc)
 {
    std::uint64_t nnz = tc.getNNZ();
    std::uint64_t nmodes = tc.getNModes();
-
    MatrixXui32 idx(nnz, nmodes);
-   for (std::uint64_t row = 0; row < nnz; row++) 
+
+   std::vector<std::vector<std::uint32_t>> columns(nmodes);
+
+   if (tc.isDense())
    {
-      for (std::uint64_t col = 0; col < nmodes; col++) 
-      {
-         idx(row, col) = tc.getColumn(col)[row];
-      }
+      std::uint64_t c = 0;
+      for (auto it = PVecIterator(tc.getDims()); !it.done(); ++it, c++)
+         for (int d = 0; d < tc.getNModes(); ++d)
+            idx(c, d) = (*it).at(d);
+   }
+   else
+   {
+      for (std::uint64_t col = 0; col < nmodes; col++)
+         for (std::uint64_t row = 0; row < nnz; row++)
+            idx(row, col) = tc.getColumn(col)[row];
    }
    return idx;
 }
