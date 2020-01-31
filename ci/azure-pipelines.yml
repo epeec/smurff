@@ -60,10 +60,8 @@ jobs:
     displayName: Take ownership of conda installation
   - template: conda-steps.yml
 
-# - job: 'Conda_Windows'
-#   variables:
-#     WindowsSdkVer: 14.0
-#   pool:
-#     vmImage: 'vs2017-win2016'
-#   steps:
-#     - template: conda-steps.yml
+- job: 'Conda_Windows'
+  pool:
+    vmImage: 'windows-2019'
+  steps:
+    - template: conda-steps.yml
