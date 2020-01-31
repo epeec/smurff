@@ -354,17 +354,15 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_binary_bin(std::istream& in
    in.read(reinterpret_cast<char*>(&nnz), sizeof(std::uint64_t));
 
    TensorConfig::columns_type         column_vectors(nmodes);
-   std::vector<const std::uint32_t *> column_ptrs;
    for (std::uint64_t i = 0; i < nmodes; i++)
    {
       auto &col = column_vectors.at(i);
       col.resize(nnz);
       in.read(reinterpret_cast<char*>(col.data()), nnz * sizeof(std::uint32_t));
       std::for_each(col.begin(), col.end(), [](std::uint32_t& c){ c--; });
-      column_ptrs.push_back(col.data());
    }
 
-   return std::make_shared<TensorConfig>(dims, nnz, column_ptrs, NoiseConfig(), isScarce);
+   return std::make_shared<TensorConfig>(dims, column_vectors, NoiseConfig(), isScarce);
 }
 
 // ======================================================================================================
@@ -431,9 +429,17 @@ void tensor_io::write_dense_float64_bin(std::ostream& out, std::shared_ptr<const
    out.write(reinterpret_cast<const char*>(values.data()), values.size() * sizeof(double));
 }
 
+template<typename T>
+static void write_line_csv(std::ostream& out, const std::vector<T> &values)
+{
+   for(std::uint64_t i = 0; i < values.size(); i++)
+      out << values[i] << (i < values.size() - 1 ? "," : "\n");
+}
+
 void tensor_io::write_dense_float64_csv(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
 {
    std::uint64_t nmodes = tensorConfig->getNModes();
+
 
    out << nmodes << std::endl;
 
