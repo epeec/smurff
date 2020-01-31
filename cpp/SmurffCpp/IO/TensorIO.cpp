@@ -286,7 +286,7 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_tns(std::istream& i
       THROWERROR("invalid number of dimensions");
    }
 
-   // nmodes
+   // nnz
 
    getline(in, line); 
    ss.clear();
@@ -469,20 +469,8 @@ void tensor_io::write_dense_float64_csv(std::ostream& out, std::shared_ptr<const
 
 void tensor_io::write_sparse_float64_bin(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
 {
-   std::uint64_t nmodes = tensorConfig->getNModes();
-   std::uint64_t nnz = tensorConfig->getNNZ();
-   const std::vector<std::uint64_t>& dims = tensorConfig->getDims();
+   write_sparse_binary_bin(out,  tensorConfig);
    const std::vector<double>& values = tensorConfig->getValues();
-
-   out.write(reinterpret_cast<const char*>(&nmodes), sizeof(std::uint64_t));
-   out.write(reinterpret_cast<const char*>(dims.data()), dims.size() * sizeof(std::uint64_t));
-   out.write(reinterpret_cast<const char*>(&nnz), sizeof(std::uint64_t));
-   for (int i = 0; i < nmodes; ++i)
-   {
-      std::vector<std::uint32_t> column = tensorConfig->getColumn(i); //create copy of column
-      std::for_each(column.begin(), column.end(), [](std::uint32_t &col) { col++; });
-      out.write(reinterpret_cast<const char*>(column.data()), column.size() * sizeof(std::uint32_t));
-   }
    out.write(reinterpret_cast<const char*>(values.data()), values.size() * sizeof(double));
 }
 
