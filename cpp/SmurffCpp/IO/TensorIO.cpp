@@ -154,41 +154,6 @@ std::shared_ptr<TensorConfig> tensor_io::read_dense_float64_bin(std::istream& in
    return std::make_shared<TensorConfig>(dims, values.data(), NoiseConfig());
 }
 
-template<typename T>
-static void read_line_single(std::istream& in, T &value)
-{
-   std::stringstream ss;
-   std::string line;
-   getline(in, line);
-   ss << line;
-   ss >> value;
-}
-
-template<typename T>
-static void read_line_delim(std::istream& in, std::vector<T> &values, const char delim, std::uint64_t expected)
-{
-   std::stringstream ss;
-   std::string line;
-   std::string cell;
-   T value;
-
-   getline(in, line);
-
-   std::stringstream lineStream0(line);
-
-   std::uint64_t count = 0;
-   while (std::getline(lineStream0, cell, delim))
-   {
-      ss.clear();
-      ss << cell;
-      ss >> value;
-      values.push_back(value);
-      count++;
-   }
-
-   THROWERROR_ASSERT_MSG(count == expected, "unexpected number of elements on line");
-}
-
 std::shared_ptr<TensorConfig> tensor_io::read_dense_float64_csv(std::istream &in)
 {
    //nmodes
@@ -232,15 +197,11 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_bin(std::istream& i
    std::vector<double> values(nnz);
    in.read(reinterpret_cast<char*>(values.data()), values.size() * sizeof(double));
 
-   return std::make_shared<TensorConfig>(dims, nnz, column_ptrs, values.data(), NoiseConfig(), isScarce);
+   return std::make_shared<TensorConfig>(dims, column_vectors, values, NoiseConfig(), isScarce);
 }
 
 std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_tns(std::istream& in, bool isScarce)
 {
-   std::stringstream ss;
-   std::string line;
-   std::string cell;
-
    // nmodes
    std::uint64_t nmodes;
    read_line_single(in, nmodes);
@@ -249,7 +210,7 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_tns(std::istream& i
    std::vector<uint64_t> dims;
    read_line_delim(in, dims, '\t', nmodes);
 
-   // nnz
+   //nnz
    std::uint64_t nnz;
    read_line_single(in, nnz);
 
@@ -354,20 +315,6 @@ void tensor_io::write_dense_float64_bin(std::ostream& out, std::shared_ptr<const
    out.write(reinterpret_cast<const char*>(&nmodes), sizeof(std::uint64_t));
    out.write(reinterpret_cast<const char*>(dims.data()), dims.size() * sizeof(std::uint64_t));
    out.write(reinterpret_cast<const char*>(values.data()), values.size() * sizeof(double));
-}
-
-template<typename T>
-static void write_line_delim(std::ostream& out, const std::vector<T> &values, const std::string& delim)
-{
-   for(std::uint64_t i = 0; i < values.size(); i++)
-      out << values[i] << (i < values.size() - 1 ? delim : "\n");
-}
-
-template<typename T>
-static void write_line_delim_inc(std::ostream& out, const std::vector<T> &values, const std::string& delim)
-{
-   for(std::uint64_t i = 0; i < values.size(); i++)
-      out << (values[i] + 1) << (i < values.size() - 1 ? delim : "\n");
 }
 
 void tensor_io::write_dense_float64_csv(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
