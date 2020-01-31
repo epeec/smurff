@@ -154,6 +154,41 @@ std::shared_ptr<TensorConfig> tensor_io::read_dense_float64_bin(std::istream& in
    return std::make_shared<TensorConfig>(dims, values.data(), NoiseConfig());
 }
 
+template<typename T>
+static void read_line_single(std::istream& in, T &value)
+{
+   std::stringstream ss;
+   std::string line;
+   getline(in, line);
+   ss << line;
+   ss >> value;
+}
+
+template<typename T>
+static void read_line_delim(std::istream& in, std::vector<T> &values, const char delim, std::uint64_t expected)
+{
+   std::stringstream ss;
+   std::string line;
+   std::string cell;
+   T value;
+
+   getline(in, line);
+
+   std::stringstream lineStream0(line);
+
+   std::uint64_t count = 0;
+   while (std::getline(lineStream0, cell, delim))
+   {
+      ss.clear();
+      ss << cell;
+      ss >> value;
+      values.push_back(value);
+      count++;
+   }
+
+   THROWERROR_ASSERT_MSG(count == expected, "unexpected number of elements on line");
+}
+
 std::shared_ptr<TensorConfig> tensor_io::read_dense_float64_csv(std::istream& in)
 {
    std::stringstream ss;
@@ -161,63 +196,19 @@ std::shared_ptr<TensorConfig> tensor_io::read_dense_float64_csv(std::istream& in
    std::string cell;
 
    // nmodes
-
-   getline(in, line); 
-   ss.clear();
-   ss << line;
    std::uint64_t nmodes;
-   ss >> nmodes;
+   read_line_single(in, nmodes);
 
-   //dimentions
-
-   getline(in, line);
-   std::stringstream lineStream0(line);
-   
-   std::vector<uint64_t> dims(nmodes);
-
-   std::uint64_t dim = 0;
-
-   while (std::getline(lineStream0, cell, ',') && dim < nmodes)
-   {
-      ss.clear();
-      ss << cell;
-      std::uint64_t mode;
-      ss >> mode;
-
-      dims[dim++] = mode;
-   }
-
-   if(dim != nmodes)
-   {
-      THROWERROR("invalid number of dimensions");
-   }
+   //dimensions
+   std::vector<uint64_t> dims;
+   read_line_delim(in, dims, ',', nmodes);
+  std::uint64_t nnz = std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<std::uint64_t>());
 
    //values
+   std::vector<double> values;
+   read_line_delim(in, values, ',' , nnz);
 
-   std::getline(in, line);
-   std::stringstream lineStream1(line);
-
-   std::uint64_t nnz = std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<std::uint64_t>());
-   std::vector<double> values(nnz);
-
-   std::uint64_t nval = 0;
-
-   while (std::getline(lineStream1, cell, ',') && nval < nnz)
-   {
-      ss.clear();
-      ss << cell;
-      std::uint64_t value;
-      ss >> value;
-
-      values[nval++] = value;
-   }
-
-   if(nval != nnz)
-   {
-      THROWERROR("invalid number of values");
-   }
-
-   return std::make_shared<TensorConfig>(dims, values.data(), NoiseConfig());
+   return std::make_shared<TensorConfig>(dims, values, NoiseConfig());
 }
 
 std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_bin(std::istream& in, bool isScarce)
