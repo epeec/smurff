@@ -436,6 +436,13 @@ static void write_line_delim(std::ostream& out, const std::vector<T> &values, co
       out << values[i] << (i < values.size() - 1 ? delim : "\n");
 }
 
+template<typename T>
+static void write_line_delim_inc(std::ostream& out, const std::vector<T> &values, const std::string& delim)
+{
+   for(std::uint64_t i = 0; i < values.size(); i++)
+      out << (values[i] + 1) << (i < values.size() - 1 ? delim : "\n");
+}
+
 void tensor_io::write_dense_float64_csv(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
 {
    out <<  tensorConfig->getNModes() << std::endl;
@@ -452,49 +459,11 @@ void tensor_io::write_sparse_float64_bin(std::ostream& out, std::shared_ptr<cons
 
 void tensor_io::write_sparse_float64_tns(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
 {
-   std::uint64_t nmodes = tensorConfig->getNModes();
-   std::uint64_t nnz = tensorConfig->getNNZ();
-   const std::vector<std::uint64_t>& dims = tensorConfig->getDims();
-   const std::vector<double>& values = tensorConfig->getValues();
-
-   out << nmodes << std::endl;
-   
-   for(std::uint64_t i = 0; i < dims.size(); i++)
-   {
-      if(i == dims.size() - 1)
-         out << dims[i];
-      else
-         out << dims[i] << "\t";
-   }
-
-   out << std::endl;
-
-   out << nnz << std::endl;
-
-   for(int i=0; i<tensorConfig->getNModes(); i++)
-   {
-      const auto &column = tensorConfig->getColumn(i);
-      for(std::uint64_t j = 0; j < column.size(); j++)
-      {
-         if(j == column.size() - 1)
-            out << column[j] + 1;
-         else
-            out << column[j] + 1 << "\t";
-      }
-
-      out << std::endl;
-   }
-
-
-   for(std::uint64_t i = 0; i < values.size(); i++)
-   {
-      if(i == values.size() - 1)
-         out << values[i];
-      else
-         out << values[i] << "\t";
-   }
-
-   out << std::endl;
+   out << tensorConfig->getNModes() << std::endl;
+   write_line_delim(out, tensorConfig->getDims(), "\t");
+   out <<  tensorConfig->getNNZ() << std::endl;
+   for(int i=0; i<tensorConfig->getNModes(); i++) write_line_delim_inc(out, tensorConfig->getColumn(i), "\t");
+   write_line_delim(out, tensorConfig->getValues(), "\t");
 }
 
 void tensor_io::write_sparse_binary_bin(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
