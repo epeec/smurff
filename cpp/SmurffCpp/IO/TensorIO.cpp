@@ -438,7 +438,7 @@ static void write_line_csv(std::ostream& out, const std::vector<T> &values)
 
 void tensor_io::write_dense_float64_csv(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
 {
-   write_line_csv(out, { tensorConfig->getNModes() });
+   out <<  tensorConfig->getNModes() << std::endl;
    write_line_csv(out, tensorConfig->getDims());
    write_line_csv(out, tensorConfig->getValues());
 }
