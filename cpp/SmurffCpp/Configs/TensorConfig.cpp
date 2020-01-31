@@ -44,6 +44,7 @@ TensorConfig::TensorConfig ( bool isDense
    , m_columns(nmodes)
    , m_values()
 {
+  // check(); // can't check here -- because many things still empty
 }
 
 // Dense double tensor constructors
@@ -61,8 +62,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    , m_columns()
    , m_values(values, values + m_nnz)
 {
-   THROWERROR_ASSERT_MSG(dims.size() > 0, "Cannot create TensorConfig instance: 'dims' size cannot be zero");
-   THROWERROR_ASSERT_MSG(m_nnz > 0, "Cannot create TensorConfig instance: 'values' size cannot be zero");
+   check();
 }
 
 // Sparse double tensor constructors
@@ -86,6 +86,8 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    {
       m_columns.push_back(std::vector<std::uint32_t>(col, col + nnz));
    }
+
+   check();
 }
 
 // Sparse binary tensor constructors
@@ -108,10 +110,33 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    {
       m_columns.push_back(std::vector<std::uint32_t>(col, col + nnz));
    }
+
+   check();
 }
 
 TensorConfig::~TensorConfig()
 {
+}
+
+void TensorConfig::check() const
+{
+   THROWERROR_ASSERT(m_nmodes > 0);
+   THROWERROR_ASSERT(m_dims.size() == m_nmodes);
+   THROWERROR_ASSERT(m_values.size() == m_nnz);
+
+   if (isDense())
+   {
+      THROWERROR_ASSERT(m_columns.empty());
+      THROWERROR_ASSERT(!isBinary());
+      THROWERROR_ASSERT(m_nnz == std::accumulate(m_dims.begin(), m_dims.end(), 1ULL, std::multiplies<std::uint64_t>()));
+   }
+   else
+   {
+      THROWERROR_ASSERT(m_values.size() == m_nnz);
+      THROWERROR_ASSERT(m_columns.size() == m_nmodes);
+      for(int i=0; i<m_nmodes; ++i)
+         THROWERROR_ASSERT(m_columns[i].size() == m_nnz);
+   }
 }
 
 //
