@@ -430,17 +430,17 @@ void tensor_io::write_dense_float64_bin(std::ostream& out, std::shared_ptr<const
 }
 
 template<typename T>
-static void write_line_csv(std::ostream& out, const std::vector<T> &values)
+static void write_line_delim(std::ostream& out, const std::vector<T> &values, const std::string& delim)
 {
    for(std::uint64_t i = 0; i < values.size(); i++)
-      out << values[i] << (i < values.size() - 1 ? "," : "\n");
+      out << values[i] << (i < values.size() - 1 ? delim : "\n");
 }
 
 void tensor_io::write_dense_float64_csv(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
 {
    out <<  tensorConfig->getNModes() << std::endl;
-   write_line_csv(out, tensorConfig->getDims());
-   write_line_csv(out, tensorConfig->getValues());
+   write_line_delim(out, tensorConfig->getDims(), ",");
+   write_line_delim(out, tensorConfig->getValues(), ",");
 }
 
 void tensor_io::write_sparse_float64_bin(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
