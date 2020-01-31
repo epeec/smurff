@@ -170,7 +170,6 @@ std::shared_ptr<MatrixConfig> matrix_io::read_dense_float64_csv(std::istream& in
    std::uint64_t nrow, ncol;
    generic_io::read_line_single(in, nrow);
    generic_io::read_line_single(in, ncol);
-   std::uint64_t nnz = nrow * ncol;
 
    // file contains values row-by-row (row-major)
    std::vector<std::vector<double>> values_per_row(nrow);

@@ -150,9 +150,5 @@ namespace smurff
 
    public:
       virtual void write(std::shared_ptr<IDataWriter> writer) const;
-
-
-   public:
-      void genColumns();
    };
 }
