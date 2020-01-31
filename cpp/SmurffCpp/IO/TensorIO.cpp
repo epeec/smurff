@@ -438,39 +438,9 @@ static void write_line_csv(std::ostream& out, const std::vector<T> &values)
 
 void tensor_io::write_dense_float64_csv(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
 {
-   std::uint64_t nmodes = tensorConfig->getNModes();
-
-
-   out << nmodes << std::endl;
-
-   const std::vector<std::uint64_t>& dims = tensorConfig->getDims();
-
-   for(std::uint64_t i = 0; i < dims.size(); i++)
-   {
-      if(i == dims.size() - 1)
-         out << dims[i];
-      else
-         out << dims[i] << ",";
-   }
-
-   out << std::endl;
-
-   const std::vector<double>& values = tensorConfig->getValues();
-
-   if(values.size() != tensorConfig->getNNZ())
-   {
-      THROWERROR("invalid number of values");
-   }
-
-   for(std::uint64_t i = 0; i < values.size(); i++)
-   {
-      if(i == values.size() - 1)
-         out << values[i];
-      else
-         out << values[i] << ",";
-   }
-
-   out << std::endl;
+   write_line_csv(out, { tensorConfig->getNModes() });
+   write_line_csv(out, tensorConfig->getDims());
+   write_line_csv(out, tensorConfig->getValues());
 }
 
 void tensor_io::write_sparse_float64_bin(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
