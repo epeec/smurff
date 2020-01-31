@@ -158,16 +158,16 @@ std::shared_ptr<TensorConfig> tensor_io::read_dense_float64_csv(std::istream &in
 {
    //nmodes
    std::uint64_t nmodes;
-   read_line_single(in, nmodes);
+   generic_io::read_line_single(in, nmodes);
 
    //dimensions
    std::vector<uint64_t> dims;
-   read_line_delim(in, dims, ',', nmodes);
+   generic_io::read_line_delim(in, dims, ',', nmodes);
    std::uint64_t nnz = std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<std::uint64_t>());
 
    //values
    std::vector<double> values;
-   read_line_delim(in, values, ',', nnz);
+   generic_io::read_line_delim(in, values, ',', nnz);
 
    return std::make_shared<TensorConfig>(dims, values, NoiseConfig());
 }
@@ -204,28 +204,28 @@ std::shared_ptr<TensorConfig> tensor_io::read_sparse_float64_tns(std::istream& i
 {
    // nmodes
    std::uint64_t nmodes;
-   read_line_single(in, nmodes);
+   generic_io::read_line_single(in, nmodes);
    
    //dimentions
    std::vector<uint64_t> dims;
-   read_line_delim(in, dims, '\t', nmodes);
+   generic_io::read_line_delim(in, dims, '\t', nmodes);
 
    //nnz
    std::uint64_t nnz;
-   read_line_single(in, nnz);
+   generic_io::read_line_single(in, nnz);
 
    //columns
    TensorConfig::columns_type column_vectors(nmodes);
    for (std::uint64_t i = 0; i < nmodes; i++)
    {
       auto &col = column_vectors.at(i);
-      read_line_delim(in, col, '\t', nnz);
+      generic_io::read_line_delim(in, col, '\t', nnz);
       std::for_each(col.begin(), col.end(), [](std::uint32_t &c) { c--; });
    }
 
    //values
    std::vector<double> values;
-   read_line_delim(in, values, '\t', nnz);
+   generic_io::read_line_delim(in, values, '\t', nnz);
 
    return std::make_shared<TensorConfig>(dims, column_vectors, values, NoiseConfig(), isScarce);
 }
@@ -320,8 +320,8 @@ void tensor_io::write_dense_float64_bin(std::ostream& out, std::shared_ptr<const
 void tensor_io::write_dense_float64_csv(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
 {
    out <<  tensorConfig->getNModes() << std::endl;
-   write_line_delim(out, tensorConfig->getDims(), ",");
-   write_line_delim(out, tensorConfig->getValues(), ",");
+   generic_io::write_line_delim(out, tensorConfig->getDims(), ",");
+   generic_io::write_line_delim(out, tensorConfig->getValues(), ",");
 }
 
 void tensor_io::write_sparse_float64_bin(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
@@ -334,10 +334,10 @@ void tensor_io::write_sparse_float64_bin(std::ostream& out, std::shared_ptr<cons
 void tensor_io::write_sparse_float64_tns(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
 {
    out << tensorConfig->getNModes() << std::endl;
-   write_line_delim(out, tensorConfig->getDims(), "\t");
+   generic_io::write_line_delim(out, tensorConfig->getDims(), "\t");
    out <<  tensorConfig->getNNZ() << std::endl;
-   for(int i=0; i<tensorConfig->getNModes(); i++) write_line_delim_inc(out, tensorConfig->getColumn(i), "\t");
-   write_line_delim(out, tensorConfig->getValues(), "\t");
+   for(int i=0; i<tensorConfig->getNModes(); i++) generic_io::write_line_delim_inc(out, tensorConfig->getColumn(i), "\t");
+   generic_io::write_line_delim(out, tensorConfig->getValues(), "\t");
 }
 
 void tensor_io::write_sparse_binary_bin(std::ostream& out, std::shared_ptr<const TensorConfig> tensorConfig)
