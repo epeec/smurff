@@ -1,5 +1,8 @@
-jobs:
+trigger:
+  - master
+  - releases/*
 
+jobs:
 - job: 'Ubuntu_1604_Apt'
   pool:
     vmImage: 'Ubuntu 16.04'
