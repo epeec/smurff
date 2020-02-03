@@ -9,7 +9,7 @@
 
 #include <string>
 #include <map>
-#include <SmurffCpp/Utils/ThreadVector.hpp>
+#include <Utils/ThreadVector.hpp>
 
 #define COUNTER(name) Counter c(name)
 
@@ -49,7 +49,7 @@ struct TotalsCounter {
         }
 };
 
-extern smurff::thread_vector<TotalsCounter> perf_data;
+extern thread_vector<TotalsCounter> perf_data;
 
 void perf_data_init();
 void perf_data_print();
