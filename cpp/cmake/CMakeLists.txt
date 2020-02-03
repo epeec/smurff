@@ -241,9 +241,9 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${SCRIPT_DIR}")
 
 include(scripts/DependenciesConfig.cmake)
 
-SET(FLOAT_TYPE "double" CACHE STRING "Main compute type")
-add_definitions(-DFLOAT_TYPE=${FLOAT_TYPE})
-message("Using '${FLOAT_TYPE}' as main computing type")
+SET(SMURFF_FLOAT_TYPE "double" CACHE STRING "Main compute type")
+add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
+message("Using '${SMURFF_FLOAT_TYPE}' as main computing type")
 
 if(MSVC)
   configure_eigen()
