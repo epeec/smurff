@@ -64,10 +64,15 @@ jobs:
   - template: conda-steps.yml
 
 - job: 'Conda_Windows'
+  variables:
+    VS140COMNTOOLS: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\'
   pool:
-    vmImage: 'windows-2019'
+    vmImage: 'vs2017-win2016'
   steps:
     - script: |
-        rd /s /q "C:\Program Files (x86)\Windows Kits\10\\include\wdf"
+        rd /s /q "C:\Program Files (x86)\Windows Kits\10\include\wdf"
       displayName: Remove 'wdf' SDK
+    - script: |
+         choco install microsoft-visual-cpp-build-tools
+      displayName: Install Visual Studio 2015 CPP Build Tools
     - template: conda-steps.yml
