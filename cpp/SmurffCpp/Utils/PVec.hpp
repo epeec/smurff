@@ -226,13 +226,17 @@ public:
       : lo(from), hi(to), pos(lo)
    {
       THROWERROR_ASSERT(from.size() == to.size());
-      std::cout << " lo = " << lo << std::endl;
-      std::cout << " hi = " << hi << std::endl;
+      //std::cout << " lo = " << lo << std::endl;
+      //std::cout << " hi = " << hi << std::endl;
    }
+
+   PVecIterator(PVec<> shape)
+      : lo(shape.size()), hi(shape), pos(lo)
+   { }
 
    PVecIterator &operator++()
    {
-      std::cout << " pos = " << pos << std::endl;
+      //std::cout << " pos = " << pos << std::endl;
       for (int i = lo.size() - 1; i >= 0; --i)
       {
          pos[i]++;
@@ -246,7 +250,7 @@ public:
 
    bool done() const
    {
-      std::cout << pos <<  " < " << hi << "? " << (int)(pos < hi) << std::endl;
+      //std::cout << pos <<  " < " << hi << "? " << (int)(pos < hi) << std::endl;
       return !(pos < hi);
    }
 

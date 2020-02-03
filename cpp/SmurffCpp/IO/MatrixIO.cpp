@@ -158,65 +158,31 @@ std::shared_ptr<MatrixConfig> matrix_io::read_dense_float64_bin(std::istream& in
 
    in.read(reinterpret_cast<char*>(&nrow), sizeof(std::uint64_t));
    in.read(reinterpret_cast<char*>(&ncol), sizeof(std::uint64_t));
-
    std::vector<double> values(nrow * ncol);
    in.read(reinterpret_cast<char*>(values.data()), values.size() * sizeof(double));
 
-   return std::make_shared<MatrixConfig>(nrow, ncol, std::move(values), NoiseConfig());
+   return std::make_shared<MatrixConfig>(nrow, ncol, values, NoiseConfig());
 }
 
 std::shared_ptr<MatrixConfig> matrix_io::read_dense_float64_csv(std::istream& in)
 {
-   std::stringstream ss;
-   std::string line;
-
    // rows and cols
-   getline(in, line);
-   ss.clear();
-   ss << line;
-   std::uint64_t nrow;
-   ss >> nrow;
+   std::uint64_t nrow, ncol;
+   generic_io::read_line_single(in, nrow);
+   generic_io::read_line_single(in, ncol);
 
-   getline(in, line);
-   ss.clear();
-   ss << line;
-   std::uint64_t ncol;
-   ss >> ncol;
+   // file contains values row-by-row (row-major)
+   std::vector<std::vector<double>> values_per_row(nrow);
+   for(std::uint64_t row = 0; row<nrow; row++)
+      generic_io::read_line_delim(in, values_per_row[row], ',', ncol);
 
-   std::uint64_t nnz = nrow * ncol;
+   // MatrixConfig needs col-major
+   std::vector<double> values_per_col;
+   for(std::uint64_t col = 0; col<ncol; col++)
+      for(std::uint64_t row = 0; row<nrow; row++)
+         values_per_col.push_back(values_per_row[row][col]);
 
-   std::vector<double> values;
-   values.resize(nnz);
-
-   std::uint64_t row = 0;
-   std::uint64_t col = 0;
-
-   while(getline(in, line) && row < nrow)
-   {
-      col = 0;
-
-      std::stringstream lineStream(line);
-      std::string cell;
-
-      while (std::getline(lineStream, cell, ',') && col < ncol)
-      {
-         values[(nrow * col++) + row] = stod(cell);
-      }
-
-      row++;
-   }
-
-   if(row != nrow)
-   {
-      THROWERROR("invalid number of rows");
-   }
-
-   if(col != ncol)
-   {
-      THROWERROR("invalid number of columns");
-   }
-
-   return std::make_shared<MatrixConfig>(nrow, ncol, std::move(values), NoiseConfig());
+   return std::make_shared<MatrixConfig>(nrow, ncol, values_per_col, NoiseConfig());
 }
 
 std::shared_ptr<MatrixConfig> matrix_io::read_sparse_float64_bin(std::istream& in, bool isScarce)
@@ -255,7 +221,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_sparse_float64_bin(std::istream& i
       THROWERROR("Invalid number of columns");
    }
 
-   return std::make_shared<MatrixConfig>(nrow, ncol, std::move(rows), std::move(cols), std::move(values), NoiseConfig(), isScarce);
+   return std::make_shared<MatrixConfig>(nrow, ncol, rows, cols, values, NoiseConfig(), isScarce);
 }
 
 std::shared_ptr<MatrixConfig> matrix_io::read_sparse_binary_bin(std::istream& in, bool isScarce)
@@ -276,7 +242,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_sparse_binary_bin(std::istream& in
    in.read(reinterpret_cast<char*>(cols.data()), cols.size() * sizeof(std::uint32_t));
    std::for_each(cols.begin(), cols.end(), [](std::uint32_t& col){ col--; });
 
-   return std::make_shared<MatrixConfig>(nrow, ncol, std::move(rows), std::move(cols), NoiseConfig(), isScarce);
+   return std::make_shared<MatrixConfig>(nrow, ncol, rows, cols, NoiseConfig(), isScarce);
 }
 
 // MatrixMarket format specification
@@ -390,7 +356,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_matrix_market(std::istream& in, bo
          vals[i] = val;
       }
 
-      return std::make_shared<MatrixConfig>(nrows, ncols, std::move(rows), std::move(cols), std::move(vals), NoiseConfig(), isScarce);
+      return std::make_shared<MatrixConfig>(nrows, ncols, rows, cols, vals, NoiseConfig(), isScarce);
    }
    else if (format == MM_FMT_ARRAY)
    {
@@ -421,7 +387,7 @@ std::shared_ptr<MatrixConfig> matrix_io::read_matrix_market(std::istream& in, bo
          }
       }
 
-      return std::make_shared<MatrixConfig>(nrows, ncols, std::move(vals), NoiseConfig());
+      return std::make_shared<MatrixConfig>(nrows, ncols, vals, NoiseConfig());
    }
    else
    {
@@ -593,8 +559,8 @@ void matrix_io::write_matrix_market(std::ostream& out, std::shared_ptr<const Mat
       out << matrixConfig->getNNZ() << std::endl;
       for (std::uint64_t i = 0; i < matrixConfig->getNNZ(); i++)
       {
-         const std::uint32_t& row = matrixConfig->getColumns()[i] + 1;
-         const std::uint32_t& col = matrixConfig->getColumns()[i + matrixConfig->getNNZ()] + 1;
+         const std::uint32_t& row = matrixConfig->getRows()[i] + 1;
+         const std::uint32_t& col = matrixConfig->getCols()[i] + 1;
          if (matrixConfig->isBinary())
          {
             out << row << " " << col << std::endl;

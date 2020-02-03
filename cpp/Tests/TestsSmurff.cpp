@@ -58,7 +58,7 @@ std::shared_ptr<MatrixConfig> getTrainDenseMatrixConfig()
 {
    std::vector<double> trainMatrixConfigVals = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 };
    std::shared_ptr<MatrixConfig> trainMatrixConfig =
-      std::make_shared<MatrixConfig>(3, 4, std::move(trainMatrixConfigVals), fixed_ncfg);
+      std::make_shared<MatrixConfig>(3, 4, trainMatrixConfigVals, fixed_ncfg);
    return trainMatrixConfig;
 }
 
@@ -66,7 +66,7 @@ std::shared_ptr<TensorConfig> getTrainDenseTensor2dConfig()
 {
    std::vector<double> trainTensorConfigVals = { 1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 };
    std::shared_ptr<TensorConfig> trainTensorConfig =
-      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 3, 4 }), std::move(trainTensorConfigVals), fixed_ncfg);
+      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 3, 4 }), trainTensorConfigVals.data(), fixed_ncfg);
    return trainTensorConfig;
 }
 
@@ -74,7 +74,7 @@ std::shared_ptr<TensorConfig> getTrainDenseTensor3dConfig()
 {
    std::vector<double> trainTensorConfigVals = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
    std::shared_ptr<TensorConfig> trainTensorConfig =
-      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 2, 3, 4 }), std::move(trainTensorConfigVals), fixed_ncfg);
+      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 2, 3, 4 }), trainTensorConfigVals, fixed_ncfg);
    return trainTensorConfig;
 }
 
@@ -86,20 +86,20 @@ std::shared_ptr<MatrixConfig> getTrainSparseMatrixConfig()
    std::vector<std::uint32_t> trainMatrixConfigCols = { 0, 1, 2, 3, 0, 1, 2, 3 };
    std::vector<double> trainMatrixConfigVals = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<MatrixConfig> trainMatrixConfig =
-      std::make_shared<MatrixConfig>(3, 4, std::move(trainMatrixConfigRows), std::move(trainMatrixConfigCols), std::move(trainMatrixConfigVals), fixed_ncfg, true);
+      std::make_shared<MatrixConfig>(3, 4, trainMatrixConfigRows, trainMatrixConfigCols, trainMatrixConfigVals, fixed_ncfg, true);
    return trainMatrixConfig;
 }
 
 std::shared_ptr<TensorConfig> getTrainSparseTensor2dConfig()
 {
-   std::vector<std::uint32_t> trainTensorConfigCols =
+   std::vector<std::vector<std::uint32_t>> trainTensorConfigCols =
       {
-         0, 0, 0, 0, 2, 2, 2, 2,
-         0, 1, 2, 3, 0, 1, 2, 3
+        { 0, 0, 0, 0, 2, 2, 2, 2 },
+        { 0, 1, 2, 3, 0, 1, 2, 3 }
       };
    std::vector<double> trainTensorConfigVals = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<TensorConfig> trainTensorConfig =
-      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 3, 4 }), std::move(trainTensorConfigCols), std::move(trainTensorConfigVals), fixed_ncfg, true);
+      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 3, 4 }), trainTensorConfigCols, trainTensorConfigVals, fixed_ncfg, true);
    return trainTensorConfig;
 }
 
@@ -111,34 +111,34 @@ std::shared_ptr<MatrixConfig> getTestSparseMatrixConfig()
    std::vector<std::uint32_t> testMatrixConfigCols = { 0, 1, 2, 3, 0, 1, 2, 3 };
    std::vector<double> testMatrixConfigVals = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<MatrixConfig> testMatrixConfig =
-      std::make_shared<MatrixConfig>(3, 4, std::move(testMatrixConfigRows), std::move(testMatrixConfigCols), std::move(testMatrixConfigVals), fixed_ncfg, true);
+      std::make_shared<MatrixConfig>(3, 4, testMatrixConfigRows, testMatrixConfigCols, testMatrixConfigVals, fixed_ncfg, true);
    return testMatrixConfig;
 }
 
 std::shared_ptr<TensorConfig> getTestSparseTensor2dConfig()
 {
-   std::vector<std::uint32_t> testTensorConfigCols =
+    std::vector<std::vector<std::uint32_t>> testTensorConfigCols =
       {
-         0, 0, 0, 0, 2, 2, 2, 2,
-         0, 1, 2, 3, 0, 1, 2, 3
+         { 0, 0, 0, 0, 2, 2, 2, 2 },
+         { 0, 1, 2, 3, 0, 1, 2, 3 }
       };
    std::vector<double> testTensorConfigVals = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<TensorConfig> testTensorConfig =
-      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 3, 4 }), std::move(testTensorConfigCols), std::move(testTensorConfigVals), fixed_ncfg, true);
+      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 3, 4 }), testTensorConfigCols, testTensorConfigVals, fixed_ncfg, true);
    return testTensorConfig;
 }
 
 std::shared_ptr<TensorConfig> getTestSparseTensor3dConfig()
 {
-   std::vector<std::uint32_t> testTensorConfigCols =
+   std::vector<std::vector<std::uint32_t>> testTensorConfigCols =
       {
-         0, 0, 0, 0, 0, 0, 0, 0,
-         0, 0, 0, 0, 2, 2, 2, 2,
-         0, 1, 2, 3, 0, 1, 2, 3
+        { 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 2, 2, 2, 2 },
+        { 0, 1, 2, 3, 0, 1, 2, 3 }
       };
    std::vector<double> testTensorConfigVals = { 1, 2, 3, 4, 9, 10, 11, 12 };
    std::shared_ptr<TensorConfig> testTensorConfig =
-      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 2, 3, 4 }), std::move(testTensorConfigCols), std::move(testTensorConfigVals), fixed_ncfg, true);
+      std::make_shared<TensorConfig>(std::initializer_list<uint64_t>({ 2, 3, 4 }), testTensorConfigCols, testTensorConfigVals, fixed_ncfg, true);
    return testTensorConfig;
 }
 
@@ -148,7 +148,7 @@ std::shared_ptr<MatrixConfig> getRowAuxDataDenseMatrixConfig()
 {
    std::vector<double> rowAuxDataDenseMatrixConfigVals = { 1, 2, 3 };
    std::shared_ptr<MatrixConfig> rowAuxDataDenseMatrixConfig =
-      std::make_shared<MatrixConfig>(3, 1, std::move(rowAuxDataDenseMatrixConfigVals), fixed_ncfg);
+      std::make_shared<MatrixConfig>(3, 1, rowAuxDataDenseMatrixConfigVals, fixed_ncfg);
    rowAuxDataDenseMatrixConfig->setPos(PVec<>({0,1}));
    return rowAuxDataDenseMatrixConfig;
 }
@@ -157,7 +157,7 @@ std::shared_ptr<MatrixConfig> getColAuxDataDenseMatrixConfig()
 {
    std::vector<double> colAuxDataDenseMatrixConfigVals = { 1, 2, 3, 4 };
    std::shared_ptr<MatrixConfig> colAuxDataDenseMatrixConfig =
-      std::make_shared<MatrixConfig>(1, 4, std::move(colAuxDataDenseMatrixConfigVals), fixed_ncfg);
+      std::make_shared<MatrixConfig>(1, 4, colAuxDataDenseMatrixConfigVals, fixed_ncfg);
    colAuxDataDenseMatrixConfig->setPos(PVec<>({1,0}));
    return colAuxDataDenseMatrixConfig;
 }
@@ -167,59 +167,59 @@ std::shared_ptr<MatrixConfig> getColAuxDataDenseMatrixConfig()
 std::shared_ptr<MatrixConfig> getRowSideInfoDenseMatrixConfig()
 {
    NoiseConfig nc(NoiseTypes::sampled);
-   nc.setPrecision(30.0);
+   nc.setPrecision(10.0);
 
    std::vector<double> rowSideInfoDenseMatrixConfigVals = { 1, 2, 3 };
    std::shared_ptr<MatrixConfig> rowSideInfoDenseMatrixConfig =
-      std::make_shared<MatrixConfig>(3, 1, std::move(rowSideInfoDenseMatrixConfigVals), nc);
+      std::make_shared<MatrixConfig>(3, 1, rowSideInfoDenseMatrixConfigVals, nc);
    return rowSideInfoDenseMatrixConfig;
 }
 
 std::shared_ptr<MatrixConfig> getColSideInfoDenseMatrixConfig()
 {
    NoiseConfig nc(NoiseTypes::sampled);
-   nc.setPrecision(30.0);
+   nc.setPrecision(10.0);
 
    std::vector<double> colSideInfoDenseMatrixConfigVals = { 1, 2, 3, 4 };
    std::shared_ptr<MatrixConfig> colSideInfoDenseMatrixConfig =
-      std::make_shared<MatrixConfig>(4, 1, std::move(colSideInfoDenseMatrixConfigVals), nc);
+      std::make_shared<MatrixConfig>(4, 1, colSideInfoDenseMatrixConfigVals, nc);
    return colSideInfoDenseMatrixConfig;
 }
 
 std::shared_ptr<MatrixConfig> getRowSideInfoSparseMatrixConfig()
 {
    NoiseConfig nc(NoiseTypes::sampled);
-   nc.setPrecision(30.0);
+   nc.setPrecision(10.0);
 
    std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigRows = {0, 1, 2};
    std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigCols = {0, 0, 0};
    std::vector<double> rowSideInfoSparseMatrixConfigVals = { 1, 2, 3 };
    std::shared_ptr<MatrixConfig> rowSideInfoSparseMatrixConfig =
-      std::make_shared<MatrixConfig>(3, 1, std::move(rowSideInfoSparseMatrixConfigRows), std::move(rowSideInfoSparseMatrixConfigCols), std::move(rowSideInfoSparseMatrixConfigVals), nc, true);
+      std::make_shared<MatrixConfig>(3, 1, rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols, rowSideInfoSparseMatrixConfigVals, nc, true);
    return rowSideInfoSparseMatrixConfig;
 }
 
 std::shared_ptr<MatrixConfig> getColSideInfoSparseMatrixConfig()
 {
    NoiseConfig nc(NoiseTypes::sampled);
-   nc.setPrecision(30.0);
+   nc.setPrecision(10.0);
 
    std::vector<std::uint32_t> colSideInfoSparseMatrixConfigRows = {0, 1, 2, 3};
    std::vector<std::uint32_t> colSideInfoSparseMatrixConfigCols = {0, 0, 0, 0};
    std::vector<double> colSideInfoSparseMatrixConfigVals = { 1, 2, 3, 4 };
    std::shared_ptr<MatrixConfig> colSideInfoSparseMatrixConfig =
-      std::make_shared<MatrixConfig>(4, 1, std::move(colSideInfoSparseMatrixConfigRows), std::move(colSideInfoSparseMatrixConfigCols), std::move(colSideInfoSparseMatrixConfigVals), nc, true);
+      std::make_shared<MatrixConfig>(4, 1, colSideInfoSparseMatrixConfigRows, colSideInfoSparseMatrixConfigCols, colSideInfoSparseMatrixConfigVals, nc, true);
    return colSideInfoSparseMatrixConfig;
 }
 
 std::shared_ptr<MatrixConfig> getRowSideInfoDenseMatrix3dConfig()
 {
    NoiseConfig nc(NoiseTypes::sampled);
-   nc.setPrecision(30.0);
+   nc.setPrecision(10.0);
 
    std::vector<double> rowSideInfoDenseMatrixConfigVals = { 1, 2, 3, 4, 5, 6 };
    std::shared_ptr<MatrixConfig> rowSideInfoDenseMatrixConfig =
-      std::make_shared<MatrixConfig>(2, 3, std::move(rowSideInfoDenseMatrixConfigVals), nc);
+      std::make_shared<MatrixConfig>(2, 3, rowSideInfoDenseMatrixConfigVals, nc);
    return rowSideInfoDenseMatrixConfig;
 }
 
@@ -326,7 +326,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(0);
+   config.setVerbose(false);
    config.setRandomSeed(1234);
    config.setNumThreads(1);
 
@@ -3094,8 +3094,8 @@ TEST_CASE("PredictSession/Features/2"
         //std::vector<std::uint32_t> trainMatrixConfigCols = {0, 1, 2, 3, 0, 1, 2, 3};
         //std::vector<double> trainMatrixConfigVals = {2, 2, 2, 4, -2, -2, -2, -4};
         fixed_ncfg.setPrecision(1.);
-        trainMatrixConfig = std::make_shared<MatrixConfig>(4, 4, std::move(trainMatrixConfigRows), std::move(trainMatrixConfigCols),
-            std::move(trainMatrixConfigVals), fixed_ncfg, true);
+        trainMatrixConfig = std::make_shared<MatrixConfig>(4, 4, trainMatrixConfigRows, trainMatrixConfigCols,
+            trainMatrixConfigVals, fixed_ncfg, true);
     }
 
     std::shared_ptr<MatrixConfig> testMatrixConfig;
@@ -3108,21 +3108,21 @@ TEST_CASE("PredictSession/Features/2"
             -2, -2, -1, -2,
             -4, -4, -2, -4};
         testMatrixConfig =
-            std::make_shared<MatrixConfig>(4, 4, std::move(testMatrixConfigRows), std::move(testMatrixConfigCols), std::move(testMatrixConfigVals), fixed_ncfg, true);
+            std::make_shared<MatrixConfig>(4, 4, testMatrixConfigRows, testMatrixConfigCols, testMatrixConfigVals, fixed_ncfg, true);
     }
 
     std::shared_ptr<SideInfoConfig> rowSideInfoConfig;
     {
         NoiseConfig nc(NoiseTypes::sampled);
-        nc.setPrecision(30.0);
+        nc.setPrecision(10.0);
 
         std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigRows = {0, 1, 2, 3};
         std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigCols = {0, 0, 0, 0};
         std::vector<double> rowSideInfoSparseMatrixConfigVals = {2, 4, -2, -4};
 
         auto mcfg =
-            std::make_shared<MatrixConfig>(4, 1, std::move(rowSideInfoSparseMatrixConfigRows),
-                std::move(rowSideInfoSparseMatrixConfigCols), std::move(rowSideInfoSparseMatrixConfigVals), nc, true);
+            std::make_shared<MatrixConfig>(4, 1, rowSideInfoSparseMatrixConfigRows,
+                rowSideInfoSparseMatrixConfigCols, rowSideInfoSparseMatrixConfigVals, nc, true);
 
         rowSideInfoConfig = std::make_shared<SideInfoConfig>();
         rowSideInfoConfig->setSideInfo(mcfg);

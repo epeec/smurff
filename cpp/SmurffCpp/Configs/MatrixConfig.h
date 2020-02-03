@@ -9,108 +9,33 @@
 
 namespace smurff
 {
-   class Data;
+class Data;
 
-   class MatrixConfig : public TensorConfig
-   {
-   private:
-      mutable std::shared_ptr<std::vector<std::uint32_t> > m_rows;
-      mutable std::shared_ptr<std::vector<std::uint32_t> > m_cols;
+class MatrixConfig : public TensorConfig
+{
+public:
+   // Empty c'tor for filling later
+   MatrixConfig(bool isDense, bool isBinary, bool isScarce, std::uint64_t nrow, std::uint64_t ncol, std::uint64_t nnz, const NoiseConfig &noiseConfig);
 
-   //
    // Dense double matrix constructos
-   //
-   public:
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   const std::vector<double>& values,
-                   const NoiseConfig& noiseConfig);
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const double *values, const NoiseConfig &noiseConfig);
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<double> values, const NoiseConfig &noiseConfig)
+       : MatrixConfig(nrow, ncol, values.data(), noiseConfig) {}
 
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::vector<double>&& values,
-                   const NoiseConfig& noiseConfig);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::shared_ptr<std::vector<double> > values,
-                   const NoiseConfig& noiseConfig);
-
-   //
    // Sparse double matrix constructors
-   //
-   public:
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   const std::vector<std::uint32_t>& rows, const std::vector<std::uint32_t>& cols, const std::vector<double>& values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, std::uint64_t nnz, const std::uint32_t *rows, const std::uint32_t *cols, const double *values, const NoiseConfig &noiseConfig, bool isScarce);
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<std::uint32_t> &rows, const std::vector<std::uint32_t> &cols, const std::vector<double> values, const NoiseConfig &noiseConfig, bool isScarce)
+       : MatrixConfig(nrow, ncol, values.size(), rows.data(), cols.data(), values.data(), noiseConfig, isScarce) {}
 
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::vector<std::uint32_t>&& rows, std::vector<std::uint32_t>&& cols, std::vector<double>&& values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::shared_ptr<std::vector<std::uint32_t> > rows, std::shared_ptr<std::vector<std::uint32_t> > cols, std::shared_ptr<std::vector<double> > values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-   //
    // Sparse binary matrix constructors
-   //
-   public:
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   const std::vector<std::uint32_t>& rows, const std::vector<std::uint32_t>& cols,
-                   const NoiseConfig& noiseConfig, bool isScarce);
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, std::uint64_t nnz, const std::uint32_t *rows, const std::uint32_t *cols, const NoiseConfig &noiseConfig, bool isScarce);
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<std::uint32_t> &rows, const std::vector<std::uint32_t> &cols, const NoiseConfig &noiseConfig, bool isScarce)
+       : MatrixConfig(nrow, ncol, rows.size(), rows.data(), cols.data(), noiseConfig, isScarce) {}
 
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::vector<std::uint32_t>&& rows, std::vector<std::uint32_t>&& cols,
-                   const NoiseConfig& noiseConfig, bool isScarce);
+   MatrixConfig();
 
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::shared_ptr<std::vector<std::uint32_t> > rows, std::shared_ptr<std::vector<std::uint32_t> > cols,
-                   const NoiseConfig& noiseConfig, bool isScarce);
+   std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const override;
 
-   //
-   // Constructors for constructing sparse matrix as a tensor
-   //
-   public:
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   const std::vector<std::uint32_t>& columns, const std::vector<double>& values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::vector<std::uint32_t>&& columns, std::vector<double>&& values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::shared_ptr<std::vector<std::uint32_t> > columns, std::shared_ptr<std::vector<double> > values,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-   //
-   // Constructors for constructing sparse binary matrix as a tensor
-   //
-   public:
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   const std::vector<std::uint32_t>& columns,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::vector<std::uint32_t>&& columns,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-      MatrixConfig(std::uint64_t nrow, std::uint64_t ncol,
-                   std::shared_ptr<std::vector<std::uint32_t> > columns,
-                   const NoiseConfig& noiseConfig, bool isScarce);
-
-   public:
-      MatrixConfig();
-
-   public:
-      std::uint64_t getNRow() const;
-      std::uint64_t getNCol() const;
-
-      const std::vector<std::uint32_t>& getRows() const;
-      const std::vector<std::uint32_t>& getCols() const;
-
-   public:
-      std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const override;
-
-   public:
-      void write(std::shared_ptr<IDataWriter> writer) const override;
-   };
-}
+   void write(std::shared_ptr<IDataWriter> writer) const override;
+};
+} // namespace smurff

@@ -9,12 +9,10 @@
 
 namespace smurff {
 
-Matrix matrix_utils::dense_to_eigen(const MatrixConfig& matrixConfig)
+Matrix matrix_utils::dense_to_eigen(const TensorConfig& matrixConfig)
 {
-   if(!matrixConfig.isDense())
-   {
-      THROWERROR("matrix config should be dense");
-   }
+   THROWERROR_ASSERT_MSG(matrixConfig.isDense(), "matrix config should be dense");
+   THROWERROR_ASSERT_MSG(matrixConfig.getNModes() == 2, "Invalid number of dimensions. Tensor can not be converted to matrix.");
 
    std::vector<float_type> float_values(matrixConfig.getValues().begin(), matrixConfig.getValues().end());
    return Eigen::Map<const Matrix>(float_values.data(), matrixConfig.getNRow(), matrixConfig.getNCol());
@@ -28,10 +26,10 @@ std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_dense(const Matrix &eigenMa
 
 struct sparse_vec_iterator
 {
-  sparse_vec_iterator(const MatrixConfig& matrixConfig, int pos)
+  sparse_vec_iterator(const TensorConfig& matrixConfig, int pos)
      : config(matrixConfig), pos(pos) {}
 
-  const MatrixConfig& config;
+  const TensorConfig& config;
   int pos;
 
   bool operator!=(const sparse_vec_iterator &other) const {
@@ -54,21 +52,19 @@ struct sparse_vec_iterator
   }
 };
 
-SparseMatrix matrix_utils::sparse_to_eigen(const MatrixConfig& matrixConfig)
+SparseMatrix matrix_utils::sparse_to_eigen(const TensorConfig& tensorConfig)
 {
-   if(matrixConfig.isDense())
-   {
-      THROWERROR("matrix config should be sparse");
-   }
+   THROWERROR_ASSERT_MSG(!tensorConfig.isDense(), "tensor config should be sparse");
+   THROWERROR_ASSERT_MSG(tensorConfig.getNModes() == 2, "Invalid number of dimensions. Tensor can not be converted to matrix.");
 
-   SparseMatrix out(matrixConfig.getNRow(), matrixConfig.getNCol());
+   SparseMatrix out(tensorConfig.getNRow(), tensorConfig.getNCol());
 
-   sparse_vec_iterator begin(matrixConfig, 0);
-   sparse_vec_iterator end(matrixConfig, matrixConfig.getNNZ());
+   sparse_vec_iterator begin(tensorConfig, 0);
+   sparse_vec_iterator end(tensorConfig, tensorConfig.getNNZ());
 
    out.setFromTriplets(begin, end);
 
-   THROWERROR_ASSERT_MSG(out.nonZeros() == (int)matrixConfig.getNNZ(), "probable presence of duplicate records in " + matrixConfig.getFilename());
+   THROWERROR_ASSERT_MSG(out.nonZeros() == (int)tensorConfig.getNNZ(), "probable presence of duplicate records in " + tensorConfig.getFilename());
 
    return out;
 }
@@ -77,22 +73,19 @@ std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_sparse(const SparseMatrix &
 {
    std::uint64_t nrow = X.rows();
    std::uint64_t ncol = X.cols();
+   std::uint64_t nnz = X.nonZeros();
 
-   std::vector<uint32_t> rows;
-   std::vector<uint32_t> cols;
-   std::vector<double> values;
+   auto ret = std::make_shared<MatrixConfig>(false, false, isScarce, nrow, ncol, nnz, n);
 
    for (int k = 0; k < X.outerSize(); ++k)
-   {
       for (SparseMatrix::InnerIterator it(X,k); it; ++it)
       {
-         rows.push_back(it.row());
-         cols.push_back(it.col());
-         values.push_back(it.value());
+         ret->getRows().push_back(it.row());
+         ret->getCols().push_back(it.col());
+         ret->getValues().push_back(it.value());
       }
-   }
 
-   return std::make_shared<MatrixConfig>(nrow, ncol, rows, cols, values, n, isScarce);
+   return ret;
 }
 
 std::ostream& matrix_utils::operator << (std::ostream& os, const MatrixConfig& mc)
@@ -100,7 +93,6 @@ std::ostream& matrix_utils::operator << (std::ostream& os, const MatrixConfig& m
    const std::vector<std::uint32_t>& rows = mc.getRows();
    const std::vector<std::uint32_t>& cols = mc.getCols();
    const std::vector<double>& values = mc.getValues();
-   const std::vector<std::uint32_t>& columns = mc.getColumns();
 
    if(rows.size() != cols.size() || rows.size() != values.size())
    {
@@ -117,11 +109,16 @@ std::ostream& matrix_utils::operator << (std::ostream& os, const MatrixConfig& m
       os << cols[i] << ", ";
    os << std::endl;
 
+/*
    os << "columns: " << std::endl;
    for(std::uint64_t i = 0; i < columns.size(); i++)
-      os << columns[i] << ", ";
+   {
+      for(std::uint64_t j = 0; j<columns[i].size(); j++)
+         os << columns[i][j] << ", ";
+      os << std::endl;
+   }
    os << std::endl;
-
+*/
    os << "values: " << std::endl;
    for(std::uint64_t i = 0; i < values.size(); i++)
       os << values[i] << ", ";
