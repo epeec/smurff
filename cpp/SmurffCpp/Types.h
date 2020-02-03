@@ -4,14 +4,14 @@
 #include <Eigen/Sparse>
 
 namespace smurff {
-   typedef FLOAT_TYPE float_type;
+   typedef SMURFF_FLOAT_TYPE float_type;
 
-#if FLOAT_TYPE == float
+#if SMURFF_FLOAT_TYPE == float
    const double APPROX_EPSILON = 0.01; // allow 1% difference
-#elif FLOAT_TYPE == double
+#elif SMURFF_FLOAT_TYPE == double
    const double APPROX_EPSILON = std::numeric_limits<float>::epsilon()*100;
 #else
-   const double APPROX_EPSILON = std::numeric_limits<FLOAT_TYPE>::epsilon()*100;
+   const double APPROX_EPSILON = std::numeric_limits<SMURFF_FLOAT_TYPE>::epsilon()*100;
 #endif
 
    typedef Eigen::Matrix<float_type, Eigen::Dynamic, Eigen::Dynamic> Matrix;
