@@ -64,7 +64,4 @@ jobs:
   pool:
     vmImage: 'windows-2019'
   steps:
-    - script: |
-        choco install --execution-timeout=5400 visualstudio2015community
-      displayName: Install Visual Studio 2015 C++ Community Edition
     - template: conda-steps.yml
