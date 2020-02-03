@@ -39,7 +39,6 @@ target_link_libraries (${PROJECT} smurff-cpp smurff-utils
 include_directories(../)
 include_directories(../..)
 include_directories(${SMURFF_INCLUDE_DIRS})
-include_directories(${EIGEN3_INCLUDE_DIR})
 
 if("${SMURFF_FLOAT_TYPE}" STREQUAL "float")
     include_directories("../expected_float_results")
