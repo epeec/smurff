@@ -24,6 +24,7 @@ install(TARGETS tests RUNTIME DESTINATION libexec)
 #LINK LIBRARIES
 target_link_libraries (tests smurff-cpp smurff-utils
                                   ${OpenMP_CXX_LIBRARIES}
+                                  ${Boost_LIBRARIES}
                                   ${ALGEBRA_LIBS}
                                   ${CMAKE_THREAD_LIBS_INIT})
 

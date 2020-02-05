@@ -245,10 +245,10 @@ if(MSVC)
   configure_eigen()
   configure_boost()
 else()
-  configure_pthreads()
-  configure_openmp()
   configure_eigen()
   configure_boost()
+  configure_pthreads()
+  configure_openmp()
 endif()
 
 if(ENABLE_MPI)
@@ -319,9 +319,6 @@ if(${EXTERNAL_DATA})
         --row-features ${CMAKE_CURRENT_BINARY_DIR}/jsimm-data/chembl-IC50-compound-feat.mm
         )
 endif()
-
-include_directories(${Boost_INCLUDE_DIRS})
-include_directories(${EIGEN3_INCLUDE_DIR})
 
 include_directories(cpp)
 

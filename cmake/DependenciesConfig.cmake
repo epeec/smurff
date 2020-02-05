@@ -86,6 +86,7 @@ macro(configure_mkl)
   message ("Dependency check for MKL (using MKL SDL)...")
   find_library (MKL_LIBRARIES "mkl_rt" HINTS ENV LD_LIBRARY_PATH REQUIRED)
   find_PATH (MKL_INCLUDE_DIR "mkl.h" HINTS ENV CPATH REQUIRED)
+
   include_directories(${MKL_INCLUDE_DIR})
 
   # make sure we link with iomp5 and not gomp
@@ -114,6 +115,7 @@ macro(configure_eigen)
   find_package(Eigen3 REQUIRED)
   endif()
 
+  include_directories(${EIGEN3_INCLUDE_DIR})
   
   message(STATUS EIGEN3: ${EIGEN3_INCLUDE_DIR})
 endmacro(configure_eigen)
@@ -139,6 +141,8 @@ macro(configure_boost)
       message("-- Found Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
       message("-- Found Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
       add_definitions(-DHAVE_BOOST)
+
+      include_directories(${Boost_INCLUDE_DIRS})
   else()
       message("-- Boost library is not enabled")
   endif()
