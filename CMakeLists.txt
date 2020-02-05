@@ -1,8 +1,6 @@
 cmake_minimum_required (VERSION 3.5.0)
-set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 
-set (PROJECT RootSmurff)
-project (${PROJECT})
+project (Smurff)
 
 MESSAGE("smurff")
 
@@ -19,7 +17,7 @@ OPTION(ENABLE_VERBOSE_COMPILER_LOG "Enable verbose compilation log" OFF)
 OPTION(ENABLE_VERBOSE_LINKER_LOG "Enable verbose linker log" OFF)
 
 OPTION(ENABLE_BOOST "Enable usage of Boost for program options" ON)
-OPTION(ENABLE_BOOST_RANDOM "Enable usage of Boost random library" OFF)
+SET(BOOST_RANDOM_VERSION "" CACHE STRING "Enable boost::random for this specific BOOST version")
 
 OPTION(ENABLE_PYTHON "Enable Python Wrapper" ON)
 OPTION(ENABLE_MPI "Enable MPI Support" ON)
@@ -162,7 +160,7 @@ if(NOT "${GIT_BRANCH_ERROR}" STREQUAL "0")
    set(GIT_BRANCH "Unknown")
 endif()
 
-message(STATUS "GIT branch ${GIT_BRANCH}")
+message("GIT branch ${GIT_BRANCH}")
 
 #get GIT describe
 execute_process(
@@ -183,9 +181,9 @@ string(REGEX REPLACE "-[^-]+$"
     "" SMURFF_VERSION_CLEAN
     ${SMURFF_VERSION})
 
-message(STATUS "Cleaned version: ${SMURFF_VERSION_CLEAN}")
+add_definitions(-DSMURFF_VERSION=\"${SMURFF_VERSION}\")
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../SmurffCpp/Version.cpp.in ${CMAKE_CURRENT_SOURCE_DIR}/../SmurffCpp/Version.cpp)
+message(STATUS "Cleaned version: ${SMURFF_VERSION_CLEAN}")
 
 # CONFIGURE BUILD TYPE
 
@@ -237,19 +235,17 @@ endif()
 message("Checking build dependencies...")
 
 #set additional search paths for cmake scripts
-SET(SCRIPT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts/")
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${SCRIPT_DIR}")
 
-include(scripts/DependenciesConfig.cmake)
+include(cmake/DependenciesConfig.cmake)
 
 SET(SMURFF_FLOAT_TYPE "double" CACHE STRING "Main compute type")
 add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
 message("Using '${SMURFF_FLOAT_TYPE}' as main computing type")
 
 
-configure_openmp()
 configure_eigen_viennacl()
 configure_boost()
+configure_openmp()
 
 if(ENABLE_MPI)
   configure_mpi()
@@ -329,35 +325,32 @@ if(${EXTERNAL_DATA})
         )
 endif()
 
-
+include_directories(cpp)
 
 # CONFIGURE TARGETS
 
 message(STATUS "Creating folder structure...")
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
 
 # libraries
-add_subdirectory (../Utils/cmake libraries/SmurffUtils)
-add_subdirectory (../SmurffCpp/cmake libraries/SmurffCpp)
+add_subdirectory (cpp/Utils)
+add_subdirectory (cpp/SmurffCpp)
 
-# utils
-add_subdirectory (../Smurff/cmake utils/Smurff)
+# main executable
+add_subdirectory (cpp/Smurff)
 
 # MPI
 if(ENABLE_MPI)
-  add_subdirectory (../SmurffMPI/cmake utils/SmurffMPI)
+  add_subdirectory (cpp/SmurffMPI)
 endif()
 
-
 # tests
-
-add_subdirectory (../Tests/cmake tests/Tests)
+add_subdirectory (cpp/Tests)
 
 # python
-
 if(ENABLE_PYTHON)
     configure_python()
-    add_subdirectory (../../python/smurff python/Smurff)
+    add_subdirectory (python/smurff)
 endif()
 

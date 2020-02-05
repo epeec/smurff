@@ -1,3 +1,6 @@
+set (SCRIPT_DIR "${CMAKE_SOURCE_DIR}/cmake/")
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
 macro(configure_mpi)
   message ("Dependency check for mpi...")
 
@@ -63,6 +66,7 @@ macro(configure_mkl)
   message ("Dependency check for MKL (using MKL SDL)...")
   find_library (MKL_LIBRARIES "mkl_rt" HINTS ENV LD_LIBRARY_PATH REQUIRED)
   find_PATH (MKL_INCLUDE_DIR "mkl.h" HINTS ENV CPATH REQUIRED)
+
   include_directories(${MKL_INCLUDE_DIR})
 
   # make sure we link with iomp5 and not gomp
@@ -96,68 +100,34 @@ macro(configure_eigen_viennacl)
   
   SET(SMURFF_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR} ${VIENNACL_INCLUDE_DIR})
 
+  include_directories(${SMURFF_INCLUDE_DIRS})
+
   message(STATUS "Eigen/ViennaCL include dirs: ${SMURFF_INCLUDE_DIRS}")
 endmacro(configure_eigen_viennacl)
 
 macro(configure_boost)
+  message ("Dependency check for boost...")
   if(${ENABLE_BOOST})
-      message ("Dependency check for boost...")
-      
       set (Boost_USE_STATIC_LIBS OFF)
       set (Boost_USE_MULTITHREADED ON)
 
       # find boost random library - optional
-
-      if(${ENABLE_BOOST_RANDOM})
-        set (BOOST_COMPONENTS random)
-
-        FIND_PACKAGE(Boost COMPONENTS ${BOOST_COMPONENTS})
-
-        if(Boost_FOUND)
-            message("Found Boost random library")
-            message("Found Boost_VERSION: ${Boost_VERSION}")
-            message("Found Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
-            message("Found Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
-
-            set(BOOST_RANDOM_LIBRARIES ${Boost_LIBRARIES})
-            set(BOOST_RANDOM_INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
-
-            add_definitions(-DUSE_BOOST_RANDOM)
-            message("Boost minor: ${Boost_MINOR_VERSION}")
-            if ((${Boost_MINOR_VERSION} LESS "60") AND (${Boost_MINOR_VERSION} GREATER_EQUAL "54"))
-                add_definitions(-DTEST_RANDOM_OK)
-                message("Enabling test cases that depend on Boost random 1.5x.y")
-            endif()
-        else()
-            message("Boost random library is not found")
-        endif()
+      if(${BOOST_RANDOM_VERSION})
+        FIND_PACKAGE(Boost ${BOOST_RANDOM_VERSION} EXACT COMPONENTS random system program_options REQUIRED)
+        message(STATUS "Found Boost random library")
+        add_definitions(-DUSE_BOOST_RANDOM)
+      else()
+        FIND_PACKAGE(Boost COMPONENTS system program_options REQUIRED)
       endif()
 
-      #find boost program_options library - required
-
-      set (BOOST_COMPONENTS system 
-                            program_options)
-
-      FIND_PACKAGE(Boost COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
-      
-      #see https://stackoverflow.com/questions/28887680/linking-boost-library-with-boost-use-static-lib-off-on-windows
-      if (MSVC)
-         # disable autolinking in boost
-         add_definitions(-DBOOST_ALL_NO_LIB)
-
-         # force all boost libraries to dynamic link (we already disabled
-         # autolinking, so I don't know why we need this, but we do!)
-         add_definitions(-DBOOST_ALL_DYN_LINK)
-      endif()
-  endif()
-
-  if(Boost_FOUND)
-      message("Found Boost_VERSION: ${Boost_VERSION}")
-      message("Found Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
-      message("Found Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
+      message("-- Found Boost_VERSION: ${Boost_VERSION}")
+      message("-- Found Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
+      message("-- Found Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
       add_definitions(-DHAVE_BOOST)
+
+      include_directories(${Boost_INCLUDE_DIRS})
   else()
-      message("Boost library is not found")
+      message("-- Boost library is not enabled")
   endif()
 endmacro(configure_boost)
 

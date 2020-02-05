@@ -1,5 +1,8 @@
-jobs:
+trigger:
+  - master
+  - releases/*
 
+jobs:
 - job: 'Ubuntu_1604_Apt'
   pool:
     vmImage: 'Ubuntu 16.04'
@@ -24,7 +27,7 @@ jobs:
     - task: CMake@1
       inputs:
         workingDirectory: 'build.$(build.type)'
-        cmakeArgs: '-G Ninja -DCMAKE_BUILD_TYPE=$(build.type) ../cpp/cmake -DENABLE_PYTHON=OFF -DENABLE_BOOST_RANDOM=ON -DBOOST_ROOT=/usr'
+        cmakeArgs: '-G Ninja -DCMAKE_BUILD_TYPE=$(build.type) .. -DENABLE_PYTHON=OFF -DBOOST_RANDOM_VERSION=1.58 -DBOOST_ROOT=/usr'
     - script: |
         cd build.$(build.type)
         ninja
@@ -61,10 +64,15 @@ jobs:
   - template: conda-steps.yml
 
 - job: 'Conda_Windows'
+  variables:
+    VS140COMNTOOLS: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\'
   pool:
-    vmImage: 'windows-2019'
+    vmImage: 'vs2017-win2016'
   steps:
     - script: |
-        rd /s /q "C:\Program Files (x86)\Windows Kits\10\\include\wdf"
+        rd /s /q "C:\Program Files (x86)\Windows Kits\10\include\wdf"
       displayName: Remove 'wdf' SDK
+    - script: |
+         choco install microsoft-visual-cpp-build-tools
+      displayName: Install Visual Studio 2015 CPP Build Tools
     - template: conda-steps.yml

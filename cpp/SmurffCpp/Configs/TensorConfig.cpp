@@ -2,13 +2,13 @@
 
 #include <numeric>
 
+#include <SmurffCpp/Utils/PVec.hpp>
 #include <SmurffCpp/IO/IDataWriter.h>
 #include <SmurffCpp/DataMatrices/IDataCreator.h>
 #include <SmurffCpp/IO/GenericIO.h>
 
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
-#include <Utils/PVec.hpp>
 
 #define POS_TAG "pos"
 #define FILE_TAG "file"
