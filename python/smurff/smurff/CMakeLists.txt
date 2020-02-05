@@ -10,4 +10,3 @@ pybind11_add_module(wrapper wrapper.cpp)
 target_link_libraries (wrapper PRIVATE smurff-cpp smurff-utils pybind11::module
                             ${ALGEBRA_LIBS}
                             ${OpenMP_CXX_LIBRARIES})
-                     )
