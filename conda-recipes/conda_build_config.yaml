@@ -11,6 +11,8 @@ python:
     - 3.6
     - 3.7
 
+libboost: 1.67
+
 pin_run_as_build:
-  boost: x.x
+  libboost: x.x
   numpy: x.x
