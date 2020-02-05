@@ -63,6 +63,8 @@ endif()
 
 # FETCH COMPILER
 
+set(CMAKE_CXX_STANDARD 11)
+
 if (MSVC OR MSVC_IDE OR MSVC_VERSION OR MSVC60 OR MSVC70 OR MSVC71 OR MSVC80 OR MSVC90 OR MSVC10 OR MSVC11 OR MSVC12)
    message( STATUS "Compiler is a Microsoft variant")
    message( STATUS "MSVC: " ${MSVC} )
@@ -96,7 +98,7 @@ elseif (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
       add_definitions(-DMAC_OSX)
    endif()
 
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -Wno-parentheses -fPIC")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -Wno-parentheses -fPIC")
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas -fPIC")
 
    if (${ENABLE_ASAN})
@@ -107,7 +109,7 @@ elseif (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
 else()
    message ("Using untested/unconfigured compiler, only Microsoft and g++ toolchain has been tested/established.")
 
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -fPIC")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -fPIC")
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas -fPIC")
 
 endif()
