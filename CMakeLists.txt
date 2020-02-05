@@ -182,7 +182,7 @@ string(REGEX REPLACE "-[^-]+$"
 
 message(STATUS "Cleaned version: ${SMURFF_VERSION_CLEAN}")
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../SmurffCpp/Version.cpp.in ${CMAKE_CURRENT_SOURCE_DIR}/../SmurffCpp/Version.cpp)
+configure_file(cpp/SmurffCpp/Version.cpp.in Version.cpp)
 
 # CONFIGURE BUILD TYPE
 
@@ -234,10 +234,8 @@ endif()
 message("Checking build dependencies...")
 
 #set additional search paths for cmake scripts
-SET(SCRIPT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts/")
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${SCRIPT_DIR}")
 
-include(scripts/DependenciesConfig.cmake)
+include(cmake/DependenciesConfig.cmake)
 
 SET(SMURFF_FLOAT_TYPE "double" CACHE STRING "Main compute type")
 add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
@@ -322,30 +320,34 @@ if(${EXTERNAL_DATA})
         )
 endif()
 
+include_directories(${BOOST_RANDOM_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${EIGEN3_INCLUDE_DIR})
 
+include_directories(cpp)
 
 # CONFIGURE TARGETS
 
 message(STATUS "Creating folder structure...")
 
 # libraries
-add_subdirectory (../Utils/cmake)
-add_subdirectory (../SmurffCpp/cmake)
+add_subdirectory (cpp/Utils)
+add_subdirectory (cpp/SmurffCpp)
 
 # main executable
-add_subdirectory (../Smurff/cmake)
+add_subdirectory (cpp/Smurff)
 
 # MPI
 if(ENABLE_MPI)
-  add_subdirectory (../SmurffMPI/cmake)
+  add_subdirectory (cpp/SmurffMPI)
 endif()
 
 # tests
-add_subdirectory (../Tests/cmake)
+add_subdirectory (cpp/Tests)
 
 # python
 if(ENABLE_PYTHON)
     configure_python()
-    add_subdirectory (../../python/smurff)
+    add_subdirectory (python/smurff)
 endif()
 

@@ -1,5 +1,4 @@
-#SETUP PROJECT
-FILE (GLOB SOURCE_FILES "../smurff.cpp")
+FILE (GLOB SOURCE_FILES "smurff.cpp")
 
 source_group ("Source Files" FILES ${SOURCE_FILES})
 
@@ -14,10 +13,3 @@ target_link_libraries (smurff smurff-cpp smurff-utils
                                   ${BOOST_RANDOM_LIBRARIES}
                                   ${ALGEBRA_LIBS}
                                   ${CMAKE_THREAD_LIBS_INIT})
-
-#SETUP INCLUDES
-include_directories(../)
-include_directories(../..)
-include_directories(${EIGEN3_INCLUDE_DIR})
-include_directories(${Boost_INCLUDE_DIRS})
-include_directories(${BOOST_RANDOM_INCLUDE_DIRS})

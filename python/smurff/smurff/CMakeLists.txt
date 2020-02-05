@@ -1,5 +1,6 @@
 set (CYTHON_FLAGS "--directive" "embedsignature=True")
 
+
 add_cython_target(wrapper CXX)
 add_library(wrapper MODULE ${wrapper})
 python_extension_module(wrapper)
@@ -9,4 +10,3 @@ target_link_libraries (wrapper smurff-cpp smurff-utils
                             ${ALGEBRA_LIBS}
                             ${OpenMP_CXX_LIBRARIES}
                             ${CMAKE_THREAD_LIBS_INIT})
-

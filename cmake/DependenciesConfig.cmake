@@ -1,3 +1,6 @@
+set (SCRIPT_DIR "${CMAKE_SOURCE_DIR}/cmake/")
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
 macro(configure_pthreads)
     message ("Dependency check for pthreads multi-threading support...")
 

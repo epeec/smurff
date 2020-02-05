@@ -1,7 +1,3 @@
-include_directories(${NUMPY_INCLUDE_DIR})
-include_directories(../../cpp)
-include_directories(include)
-
 # With CMake, a clean separation can be made between the source tree and the
 # build tree.  When all source is compiled, as with pure C/C++, the source is
 # no-longer needed in the build tree.  However, with pure *.py source, the
@@ -11,6 +7,9 @@ add_custom_target( ReplicatePythonSourceTree ALL ${CMAKE_COMMAND} -P
   ${SCRIPT_DIR}/ReplicatePythonSourceTree.cmake
   ${CMAKE_CURRENT_BINARY_DIR}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+
+include_directories(${NUMPY_INCLUDE_DIR})
+include_directories(include)
 
 add_subdirectory( smurff )
 

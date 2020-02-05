@@ -1,15 +1,15 @@
 if(${MPI_C_FOUND})
 
-FILE (GLOB HEADER_FILES "../MPISession.h"
-                        "../MPIMacauPrior.h"
-                        "../MPIMacauPrior.cpp"
-                        "../MPIPriorFactory.h"
+FILE (GLOB HEADER_FILES "MPISession.h"
+                        "MPIMacauPrior.h"
+                        "MPIMacauPrior.cpp"
+                        "MPIPriorFactory.h"
                        )
 source_group ("Header Files" FILES ${HEADER_FILES})
 
-FILE (GLOB SOURCE_FILES "../mpi_smurff.cpp"
-                        "../MPISession.cpp"
-                        "../MPIPriorFactory.cpp"
+FILE (GLOB SOURCE_FILES "mpi_smurff.cpp"
+                        "MPISession.cpp"
+                        "MPIPriorFactory.cpp"
                         )
 source_group ("Source Files" FILES ${SOURCE_FILES})
 
@@ -31,12 +31,6 @@ target_link_libraries (mpi_smurff smurff-cpp smurff-utils
 set_target_properties(mpi_smurff PROPERTIES COMPILE_FLAGS "${MPI_C_COMPILE_FLAGS}")
 set_target_properties(mpi_smurff PROPERTIES LINK_FLAGS "${MPI_C_LINK_FLAGS}")
 
-#SETUP INCLUDES
-include_directories(..)
-include_directories(../..)
-include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${MPI_C_INCLUDE_PATH})
-include_directories(${Boost_INCLUDE_DIRS})
-include_directories(${BOOST_RANDOM_INCLUDE_DIRS})
 
 endif()
