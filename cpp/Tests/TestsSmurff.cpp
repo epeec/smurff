@@ -49,10 +49,17 @@ static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
 // dense train data (matrix/tensor 2d/tensor 3d)
 
+#ifdef USE_BOOST_RANDOM
 #define TAG_MATRIX_TESTS "[matrix][random]"
 #define TAG_TWO_DIMENTIONAL_TENSOR_TESTS "[tensor2d][random]"
 #define TAG_THREE_DIMENTIONAL_TENSOR_TESTS "[tensor3d][random]"
 #define TAG_VS_TESTS "[versus][random]"
+#else
+#define TAG_MATRIX_TESTS "[matrix][random][!mayfail]"
+#define TAG_TWO_DIMENTIONAL_TENSOR_TESTS "[tensor2d][random][!mayfail]"
+#define TAG_THREE_DIMENTIONAL_TENSOR_TESTS "[tensor3d][random][!mayfail]"
+#define TAG_VS_TESTS "[versus][random][!mayfail]"
+#endif
 
 std::shared_ptr<MatrixConfig> getTrainDenseMatrixConfig()
 {
