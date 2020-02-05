@@ -159,7 +159,7 @@ if(NOT "${GIT_BRANCH_ERROR}" STREQUAL "0")
    set(GIT_BRANCH "Unknown")
 endif()
 
-message(STATUS "GIT branch ${GIT_BRANCH}")
+message("GIT branch ${GIT_BRANCH}")
 
 #get GIT describe
 execute_process(
@@ -320,7 +320,6 @@ if(${EXTERNAL_DATA})
         )
 endif()
 
-include_directories(${BOOST_RANDOM_INCLUDE_DIRS})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${EIGEN3_INCLUDE_DIR})
 
