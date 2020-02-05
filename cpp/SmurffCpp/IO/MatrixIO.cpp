@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <array>
 
+#include <highfive/H5Easy.hpp>
+
 #include <Utils/Error.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 
@@ -803,6 +805,8 @@ void matrix_io::eigen::read_matrix(const std::string& filename, SparseMatrix& X)
 void matrix_io::eigen::write_matrix(const std::string& filename, const Matrix& X)
 {
    matrix_io::write_matrix(filename, matrix_utils::eigen_to_dense(X));
+   H5Easy::File file(filename + ".h5", H5Easy::File::Overwrite);
+   H5Easy::dump(file, "/path/to/A", X);
 }
 
 void matrix_io::eigen::write_matrix(const std::string& filename, const SparseMatrix& X)

@@ -183,4 +183,5 @@ add_library (smurff-cpp STATIC ${HEADER_FILES}
                                )
 
 
+target_link_libraries(smurff-cpp HighFive)
 
