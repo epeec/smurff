@@ -9,4 +9,4 @@ python_extension_module(wrapper)
 target_link_libraries (wrapper smurff-cpp smurff-utils
                             ${ALGEBRA_LIBS}
                             ${OpenMP_CXX_LIBRARIES}
-                            ${CMAKE_THREAD_LIBS_INIT})
+                     )

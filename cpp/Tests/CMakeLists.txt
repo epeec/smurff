@@ -26,7 +26,7 @@ target_link_libraries (tests smurff-cpp smurff-utils
                                   ${OpenMP_CXX_LIBRARIES}
                                   ${Boost_LIBRARIES}
                                   ${ALGEBRA_LIBS}
-                                  ${CMAKE_THREAD_LIBS_INIT})
+                      )
 
 if("${SMURFF_FLOAT_TYPE}" STREQUAL "float")
     include_directories("expected_float_results")

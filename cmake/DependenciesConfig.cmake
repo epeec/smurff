@@ -1,26 +1,6 @@
 set (SCRIPT_DIR "${CMAKE_SOURCE_DIR}/cmake/")
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
-macro(configure_pthreads)
-    message ("Dependency check for pthreads multi-threading support...")
-
-    if(UNIX)
-        find_package(Threads REQUIRED)
-        if(Threads_FOUND)
-            message(STATUS "Found threading library")
-            if(CMAKE_USE_PTHREADS_INIT)
-                message(STATUS "Found pthreads " ${CMAKE_THREAD_LIBS_INIT})
-            else()
-                message(STATUS "Pthreads not found")
-            endif()
-        else()
-            message(STATUS "Threading library not found")
-        endif()
-    else()
-       message(STATUS "Not required on windows")
-    endif()
-endmacro(configure_pthreads)
-
 macro(configure_mpi)
   message ("Dependency check for mpi...")
 

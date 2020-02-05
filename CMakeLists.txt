@@ -247,7 +247,6 @@ if(MSVC)
 else()
   configure_eigen()
   configure_boost()
-  configure_pthreads()
   configure_openmp()
 endif()
 
