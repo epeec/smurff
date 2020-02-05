@@ -18,7 +18,6 @@ source_group ("Source Files" FILES ${SOURCE_FILES})
 
 #SETUP OUTPUT
 add_executable (tests ${HEADER_FILES} ${SOURCE_FILES})
-SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
 install(TARGETS tests RUNTIME DESTINATION libexec)
 
 #LINK LIBRARIES

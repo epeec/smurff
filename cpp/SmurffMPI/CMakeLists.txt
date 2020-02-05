@@ -15,8 +15,6 @@ source_group ("Source Files" FILES ${SOURCE_FILES})
 
 #SETUP OUTPUT
 add_executable (mpi_smurff ${HEADER_FILES} ${SOURCE_FILES})
-set_property(TARGET mpi_smurff PROPERTY FOLDER "Utils")
-SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
 install(TARGETS mpi_smurff RUNTIME DESTINATION bin)
 
 #LINK LIBRARIES

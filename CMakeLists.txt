@@ -325,6 +325,8 @@ include_directories(cpp)
 
 message(STATUS "Creating folder structure...")
 
+SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
+
 # libraries
 add_subdirectory (cpp/Utils)
 add_subdirectory (cpp/SmurffCpp)
