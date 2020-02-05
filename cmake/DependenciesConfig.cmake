@@ -108,13 +108,12 @@ macro(configure_boost)
 
       # find boost random library - optional
       if(ENABLE_BOOST_RANDOM)
-        set (BOOST_COMPONENTS random system program_options)
-        FIND_PACKAGE(Boost 1.59 EXACT COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
-        message("Found Boost random library")
+        set(NEED_BOOST_VERSION "1.59" CACHE STRING "Look for this specific BOOST version")
+        FIND_PACKAGE(Boost ${NEED_BOOST_VERSION} EXACT COMPONENTS random system program_options REQUIRED)
+        message(STATUS "Found Boost random library")
         add_definitions(-DUSE_BOOST_RANDOM)
       else()
-        set (BOOST_COMPONENTS system program_options)
-        FIND_PACKAGE(Boost COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
+        FIND_PACKAGE(Boost COMPONENTS system program_options REQUIRED)
       endif()
 
       message("-- Found Boost_VERSION: ${Boost_VERSION}")

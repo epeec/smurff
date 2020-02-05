@@ -27,7 +27,7 @@ jobs:
     - task: CMake@1
       inputs:
         workingDirectory: 'build.$(build.type)'
-        cmakeArgs: '-G Ninja -DCMAKE_BUILD_TYPE=$(build.type) .. -DENABLE_PYTHON=OFF -DENABLE_BOOST_RANDOM=ON -DBOOST_ROOT=/usr'
+        cmakeArgs: '-G Ninja -DCMAKE_BUILD_TYPE=$(build.type) .. -DENABLE_PYTHON=OFF -DENABLE_BOOST_RANDOM=ON -DBOOST_ROOT=/usr  -DNEED_BOOST_VERSION=1.58'
     - script: |
         cd build.$(build.type)
         ninja
