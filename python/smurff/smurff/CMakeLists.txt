@@ -8,5 +8,7 @@ python_extension_module(wrapper)
 #LINK LIBRARIES
 target_link_libraries (wrapper smurff-cpp smurff-utils
                             ${ALGEBRA_LIBS}
+                            HighFive
                             ${OpenMP_CXX_LIBRARIES}
+
                      )

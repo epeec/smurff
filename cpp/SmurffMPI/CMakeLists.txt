@@ -22,6 +22,7 @@ target_link_libraries (mpi_smurff smurff-cpp smurff-utils
                                   ${OpenMP_CXX_LIBRARIES}
                                   ${Boost_LIBRARIES}
                                   ${ALGEBRA_LIBS}
+                                  HighFive
                                   ${MPI_LIBRARIES})
 
 set_target_properties(mpi_smurff PROPERTIES COMPILE_FLAGS "${MPI_C_COMPILE_FLAGS}")

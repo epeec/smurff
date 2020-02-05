@@ -90,15 +90,20 @@ macro(configure_eigen)
   message ("Dependency check for eigen...")
   
   if(DEFINED ENV{EIGEN3_INCLUDE_DIR})
-  SET(EIGEN3_INCLUDE_DIR $ENV{EIGEN3_INCLUDE_DIR})
+    SET(EIGEN3_INCLUDE_DIR $ENV{EIGEN3_INCLUDE_DIR})
   else()
-  find_package(Eigen3 REQUIRED)
+    find_package(Eigen3 REQUIRED)
   endif()
 
   include_directories(${EIGEN3_INCLUDE_DIR})
-  
   message(STATUS EIGEN3: ${EIGEN3_INCLUDE_DIR})
 endmacro(configure_eigen)
+
+macro(configure_highfive)
+  message ("Dependency check for HighFive...")
+  set(HIGHFIVE_USE_EIGEN ON)
+  find_package(HighFive REQUIRED)
+endmacro(configure_highfive)
 
 macro(configure_boost)
   message ("Dependency check for boost...")
