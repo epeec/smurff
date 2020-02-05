@@ -242,9 +242,8 @@ SET(SMURFF_FLOAT_TYPE "double" CACHE STRING "Main compute type")
 add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
 message("Using '${SMURFF_FLOAT_TYPE}' as main computing type")
 
-
-configure_eigen_viennacl()
 configure_boost()
+configure_eigen_viennacl()
 configure_openmp()
 
 if(ENABLE_MPI)
