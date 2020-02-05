@@ -16,7 +16,7 @@ OPTION(ENABLE_VERBOSE_COMPILER_LOG "Enable verbose compilation log" OFF)
 OPTION(ENABLE_VERBOSE_LINKER_LOG "Enable verbose linker log" OFF)
 
 OPTION(ENABLE_BOOST "Enable usage of Boost for program options" ON)
-OPTION(ENABLE_BOOST_RANDOM "Enable usage of Boost random library" OFF)
+SET(BOOST_RANDOM_VERSION "" CACHE STRING "Enable boost::random for this specific BOOST version")
 
 OPTION(ENABLE_PYTHON "Enable Python Wrapper" ON)
 OPTION(ENABLE_MPI "Enable MPI Support" ON)

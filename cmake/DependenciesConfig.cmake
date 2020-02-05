@@ -107,9 +107,8 @@ macro(configure_boost)
       set (Boost_USE_MULTITHREADED ON)
 
       # find boost random library - optional
-      if(ENABLE_BOOST_RANDOM)
-        set(NEED_BOOST_VERSION "1.59" CACHE STRING "Look for this specific BOOST version")
-        FIND_PACKAGE(Boost ${NEED_BOOST_VERSION} EXACT COMPONENTS random system program_options REQUIRED)
+      if(${BOOST_RANDOM_VERSION})
+        FIND_PACKAGE(Boost ${BOOST_RANDOM_VERSION} EXACT COMPONENTS random system program_options REQUIRED)
         message(STATUS "Found Boost random library")
         add_definitions(-DUSE_BOOST_RANDOM)
       else()
