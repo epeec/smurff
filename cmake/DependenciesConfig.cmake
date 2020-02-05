@@ -121,6 +121,9 @@ endmacro(configure_eigen)
 macro(configure_boost)
   message ("Dependency check for boost...")
   if(${ENABLE_BOOST})
+      set (Boost_USE_STATIC_LIBS OFF)
+      set (Boost_USE_MULTITHREADED ON)
+
       # find boost random library - optional
       if(ENABLE_BOOST_RANDOM)
         set (BOOST_COMPONENTS random system program_options)
