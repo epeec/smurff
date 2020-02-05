@@ -15,7 +15,6 @@
 #include <string>
 #include <memory>
 
-#include <SmurffCpp/Version.h>
 #include <Utils/Error.h>
 #include <SmurffCpp/Utils/TensorUtils.h>
 #include <SmurffCpp/IO/INIFile.h>

@@ -180,9 +180,9 @@ string(REGEX REPLACE "-[^-]+$"
     "" SMURFF_VERSION_CLEAN
     ${SMURFF_VERSION})
 
-message(STATUS "Cleaned version: ${SMURFF_VERSION_CLEAN}")
+add_definitions(-DSMURFF_VERSION=\"${SMURFF_VERSION}\")
 
-configure_file(cpp/SmurffCpp/Version.cpp.in Version.cpp)
+message(STATUS "Cleaned version: ${SMURFF_VERSION_CLEAN}")
 
 # CONFIGURE BUILD TYPE
 

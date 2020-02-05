@@ -135,8 +135,7 @@ FILE (GLOB SESSION_FILES "Sessions/ISession.h"
 
 source_group ("Sessions" FILES ${SESSION_FILES})
 
-FILE (GLOB HEADER_FILES "Version.h"
-                        "Model.h"
+FILE (GLOB HEADER_FILES "Model.h"
                         "result.h"
                         "StatusItem.h"
                         "VMatrixIterator.hpp"
@@ -147,8 +146,7 @@ FILE (GLOB HEADER_FILES "Version.h"
 
 source_group ("Header Files" FILES ${HEADER_FILES})
 
-FILE (GLOB SOURCE_FILES "Version.cpp"
-                        "Model.cpp"
+FILE (GLOB SOURCE_FILES "Model.cpp"
                         "result.cpp"
                         "StatusItem.cpp"
                         )
