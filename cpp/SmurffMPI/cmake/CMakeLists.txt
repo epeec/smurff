@@ -1,10 +1,5 @@
 if(${MPI_C_FOUND})
 
-#SETUP PROJECT
-set (PROJECT mpi_smurff)
-message("Configuring " ${PROJECT} "...")
-project (${PROJECT})
-
 FILE (GLOB HEADER_FILES "../MPISession.h"
                         "../MPIMacauPrior.h"
                         "../MPIMacauPrior.cpp"
@@ -19,13 +14,13 @@ FILE (GLOB SOURCE_FILES "../mpi_smurff.cpp"
 source_group ("Source Files" FILES ${SOURCE_FILES})
 
 #SETUP OUTPUT
-add_executable (${PROJECT} ${HEADER_FILES} ${SOURCE_FILES})
-set_property(TARGET ${PROJECT} PROPERTY FOLDER "Utils")
+add_executable (mpi_smurff ${HEADER_FILES} ${SOURCE_FILES})
+set_property(TARGET mpi_smurff PROPERTY FOLDER "Utils")
 SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
-install(TARGETS ${PROJECT} RUNTIME DESTINATION bin)
+install(TARGETS mpi_smurff RUNTIME DESTINATION bin)
 
 #LINK LIBRARIES
-target_link_libraries (${PROJECT} smurff-cpp smurff-utils
+target_link_libraries (mpi_smurff smurff-cpp smurff-utils
                                   ${OpenMP_CXX_LIBRARIES}
                                   ${Boost_LIBRARIES}
                                   ${BOOST_RANDOM_LIBRARIES}
@@ -33,8 +28,8 @@ target_link_libraries (${PROJECT} smurff-cpp smurff-utils
                                   ${CMAKE_THREAD_LIBS_INIT}
                                   ${MPI_LIBRARIES})
 
-set_target_properties(${PROJECT} PROPERTIES COMPILE_FLAGS "${MPI_C_COMPILE_FLAGS}")
-set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS "${MPI_C_LINK_FLAGS}")
+set_target_properties(mpi_smurff PROPERTIES COMPILE_FLAGS "${MPI_C_COMPILE_FLAGS}")
+set_target_properties(mpi_smurff PROPERTIES LINK_FLAGS "${MPI_C_LINK_FLAGS}")
 
 #SETUP INCLUDES
 include_directories(..)

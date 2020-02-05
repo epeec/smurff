@@ -1,8 +1,3 @@
-#SETUP PROJECT
-set (PROJECT tests)
-message("Configuring " ${PROJECT} "...")
-project (${PROJECT})
-
 FILE (GLOB HEADER_FILES "../catch.hpp"
                         )
 source_group ("Header Files" FILES ${HEADER_FILES})
@@ -23,13 +18,12 @@ FILE (GLOB SOURCE_FILES "../tests.cpp"
 source_group ("Source Files" FILES ${SOURCE_FILES})
 
 #SETUP OUTPUT
-add_executable (${PROJECT} ${HEADER_FILES} ${SOURCE_FILES})
-set_property(TARGET ${PROJECT} PROPERTY FOLDER "Tests")
+add_executable (tests ${HEADER_FILES} ${SOURCE_FILES})
 SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
-install(TARGETS ${PROJECT} RUNTIME DESTINATION libexec)
+install(TARGETS tests RUNTIME DESTINATION libexec)
 
 #LINK LIBRARIES
-target_link_libraries (${PROJECT} smurff-cpp smurff-utils
+target_link_libraries (tests smurff-cpp smurff-utils
                                   ${OpenMP_CXX_LIBRARIES}
                                   ${ALGEBRA_LIBS}
                                   ${CMAKE_THREAD_LIBS_INIT})

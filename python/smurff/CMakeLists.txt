@@ -1,8 +1,3 @@
-#SETUP PROJECT
-set (PROJECT python_smurff)
-message("Configuring " ${PROJECT} "...")
-project (${PROJECT})
-
 include_directories(${NUMPY_INCLUDE_DIR})
 include_directories(../../cpp)
 include_directories(include)
@@ -20,7 +15,6 @@ add_custom_target( ReplicatePythonSourceTree ALL ${CMAKE_COMMAND} -P
 add_subdirectory( smurff )
 
 configure_file(setup.py.in ${CMAKE_CURRENT_BINARY_DIR}/setup.py)
-
 
 # run python setup.py on install
 install(CODE "MESSAGE(WARNING \"Python wrapper needs ot be installed manually. \\

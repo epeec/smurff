@@ -1,8 +1,6 @@
 cmake_minimum_required (VERSION 3.5.0)
-set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 
-set (PROJECT RootSmurff)
-project (${PROJECT})
+project (Smurff)
 
 MESSAGE("smurff")
 
@@ -330,29 +328,24 @@ endif()
 
 message(STATUS "Creating folder structure...")
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 # libraries
-add_subdirectory (../Utils/cmake libraries/SmurffUtils)
-add_subdirectory (../SmurffCpp/cmake libraries/SmurffCpp)
+add_subdirectory (../Utils/cmake)
+add_subdirectory (../SmurffCpp/cmake)
 
-# utils
-add_subdirectory (../Smurff/cmake utils/Smurff)
+# main executable
+add_subdirectory (../Smurff/cmake)
 
 # MPI
 if(ENABLE_MPI)
-  add_subdirectory (../SmurffMPI/cmake utils/SmurffMPI)
+  add_subdirectory (../SmurffMPI/cmake)
 endif()
 
-
 # tests
-
-add_subdirectory (../Tests/cmake tests/Tests)
+add_subdirectory (../Tests/cmake)
 
 # python
-
 if(ENABLE_PYTHON)
     configure_python()
-    add_subdirectory (../../python/smurff python/Smurff)
+    add_subdirectory (../../python/smurff)
 endif()
 

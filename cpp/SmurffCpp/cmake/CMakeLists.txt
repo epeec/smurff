@@ -1,7 +1,4 @@
 #SETUP PROJECT
-set (PROJECT smurff-cpp)
-message("Configuring " ${PROJECT} "...")
-project (${PROJECT})
 
 FILE (GLOB UTIL_FILES   
                         "../Utils/Distribution.h"
@@ -188,8 +185,6 @@ add_library (${PROJECT} STATIC ${HEADER_FILES}
                                ${SIDE_INFO_FILES}
                                ${PREDICT_FILES}
                                )
-set_property(TARGET ${PROJECT} PROPERTY FOLDER "Libraries")
-
 
 #SETUP INCLUDES
 include_directories(../)

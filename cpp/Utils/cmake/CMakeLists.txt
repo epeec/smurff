@@ -1,8 +1,3 @@
-#SETUP PROJECT
-set (PROJECT smurff-utils)
-message("Configuring " ${PROJECT} "...")
-project (${PROJECT})
-
 FILE (GLOB UTIL_FILES   "../TruncNorm.h"
                         "../InvNormCdf.h"
                         "../counters.h"
@@ -22,9 +17,7 @@ FILE (GLOB UTIL_FILES   "../TruncNorm.h"
 source_group ("Utils" FILES ${UTIL_FILES})
 
 #SETUP OUTPUT
-add_library (${PROJECT} STATIC ${UTIL_FILES})
-set_property(TARGET ${PROJECT} PROPERTY FOLDER "Libraries")
-
+add_library (smurff-utils STATIC ${UTIL_FILES})
 
 #SETUP INCLUDES
 include_directories(../..)
