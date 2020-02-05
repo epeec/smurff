@@ -22,7 +22,7 @@ addons:
 
 script:
     - cd "${TRAVIS_BUILD_DIR}"
-    - cd cpp/cmake && mkdir build && cd build
-    - cmake .. -DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE} -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_INSTALL_PREFIX=$PWD/../prefix -DENABLE_BOOST_RANDOM=ON
+    - mkdir build && cd build
+    - cmake .. -DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE} -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_INSTALL_PREFIX=$PWD/../prefix -DBOOST_RANDOM_VERSION=1.58
     - make -j2
     - ./bin/tests || [ $? -le $ALLOWED_FAILURES ]

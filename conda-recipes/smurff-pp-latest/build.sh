@@ -1,9 +1,7 @@
 #!/bin/bash
 
-pushd cpp/cmake
 rm -rf build 
 mkdir build
-cd build
 
 if [ -n "$OSX_ARCH" ]
 then
@@ -13,7 +11,7 @@ else
 fi
 
 
-cmake ../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX \
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DENABLE_MKL=ON $OPENMP_FLAGS
 
 make -j$CPU_COUNT

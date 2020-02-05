@@ -12,7 +12,6 @@
 
 #include <SmurffCpp/Configs/Config.h>
 #include <Utils/Error.h>
-#include <SmurffCpp/Version.h>
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 

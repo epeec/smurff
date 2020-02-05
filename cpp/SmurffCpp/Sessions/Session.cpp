@@ -5,8 +5,6 @@
 #include <string>
 #include <iomanip>
 
-#include <SmurffCpp/Version.h>
-
 #include <Utils/omp_util.h>
 #include <SmurffCpp/Utils/Distribution.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>

@@ -8,6 +8,8 @@
 #include <vector>
 #include <limits>
 
+#include <boost/version.hpp>
+
 #include <SmurffCpp/Model.h>
 #include <SmurffCpp/result.h>
 
@@ -34,6 +36,7 @@
 #include <SmurffCpp/SideInfo/DenseSideInfo.h>
 
 namespace smurff {
+
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
@@ -276,12 +279,27 @@ TEST_CASE("Benchmark from old 'data.cpp' file", "[!hide]")
 
 TEST_CASE("Test random number generation", "[random]")
 {
-#if defined(USE_BOOST_RANDOM) 
-   #if defined(TEST_RANDOM_OK)
-      INFO("Testing with correct BOOST random - all testcases should pass\n");
-   #else
-      WARN("Wrong BOOST version (should be 1.5x) - expect many failures\n");
-   #endif
+#if defined(USE_BOOST_RANDOM)
+  static_assert ( (BOOST_VERSION / 1000) == 105, "Wrong BOOST version - we need 1.5x" );
+  // Describes the boost version number in XYYYZZ format such that:
+  // (BOOST_VERSION % 100) is the sub-minor version, ((BOOST_VERSION / 100) %
+  // 1000) is the minor version, and (BOOST_VERSION / 100000) is the major
+  // version.
+  std::cout << "Using Boost "
+            << BOOST_VERSION / 100000 << "."     // major version
+            << BOOST_VERSION / 100 % 1000 << "." // minor version
+            << BOOST_VERSION % 100               // patch level
+            << std::endl;
+
+  int boost_version_1_5x = BOOST_VERSION / 1000;
+  if (boost_version_1_5x == 105) // we want 1.5x.y
+  {
+    INFO("Testing with correct BOOST random - all testcases should pass\n");
+  }
+  else
+  {
+    WARN("Wrong BOOST version (should be 1.5x) - expect many failures\n");
+  }
 #else
    WARN("Testing with std random - expect many failures\n");
 #endif
