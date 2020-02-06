@@ -326,10 +326,6 @@ void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem>& actualResultItems, cons
 //       test: sparse matrix
 //     priors: normal normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -361,10 +357,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: normal normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -396,10 +388,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 //       test: sparse matrix
 //     priors: normal normal
 //   aux-data: dense_matrix dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -435,10 +423,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: normal normal
 //   aux-data: dense_matrix dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -476,10 +460,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 //       test: sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -511,10 +491,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 //       test: sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -546,10 +522,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
 //       test: sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: dense_matrix dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -585,10 +557,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 //       test: sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: dense_matrix dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -626,10 +594,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
 //       test: sparse matrix
 //     priors: normalone normalone
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -661,10 +625,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: normalone normalone
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -696,10 +656,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 //       test: sparse matrix
 //     priors: normalone normalone
 //   aux-data: dense_matrix dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -735,10 +691,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: normalone normalone
 //   aux-data: dense_matrix dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -776,10 +728,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 //       test: sparse matrix
 //     priors: macau macau
 //   features: row_side_info_dense_matrix col_side_info_dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -816,10 +764,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: macau macau
 //   features: row_side_info_dense_matrix col_side_info_dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -858,10 +802,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
 //       test: sparse matrix
 //     priors: macauone macauone
 //   features: row_side_info_sparse_matrix col_side_info_sparse_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -899,10 +839,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: macauone macauone
 //   features: row_side_info_sparse_matrix col_side_info_sparse_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -942,10 +878,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
 //       test: sparse matrix
 //     priors: macau normal
 //   features: row_side_info_dense_matrix none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -980,10 +912,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: normal macau
 //   features: none col_side_info_dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -1020,10 +948,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: macau normal
 //   features: col_side_info_dense_matrix row_side_info_dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -1052,10 +976,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: macau normal
 //   features: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -1082,10 +1002,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: macau normal
 //   features: col_side_info_dense_matrix none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -1112,10 +1028,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: normal spikeandslab
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1147,10 +1059,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: spikeandslab normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1182,10 +1090,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 //       test: sparse matrix
 //     priors: normal spikeandslab
 //   aux-data: none dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal spikeandslab --aux-data none <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1219,10 +1123,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: spikeandslab normal
 //   aux-data: dense_matrix none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab normal --aux-data <dense_matrix> none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1258,10 +1158,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 //       test: sparse matrix
 //     priors: macau spikeandslab
 //   features: row_side_info_dense_matrix none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -1296,10 +1192,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: spikeandslab macau
 //   features: none col_side_info_dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -1336,10 +1228,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 //       test: sparse 2D-tensor (matrix)
 //     priors: normal normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prior normal normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1371,10 +1259,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
 //       test: sparse 2D-tensor (matrix)
 //     priors: normal normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --prior normal normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1408,10 +1292,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
 //       test: sparse 2D-tensor (matrix)
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prior spikeandslab spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1443,10 +1323,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
 //       test: sparse 2D-tensor (matrix)
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --prior spikeandslab spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1480,10 +1356,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
 //       test: sparse 2D-tensor (matrix)
 //     priors: normalone normalone
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prior normalone normalone --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1515,10 +1387,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
 //       test: sparse 2D-tensor (matrix)
 //     priors: normalone normalone
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --prior normalone normalone --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1552,10 +1420,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
 //       test: sparse 3D-tensor (matrix)
 //     priors: normal normal normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior normal normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1589,10 +1453,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 //       test: sparse 3D-tensor (matrix)
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior spikeandslab spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1628,10 +1488,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 //       test: sparse 3D-tensor
 //     priors: macau normal
 //   aux-data: row_dense_side_info none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior macau normal --side-info row_dense_side_info none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1669,10 +1525,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 //       test: sparse 3D-tensor
 //     priors: macauone normal
 //   aux-data: row_dense_side_info none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior macauone normal --side-info row_dense_side_info none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
@@ -1718,10 +1570,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 //             2. sparse matrix
 //     priors: normal normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -1773,10 +1621,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normal normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -1828,10 +1672,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normal spikeandslab
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -1883,10 +1723,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normal spikeandslab
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -1938,10 +1774,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: spikeandslab normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -1993,10 +1825,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: spikeandslab normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2048,10 +1876,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2103,10 +1927,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2160,10 +1980,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normal normalone
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2215,10 +2031,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normal normalone
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2270,10 +2082,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normalone normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2325,10 +2133,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normalone normal
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2380,10 +2184,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normalone normalone
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2435,10 +2235,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normalone normalone
 //   aux-data: none none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2492,10 +2288,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: macau macau
 //  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2560,10 +2352,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: macau macau
 //  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2628,10 +2416,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: macauone macauone
 //  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2696,10 +2480,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: macauone macauone
 //  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //
 TEST_CASE(
@@ -2803,10 +2583,6 @@ TEST_CASE("PredictSession/BPMF")
 //       test: sparse matrix
 //     priors: macau normal
 //   features: row_side_info_dense_matrix none
-// num-latent: 4
-//     burnin: 50
-//   nsamples: 50
-//    verbose: 0
 //       seed: 1234
 //     direct: true
 //
@@ -2917,7 +2693,6 @@ TEST_CASE("PredictSession/Features/2"
     config.setTest(testMatrixConfig);
     config.setPriorTypes({PriorTypes::macau, PriorTypes::normal});
     config.addSideInfoConfig(0, rowSideInfoConfig);
-    config.setVerbose(0);
     config.setSaveFreq(1);
 
     std::shared_ptr<ISession> session = SessionFactory::create_session(config);
