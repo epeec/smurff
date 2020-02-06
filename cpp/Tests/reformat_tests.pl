@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 #
 #
-
+use warnings;
 use strict;
 
 sub assert_dead
@@ -17,33 +17,40 @@ sub assert_dead
     }
 }
 
-my %mapping = ();
-my $in_testcase = 0;
-
+my @lines = ();
 while (<>) {
-    my $line = $_;
+    push @lines, $_;
+}
 
-    # std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrix3dConfig = getRowSideInfoDenseMacauPrior3dConfig();
-    if ($in_testcase && /(\w+) = (get\w+SideInfo\w+\(\))/) {
-        $mapping{$1} = $2;
-        next; # do not print anything
-    }
+my %mapping = ();
+for (my $lineno=0; $lineno <= $#lines ; $lineno++) 
+{
 
-    # config.addSideInfoConfig(0, rowSideInfoDenseMatrix3dConfig);
-    if ($in_testcase && /(\w+).addSideInfoConfig\((\d+), (\w+)\);/)
+    my $line = $lines[$lineno];
+
+    # Config tensorRunConfig = getTestsSmurffConfig(trainDenseTensorConfig, testSparseTensorConfig, {PriorTypes::macau, PriorTypes::macau});
+    if ($line =~ /Config (\w+) = getTestsSmurffConfig\((.+)\);/)
     {
         my $config = $1;
-        my $mode = $2;
-        my $sideinfo = $mapping{$3};
-        print("   $config.addSideInfoConfig($mode, $sideinfo);\n");
-        next;
+        my $params = $2;
+        print("   Config $config = getTestsSmurffConfig($params)");
+
+        while ($lines[$lineno+1] =~ /addSideInfoConfig\((.+)\);/)
+        {
+            print(".addSideInfoConfig($1)");
+            $lineno++;
+        }
+        
+        print(";\n");
+    }
+    else
+    {
+        print($line);
     }
 
-    if (/TEST_CASE/)
+    if ($line =~ /TEST_CASE/)
     {
         %mapping = ();
-        $in_testcase = 1;
     }
 
-    print($line)
 }
