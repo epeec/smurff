@@ -37,11 +37,15 @@ my ($train, $test, $priors, $config, $line) = ("dead", "dead", "dead", "dead", "
 while (<>) {
     $line = $_;
 
-    if (/onfig.setTrain/) {
+    if (/onfig.setTrain\((\w+)\)/) {
+        assert_dead($train, "train");
+        $train = $1;
         next; # do not print anything
     }
 
-    if (/onfig.setTest/) { 
+    if (/onfig.setTest\((\w+)\)/) { 
+        assert_dead($test, "test");
+        $test = $1;
         next; # do not print anything
     }
 
@@ -55,22 +59,10 @@ while (<>) {
     if (/onfig.setPriorTypes\((.+)\);/) { 
         assert_dead($priors, "priors");
         $priors = $1;
-        print("   Config config = getTestsSmurffConfig($train, $test, $priors);\n");
+        print("   Config $config = getTestsSmurffConfig($train, $test, $priors);\n");
         ($train, $test, $priors, $config, $line) = ("dead", "dead", "dead", "dead", "dead");
         next; 
     }
  
-    if (/onfig = (getTrain\w+\(\));/) {
-        assert_dead($train, "train");
-        $train = $1;
-        next;
-    }
-
-    if (/onfig = (getTest\w+\(\));/) {
-        assert_dead($test, "test");
-        $test = $1;
-        next;
-    }
-
     print($line)
 }
