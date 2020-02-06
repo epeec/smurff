@@ -37,7 +37,7 @@ cdef extern from "<SmurffCpp/Configs/Config.h>" namespace "smurff":
         void setTest(shared_ptr[TensorConfig] value)
 
         #-- sideinfo
-        vector[shared_ptr[SideInfoConfig]]& addSideInfoConfig(int mode, shared_ptr[SideInfoConfig] config)
+        Config& addSideInfoConfig(int mode, shared_ptr[SideInfoConfig] config)
 
         #-- aux data
         vector[shared_ptr[TensorConfig]]& addAuxData(shared_ptr[TensorConfig])
