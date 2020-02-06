@@ -34,6 +34,12 @@ my ($train, $test, $priors, $config, $line) = ("dead", "dead", "dead", "dead", "
 #    runSession(config, 741);
 
 
+#   std::shared_ptr<MatrixConfig> trainSparseMatrixConfig = getTrainSparseMatrixConfig();
+#   std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
+#
+#   Config config = getTestsSmurffConfig(trainSparseMatrixConfig, testSparseMatrixConfig, {PriorTypes::normal, PriorTypes::normal});
+
+
 while (<>) {
     $line = $_;
 
