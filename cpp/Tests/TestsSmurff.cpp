@@ -1293,6 +1293,22 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
 
 //=================================================================
 
+void runSession(const Config &config, int nr)
+{
+   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
+   session->run();
+
+   double actualRmseAvg = session->getRmseAvg();
+   const std::vector<ResultItem> & actualResults = session->getResultItems();
+
+   PRINT_ACTUAL_RESULTS(nr)
+   double &expectedRmseAvg = expectedResults[nr].rmseAvg;
+   auto &expectedResultItems = expectedResults[nr].resultItems;
+
+   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+}
+
 //
 //      train: dense 2D-tensor (matrix)
 //       test: sparse 2D-tensor (matrix)
