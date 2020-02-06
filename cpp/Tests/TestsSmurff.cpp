@@ -64,12 +64,12 @@ static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 Config getTestsSmurffConfig()
 {
    Config config;
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
    config.setRandomSeed(1234);
    config.setNumThreads(1);
+   config.setNumLatent(4);
    return config;
 }
 
@@ -342,7 +342,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -383,7 +382,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setTrain(trainSparseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -428,7 +426,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -473,7 +470,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -516,7 +512,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -557,7 +552,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
    config.setTrain(trainSparseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -602,7 +596,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -647,7 +640,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -690,7 +682,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -731,7 +722,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setTrain(trainSparseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -776,7 +766,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -821,7 +810,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -869,7 +857,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setPriorTypes({PriorTypes::macau, PriorTypes::macau});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -915,7 +902,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
    config.setPriorTypes({PriorTypes::macau, PriorTypes::macau});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -964,7 +950,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setPriorTypes({PriorTypes::macauone, PriorTypes::macauone});
    config.addSideInfoConfig(0, rowSideInfoSparseMatrixConfig);
    config.addSideInfoConfig(1, colSideInfoSparseMatrixConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1011,7 +996,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
    config.setPriorTypes({PriorTypes::macauone, PriorTypes::macauone});
    config.addSideInfoConfig(0, rowSideInfoSparseMatrixConfig);
    config.addSideInfoConfig(1, colSideInfoSparseMatrixConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1057,7 +1041,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::macau, PriorTypes::normal});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1101,7 +1084,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::macau});
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1149,7 +1131,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    config.setPriorTypes({PriorTypes::macau, PriorTypes::normal});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1185,7 +1166,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setTest(testSparseMatrixConfig);
    config.addSideInfoConfig(1, rowSideInfoDenseMatrixConfig); // added to wrong mode
    config.setPriorTypes({PriorTypes::macau, PriorTypes::normal});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1221,7 +1201,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::macau, PriorTypes::normal});
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1254,7 +1233,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::spikeandslab});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1295,7 +1273,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1338,7 +1315,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1381,7 +1357,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1427,7 +1402,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::macau, PriorTypes::spikeandslab});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1471,7 +1445,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::macau});
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1514,7 +1487,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1555,7 +1527,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1598,7 +1569,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1639,7 +1609,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1682,7 +1651,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1723,7 +1691,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1766,7 +1733,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal, PriorTypes::normal});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1809,7 +1775,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1856,7 +1821,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::macau, PriorTypes::normal, PriorTypes::normal});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrix3dConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -1903,7 +1867,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::macauone, PriorTypes::normal, PriorTypes::normal});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrix3dConfig);
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -2988,7 +2951,6 @@ TEST_CASE("PredictSession/BPMF")
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-   config.setNumLatent(4);
    config.setBurnin(50);
    config.setNSamples(50);
    config.setVerbose(false);
@@ -3050,7 +3012,6 @@ TEST_CASE("PredictSession/Features/1"
     config.setTest(testSparseMatrixConfig);
     config.setPriorTypes({PriorTypes::macau, PriorTypes::normal});
     config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
-    config.setNumLatent(4);
     config.setBurnin(50);
     config.setNSamples(50);
     config.setVerbose(false);
@@ -3152,7 +3113,6 @@ TEST_CASE("PredictSession/Features/2"
     config.setTest(testMatrixConfig);
     config.setPriorTypes({PriorTypes::macau, PriorTypes::normal});
     config.addSideInfoConfig(0, rowSideInfoConfig);
-    config.setNumLatent(4);
     config.setBurnin(50);
     config.setNSamples(50);
     config.setVerbose(0);
