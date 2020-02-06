@@ -36,7 +36,8 @@ void printActualResults(int nr, double actualRmseAvg, const std::vector<smurff::
     }
 
     os << "      }\n"
-       << "  },\n";
+       << "  }\n"
+       << "},\n";
 }
 
 
