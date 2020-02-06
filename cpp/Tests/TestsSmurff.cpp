@@ -1548,7 +1548,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
 
-#if 1
+#if 0
    double actualRmseAvg = session->getRmseAvg();
    const std::vector<ResultItem> & actualResults = session->getResultItems();
 
