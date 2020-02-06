@@ -17,58 +17,36 @@ sub assert_dead
     }
 }
 
-
-my ($train, $test, $priors, $config, $line) = ("dead", "dead", "dead", "dead", "dead");
-
-#    std::shared_ptr<MatrixConfig> trainSparseMatrixConfig = getTrainSparseMatrixConfig();
-#    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-#    std::shared_ptr<TensorConfig> rowAuxDataDenseMatrixConfig = getRowAuxDataDenseMatrixConfig();
-#    std::shared_ptr<TensorConfig> colAuxDataDenseMatrixConfig = getColAuxDataDenseMatrixConfig();
-# 
-#    Config config = getTestsSmurffConfig();
-#    config.setTrain(trainSparseMatrixConfig);
-#    config.setTest(testSparseMatrixConfig);
-#    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-#    config.addAuxData({ rowAuxDataDenseMatrixConfig });
-#    config.addAuxData({ colAuxDataDenseMatrixConfig });
-#    runSession(config, 741);
-
-
-#   std::shared_ptr<MatrixConfig> trainSparseMatrixConfig = getTrainSparseMatrixConfig();
-#   std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-#
-#   Config config = getTestsSmurffConfig(trainSparseMatrixConfig, testSparseMatrixConfig, {PriorTypes::normal, PriorTypes::normal});
-
+my %mapping = ();
 
 while (<>) {
-    $line = $_;
+    my $line = $_;
 
-    if (/onfig.setTrain\((\w+)\)/) {
-        assert_dead($train, "train");
-        $train = $1;
+    if (/(\w+) = (getTrain\w+\(\))/) {
+        $mapping{$1} = $2;
         next; # do not print anything
     }
 
-    if (/onfig.setTest\((\w+)\)/) { 
-        assert_dead($test, "test");
-        $test = $1;
+    if (/(\w+) = (getTest\w+\(\))/) {
+        $mapping{$1} = $2;
         next; # do not print anything
     }
 
-    if (/Config (\w+) = getTestsSmurffConfig\(\);/)
+    # Config tensorRunConfig = getTestsSmurffConfig(trainDenseTensorConfig, testSparseTensorConfig, {PriorTypes::macau, PriorTypes::macau});
+    if (/Config (\w+) = getTestsSmurffConfig\((\w+), (\w+), (.+)\);/)
     {
-        assert_dead($config, "config");
-        $config = $1;
+        my $config = $1;
+        my $train = $mapping{$2};
+        my $test = $mapping{$3};
+        my $priors = $4;
+        print("   Config $config = getTestsSmurffConfig($train, $test, $priors);\n");
         next;
     }
 
-    if (/onfig.setPriorTypes\((.+)\);/) { 
-        assert_dead($priors, "priors");
-        $priors = $1;
-        print("   Config $config = getTestsSmurffConfig($train, $test, $priors);\n");
-        ($train, $test, $priors, $config, $line) = ("dead", "dead", "dead", "dead", "dead");
-        next; 
+    if (/TEST_CASE/)
+    {
+        %mapping = ();
     }
- 
+
     print($line)
 }
