@@ -40,7 +40,7 @@ cdef extern from "<SmurffCpp/Configs/Config.h>" namespace "smurff":
         Config& addSideInfoConfig(int mode, shared_ptr[SideInfoConfig] config)
 
         #-- aux data
-        vector[shared_ptr[TensorConfig]]& addAuxData(shared_ptr[TensorConfig])
+        Config& addAuxData(shared_ptr[TensorConfig])
 
         #-- propagated posterior
         void addPropagatedPosterior(int mode, shared_ptr[MatrixConfig] mu, shared_ptr[MatrixConfig] Lambda)

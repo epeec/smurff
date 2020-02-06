@@ -207,10 +207,10 @@ public:
       return m_auxData;
    }
 
-   const std::vector< std::shared_ptr<TensorConfig> >& addAuxData(std::shared_ptr<TensorConfig> c)
+   Config& addAuxData(std::shared_ptr<TensorConfig> c)
    {
       m_auxData.push_back(c);
-      return m_auxData;
+      return *this;
    }
 
    const std::map<int, std::vector<std::shared_ptr<SideInfoConfig> > >& getSideInfoConfigs() const
