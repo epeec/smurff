@@ -996,9 +996,7 @@ TEST_CASE(
 )
 {
    Config matrixSessionConfig = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normal, PriorTypes::normal});
-
    Config tensorSessionConfig = getTestsSmurffConfig(getTrainSparseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::normal, PriorTypes::normal});
-
    compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
@@ -1038,9 +1036,7 @@ TEST_CASE(
 )
 {
    Config matrixSessionConfig = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normal, PriorTypes::spikeandslab});
-
    Config tensorSessionConfig = getTestsSmurffConfig(getTrainSparseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::normal, PriorTypes::spikeandslab});
-
    compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
@@ -1162,9 +1158,7 @@ TEST_CASE(
 )
 {
    Config matrixSessionConfig = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normal, PriorTypes::normalone});
-
    Config tensorSessionConfig = getTestsSmurffConfig(getTrainSparseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::normal, PriorTypes::normalone});
-
    compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
@@ -1184,9 +1178,7 @@ TEST_CASE(
 )
 {
    Config matrixSessionConfig = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normalone, PriorTypes::normal});
-
    Config tensorSessionConfig = getTestsSmurffConfig(getTrainDenseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::normalone, PriorTypes::normal});
-
    compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
@@ -1206,9 +1198,7 @@ TEST_CASE(
 )
 {
    Config matrixSessionConfig = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normalone, PriorTypes::normal});
-
    Config tensorSessionConfig = getTestsSmurffConfig(getTrainSparseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::normalone, PriorTypes::normal});
-
    compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
@@ -1228,9 +1218,7 @@ TEST_CASE(
 )
 {
    Config matrixSessionConfig = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normalone, PriorTypes::normalone});
-
    Config tensorSessionConfig = getTestsSmurffConfig(getTrainDenseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::normalone, PriorTypes::normalone});
-
    compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
@@ -1250,9 +1238,7 @@ TEST_CASE(
 )
 {
    Config matrixSessionConfig = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normalone, PriorTypes::normalone});
-
    Config tensorSessionConfig = getTestsSmurffConfig(getTrainSparseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::normalone, PriorTypes::normalone});
-
    compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
