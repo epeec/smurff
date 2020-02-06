@@ -346,7 +346,7 @@ void runSession(Config &config, int nr)
    REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
-void compareSessions(Config &matrixSessionConfig, Config &tensorSessionConfig)
+void    compareSessions(Config &matrixSessionConfig, Config &tensorSessionConfig)
 {
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -1216,13 +1216,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1254,13 +1248,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1292,13 +1280,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::spikeandslab});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1330,13 +1312,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::spikeandslab});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1368,13 +1344,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1406,13 +1376,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1444,13 +1408,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1482,13 +1440,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //==========================================================================
@@ -1522,13 +1474,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normalone});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1560,13 +1506,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normalone});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1598,13 +1538,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normal});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1636,13 +1570,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normal});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1674,13 +1602,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //
@@ -1712,13 +1634,7 @@ TEST_CASE(
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
 
-   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-   matrixSession->run();
-   tensorSession->run();
-
-   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
 //==========================================================================
