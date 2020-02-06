@@ -346,6 +346,17 @@ void runSession(Config &config, int nr)
    REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
+void compareSessions(Config &matrixSessionConfig, Config &tensorSessionConfig)
+{
+   std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
+   std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
+   matrixSession->run();
+   tensorSession->run();
+
+   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
+   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+}
+
 //
 //      train: dense matrix
 //       test: sparse matrix
