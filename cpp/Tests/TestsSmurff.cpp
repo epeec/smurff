@@ -326,7 +326,6 @@ void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem>& actualResultItems, cons
 //       test: sparse matrix
 //     priors: normal normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -357,7 +356,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: normal normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -388,7 +386,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 //       test: sparse matrix
 //     priors: normal normal
 //   aux-data: dense_matrix dense_matrix
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -423,7 +420,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: normal normal
 //   aux-data: dense_matrix dense_matrix
-//       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -460,7 +456,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 //       test: sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -491,7 +486,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 //       test: sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -522,7 +516,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
 //       test: sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: dense_matrix dense_matrix
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -557,7 +550,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 //       test: sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: dense_matrix dense_matrix
-//       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -594,7 +586,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
 //       test: sparse matrix
 //     priors: normalone normalone
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -625,7 +616,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: normalone normalone
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -656,7 +646,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 //       test: sparse matrix
 //     priors: normalone normalone
 //   aux-data: dense_matrix dense_matrix
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -691,7 +680,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: normalone normalone
 //   aux-data: dense_matrix dense_matrix
-//       seed: 1234
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data <dense_matrix> <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -728,7 +716,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 //       test: sparse matrix
 //     priors: macau macau
 //   features: row_side_info_dense_matrix col_side_info_dense_matrix
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau macau --aux-data <row_side_info_dense_matrix> <col_side_info_dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -764,7 +751,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: macau macau
 //   features: row_side_info_dense_matrix col_side_info_dense_matrix
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior macau macau --aux-data <row_side_info_dense_matrix> <col_side_info_dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -802,7 +788,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
 //       test: sparse matrix
 //     priors: macauone macauone
 //   features: row_side_info_sparse_matrix col_side_info_sparse_matrix
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macauone macauone --aux-data <row_side_info_sparse_matrix> <col_side_info_sparse_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -839,7 +824,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: macauone macauone
 //   features: row_side_info_sparse_matrix col_side_info_sparse_matrix
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior macauone macauone --aux-data <row_side_info_sparse_matrix> <col_side_info_sparse_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -878,7 +862,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
 //       test: sparse matrix
 //     priors: macau normal
 //   features: row_side_info_dense_matrix none
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau normal --aux-data <row_side_info_dense_matrix> none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -912,7 +895,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: normal macau
 //   features: none col_side_info_dense_matrix
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal macau --aux-data none <col_side_info_dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -948,7 +930,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: macau normal
 //   features: col_side_info_dense_matrix row_side_info_dense_matrix
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau normal --aux-data <col_side_info_dense_matrix> <row_side_info_dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -976,7 +957,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: macau normal
 //   features: none none
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -1002,7 +982,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: macau normal
 //   features: col_side_info_dense_matrix none
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau normal --aux-data <col_side_info_dense_matrix> none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -1028,7 +1007,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: normal spikeandslab
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -1059,7 +1037,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: spikeandslab normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -1090,7 +1067,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 //       test: sparse matrix
 //     priors: normal spikeandslab
 //   aux-data: none dense_matrix
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal spikeandslab --aux-data none <dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -1123,7 +1099,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 //       test: sparse matrix
 //     priors: spikeandslab normal
 //   aux-data: dense_matrix none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab normal --aux-data <dense_matrix> none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_MATRIX_TESTS)
@@ -1158,7 +1133,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 //       test: sparse matrix
 //     priors: macau spikeandslab
 //   features: row_side_info_dense_matrix none
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau spikeandslab --aux-data <row_side_info_dense_matrix> none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -1192,7 +1166,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 //       test: sparse matrix
 //     priors: spikeandslab macau
 //   features: none col_side_info_dense_matrix
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab macau --aux-data none <col_side_info_dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
@@ -1228,7 +1201,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 //       test: sparse 2D-tensor (matrix)
 //     priors: normal normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prior normal normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_TWO_DIMENTIONAL_TENSOR_TESTS)
@@ -1259,7 +1231,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
 //       test: sparse 2D-tensor (matrix)
 //     priors: normal normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --prior normal normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_TWO_DIMENTIONAL_TENSOR_TESTS)
@@ -1292,7 +1263,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
 //       test: sparse 2D-tensor (matrix)
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prior spikeandslab spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_TWO_DIMENTIONAL_TENSOR_TESTS)
@@ -1323,7 +1293,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
 //       test: sparse 2D-tensor (matrix)
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --prior spikeandslab spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_TWO_DIMENTIONAL_TENSOR_TESTS)
@@ -1356,7 +1325,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
 //       test: sparse 2D-tensor (matrix)
 //     priors: normalone normalone
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prior normalone normalone --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_TWO_DIMENTIONAL_TENSOR_TESTS)
@@ -1387,7 +1355,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
 //       test: sparse 2D-tensor (matrix)
 //     priors: normalone normalone
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --prior normalone normalone --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_TWO_DIMENTIONAL_TENSOR_TESTS)
@@ -1420,7 +1387,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
 //       test: sparse 3D-tensor (matrix)
 //     priors: normal normal normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior normal normal --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_THREE_DIMENTIONAL_TENSOR_TESTS)
@@ -1453,7 +1419,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 //       test: sparse 3D-tensor (matrix)
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior spikeandslab spikeandslab --aux-data none none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_THREE_DIMENTIONAL_TENSOR_TESTS)
@@ -1488,7 +1453,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 //       test: sparse 3D-tensor
 //     priors: macau normal
 //   aux-data: row_dense_side_info none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior macau normal --side-info row_dense_side_info none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_THREE_DIMENTIONAL_TENSOR_TESTS)
@@ -1525,7 +1489,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 //       test: sparse 3D-tensor
 //     priors: macauone normal
 //   aux-data: row_dense_side_info none
-//       seed: 1234
 //
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior macauone normal --side-info row_dense_side_info none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
    , TAG_THREE_DIMENTIONAL_TENSOR_TESTS)
@@ -1570,7 +1533,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 //             2. sparse matrix
 //     priors: normal normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -1581,29 +1543,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainDenseMatrixConfig = getTrainDenseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainDenseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainDenseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -1621,7 +1571,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normal normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -1632,29 +1581,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainSparseMatrixConfig = getTrainSparseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainSparseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainSparseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -1672,7 +1609,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normal spikeandslab
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -1683,29 +1619,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainDenseMatrixConfig = getTrainDenseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainDenseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::spikeandslab});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainDenseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::spikeandslab});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -1723,7 +1647,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normal spikeandslab
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -1734,29 +1657,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainSparseMatrixConfig = getTrainSparseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainSparseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::spikeandslab});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainSparseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::spikeandslab});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -1774,7 +1685,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: spikeandslab normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -1785,29 +1695,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainDenseMatrixConfig = getTrainDenseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainDenseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainDenseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -1825,7 +1723,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: spikeandslab normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -1836,29 +1733,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainSparseMatrixConfig = getTrainSparseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainSparseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainSparseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -1876,7 +1761,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -1887,29 +1771,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainDenseMatrixConfig = getTrainDenseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainDenseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainDenseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -1927,7 +1799,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: spikeandslab spikeandslab
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -1938,29 +1809,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainSparseMatrixConfig = getTrainSparseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainSparseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainSparseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -1980,7 +1839,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normal normalone
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -1991,29 +1849,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainDenseMatrixConfig = getTrainDenseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainDenseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normalone});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainDenseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normalone});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2031,7 +1877,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normal normalone
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -2042,29 +1887,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainSparseMatrixConfig = getTrainSparseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainSparseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normalone});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainSparseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normal, PriorTypes::normalone});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2082,7 +1915,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normalone normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -2093,29 +1925,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainDenseMatrixConfig = getTrainDenseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainDenseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normal});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainDenseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normal});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2133,7 +1953,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normalone normal
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -2144,29 +1963,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainSparseMatrixConfig = getTrainSparseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainSparseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normal});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainSparseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normal});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2184,7 +1991,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normalone normalone
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -2195,29 +2001,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainDenseMatrixConfig = getTrainDenseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainDenseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainDenseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2235,7 +2029,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: normalone normalone
 //   aux-data: none none
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -2246,29 +2039,17 @@ TEST_CASE(
 {
    std::shared_ptr<MatrixConfig> trainSparseMatrixConfig = getTrainSparseMatrixConfig();
    std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   Config matrixSessionConfig;
+   Config matrixSessionConfig = getTestsSmurffConfig();
    matrixSessionConfig.setTrain(trainSparseMatrixConfig);
    matrixSessionConfig.setTest(testSparseMatrixConfig);
    matrixSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-   matrixSessionConfig.setNumLatent(4);
-   matrixSessionConfig.setBurnin(50);
-   matrixSessionConfig.setNSamples(50);
-   matrixSessionConfig.setVerbose(false);
-   matrixSessionConfig.setRandomSeed(1234);
-   matrixSessionConfig.setNumThreads(1);
 
    std::shared_ptr<TensorConfig> trainSparseTensorConfig = getTrainSparseTensor2dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor2dConfig();
-   Config tensorSessionConfig;
+   Config tensorSessionConfig = getTestsSmurffConfig();
    tensorSessionConfig.setTrain(trainSparseTensorConfig);
    tensorSessionConfig.setTest(testSparseTensorConfig);
    tensorSessionConfig.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-   tensorSessionConfig.setNumLatent(4);
-   tensorSessionConfig.setBurnin(50);
-   tensorSessionConfig.setNSamples(50);
-   tensorSessionConfig.setVerbose(false);
-   tensorSessionConfig.setRandomSeed(1234);
-   tensorSessionConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
@@ -2288,7 +2069,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: macau macau
 //  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -2303,31 +2083,19 @@ TEST_CASE(
    std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig = getRowSideInfoDenseConfig();
    std::shared_ptr<SideInfoConfig> colSideInfoDenseMatrixConfig = getColSideInfoDenseConfig();
 
-   Config tensorRunConfig;
+   Config tensorRunConfig = getTestsSmurffConfig();
    tensorRunConfig.setTrain(trainDenseTensorConfig);
    tensorRunConfig.setTest(testSparseTensorConfig);
    tensorRunConfig.setPriorTypes({PriorTypes::macau, PriorTypes::macau});
    tensorRunConfig.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    tensorRunConfig.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   tensorRunConfig.setNumLatent(4);
-   tensorRunConfig.setBurnin(50);
-   tensorRunConfig.setNSamples(50);
-   tensorRunConfig.setVerbose(false);
-   tensorRunConfig.setRandomSeed(1234);
-   tensorRunConfig.setNumThreads(1);
 
-   Config matrixRunConfig;
+   Config matrixRunConfig = getTestsSmurffConfig();
    matrixRunConfig.setTrain(trainDenseMatrixConfig);
    matrixRunConfig.setTest(testSparseMatrixConfig);
    matrixRunConfig.setPriorTypes({PriorTypes::macau, PriorTypes::macau});
    matrixRunConfig.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    matrixRunConfig.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   matrixRunConfig.setNumLatent(4);
-   matrixRunConfig.setBurnin(50);
-   matrixRunConfig.setNSamples(50);
-   matrixRunConfig.setVerbose(false);
-   matrixRunConfig.setRandomSeed(1234);
-   matrixRunConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> tensorRunSession = SessionFactory::create_session(tensorRunConfig);
    tensorRunSession->run();
@@ -2352,7 +2120,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: macau macau
 //  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -2367,31 +2134,19 @@ TEST_CASE(
    std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig = getRowSideInfoDenseConfig();
    std::shared_ptr<SideInfoConfig> colSideInfoDenseMatrixConfig = getColSideInfoDenseConfig();
 
-   Config tensorRunConfig;
+   Config tensorRunConfig = getTestsSmurffConfig();
    tensorRunConfig.setTrain(trainSparseTensorConfig);
    tensorRunConfig.setTest(testSparseTensorConfig);
    tensorRunConfig.setPriorTypes({PriorTypes::macau, PriorTypes::macau});
    tensorRunConfig.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    tensorRunConfig.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   tensorRunConfig.setNumLatent(4);
-   tensorRunConfig.setBurnin(50);
-   tensorRunConfig.setNSamples(50);
-   tensorRunConfig.setVerbose(false);
-   tensorRunConfig.setRandomSeed(1234);
-   tensorRunConfig.setNumThreads(1);
 
-   Config matrixRunConfig;
+   Config matrixRunConfig = getTestsSmurffConfig();
    matrixRunConfig.setTrain(trainSparseMatrixConfig);
    matrixRunConfig.setTest(testSparseMatrixConfig);
    matrixRunConfig.setPriorTypes({PriorTypes::macau, PriorTypes::macau});
    matrixRunConfig.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    matrixRunConfig.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   matrixRunConfig.setNumLatent(4);
-   matrixRunConfig.setBurnin(50);
-   matrixRunConfig.setNSamples(50);
-   matrixRunConfig.setVerbose(false);
-   matrixRunConfig.setRandomSeed(1234);
-   matrixRunConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> tensorRunSession = SessionFactory::create_session(tensorRunConfig);
    tensorRunSession->run();
@@ -2416,7 +2171,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: macauone macauone
 //  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -2431,31 +2185,19 @@ TEST_CASE(
    std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig = getRowSideInfoDenseConfig();
    std::shared_ptr<SideInfoConfig> colSideInfoDenseMatrixConfig = getColSideInfoDenseConfig();
 
-   Config tensorRunConfig;
+   Config tensorRunConfig = getTestsSmurffConfig();
    tensorRunConfig.setTrain(trainDenseTensorConfig);
    tensorRunConfig.setTest(testSparseTensorConfig);
    tensorRunConfig.setPriorTypes({PriorTypes::macauone, PriorTypes::macauone});
    tensorRunConfig.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    tensorRunConfig.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   tensorRunConfig.setNumLatent(4);
-   tensorRunConfig.setBurnin(50);
-   tensorRunConfig.setNSamples(50);
-   tensorRunConfig.setVerbose(false);
-   tensorRunConfig.setRandomSeed(1234);
-   tensorRunConfig.setNumThreads(1);
 
-   Config matrixRunConfig;
+   Config matrixRunConfig = getTestsSmurffConfig();
    matrixRunConfig.setTrain(trainDenseMatrixConfig);
    matrixRunConfig.setTest(testSparseMatrixConfig);
    matrixRunConfig.setPriorTypes({PriorTypes::macauone, PriorTypes::macauone});
    matrixRunConfig.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    matrixRunConfig.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   matrixRunConfig.setNumLatent(4);
-   matrixRunConfig.setBurnin(50);
-   matrixRunConfig.setNSamples(50);
-   matrixRunConfig.setVerbose(false);
-   matrixRunConfig.setRandomSeed(1234);
-   matrixRunConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> tensorRunSession = SessionFactory::create_session(tensorRunConfig);
    tensorRunSession->run();
@@ -2480,7 +2222,6 @@ TEST_CASE(
 //             2. sparse matrix
 //     priors: macauone macauone
 //  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-//       seed: 1234
 //
 TEST_CASE(
    "matrix vs 2D-tensor"
@@ -2495,31 +2236,19 @@ TEST_CASE(
    std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig = getRowSideInfoDenseConfig();
    std::shared_ptr<SideInfoConfig> colSideInfoDenseMatrixConfig = getColSideInfoDenseConfig();
 
-   Config tensorRunConfig;
+   Config tensorRunConfig = getTestsSmurffConfig();
    tensorRunConfig.setTrain(trainSparseTensorConfig);
    tensorRunConfig.setTest(testSparseTensorConfig);
    tensorRunConfig.setPriorTypes({PriorTypes::macauone, PriorTypes::macauone});
    tensorRunConfig.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    tensorRunConfig.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   tensorRunConfig.setNumLatent(4);
-   tensorRunConfig.setBurnin(50);
-   tensorRunConfig.setNSamples(50);
-   tensorRunConfig.setVerbose(false);
-   tensorRunConfig.setRandomSeed(1234);
-   tensorRunConfig.setNumThreads(1);
 
-   Config matrixRunConfig;
+   Config matrixRunConfig = getTestsSmurffConfig();
    matrixRunConfig.setTrain(trainSparseMatrixConfig);
    matrixRunConfig.setTest(testSparseMatrixConfig);
    matrixRunConfig.setPriorTypes({PriorTypes::macauone, PriorTypes::macauone});
    matrixRunConfig.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    matrixRunConfig.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   matrixRunConfig.setNumLatent(4);
-   matrixRunConfig.setBurnin(50);
-   matrixRunConfig.setNSamples(50);
-   matrixRunConfig.setVerbose(false);
-   matrixRunConfig.setRandomSeed(1234);
-   matrixRunConfig.setNumThreads(1);
 
    std::shared_ptr<ISession> tensorRunSession = SessionFactory::create_session(tensorRunConfig);
    tensorRunSession->run();
@@ -2583,7 +2312,6 @@ TEST_CASE("PredictSession/BPMF")
 //       test: sparse matrix
 //     priors: macau normal
 //   features: row_side_info_dense_matrix none
-//       seed: 1234
 //     direct: true
 //
 TEST_CASE("PredictSession/Features/1"
