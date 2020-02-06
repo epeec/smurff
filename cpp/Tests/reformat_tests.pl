@@ -17,28 +17,25 @@ sub assert_dead
     }
 }
 
-my %mapping = ();
+my $config = "";
 my $in_testcase = 0;
 
 while (<>) {
     my $line = $_;
 
-    if ($in_testcase && /(\w+) = (get\w+AuxData\w+\(\))/) {
-        $mapping{$1} = $2;
-        next; # do not print anything
+    if ($in_testcase && /Config config = (genConfig.+);/) {
+        $config = $1;
+        next;
     }
 
-    if ($in_testcase && /addAuxData/)
+    if ($in_testcase && /runAndCheck/)
     {
-        while (my ($from, $to) = each (%mapping))
-        {
-            $line =~ s/$from/$to/g;
-        }
+        $line =~ s/config/$config/g;
     }
 
     if (/TEST_CASE/)
     {
-        %mapping = ();
+        $config = "";
         $in_testcase = 1;
     }
 
