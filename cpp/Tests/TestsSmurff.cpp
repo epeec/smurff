@@ -713,30 +713,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    runSession(config, 1305);
 }
 
-//test throw - normal prior should not have side info
-
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: macau normal
-//   features: col_side_info_dense_matrix row_side_info_dense_matrix
-//     direct: true
-//
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau normal --aux-data <col_side_info_dense_matrix> <row_side_info_dense_matrix> --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234 --direct"
-   , TAG_MATRIX_TESTS)
-{
-   std::shared_ptr<MatrixConfig> trainDenseMatrixConfig = getTrainDenseMatrixConfig();
-   std::shared_ptr<MatrixConfig> testSparseMatrixConfig = getTestSparseMatrixConfig();
-   std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig = getRowSideInfoDenseConfig();
-   std::shared_ptr<SideInfoConfig> colSideInfoDenseMatrixConfig = getColSideInfoDenseConfig();
-
-   Config config = getTestsSmurffConfig(trainDenseMatrixConfig, testSparseMatrixConfig, {PriorTypes::macau, PriorTypes::normal});
-   config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-   config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
-
-   REQUIRE_THROWS(SessionFactory::create_session(config));
-}
-
 //test throw - macau prior should have side info
 
 //
