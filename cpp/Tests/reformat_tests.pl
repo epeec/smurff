@@ -35,9 +35,9 @@ for (my $lineno=0; $lineno <= $#lines ; $lineno++)
         my $params = $2;
         print("   Config $config = getTestsSmurffConfig($params)");
 
-        while ($lines[$lineno+1] =~ /addSideInfoConfig\((.+)\);/)
+        while ($lines[$lineno+1] =~ /addAuxData\((.+)\);/)
         {
-            print(".addSideInfoConfig($1)");
+            print(".addAuxData($1)");
             $lineno++;
         }
         
