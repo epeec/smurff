@@ -45,7 +45,13 @@ void printActualResults(int nr, double actualRmseAvg, const std::vector<smurff::
 
 using namespace smurff;
 
+struct ExpectedResult {
+   double rmseAvg;
+   std::vector<ResultItem> resultItems;
+};
+std::map<int, ExpectedResult> expectedResults = {
 #include "TestsSmurff_ExpectedResults.h"
+};
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
