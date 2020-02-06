@@ -1,4 +1,5 @@
 #include <fstream>
+#include <cstdio>
 
 #include "catch.hpp"
 
@@ -19,7 +20,17 @@
 
 void printActualResults(int nr, double actualRmseAvg,
                         const std::vector<smurff::ResultItem> &actualResults) {
-  std::ofstream os("TestsSmurff_ExpectedResults.h", std::ofstream::app);
+
+  static const char *fname = "TestsSmurff_ExpectedResults.h";
+  static bool cleanup = true;
+
+  if (cleanup)
+  {
+    std::remove(fname);
+    cleanup = false;
+  }
+
+  std::ofstream os(fname, std::ofstream::app);
 
   os << "{ " << nr << ",\n"
      << "  { " << std::fixed << std::setprecision(16) << actualRmseAvg << ","
@@ -40,9 +51,8 @@ void printActualResults(int nr, double actualRmseAvg,
      << "},\n";
 }
 
-//#define PRINT_ACTUAL_RESULTS(nr)
-#define PRINT_ACTUAL_RESULTS(nr)                                               \
-  printActualResults(nr, actualRmseAvg, actualResults);
+#define PRINT_ACTUAL_RESULTS(nr)
+//#define PRINT_ACTUAL_RESULTS(nr) printActualResults(nr, actualRmseAvg, actualResults);
 
 using namespace smurff;
 
