@@ -18,34 +18,31 @@ sub assert_dead
 }
 
 my %mapping = ();
+my $in_testcase = 0;
 
 while (<>) {
     my $line = $_;
 
-    if (/(\w+) = (getTrain\w+\(\))/) {
+    # std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrix3dConfig = getRowSideInfoDenseMacauPrior3dConfig();
+    if ($in_testcase && /(\w+) = (get\w+SideInfo\w+\(\))/) {
         $mapping{$1} = $2;
         next; # do not print anything
     }
 
-    if (/(\w+) = (getTest\w+\(\))/) {
-        $mapping{$1} = $2;
-        next; # do not print anything
-    }
-
-    # Config tensorRunConfig = getTestsSmurffConfig(trainDenseTensorConfig, testSparseTensorConfig, {PriorTypes::macau, PriorTypes::macau});
-    if (/Config (\w+) = getTestsSmurffConfig\((\w+), (\w+), (.+)\);/)
+    # config.addSideInfoConfig(0, rowSideInfoDenseMatrix3dConfig);
+    if ($in_testcase && /(\w+).addSideInfoConfig\((\d+), (\w+)\);/)
     {
         my $config = $1;
-        my $train = $mapping{$2};
-        my $test = $mapping{$3};
-        my $priors = $4;
-        print("   Config $config = getTestsSmurffConfig($train, $test, $priors);\n");
+        my $mode = $2;
+        my $sideinfo = $mapping{$3};
+        print("   $config.addSideInfoConfig($mode, $sideinfo);\n");
         next;
     }
 
     if (/TEST_CASE/)
     {
         %mapping = ();
+        $in_testcase = 1;
     }
 
     print($line)
