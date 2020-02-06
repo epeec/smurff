@@ -1244,9 +1244,7 @@ TEST_CASE(
 {
 
    Config tensorRunConfig = getTestsSmurffConfig(getTrainDenseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, getRowSideInfoDenseConfig()).addSideInfoConfig(1, getColSideInfoDenseConfig());
-
    Config matrixRunConfig = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, getRowSideInfoDenseConfig()).addSideInfoConfig(1, getColSideInfoDenseConfig());
-
    compareSessions(tensorRunConfig, matrixRunConfig);;
 }
 
@@ -1266,9 +1264,7 @@ TEST_CASE(
 {
 
    Config tensorRunConfig = getTestsSmurffConfig(getTrainSparseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, getRowSideInfoDenseConfig()).addSideInfoConfig(1, getColSideInfoDenseConfig());
-
    Config matrixRunConfig = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, getRowSideInfoDenseConfig()).addSideInfoConfig(1, getColSideInfoDenseConfig());
-
    compareSessions(tensorRunConfig, matrixRunConfig);;
 }
 
@@ -1288,9 +1284,7 @@ TEST_CASE(
 {
 
    Config tensorRunConfig = getTestsSmurffConfig(getTrainDenseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, getRowSideInfoDenseConfig()).addSideInfoConfig(1, getColSideInfoDenseConfig());
-
    Config matrixRunConfig = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, getRowSideInfoDenseConfig()).addSideInfoConfig(1, getColSideInfoDenseConfig());
-
    compareSessions(tensorRunConfig, matrixRunConfig);;
 }
 
@@ -1310,9 +1304,7 @@ TEST_CASE(
 {
 
    Config tensorRunConfig = getTestsSmurffConfig(getTrainSparseTensor2dConfig(), getTestSparseTensor2dConfig(), {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, getRowSideInfoDenseConfig()).addSideInfoConfig(1, getColSideInfoDenseConfig());
-
    Config matrixRunConfig = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, getRowSideInfoDenseConfig()).addSideInfoConfig(1, getColSideInfoDenseConfig());
-
    compareSessions(tensorRunConfig, matrixRunConfig);;
 }
 
