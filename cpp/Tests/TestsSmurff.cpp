@@ -330,6 +330,22 @@ void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem>& actualResultItems, cons
    }
 }
 
+void runSession(Config &config, int nr)
+{
+   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
+   session->run();
+
+   double actualRmseAvg = session->getRmseAvg();
+   const std::vector<ResultItem> & actualResults = session->getResultItems();
+
+   PRINT_ACTUAL_RESULTS(nr)
+   double &expectedRmseAvg = expectedResults[nr].rmseAvg;
+   auto &expectedResultItems = expectedResults[nr].resultItems;
+
+   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+}
+
 //
 //      train: dense matrix
 //       test: sparse matrix
@@ -346,19 +362,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(359)
-   double &expectedRmseAvg = expectedResults[359].rmseAvg;
-   auto &expectedResultItems = expectedResults[359].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 359);
 }
 
 //
@@ -377,19 +381,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setTrain(trainSparseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(411)
-   double &expectedRmseAvg = expectedResults[411].rmseAvg;
-   auto &expectedResultItems = expectedResults[411].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 411);
 }
 
 //
@@ -412,19 +404,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(467)
-   double &expectedRmseAvg = expectedResults[467].rmseAvg;
-   auto &expectedResultItems = expectedResults[467].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 467);
 }
 
 //
@@ -447,19 +427,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(523)
-   double &expectedRmseAvg = expectedResults[523].rmseAvg;
-   auto &expectedResultItems = expectedResults[523].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 523);
 }
 
 //=================================================================
@@ -480,19 +448,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(577)
-   double &expectedRmseAvg = expectedResults[577].rmseAvg;
-   auto &expectedResultItems = expectedResults[577].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 577);
 }
 
 //
@@ -511,19 +467,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
    config.setTrain(trainSparseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(629)
-   double &expectedRmseAvg = expectedResults[629].rmseAvg;
-   auto &expectedResultItems = expectedResults[629].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 629);
 }
 
 //
@@ -546,19 +490,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(685)
-   double &expectedRmseAvg = expectedResults[685].rmseAvg;
-   auto &expectedResultItems = expectedResults[685].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 685);
 }
 
 //
@@ -581,19 +513,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(741)
-   double &expectedRmseAvg = expectedResults[741].rmseAvg;
-   auto &expectedResultItems = expectedResults[741].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 741);
 }
 
 //=================================================================
@@ -614,19 +534,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(795)
-   double &expectedRmseAvg = expectedResults[795].rmseAvg;
-   auto &expectedResultItems = expectedResults[795].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 795);
 }
 
 //
@@ -645,19 +553,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setTrain(trainSparseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(847)
-   double &expectedRmseAvg = expectedResults[847].rmseAvg;
-   auto &expectedResultItems = expectedResults[847].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 847);
 }
 
 //
@@ -680,19 +576,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(903)
-   double &expectedRmseAvg = expectedResults[903].rmseAvg;
-   auto &expectedResultItems = expectedResults[903].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 903);
 }
 
 //
@@ -715,19 +599,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(959)
-   double &expectedRmseAvg = expectedResults[959].rmseAvg;
-   auto &expectedResultItems = expectedResults[959].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 959);
 }
 
 //=================================================================
@@ -753,19 +625,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setPriorTypes({PriorTypes::macau, PriorTypes::macau});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1018)
-   double &expectedRmseAvg = expectedResults[1018].rmseAvg;
-   auto &expectedResultItems = expectedResults[1018].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1018);
 }
 
 //
@@ -789,19 +649,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
    config.setPriorTypes({PriorTypes::macau, PriorTypes::macau});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1075)
-   double &expectedRmseAvg = expectedResults[1075].rmseAvg;
-   auto &expectedResultItems = expectedResults[1075].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1075);
 }
 
 //=================================================================
@@ -828,19 +676,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setPriorTypes({PriorTypes::macauone, PriorTypes::macauone});
    config.addSideInfoConfig(0, rowSideInfoSparseMatrixConfig);
    config.addSideInfoConfig(1, colSideInfoSparseMatrixConfig);
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1135)
-   double &expectedRmseAvg = expectedResults[1135].rmseAvg;
-   auto &expectedResultItems = expectedResults[1135].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1135);
 }
 
 //
@@ -865,19 +701,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
    config.setPriorTypes({PriorTypes::macauone, PriorTypes::macauone});
    config.addSideInfoConfig(0, rowSideInfoSparseMatrixConfig);
    config.addSideInfoConfig(1, colSideInfoSparseMatrixConfig);
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1193)
-   double &expectedRmseAvg = expectedResults[1193].rmseAvg;
-   auto &expectedResultItems = expectedResults[1193].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1193);
 }
 
 //=================================================================
@@ -901,19 +725,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::macau, PriorTypes::normal});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1250)
-   double &expectedRmseAvg = expectedResults[1250].rmseAvg;
-   auto &expectedResultItems = expectedResults[1250].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1250);
 }
 
 //
@@ -935,19 +747,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::macau});
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1305)
-   double &expectedRmseAvg = expectedResults[1305].rmseAvg;
-   auto &expectedResultItems = expectedResults[1305].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1305);
 }
 
 //test throw - normal prior should not have side info
@@ -1045,19 +845,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::spikeandslab});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1466)
-   double &expectedRmseAvg = expectedResults[1466].rmseAvg;
-   auto &expectedResultItems = expectedResults[1466].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1466);
 }
 
 //
@@ -1076,19 +864,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setTrain(trainDenseMatrixConfig);
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1518)
-   double &expectedRmseAvg = expectedResults[1518].rmseAvg;
-   auto &expectedResultItems = expectedResults[1518].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1518);
 }
 
 //
@@ -1109,19 +885,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
    config.addAuxData({ colAuxDataDenseMatrixConfig });
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1572)
-   double &expectedRmseAvg = expectedResults[1572].rmseAvg;
-   auto &expectedResultItems = expectedResults[1572].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1572);
 }
 
 //
@@ -1142,19 +906,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1626)
-   double &expectedRmseAvg = expectedResults[1626].rmseAvg;
-   auto &expectedResultItems = expectedResults[1626].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1626);
 }
 
 //=================================================================
@@ -1178,19 +930,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::macau, PriorTypes::spikeandslab});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1683)
-   double &expectedRmseAvg = expectedResults[1683].rmseAvg;
-   auto &expectedResultItems = expectedResults[1683].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1683);
 }
 
 //
@@ -1212,19 +952,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setTest(testSparseMatrixConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::macau});
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1738)
-   double &expectedRmseAvg = expectedResults[1738].rmseAvg;
-   auto &expectedResultItems = expectedResults[1738].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1738);
 }
 
 //=================================================================
@@ -1245,19 +973,7 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1792)
-   double &expectedRmseAvg = expectedResults[1792].rmseAvg;
-   auto &expectedResultItems = expectedResults[1792].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1792);
 }
 
 //
@@ -1276,39 +992,10 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1844)
-   double &expectedRmseAvg = expectedResults[1844].rmseAvg;
-   auto &expectedResultItems = expectedResults[1844].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1844);
 }
 
 //=================================================================
-
-void runSession(const Config &config, int nr)
-{
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(nr)
-   double &expectedRmseAvg = expectedResults[nr].rmseAvg;
-   auto &expectedResultItems = expectedResults[nr].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
-}
-
 //
 //      train: dense 2D-tensor (matrix)
 //       test: sparse 2D-tensor (matrix)
@@ -1326,18 +1013,7 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
 
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1898)
-   double &expectedRmseAvg = expectedResults[1898].rmseAvg;
-   auto &expectedResultItems = expectedResults[1898].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1898);
 }
 
 //
@@ -1356,19 +1032,7 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(1950)
-   double &expectedRmseAvg = expectedResults[1950].rmseAvg;
-   auto &expectedResultItems = expectedResults[1950].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 1950);
 }
 
 //=================================================================
@@ -1389,19 +1053,7 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(2004)
-   double &expectedRmseAvg = expectedResults[2004].rmseAvg;
-   auto &expectedResultItems = expectedResults[2004].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 2004);
 }
 
 //
@@ -1420,19 +1072,7 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(2056)
-   double &expectedRmseAvg = expectedResults[2056].rmseAvg;
-   auto &expectedResultItems = expectedResults[2056].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 2056);
 }
 
 //=================================================================
@@ -1453,19 +1093,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal, PriorTypes::normal});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(2110)
-   double &expectedRmseAvg = expectedResults[2110].rmseAvg;
-   auto &expectedResultItems = expectedResults[2110].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 2110);
 }
 
 //=================================================================
@@ -1486,19 +1114,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setTrain(trainSparseTensorConfig);
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(2164)
-   double &expectedRmseAvg = expectedResults[2164].rmseAvg;
-   auto &expectedResultItems = expectedResults[2164].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 2164);
 }
 
 //=================================================================
@@ -1523,19 +1139,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setTest(testSparseTensorConfig);
    config.setPriorTypes({PriorTypes::macau, PriorTypes::normal, PriorTypes::normal});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrix3dConfig);
-
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(2222)
-   double &expectedRmseAvg = expectedResults[2222].rmseAvg;
-   auto &expectedResultItems = expectedResults[2222].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+   runSession(config, 2222);
 }
 
 //=================================================================
@@ -1549,7 +1153,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 //   aux-data: row_dense_side_info none
 //
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior macauone normal --side-info row_dense_side_info none --num-latent 4 --burnin 50 --nsamples 50 --verbose 0 --seed 1234"
-   , TAG_THREE_DIMENTIONAL_TENSOR_TESTS)
+   , TAG_THREE_DIMENTIONAL_TENSOR_TESTS"[!mayfail]")
 {
    std::shared_ptr<TensorConfig> trainDenseTensorConfig = getTrainDenseTensor3dConfig();
    std::shared_ptr<TensorConfig> testSparseTensorConfig = getTestSparseTensor3dConfig();
@@ -1561,20 +1165,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setPriorTypes({PriorTypes::macauone, PriorTypes::normal, PriorTypes::normal});
    config.addSideInfoConfig(0, rowSideInfoDenseMatrix3dConfig);
 
-   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-   session->run();
-
-#if 0
-   double actualRmseAvg = session->getRmseAvg();
-   const std::vector<ResultItem> & actualResults = session->getResultItems();
-
-   PRINT_ACTUAL_RESULTS(2280)
-   double &expectedRmseAvg = expectedResults[2280].rmseAvg;
-   auto &expectedResultItems = expectedResults[2280].resultItems;
-
-   REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
-#endif
+   runSession(config, 2280);
 }
 
 //=================================================================
