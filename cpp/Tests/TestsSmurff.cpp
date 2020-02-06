@@ -344,9 +344,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -384,9 +381,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -428,9 +422,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.addAuxData({ colAuxDataDenseMatrixConfig });
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -472,9 +463,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.addAuxData({ colAuxDataDenseMatrixConfig });
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -514,9 +502,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -554,9 +539,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -598,9 +580,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.addAuxData({ colAuxDataDenseMatrixConfig });
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -642,9 +621,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
    config.addAuxData({ colAuxDataDenseMatrixConfig });
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -684,9 +660,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -724,9 +697,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -768,9 +738,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.addAuxData({ colAuxDataDenseMatrixConfig });
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -812,9 +779,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
    config.addAuxData({ colAuxDataDenseMatrixConfig });
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -859,9 +823,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -904,9 +865,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -952,9 +910,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.addSideInfoConfig(1, colSideInfoSparseMatrixConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -998,9 +953,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
    config.addSideInfoConfig(1, colSideInfoSparseMatrixConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1043,9 +995,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1086,9 +1035,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1133,9 +1079,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setPriorTypes({PriorTypes::macau, PriorTypes::normal});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    REQUIRE_THROWS(SessionFactory::create_session(config));
 }
@@ -1168,9 +1111,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.setPriorTypes({PriorTypes::macau, PriorTypes::normal});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    REQUIRE_THROWS(SessionFactory::create_session(config));
 }
@@ -1203,9 +1143,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    REQUIRE_THROWS(SessionFactory::create_session(config));
 }
@@ -1235,9 +1172,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.setPriorTypes({PriorTypes::normal, PriorTypes::spikeandslab});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1275,9 +1209,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::normal});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1317,9 +1248,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
    config.addAuxData({ colAuxDataDenseMatrixConfig });
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1359,9 +1287,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.addAuxData({ rowAuxDataDenseMatrixConfig });
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1404,9 +1329,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
    config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1447,9 +1369,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
    config.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1489,9 +1408,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1529,9 +1445,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1571,9 +1484,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1611,9 +1521,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1653,9 +1560,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1693,9 +1597,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
    config.setPriorTypes({PriorTypes::normalone, PriorTypes::normalone});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1735,9 +1636,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal, PriorTypes::normal});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1777,9 +1675,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.setPriorTypes({PriorTypes::spikeandslab, PriorTypes::spikeandslab, PriorTypes::spikeandslab});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1823,9 +1718,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.addSideInfoConfig(0, rowSideInfoDenseMatrix3dConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -1869,9 +1761,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
    config.addSideInfoConfig(0, rowSideInfoDenseMatrix3dConfig);
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
    session->run();
@@ -2953,9 +2842,6 @@ TEST_CASE("PredictSession/BPMF")
    config.setPriorTypes({PriorTypes::normal, PriorTypes::normal});
    config.setBurnin(50);
    config.setNSamples(50);
-   config.setVerbose(false);
-   config.setRandomSeed(1234);
-   config.setNumThreads(1);
    config.setSaveFreq(1);
 
    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
@@ -3014,10 +2900,6 @@ TEST_CASE("PredictSession/Features/1"
     config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
     config.setBurnin(50);
     config.setNSamples(50);
-    config.setVerbose(false);
-    config.setNumThreads(1);
-    config.setRandomSeed(1234);
-    config.setNumThreads(1);
     config.setSaveFreq(1);
 
     std::shared_ptr<ISession> session = SessionFactory::create_session(config);
