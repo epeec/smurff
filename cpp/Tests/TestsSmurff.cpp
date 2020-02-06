@@ -1379,20 +1379,7 @@ TEST_CASE(
    matrixRunConfig.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
    matrixRunConfig.addSideInfoConfig(1, colSideInfoDenseMatrixConfig);
 
-   std::shared_ptr<ISession> tensorRunSession = SessionFactory::create_session(tensorRunConfig);
-   tensorRunSession->run();
-
-   std::shared_ptr<ISession> matrixRunSession = SessionFactory::create_session(matrixRunConfig);
-   matrixRunSession->run();
-
-   double tensorRunRmseAvg = tensorRunSession->getRmseAvg();
-   // const std::vector<ResultItem> & tensorRunResults = tensorRunSession->getResultItems();
-
-   double matrixRunRmseAvg = matrixRunSession->getRmseAvg();
-   // const std::vector<ResultItem> & matrixRunResults = matrixRunSession->getResultItems();
-
-   REQUIRE(tensorRunRmseAvg == Approx(matrixRunRmseAvg).epsilon(APPROX_EPSILON));
-   // REQUIRE_RESULT_ITEMS(tensorRunResults, matrixRunResults);
+   compareSessions(tensorRunConfig, matrixRunConfig);;
 }
 
 //
