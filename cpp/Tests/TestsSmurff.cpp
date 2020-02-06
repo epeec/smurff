@@ -18,11 +18,10 @@
 
 void printActualResults(int nr, double actualRmseAvg, const std::vector<smurff::ResultItem>& actualResults)
 {
-   std::ofstream os("TestsSmurff_" + std::to_string(nr) + ".h", std::ofstream::out);
+   std::ofstream os("TestsSmurff_ExpectedResults.h", std::ofstream::app);
 
-   os << "   double expectedRmseAvg = "
-      << std::fixed << std::setprecision(16) << actualRmseAvg << ";" << std::endl
-      << "   std::vector<ResultItem> expectedResults = \n"
+   os << "{ " << nr << ",\n"
+      << "  { " << std::fixed << std::setprecision(16) << actualRmseAvg << "," << std::endl
       << "      {\n";
 
    for (const auto &actualResultItem : actualResults) 
@@ -36,12 +35,14 @@ void printActualResults(int nr, double actualRmseAvg, const std::vector<smurff::
          << " }," << std::endl;
     }
 
-    os << "      };\n";
+    os << "      }\n"
+       << "  }\n"
+       << "},\n";
 }
 
 
-#define PRINT_ACTUAL_RESULTS(nr)
-// #define PRINT_ACTUAL_RESULTS(nr) printActualResults(nr, actualRmseAvg, actualResults);
+//#define PRINT_ACTUAL_RESULTS(nr)
+#define PRINT_ACTUAL_RESULTS(nr) printActualResults(nr, actualRmseAvg, actualResults);
 
 using namespace smurff;
 
