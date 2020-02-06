@@ -354,10 +354,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 
    PRINT_ACTUAL_RESULTS(359)
    double &expectedRmseAvg = expectedResults[359].rmseAvg;
-   auto &expectedResults = expectedResults[359].resultItems;
+   auto &expectedResultItems = expectedResults[359].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -385,10 +385,10 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 
    PRINT_ACTUAL_RESULTS(411)
    double &expectedRmseAvg = expectedResults[411].rmseAvg;
-   auto &expectedResults = expectedResults[411].resultItems;
+   auto &expectedResultItems = expectedResults[411].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -420,10 +420,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 
    PRINT_ACTUAL_RESULTS(467)
    double &expectedRmseAvg = expectedResults[467].rmseAvg;
-   auto &expectedResults = expectedResults[467].resultItems;
+   auto &expectedResultItems = expectedResults[467].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -455,10 +455,10 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 
    PRINT_ACTUAL_RESULTS(523)
    double &expectedRmseAvg = expectedResults[523].rmseAvg;
-   auto &expectedResults = expectedResults[523].resultItems;
+   auto &expectedResultItems = expectedResults[523].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -488,10 +488,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 
    PRINT_ACTUAL_RESULTS(577)
    double &expectedRmseAvg = expectedResults[577].rmseAvg;
-   auto &expectedResults = expectedResults[577].resultItems;
+   auto &expectedResultItems = expectedResults[577].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -519,10 +519,10 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
 
    PRINT_ACTUAL_RESULTS(629)
    double &expectedRmseAvg = expectedResults[629].rmseAvg;
-   auto &expectedResults = expectedResults[629].resultItems;
+   auto &expectedResultItems = expectedResults[629].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -554,10 +554,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 
    PRINT_ACTUAL_RESULTS(685)
    double &expectedRmseAvg = expectedResults[685].rmseAvg;
-   auto &expectedResults = expectedResults[685].resultItems;
+   auto &expectedResultItems = expectedResults[685].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -589,10 +589,10 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
 
    PRINT_ACTUAL_RESULTS(741)
    double &expectedRmseAvg = expectedResults[741].rmseAvg;
-   auto &expectedResults = expectedResults[741].resultItems;
+   auto &expectedResultItems = expectedResults[741].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -622,10 +622,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 
    PRINT_ACTUAL_RESULTS(795)
    double &expectedRmseAvg = expectedResults[795].rmseAvg;
-   auto &expectedResults = expectedResults[795].resultItems;
+   auto &expectedResultItems = expectedResults[795].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -653,10 +653,10 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 
    PRINT_ACTUAL_RESULTS(847)
    double &expectedRmseAvg = expectedResults[847].rmseAvg;
-   auto &expectedResults = expectedResults[847].resultItems;
+   auto &expectedResultItems = expectedResults[847].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -688,10 +688,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 
    PRINT_ACTUAL_RESULTS(903)
    double &expectedRmseAvg = expectedResults[903].rmseAvg;
-   auto &expectedResults = expectedResults[903].resultItems;
+   auto &expectedResultItems = expectedResults[903].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -723,10 +723,10 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 
    PRINT_ACTUAL_RESULTS(959)
    double &expectedRmseAvg = expectedResults[959].rmseAvg;
-   auto &expectedResults = expectedResults[959].resultItems;
+   auto &expectedResultItems = expectedResults[959].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -761,10 +761,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 
    PRINT_ACTUAL_RESULTS(1018)
    double &expectedRmseAvg = expectedResults[1018].rmseAvg;
-   auto &expectedResults = expectedResults[1018].resultItems;
+   auto &expectedResultItems = expectedResults[1018].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -797,10 +797,10 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
 
    PRINT_ACTUAL_RESULTS(1075)
    double &expectedRmseAvg = expectedResults[1075].rmseAvg;
-   auto &expectedResults = expectedResults[1075].resultItems;
+   auto &expectedResultItems = expectedResults[1075].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -836,10 +836,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 
    PRINT_ACTUAL_RESULTS(1135)
    double &expectedRmseAvg = expectedResults[1135].rmseAvg;
-   auto &expectedResults = expectedResults[1135].resultItems;
+   auto &expectedResultItems = expectedResults[1135].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -873,10 +873,10 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior mac
 
    PRINT_ACTUAL_RESULTS(1193)
    double &expectedRmseAvg = expectedResults[1193].rmseAvg;
-   auto &expectedResults = expectedResults[1193].resultItems;
+   auto &expectedResultItems = expectedResults[1193].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -909,10 +909,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 
    PRINT_ACTUAL_RESULTS(1250)
    double &expectedRmseAvg = expectedResults[1250].rmseAvg;
-   auto &expectedResults = expectedResults[1250].resultItems;
+   auto &expectedResultItems = expectedResults[1250].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -943,10 +943,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 
    PRINT_ACTUAL_RESULTS(1305)
    double &expectedRmseAvg = expectedResults[1305].rmseAvg;
-   auto &expectedResults = expectedResults[1305].resultItems;
+   auto &expectedResultItems = expectedResults[1305].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //test throw - normal prior should not have side info
@@ -1053,10 +1053,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 
    PRINT_ACTUAL_RESULTS(1466)
    double &expectedRmseAvg = expectedResults[1466].rmseAvg;
-   auto &expectedResults = expectedResults[1466].resultItems;
+   auto &expectedResultItems = expectedResults[1466].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -1084,10 +1084,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 
    PRINT_ACTUAL_RESULTS(1518)
    double &expectedRmseAvg = expectedResults[1518].rmseAvg;
-   auto &expectedResults = expectedResults[1518].resultItems;
+   auto &expectedResultItems = expectedResults[1518].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -1117,10 +1117,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 
    PRINT_ACTUAL_RESULTS(1572)
    double &expectedRmseAvg = expectedResults[1572].rmseAvg;
-   auto &expectedResults = expectedResults[1572].resultItems;
+   auto &expectedResultItems = expectedResults[1572].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -1150,10 +1150,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 
    PRINT_ACTUAL_RESULTS(1626)
    double &expectedRmseAvg = expectedResults[1626].rmseAvg;
-   auto &expectedResults = expectedResults[1626].resultItems;
+   auto &expectedResultItems = expectedResults[1626].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -1186,10 +1186,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
 
    PRINT_ACTUAL_RESULTS(1683)
    double &expectedRmseAvg = expectedResults[1683].rmseAvg;
-   auto &expectedResults = expectedResults[1683].resultItems;
+   auto &expectedResultItems = expectedResults[1683].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -1220,10 +1220,10 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 
    PRINT_ACTUAL_RESULTS(1738)
    double &expectedRmseAvg = expectedResults[1738].rmseAvg;
-   auto &expectedResults = expectedResults[1738].resultItems;
+   auto &expectedResultItems = expectedResults[1738].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -1253,10 +1253,10 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
 
    PRINT_ACTUAL_RESULTS(1792)
    double &expectedRmseAvg = expectedResults[1792].rmseAvg;
-   auto &expectedResults = expectedResults[1792].resultItems;
+   auto &expectedResultItems = expectedResults[1792].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -1284,10 +1284,10 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
 
    PRINT_ACTUAL_RESULTS(1844)
    double &expectedRmseAvg = expectedResults[1844].rmseAvg;
-   auto &expectedResults = expectedResults[1844].resultItems;
+   auto &expectedResultItems = expectedResults[1844].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -1317,10 +1317,10 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
 
    PRINT_ACTUAL_RESULTS(1898)
    double &expectedRmseAvg = expectedResults[1898].rmseAvg;
-   auto &expectedResults = expectedResults[1898].resultItems;
+   auto &expectedResultItems = expectedResults[1898].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -1348,10 +1348,10 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
 
    PRINT_ACTUAL_RESULTS(1950)
    double &expectedRmseAvg = expectedResults[1950].rmseAvg;
-   auto &expectedResults = expectedResults[1950].resultItems;
+   auto &expectedResultItems = expectedResults[1950].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -1381,10 +1381,10 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prio
 
    PRINT_ACTUAL_RESULTS(2004)
    double &expectedRmseAvg = expectedResults[2004].rmseAvg;
-   auto &expectedResults = expectedResults[2004].resultItems;
+   auto &expectedResultItems = expectedResults[2004].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //
@@ -1412,10 +1412,10 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --pri
 
    PRINT_ACTUAL_RESULTS(2056)
    double &expectedRmseAvg = expectedResults[2056].rmseAvg;
-   auto &expectedResults = expectedResults[2056].resultItems;
+   auto &expectedResultItems = expectedResults[2056].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -1445,10 +1445,10 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 
    PRINT_ACTUAL_RESULTS(2110)
    double &expectedRmseAvg = expectedResults[2110].rmseAvg;
-   auto &expectedResults = expectedResults[2110].resultItems;
+   auto &expectedResultItems = expectedResults[2110].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -1478,10 +1478,10 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 
    PRINT_ACTUAL_RESULTS(2164)
    double &expectedRmseAvg = expectedResults[2164].rmseAvg;
-   auto &expectedResults = expectedResults[2164].resultItems;
+   auto &expectedResultItems = expectedResults[2164].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -1515,10 +1515,10 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 
    PRINT_ACTUAL_RESULTS(2222)
    double &expectedRmseAvg = expectedResults[2222].rmseAvg;
-   auto &expectedResults = expectedResults[2222].resultItems;
+   auto &expectedResultItems = expectedResults[2222].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
 //=================================================================
@@ -1553,10 +1553,10 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prio
 
    PRINT_ACTUAL_RESULTS(2280)
    double &expectedRmseAvg = expectedResults[2280].rmseAvg;
-   auto &expectedResults = expectedResults[2280].resultItems;
+   auto &expectedResultItems = expectedResults[2280].resultItems;
 
    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-   REQUIRE_RESULT_ITEMS(actualResults, expectedResults);
+   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 #endif
 }
 
