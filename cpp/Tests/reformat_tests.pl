@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 #
 #
-use warnings;
+
 use strict;
 
 sub assert_dead
@@ -17,40 +17,30 @@ sub assert_dead
     }
 }
 
-my @lines = ();
-while (<>) {
-    push @lines, $_;
-}
-
 my %mapping = ();
-for (my $lineno=0; $lineno <= $#lines ; $lineno++) 
-{
+my $in_testcase = 0;
 
-    my $line = $lines[$lineno];
+while (<>) {
+    my $line = $_;
 
-    # Config tensorRunConfig = getTestsSmurffConfig(trainDenseTensorConfig, testSparseTensorConfig, {PriorTypes::macau, PriorTypes::macau});
-    if ($line =~ /Config (\w+) = getTestsSmurffConfig\((.+)\);/)
+    if ($in_testcase && /(\w+) = (get\w+AuxData\w+\(\))/) {
+        $mapping{$1} = $2;
+        next; # do not print anything
+    }
+
+    if ($in_testcase && /addAuxData/)
     {
-        my $config = $1;
-        my $params = $2;
-        print("   Config $config = getTestsSmurffConfig($params)");
-
-        while ($lines[$lineno+1] =~ /addAuxData\((.+)\);/)
+        while (my ($from, $to) = each (%mapping))
         {
-            print(".addAuxData($1)");
-            $lineno++;
+            $line =~ s/$from/$to/g;
         }
-        
-        print(";\n");
-    }
-    else
-    {
-        print($line);
     }
 
-    if ($line =~ /TEST_CASE/)
+    if (/TEST_CASE/)
     {
         %mapping = ();
+        $in_testcase = 1;
     }
 
+    print($line)
 }

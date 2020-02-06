@@ -400,10 +400,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data <dense_matrix> <dense_matrix>"
    , TAG_MATRIX_TESTS)
 {
-   std::shared_ptr<TensorConfig> rowAuxDataDenseMatrixConfig = getRowAuxDataDenseMatrixConfig();
-   std::shared_ptr<TensorConfig> colAuxDataDenseMatrixConfig = getColAuxDataDenseMatrixConfig();
 
-   Config config = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normal, PriorTypes::normal}).addAuxData({ rowAuxDataDenseMatrixConfig }).addAuxData({ colAuxDataDenseMatrixConfig });
+   Config config = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normal, PriorTypes::normal}).addAuxData({ getRowAuxDataDenseMatrixConfig() }).addAuxData({ getColAuxDataDenseMatrixConfig() });
    runSession(config, 467);
 }
 
@@ -416,10 +414,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data <dense_matrix> <dense_matrix>"
    , TAG_MATRIX_TESTS)
 {
-   std::shared_ptr<TensorConfig> rowAuxDataDenseMatrixConfig = getRowAuxDataDenseMatrixConfig();
-   std::shared_ptr<TensorConfig> colAuxDataDenseMatrixConfig = getColAuxDataDenseMatrixConfig();
 
-   Config config = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normal, PriorTypes::normal}).addAuxData({ rowAuxDataDenseMatrixConfig }).addAuxData({ colAuxDataDenseMatrixConfig });
+   Config config = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normal, PriorTypes::normal}).addAuxData({ getRowAuxDataDenseMatrixConfig() }).addAuxData({ getColAuxDataDenseMatrixConfig() });
    runSession(config, 523);
 }
 
@@ -462,10 +458,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spi
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix>"
    , TAG_MATRIX_TESTS)
 {
-   std::shared_ptr<TensorConfig> rowAuxDataDenseMatrixConfig = getRowAuxDataDenseMatrixConfig();
-   std::shared_ptr<TensorConfig> colAuxDataDenseMatrixConfig = getColAuxDataDenseMatrixConfig();
 
-   Config config = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::spikeandslab, PriorTypes::spikeandslab}).addAuxData({ rowAuxDataDenseMatrixConfig }).addAuxData({ colAuxDataDenseMatrixConfig });
+   Config config = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::spikeandslab, PriorTypes::spikeandslab}).addAuxData({ getRowAuxDataDenseMatrixConfig() }).addAuxData({ getColAuxDataDenseMatrixConfig() });
    runSession(config, 685);
 }
 
@@ -478,10 +472,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix>"
    , TAG_MATRIX_TESTS)
 {
-   std::shared_ptr<TensorConfig> rowAuxDataDenseMatrixConfig = getRowAuxDataDenseMatrixConfig();
-   std::shared_ptr<TensorConfig> colAuxDataDenseMatrixConfig = getColAuxDataDenseMatrixConfig();
 
-   Config config = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::spikeandslab, PriorTypes::spikeandslab}).addAuxData({ rowAuxDataDenseMatrixConfig }).addAuxData({ colAuxDataDenseMatrixConfig });
+   Config config = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::spikeandslab, PriorTypes::spikeandslab}).addAuxData({ getRowAuxDataDenseMatrixConfig() }).addAuxData({ getColAuxDataDenseMatrixConfig() });
    runSession(config, 741);
 }
 
@@ -524,10 +516,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior nor
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data <dense_matrix> <dense_matrix>"
    , TAG_MATRIX_TESTS)
 {
-   std::shared_ptr<TensorConfig> rowAuxDataDenseMatrixConfig = getRowAuxDataDenseMatrixConfig();
-   std::shared_ptr<TensorConfig> colAuxDataDenseMatrixConfig = getColAuxDataDenseMatrixConfig();
 
-   Config config = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normalone, PriorTypes::normalone}).addAuxData({ rowAuxDataDenseMatrixConfig }).addAuxData({ colAuxDataDenseMatrixConfig });
+   Config config = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normalone, PriorTypes::normalone}).addAuxData({ getRowAuxDataDenseMatrixConfig() }).addAuxData({ getColAuxDataDenseMatrixConfig() });
    runSession(config, 903);
 }
 
@@ -540,10 +530,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data <dense_matrix> <dense_matrix>"
    , TAG_MATRIX_TESTS)
 {
-   std::shared_ptr<TensorConfig> rowAuxDataDenseMatrixConfig = getRowAuxDataDenseMatrixConfig();
-   std::shared_ptr<TensorConfig> colAuxDataDenseMatrixConfig = getColAuxDataDenseMatrixConfig();
 
-   Config config = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normalone, PriorTypes::normalone}).addAuxData({ rowAuxDataDenseMatrixConfig }).addAuxData({ colAuxDataDenseMatrixConfig });
+   Config config = getTestsSmurffConfig(getTrainSparseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::normalone, PriorTypes::normalone}).addAuxData({ getRowAuxDataDenseMatrixConfig() }).addAuxData({ getColAuxDataDenseMatrixConfig() });
    runSession(config, 959);
 }
 
@@ -720,9 +708,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spik
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal spikeandslab --aux-data none <dense_matrix>"
    , TAG_MATRIX_TESTS)
 {
-   std::shared_ptr<TensorConfig> colAuxDataDenseMatrixConfig = getColAuxDataDenseMatrixConfig();
 
-   Config config = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::spikeandslab, PriorTypes::normal}).addAuxData({ colAuxDataDenseMatrixConfig });
+   Config config = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::spikeandslab, PriorTypes::normal}).addAuxData({ getColAuxDataDenseMatrixConfig() });
    runSession(config, 1572);
 }
 
@@ -735,9 +722,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior norm
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab normal --aux-data <dense_matrix> none"
    , TAG_MATRIX_TESTS)
 {
-   std::shared_ptr<TensorConfig> rowAuxDataDenseMatrixConfig = getRowAuxDataDenseMatrixConfig();
 
-   Config config = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::spikeandslab, PriorTypes::normal}).addAuxData({ rowAuxDataDenseMatrixConfig });
+   Config config = getTestsSmurffConfig(getTrainDenseMatrixConfig(), getTestSparseMatrixConfig(), {PriorTypes::spikeandslab, PriorTypes::normal}).addAuxData({ getRowAuxDataDenseMatrixConfig() });
    runSession(config, 1626);
 }
 
