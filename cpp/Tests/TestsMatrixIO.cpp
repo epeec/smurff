@@ -506,6 +506,25 @@ TEST_CASE("matrix_io/eigen::read_matrix(const std::string& filename, SparseMatri
    REQUIRE(matrix_utils::equals(actualMatrix, expectedMatrix));
 }
 
+TEST_CASE("matrix_io/eigen::write_matrix_hdf5(const std::string& filename, const SparseMatrix& X) | .h5")
+{
+   std::string matrixFilename = "sparseEigenMatrix.h5";
+
+   SparseMatrix expectedMatrix(3, 4);
+   std::vector<Eigen::Triplet<double> > expectedMatrixTriplets;
+   expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 0, 1));
+   expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 1, 2));
+   expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 2, 3));
+   expectedMatrixTriplets.push_back(Eigen::Triplet<double>(0, 3, 4));
+   expectedMatrixTriplets.push_back(Eigen::Triplet<double>(2, 0, 9));
+   expectedMatrixTriplets.push_back(Eigen::Triplet<double>(2, 1, 10));
+   expectedMatrixTriplets.push_back(Eigen::Triplet<double>(2, 2, 11));
+   expectedMatrixTriplets.push_back(Eigen::Triplet<double>(2, 3, 12));
+   expectedMatrix.setFromTriplets(expectedMatrixTriplets.begin(), expectedMatrixTriplets.end());
+
+   matrix_io::eigen::write_matrix_hdf5(matrixFilename, expectedMatrix);
+}
+
 TEST_CASE("matrix_io/eigen::read_matrix(const std::string& filename, SparseMatrix& X) | matrix_io/eigen::write_matrix(const std::string& filename, const SparseMatrix& X) | .mtx")
 {
    // read/write dense matrix
