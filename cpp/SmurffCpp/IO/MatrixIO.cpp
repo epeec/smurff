@@ -815,13 +815,16 @@ void matrix_io::eigen::read_matrix_hdf5(const std::string &filename, SparseMatri
    X.makeCompressed();
 
    auto data = file.getDataSet("data");
+   THROWERROR_ASSERT(data.getDataType() == HighFive::AtomicType<SparseMatrix::value_type>());
    X.resizeNonZeros(data.getElementCount());
    data.read(X.valuePtr());
 
    auto indptr = file.getDataSet("indptr");
+   THROWERROR_ASSERT(indptr.getDataType() == HighFive::AtomicType<SparseMatrix::Index>());
    indptr.read(X.outerIndexPtr());
 
    auto indices = file.getDataSet("indices");
+   THROWERROR_ASSERT(indices.getDataType() == HighFive::AtomicType<SparseMatrix::Index>());
    indices.read(X.innerIndexPtr());
 }
 
