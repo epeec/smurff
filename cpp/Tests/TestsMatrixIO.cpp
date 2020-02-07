@@ -523,6 +523,11 @@ TEST_CASE("matrix_io/eigen::write_matrix_hdf5(const std::string& filename, const
    expectedMatrix.setFromTriplets(expectedMatrixTriplets.begin(), expectedMatrixTriplets.end());
 
    matrix_io::eigen::write_matrix_hdf5(matrixFilename, expectedMatrix);
+
+   SparseMatrix actualMatrix;
+   matrix_io::eigen::read_matrix_hdf5(matrixFilename, actualMatrix);
+
+   REQUIRE(matrix_utils::equals(actualMatrix, expectedMatrix));
 }
 
 TEST_CASE("matrix_io/eigen::read_matrix(const std::string& filename, SparseMatrix& X) | matrix_io/eigen::write_matrix(const std::string& filename, const SparseMatrix& X) | .mtx")
