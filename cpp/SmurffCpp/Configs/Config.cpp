@@ -206,7 +206,7 @@ const std::vector<std::shared_ptr<SideInfoConfig> >& Config::getSideInfoConfigs(
   return iter->second;
 }
 
-const std::map<int, std::vector<std::shared_ptr<SideInfoConfig> > >& Config::addSideInfoConfig(int mode, std::shared_ptr<SideInfoConfig> c)
+Config& Config::addSideInfoConfig(int mode, std::shared_ptr<SideInfoConfig> c)
 {
     m_sideInfoConfigs[mode].push_back(c);
 
@@ -219,7 +219,7 @@ const std::map<int, std::vector<std::shared_ptr<SideInfoConfig> > >& Config::add
       else if (pt == PriorTypes::normalone) pt = PriorTypes::macauone;
     }
 
-    return m_sideInfoConfigs;
+    return *this;
 }
 
 bool Config::validate() const

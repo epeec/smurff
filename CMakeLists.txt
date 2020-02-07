@@ -21,7 +21,7 @@ SET(BOOST_RANDOM_VERSION "" CACHE STRING "Enable boost::random for this specific
 OPTION(ENABLE_PYTHON "Enable Python Wrapper" ON)
 OPTION(ENABLE_MPI "Enable MPI Support" ON)
 
-OPTION(USE_FLOAT "Use 'float' instead of 'double' for internal compute" OFF)
+SET(SMURFF_FLOAT_TYPE "double" CACHE STRING "Main compute type")
 
 # INIT CMAKE
 
@@ -161,7 +161,7 @@ if(NOT "${GIT_BRANCH_ERROR}" STREQUAL "0")
    set(GIT_BRANCH "Unknown")
 endif()
 
-message("GIT branch ${GIT_BRANCH}")
+message(STATUS "GIT branch ${GIT_BRANCH}")
 
 #get GIT describe
 execute_process(
@@ -188,7 +188,7 @@ message(STATUS "Cleaned version: ${SMURFF_VERSION_CLEAN}")
 
 # CONFIGURE BUILD TYPE
 
-message(STATUS "Analyzing build type...")
+message("Analyzing build type...")
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'Release' as none was specified.")
@@ -237,11 +237,11 @@ message("Checking build dependencies...")
 
 #set additional search paths for cmake scripts
 
+add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
+message(STATUS "Using '${SMURFF_FLOAT_TYPE}' as main computing type")
 include(cmake/DependenciesConfig.cmake)
 
-SET(SMURFF_FLOAT_TYPE "double" CACHE STRING "Main compute type")
-add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
-message("Using '${SMURFF_FLOAT_TYPE}' as main computing type")
+
 
 configure_eigen()
 configure_boost()
