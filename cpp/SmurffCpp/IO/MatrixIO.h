@@ -63,6 +63,7 @@ namespace smurff { namespace matrix_io
       // ===
       void write_matrix(const std::string& filename, const Matrix& X);
       void write_matrix(const std::string& filename, const SparseMatrix& X);
+      void write_matrix_hdf5(const std::string& filename, const SparseMatrix& X);
 
       // ===
       void read_dense_float64_bin(std::istream &in, Matrix &X);
