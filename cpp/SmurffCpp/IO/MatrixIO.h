@@ -59,6 +59,7 @@ namespace smurff { namespace matrix_io
       void read_matrix(const std::string& filename, Vector& V);
       void read_matrix(const std::string& filename, Matrix& X);
       void read_matrix(const std::string& filename, SparseMatrix& X);
+      void read_matrix_hdf5(const std::string& filename, SparseMatrix& X);
 
       // ===
       void write_matrix(const std::string& filename, const Matrix& X);

@@ -800,6 +800,31 @@ void matrix_io::eigen::read_matrix(const std::string& filename, SparseMatrix& X)
    X = matrix_utils::sparse_to_eigen(*ptr);
 }
 
+void matrix_io::eigen::read_matrix_hdf5(const std::string &filename, SparseMatrix &X)
+{
+   HighFive::File file(filename, HighFive::File::ReadOnly);
+   
+   std::string format;
+   file.getAttribute("h5sparse_format").read(format);
+   THROWERROR_ASSERT(( SparseMatrix::IsRowMajor && format == "csr") || \
+                     (!SparseMatrix::IsRowMajor && format == "csc"));
+   
+   std::vector<Eigen::Index> shape(2);
+   file.getAttribute("h5sparse_shape").read(shape);
+   X.resize(shape.at(0), shape.at(1));
+   X.makeCompressed();
+
+   auto data = file.getDataSet("data");
+   X.resizeNonZeros(data.getElementCount());
+   data.read(X.valuePtr());
+
+   auto indptr = file.getDataSet("indptr");
+   indptr.read(X.outerIndexPtr());
+
+   auto indices = file.getDataSet("indices");
+   indices.read(X.innerIndexPtr());
+}
+
 // ======================================================================================================
 
 void matrix_io::eigen::write_matrix(const std::string& filename, const Matrix& X)
