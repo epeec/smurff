@@ -822,11 +822,11 @@ void matrix_io::eigen::write_matrix_hdf5(const std::string& filename, const Spar
     auto data = file.createDataSet<SparseMatrix::value_type>("data", HighFive::DataSpace(X.nonZeros()));
     data.write(X.valuePtr());
 
-    auto indices = file.createDataSet<SparseMatrix::Index>("indices", HighFive::DataSpace(X.outerSize()));
-    indices.write(X.outerIndexPtr());
+    auto indptr = file.createDataSet<SparseMatrix::Index>("indptr", HighFive::DataSpace(X.outerSize() + 1));
+    indptr.write(X.outerIndexPtr());
 
-    auto indptr = file.createDataSet<SparseMatrix::Index>("indptr", HighFive::DataSpace(X.innerSize()));
-    indptr.write(X.innerIndexPtr());
+    auto indices = file.createDataSet<SparseMatrix::Index>("indices", HighFive::DataSpace(X.nonZeros()));
+    indices.write(X.innerIndexPtr());
 }
 
 } // end namespace smurff
