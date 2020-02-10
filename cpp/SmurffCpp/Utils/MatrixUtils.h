@@ -23,7 +23,7 @@ namespace smurff { namespace matrix_utils {
         const std::vector<std::uint32_t>& rows,
         const std::vector<std::uint32_t>& cols,
         const std::vector<double>& values,
-      , int pos)
+        int pos)
       : rows(rows), cols(cols), values(values), pos(pos) {}
 
 
@@ -33,7 +33,9 @@ namespace smurff { namespace matrix_utils {
    int pos;
 
    bool operator!=(const sparse_vec_iterator &other) const {
-      THROWERROR_ASSERT(&config == &other.config);
+      THROWERROR_ASSERT(&rows == &other.rows);
+      THROWERROR_ASSERT(&cols == &other.cols);
+      THROWERROR_ASSERT(&values == &other.values);
       return pos != other.pos;
    }
 

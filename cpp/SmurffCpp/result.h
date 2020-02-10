@@ -79,23 +79,24 @@ public:
    // general
 
 public:
-   void save(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const;
+   void save(std::shared_ptr<const StepFile> sf) const;
    void restore(std::shared_ptr<const StepFile> sf);
 
 private:
-   void savePred(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const;
+   void savePred(std::shared_ptr<const StepFile> sf) const;
    void savePredState(std::shared_ptr<const StepFile> sf) const;
 
    void restorePred(std::shared_ptr<const StepFile> sf);
    void restoreState(std::shared_ptr<const StepFile> sf);
 
    template<typename Accessor>
-   std::shared_ptr<const MatrixConfig> toMatrixConfig(const Accessor &acc) const;
+   std::shared_ptr<const SparseMatrix> toMatrix(const Accessor &acc) const;
 
 public:
    void init();
 
 public:
+   void toCsv(std::string filename) const;
    std::ostream &info(std::ostream &os, std::string indent);
 
    //-- for binary classification

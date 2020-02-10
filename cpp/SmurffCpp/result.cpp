@@ -23,13 +23,6 @@
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 
-#define GLOBAL_TAG "global"
-#define RMSE_AVG_TAG "rmse_avg"
-#define RMSE_1SAMPLE_TAG "rmse_1sample"
-#define AUC_AVG_TAG "auc_avg"
-#define AUC_1SAMPLE_TAG "auc_1sample"
-#define SAMPLE_ITER_TAG "sample_iter"
-#define BURNIN_ITER_TAG "burnin_iter"
 
 namespace smurff {
 
@@ -80,116 +73,66 @@ void Result::init()
 }
 
 //--- output model to files
-void Result::save(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const
-{
-   savePred(sf, saved_avg_var);
-   savePredState(sf);
-}
-
 
 template<typename Accessor>
 std::shared_ptr<const SparseMatrix> Result::toMatrix(const Accessor &acc) const
 {
-   auto ret = std::make_shared<SparseMatrix>(m_dims.at(0), m_dims.at(1), m_predictions.size());
+   auto ret = std::make_shared<SparseMatrix>(m_dims.at(0), m_dims.at(1));
    
    std::vector<Eigen::Triplet<smurff::float_type>> triplets;
 
    for (const auto &p : m_predictions)
-      triplets.push_back( p.coords.at(0), p.coords.at(1), acc(p));
+      triplets.push_back({ p.coords.at(0), p.coords.at(1), acc(p) });
    
-   ret.setFromTriplets(triplets);
+   ret->setFromTriplets(triplets.begin(), triplets.end());
    return ret;
 }
 
-void Result::savePred(std::string filename) const
+void Result::save(std::shared_ptr<const StepFile> sf) const
 {
    if (isEmpty())
       return;
 
-   if (m_dims.size() > 2)
-      return;
+   if (m_dims.size() == 2)
+   {
+      auto pred_avg = toMatrix([](const ResultItem &p) { return p.pred_avg; });
+      auto pred_var = toMatrix([](const ResultItem &p) { return p.var; });
 
-   std::string pred_avg_path = sf->makePredAvgFileName();
-   auto pred_avg = toMatrix([](const ResultItem &p) { return p.pred_avg; });
-   matrix_io::write_matrix(pred_avg_path, pred_avg);
+      sf->putPredAvgVar(*pred_avg, *pred_var);
+   }
 
-   std::string pred_var_path = sf->makePredVarFileName();
-   auto pred_var = toMatrix([](const ResultItem &p) { return p.var; });
-   matrix_io::write_matrix(pred_var_path, pred_var);
-
-   saved_avg_var = true;
+   sf->putPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
 }
 
 void Result::toCsv(std::string filename) const
 {
-      predFile.open(filename, std::ios::out);
-      THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + filename);
+   std::ofstream predFile;
+   predFile.open(filename, std::ios::out);
+   THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + filename);
 
-      for (std::size_t d = 0; d < m_dims.size(); d++)
-         predFile << "coord" << d << ",";
+   for (std::size_t d = 0; d < m_dims.size(); d++)
+      predFile << "coord" << d << ",";
 
-      predFile << "y,pred_1samp,pred_avg,var" << std::endl;
+   predFile << "y,pred_1samp,pred_avg,var" << std::endl;
 
-      for (std::vector<ResultItem>::const_iterator it = m_predictions.begin(); it != m_predictions.end(); it++)
-      {
-         it->coords.save(predFile)
-             << "," << std::to_string(it->val)
-             << "," << std::to_string(it->pred_1sample)
-             << "," << std::to_string(it->pred_avg)
-             << "," << std::to_string(it->var)
-             << std::endl;
-      }
+   for (std::vector<ResultItem>::const_iterator it = m_predictions.begin(); it != m_predictions.end(); it++)
+   {
+      it->coords.save(predFile)
+          << "," << std::to_string(it->val)
+          << "," << std::to_string(it->pred_1sample)
+          << "," << std::to_string(it->pred_avg)
+          << "," << std::to_string(it->var)
+          << std::endl;
    }
 
    predFile.close();
 }
 
-void Result::savePredState(std::shared_ptr<const StepFile> sf) const
-{
-   if (isEmpty())
-      return;
-
-   std::string predStateName = sf->makePredStateFileName();
-
-   INIFile predStatefile;
-   predStatefile.create(predStateName);
-
-   predStatefile.startSection(GLOBAL_TAG);
-   predStatefile.appendItem(GLOBAL_TAG, RMSE_AVG_TAG, std::to_string(rmse_avg));
-   predStatefile.appendItem(GLOBAL_TAG, RMSE_1SAMPLE_TAG, std::to_string(rmse_1sample));
-   predStatefile.appendItem(GLOBAL_TAG, AUC_AVG_TAG, std::to_string(auc_avg));
-   predStatefile.appendItem(GLOBAL_TAG, AUC_1SAMPLE_TAG, std::to_string(auc_1sample));
-   predStatefile.appendItem(GLOBAL_TAG, SAMPLE_ITER_TAG, std::to_string(sample_iter));
-   predStatefile.appendItem(GLOBAL_TAG, BURNIN_ITER_TAG, std::to_string(burnin_iter));
-   
-   predStatefile.flush();
-}
-
 void Result::restore(std::shared_ptr<const StepFile> sf)
 {
    restorePred(sf);
-   restoreState(sf);
-}
-
-void Result::restoreState(std::shared_ptr<const StepFile> sf)
-{
-   auto value = iniReader.get(GLOBAL_TAG, RMSE_AVG_TAG);
-   rmse_avg = std::stod(value.c_str());
    
-   value = iniReader.get(GLOBAL_TAG, RMSE_1SAMPLE_TAG);
-   rmse_1sample = std::stod(value.c_str());
-   
-   value = iniReader.get(GLOBAL_TAG, AUC_AVG_TAG);
-   auc_avg = std::stod(value.c_str());
-   
-   value = iniReader.get(GLOBAL_TAG, AUC_1SAMPLE_TAG);
-   auc_1sample = std::stod(value.c_str());
-   
-   value = iniReader.get(GLOBAL_TAG, SAMPLE_ITER_TAG);
-   sample_iter = std::stoi(value.c_str());
-   
-   value = iniReader.get(GLOBAL_TAG, BURNIN_ITER_TAG);
-   burnin_iter = std::stoi(value.c_str());
+   sf->getPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
 }
 
 //--- update RMSE and AUC

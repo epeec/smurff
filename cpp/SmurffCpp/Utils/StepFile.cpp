@@ -11,22 +11,8 @@
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 
-#define NONE_TAG "none"
-
-#define STEP_SAMPLE_PREFIX "sample-"
-#define STEP_CHECKPOINT_PREFIX "checkpoint-"
-#define STEP_INI_SUFFIX "-step.ini"
-
-#define LATENTS_PREFIX "latents_"
-#define POST_MU_PREFIX "post_mu_"
-#define POST_LAMBDA_PREFIX "post_lambda_"
-#define LINK_MATRIX_PREFIX "link_matrix_"
-#define MU_PREFIX "mu_"
-
-#define GLOBAL_SEC_TAG "global"
 #define LATENTS_SEC_TAG "latents"
 #define PRED_SEC_TAG "predictions"
-
 #define LINK_MATRICES_SEC_TAG "link_matrices"
 
 #define IS_CHECKPOINT_TAG "is_checkpoint"
@@ -36,6 +22,13 @@
 #define PRED_STATE_TAG "pred_state"
 #define PRED_AVG_TAG "pred_avg"
 #define PRED_VAR_TAG "pred_var"
+
+#define RMSE_AVG_TAG "rmse_avg"
+#define RMSE_1SAMPLE_TAG "rmse_1sample"
+#define AUC_AVG_TAG "auc_avg"
+#define AUC_1SAMPLE_TAG "auc_1sample"
+#define SAMPLE_ITER_TAG "sample_iter"
+#define BURNIN_ITER_TAG "burnin_iter"
 
 namespace smurff {
 
@@ -82,24 +75,45 @@ std::shared_ptr<Matrix> StepFile::getMu(std::uint64_t index) const
 
 bool StepFile::hasPred() const
 {
-   return hasDataSet(PRED_SEC_TAG, PRED_TAG);
+   return hasDataSet(PRED_SEC_TAG, PRED_AVG_TAG) && 
+          hasDataSet(PRED_SEC_TAG, PRED_VAR_TAG);
 }
 
-
-std::shared_ptr<Matrix> StepFile::getPred() const
+void StepFile::putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample,
+                            int sample_iter, int burnin_iter) 
 {
-   return getMatrix(PRED_SEC_TAG, PRED_TAG);
+   auto pred_group = m_group.getGroup(PRED_SEC_TAG);
+   pred_group.createAttribute<double>(RMSE_AVG_TAG, rmse_avg);
+   pred_group.createAttribute<double>(RMSE_1SAMPLE_TAG, rmse_1sample);
+   pred_group.createAttribute<double>(AUC_AVG_TAG, auc_avg);
+   pred_group.createAttribute<double>(AUC_1SAMPLE_TAG, auc_1sample);
+   pred_group.createAttribute<int>(SAMPLE_ITER_TAG, sample_iter);
+   pred_group.createAttribute<int>(BURNIN_ITER_TAG, burnin_iter);
 }
 
-std::shared_ptr<Matrix> StepFile::getPredState() const
+void StepFile::getPredState(
+   double &rmse_avg, double &rmse_1sample, double &auc_avg, double &auc_1sample, int &sample_iter, int &burnin_iter) const
 {
-   return getMatrix(PRED_SEC_TAG, PRED_STATE_TAG);
+   auto pred_group = m_group.getGroup(PRED_SEC_TAG);
+   pred_group.getAttribute(RMSE_AVG_TAG).read(rmse_avg);
+   pred_group.getAttribute(RMSE_1SAMPLE_TAG).read(rmse_1sample);
+   pred_group.getAttribute(AUC_AVG_TAG).read(auc_avg);
+   pred_group.getAttribute>(AUC_1SAMPLE_TAG).read(auc_1sample);
+   pred_group.getAttribute(SAMPLE_ITER_TAG).read(sample_iter);
+   pred_group.getAttribute(BURNIN_ITER_TAG).read(burnin_iter);
+
 }
+
+void StepFile::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var)
+{
+   putSparseMatrix(PRED_SEC_TAG, PRED_AVG_TAG, avg);
+   putSparseMatrix(PRED_SEC_TAG, PRED_VAR_TAG, var);
+}
+
 
 std::shared_ptr<Matrix> StepFile::getPredAvg() const
 {
    return getMatrix(PRED_SEC_TAG, PRED_AVG_TAG);
-;
 }
 
 std::shared_ptr<Matrix> StepFile::getPredVar() const
