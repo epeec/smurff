@@ -48,10 +48,8 @@ namespace smurff {
 
       void putMu(std::uint64_t index, const Matrix &) const;
       void putLinkMatrix(std::uint32_t mode, const Matrix &) const;
-      void putPred(const Matrix &) const;
       void putPredState(const Matrix &) const;
-      void putPredAvg(const Matrix &) const;
-      void putPredVar(const Matrix &) const;
+      void putPredAvgVar(const SparseMatrix &, const SparseMatrix &) const;
 
    public:
       void save(std::shared_ptr<const Model> model, std::shared_ptr<const Result> pred, const std::vector<std::shared_ptr<ILatentPrior> >& priors) const;
@@ -76,7 +74,11 @@ namespace smurff {
 
    private:
       bool hasDataSet(const std::string &section, const std::string& tag) const;
+
       std::shared_ptr<Matrix> getMatrix(const std::string &section, const std::string& tag) const;
+      std::shared_ptr<Matrix> getSparseMatrix(const std::string &section, const std::string& tag) const;
+
       void putMatrix(const std::string &section, const std::string& tag, const Matrix &) const;
+      void putSparseMatrix(const std::string &section, const std::string& tag, const SparseMatrix &) const;
    };
 }
