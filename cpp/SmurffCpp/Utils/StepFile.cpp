@@ -11,6 +11,7 @@
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 
+
 #define LATENTS_SEC_TAG "latents"
 #define PRED_SEC_TAG "predictions"
 #define LINK_MATRICES_SEC_TAG "link_matrices"
@@ -30,11 +31,24 @@
 #define SAMPLE_ITER_TAG "sample_iter"
 #define BURNIN_ITER_TAG "burnin_iter"
 
+#define LATENTS_PREFIX "latents_"
+#define LINK_MATRIX_PREFIX "link_matrix_"
+#define MU_PREFIX "mu_"
+
 namespace smurff {
 
-StepFile::StepFile(std::int32_t isample, h5::Group group, bool checkpoint, bool final)
-   : m_isample(isample), m_group(group), m_checkpoint(checkpoint), m_final(final)
+StepFile::StepFile(h5::Group group, std::int32_t isample, bool checkpoint)
+   : m_group(group), m_isample(isample), m_checkpoint(checkpoint)
 {
+   m_group.createAttribute<bool>(IS_CHECKPOINT_TAG, m_checkpoint);
+   m_group.createAttribute<int>(NUMBER_TAG, m_isample);
+}
+
+StepFile::StepFile(h5::Group group)
+   : m_group(group)
+{
+   group.getAttribute(NUMBER_TAG).read(m_isample);
+   group.getAttribute(IS_CHECKPOINT_TAG).read(m_checkpoint);
 }
 
 //name methods
@@ -104,7 +118,7 @@ void StepFile::getPredState(
 
 }
 
-void StepFile::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var)
+void StepFile::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var) const
 {
    putSparseMatrix(PRED_SEC_TAG, PRED_AVG_TAG, avg);
    putSparseMatrix(PRED_SEC_TAG, PRED_VAR_TAG, var);
@@ -129,10 +143,9 @@ void StepFile::save(
    const std::vector<std::shared_ptr<ILatentPrior> >& priors
    ) const
 {
-   m_group.createAttribute<bool>(IS_CHECKPOINT_TAG, m_checkpoint);
-   m_group.createAttribute<int>(NUMBER_TAG, m_isample);
 
-   model->save(shared_from_this(), saveAggr);
+
+   model->save(shared_from_this());
    pred->save(shared_from_this());
    for (auto &p : priors) p->save(shared_from_this());
 }

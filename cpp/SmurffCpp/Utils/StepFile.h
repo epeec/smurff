@@ -12,6 +12,7 @@
 
 namespace h5 = HighFive;
 
+
 namespace smurff {
 
    class Model;
@@ -29,7 +30,10 @@ namespace smurff {
 
    public:
       //this constructor should be used to create a step file on a first run of session
-      StepFile(std::int32_t isample, h5::Group group, bool checkpoint, bool final);
+      StepFile(h5::Group group, std::int32_t isample, bool checkpoint);
+
+      //this constructor should be used to  open existing step file when previous session is continued
+      StepFile(h5::Group group);
 
    public:
       bool hasModel(std::uint64_t index) const;
@@ -48,7 +52,6 @@ namespace smurff {
 
       void putModel(std::uint64_t index, const Matrix &) const;
       void putPostMuLambda(std::uint64_t index, const Matrix &, const Matrix &) const;
-
       void putMu(std::uint64_t index, const Matrix &) const;
       void putLinkMatrix(std::uint32_t mode, const Matrix &) const;
       void putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample, int sample_iter, int burnin_iter) const;
@@ -74,6 +77,7 @@ namespace smurff {
       unsigned getNModes() const;
       std::int32_t getIsample() const;
       bool isCheckpoint() const;
+      std::string getName() const;
 
    private:
       bool hasDataSet(const std::string &section, const std::string& tag) const;
