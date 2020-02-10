@@ -88,59 +88,42 @@ void Result::save(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const
 
 
 template<typename Accessor>
-std::shared_ptr<const MatrixConfig> Result::toMatrixConfig(const Accessor &acc) const
+std::shared_ptr<const SparseMatrix> Result::toMatrix(const Accessor &acc) const
 {
-   auto ret = std::make_shared<MatrixConfig>(false, false, false,     
-      m_dims.at(0), m_dims.at(1), m_predictions.size(), NoiseConfig());
-
-   std::vector<std::uint32_t> &rows = ret->getRows();
-   std::vector<std::uint32_t> &cols = ret->getCols();
-   std::vector<double> &values = ret->getValues();
+   auto ret = std::make_shared<SparseMatrix>(m_dims.at(0), m_dims.at(1), m_predictions.size());
+   
+   std::vector<Eigen::Triplet<smurff::float_type>> triplets;
 
    for (const auto &p : m_predictions)
-   {
-      rows.push_back(p.coords.at(0));
-      cols.push_back(p.coords.at(1));
-      values.push_back(acc(p));
-   }
-
+      triplets.push_back( p.coords.at(0), p.coords.at(1), acc(p));
+   
+   ret.setFromTriplets(triplets);
    return ret;
 }
 
-void Result::savePred(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const
+void Result::savePred(std::string filename) const
 {
-   saved_avg_var = false;
-   
    if (isEmpty())
       return;
 
-   std::string fname_pred = sf->makePredFileName();
-   std::ofstream predFile;
+   if (m_dims.size() > 2)
+      return;
 
-   if (sf->isBinary())
-   {
-      predFile.open(fname_pred, std::ios::out | std::ios::binary);
-      THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + fname_pred);
-      predFile.write((const char *)(&m_predictions[0]), m_predictions.size() * sizeof(m_predictions[0]));
+   std::string pred_avg_path = sf->makePredAvgFileName();
+   auto pred_avg = toMatrix([](const ResultItem &p) { return p.pred_avg; });
+   matrix_io::write_matrix(pred_avg_path, pred_avg);
 
-      if (m_dims.size() == 2)
-      {
-         std::string pred_avg_path = sf->makePredAvgFileName();
-         auto pred_avg = toMatrixConfig([](const ResultItem &p) { return p.pred_avg; });
-         matrix_io::write_matrix(pred_avg_path, pred_avg);
+   std::string pred_var_path = sf->makePredVarFileName();
+   auto pred_var = toMatrix([](const ResultItem &p) { return p.var; });
+   matrix_io::write_matrix(pred_var_path, pred_var);
 
-         std::string pred_var_path = sf->makePredVarFileName();
-         auto pred_var = toMatrixConfig([](const ResultItem &p) { return p.var; });
-         matrix_io::write_matrix(pred_var_path, pred_var);
+   saved_avg_var = true;
+}
 
-         saved_avg_var = true;
-      }
-   }
-   else
-   {
-
-      predFile.open(fname_pred, std::ios::out);
-      THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + fname_pred);
+void Result::toCsv(std::string filename) const
+{
+      predFile.open(filename, std::ios::out);
+      THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + filename);
 
       for (std::size_t d = 0; d < m_dims.size(); d++)
          predFile << "coord" << d << ",";
@@ -159,7 +142,6 @@ void Result::savePred(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) c
    }
 
    predFile.close();
-
 }
 
 void Result::savePredState(std::shared_ptr<const StepFile> sf) const
@@ -189,85 +171,8 @@ void Result::restore(std::shared_ptr<const StepFile> sf)
    restoreState(sf);
 }
 
-void Result::restorePred(std::shared_ptr<const StepFile> sf)
-{
-   std::string fname_pred = sf->getPredFileName();
-
-   THROWERROR_FILE_NOT_EXIST(fname_pred);
-
-   //open file with predictions
-   std::ifstream predFile;
-
-   std::string fname_ext = fname_pred.substr(fname_pred.find_last_of("."));
-
-   if (fname_ext == ".bin") {
-      predFile.open(fname_pred, std::ios::in | std::ios::binary);
-      THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + fname_pred);
-      predFile.read((char *)(&(m_predictions)[0]), m_predictions.size() * sizeof((m_predictions)[0]));  
-   }
-   else if (fname_ext == ".csv")
-   {
-      //since predictions were set in set method - clear them
-      std::size_t oldSize = m_predictions.size();
-      m_predictions.clear();
-
-      predFile.open(fname_pred);
-      THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + fname_pred);
-
-      //parse header
-      std::string header;
-      getline(predFile, header);
-
-      std::vector<std::string> headerTokens;
-      split(header, headerTokens, ',');
-
-      //parse all lines
-      std::vector<std::string> tokens;
-      std::vector<int> coords;
-      std::string line;
-
-      while (getline(predFile, line))
-      {
-         //split line
-         split(line, tokens, ',');
-
-         //construct coordinates
-         coords.clear();
-
-         std::size_t nCoords = m_dims.size();
-
-         for (std::size_t c = 0; c < nCoords; c++)
-            coords.push_back(std::stoi(tokens[c].c_str()));
-
-         //parse other values
-         double val = std::stod(tokens.at(nCoords).c_str());
-         double pred_1sample = std::stod(tokens.at(nCoords + 1).c_str());
-         double pred_avg = std::stod(tokens.at(nCoords + 2).c_str());
-         double var = std::stod(tokens.at(nCoords + 3).c_str());
-
-         //construct result item
-         m_predictions.push_back(ResultItem(PVec<>(coords), val, pred_1sample, pred_avg, var, sample_iter));
-      }
-
-      //just a sanity check, not sure if it is needed
-      THROWERROR_ASSERT_MSG(oldSize == m_predictions.size(), "Incorrect predictions size after restore");
-   } 
-   else 
-   {
-      THROWERROR("Unknown extension: " + fname_pred);
-   }
-
-
-   predFile.close();
-}
-
 void Result::restoreState(std::shared_ptr<const StepFile> sf)
 {
-   std::string predStateName = sf->getPredStateFileName();
-
-   INIFile iniReader;
-   iniReader.open(predStateName);
-
    auto value = iniReader.get(GLOBAL_TAG, RMSE_AVG_TAG);
    rmse_avg = std::stod(value.c_str());
    

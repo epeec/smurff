@@ -24,34 +24,6 @@ std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_dense(const Matrix &eigenMa
    return std::make_shared<MatrixConfig>(eigenMatrix.rows(), eigenMatrix.cols(), values, n);
 }
 
-struct sparse_vec_iterator
-{
-  sparse_vec_iterator(const TensorConfig& matrixConfig, int pos)
-     : config(matrixConfig), pos(pos) {}
-
-  const TensorConfig& config;
-  int pos;
-
-  bool operator!=(const sparse_vec_iterator &other) const {
-     THROWERROR_ASSERT(&config == &other.config);
-     return pos != other.pos;
-  }
-
-  sparse_vec_iterator &operator++() { pos++; return *this; }
-
-  typedef Eigen::Triplet<float_type> T;
-  T v;
-
-  T* operator->() {
-     // also convert from 1-base to 0-base
-     uint32_t row = config.getRows()[pos];
-     uint32_t col = config.getCols()[pos];
-     float_type val = config.getValues()[pos];
-     v = T(row, col, val);
-     return &v;
-  }
-};
-
 SparseMatrix matrix_utils::sparse_to_eigen(const TensorConfig& tensorConfig)
 {
    THROWERROR_ASSERT_MSG(!tensorConfig.isDense(), "tensor config should be sparse");
