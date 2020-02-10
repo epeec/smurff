@@ -277,7 +277,7 @@ void Session::saveInternal(std::shared_ptr<StepFile> stepFile)
 {
     if (m_config.getVerbose())
     {
-        std::cout << "-- Saving model, predictions,... into '" << stepFile->getStepFileName() << "'." << std::endl;
+        std::cout << "-- Saving model, predictions,... into '" << stepFile->getStepIniFileName() << "'." << std::endl;
     }
     double start = tick();
 
@@ -316,7 +316,7 @@ bool Session::restore(int &iteration)
     {
         if (m_config.getVerbose())
         {
-            std::cout << "-- Restoring model, predictions,... from '" << stepFile->getStepFileName() << "'." << std::endl;
+            std::cout << "-- Restoring model, predictions,... from '" << stepFile->getStepIniFileName() << "'." << std::endl;
         }
 
         stepFile->restore(m_model, m_pred, m_priors);

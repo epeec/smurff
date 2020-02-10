@@ -151,7 +151,7 @@ void PredictSession::save()
 
     if (m_config.getVerbose())
     {
-        std::cout << "-- Saving predictions into '" << stepFile->getStepFileName() << "'." << std::endl;
+        std::cout << "-- Saving predictions into '" << stepFile->getStepIniFileName() << "'." << std::endl;
     }
 
     stepFile->savePred(m_result);

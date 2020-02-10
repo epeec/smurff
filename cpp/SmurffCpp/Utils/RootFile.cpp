@@ -135,7 +135,7 @@ std::shared_ptr<StepFile> RootFile::createStepFileInternal(std::int32_t isample,
 {
    std::shared_ptr<StepFile> stepFile = std::make_shared<StepFile>(isample, m_prefix, m_extension, true, checkpoint, final);
 
-   std::string stepFileName = stepFile->getStepFileName();
+   std::string stepFileName = stepFile->getStepIniFileName();
    std::string tagPrefix = checkpoint ? CHECKPOINT_STEP_PREFIX : SAMPLE_STEP_PREFIX;
    std::string stepTag = tagPrefix + std::to_string(isample);
    appendToRootFile(STEPS_TAG, stepTag, stepFileName);
@@ -158,7 +158,7 @@ void RootFile::removeStepFileInternal(std::int32_t isample, bool checkpoint) con
    std::shared_ptr<StepFile> stepFile = std::make_shared<StepFile>(isample, m_prefix, m_extension, false, checkpoint, false);
    stepFile->remove(true, true, true);
 
-   std::string stepFileName = stepFile->getStepFileName();
+   std::string stepFileName = stepFile->getStepIniFileName();
    std::string tagPrefix = checkpoint ? CHECKPOINT_STEP_PREFIX : SAMPLE_STEP_PREFIX;
    std::string stepTag = "# removed " + tagPrefix + std::to_string(isample);
    appendCommentToRootFile(stepTag + " " + stepFileName);
