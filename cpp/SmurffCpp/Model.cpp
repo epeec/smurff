@@ -183,15 +183,12 @@ void Model::save(std::shared_ptr<const StepFile> sf, bool saveAggr) const
 {
    std::uint64_t i = 0;
    for (auto U : m_factors)
-   {
-      auto path = sf->makeModelFileName(i++);
-      matrix_io::eigen::write_matrix(path, *U);
-   }
+      sf->putModel(i++, *U);
 
-   unsigned nmodes = sf->getNModes();
-   if (m_collect_aggr && saveAggr)
+   for (std::uint64_t m = 0; m < nmodes(); ++m)
    {
-      for (std::uint64_t m = 0; m < nmodes; ++m)
+      sf->putModel(m, *m_factors[m]);
+      if (m_collect_aggr && saveAggr)
       {
          double n = m_num_aggr.at(m);
 
@@ -205,19 +202,15 @@ void Model::save(std::shared_ptr<const StepFile> sf, bool saveAggr) const
          // calculate real mu and Lambda
          for (int i = 0; i < U(m).cols(); i++)
          {
-            Vector sum  = Usum.col(i);
-            Matrix prod = Eigen::Map<Matrix>( Uprod.col(i).data(), nlatent(), nlatent());
+            Vector sum = Usum.col(i);
+            Matrix prod = Eigen::Map<Matrix>(Uprod.col(i).data(), nlatent(), nlatent());
             Matrix prec_i = ((prod - (sum * sum.transpose() / n)) / (n - 1)).inverse();
 
             prec.col(i) = Eigen::Map<Vector>(prec_i.data(), nlatent() * nlatent());
             mu.col(i) = sum / n;
          }
 
-         std::string mu_path = sf->makePostMuFileName(m);
-         matrix_io::eigen::write_matrix(mu_path, mu);
-
-         std::string prec_path = sf->makePostLambdaFileName(m);
-         matrix_io::eigen::write_matrix(prec_path, prec);
+         sf->putPostMuLambda(m, mu, prec);
       }
    }
 }
@@ -227,20 +220,19 @@ void Model::restore(std::shared_ptr<const StepFile> sf, int skip_mode)
    unsigned nmodes = sf->getNModes();
    m_factors.clear();
    m_dims = PVec<>(nmodes);
-   
-   for(std::uint64_t i = 0; i<nmodes; ++i)
+
+   for (std::uint64_t i = 0; i < nmodes; ++i)
    {
-      auto U = std::make_shared<Matrix>();
-      std::string path = sf->getModelFileName(i);
-      if ((int)i != skip_mode) {
-          THROWERROR_FILE_NOT_EXIST(path);
-          matrix_io::eigen::read_matrix(path, *U);
-          m_dims.at(i) = U->cols();
-          m_num_latent = U->rows();
+      std::shared_ptr<Matrix> U;
+      if ((int)i != skip_mode)
+      {
+         U = sf->getModel(i);
+         m_dims.at(i) = U->cols();
+         m_num_latent = U->rows();
       }
       else
       {
-          m_dims.at(i) = -1;
+         m_dims.at(i) = -1;
       }
       m_factors.push_back(U);
    }

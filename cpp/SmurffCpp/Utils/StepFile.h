@@ -35,13 +35,23 @@ namespace smurff {
       bool hasLinkMatrix(std::uint32_t mode) const;
       bool hasPred() const;
 
-      h5::DataSet getModelDataSet(std::uint64_t index) const;
-      h5::DataSet getMuDataSet(std::uint64_t index) const;
-      h5::DataSet getLinkMatrixDataSet(std::uint32_t mode) const;
-      h5::DataSet getPredDataSet() const;
-      h5::DataSet getPredStateDataSet() const;
-      h5::DataSet getPredAvgDataSet() const;
-      h5::DataSet getPredVarDataSet() const;
+      std::shared_ptr<Matrix> getModel(std::uint64_t index) const;
+      std::shared_ptr<Matrix> getMu(std::uint64_t index) const;
+      std::shared_ptr<Matrix> getLinkMatrix(std::uint32_t mode) const;
+      std::shared_ptr<Matrix> getPred() const;
+      std::shared_ptr<Matrix> getPredState() const;
+      std::shared_ptr<Matrix> getPredAvg() const;
+      std::shared_ptr<Matrix> getPredVar() const;
+
+      void putModel(std::uint64_t index, const Matrix &) const;
+      void putPostMuLambda(std::uint64_t index, const Matrix &, const Matrix &) const;
+
+      void putMu(std::uint64_t index, const Matrix &) const;
+      void putLinkMatrix(std::uint32_t mode, const Matrix &) const;
+      void putPred(const Matrix &) const;
+      void putPredState(const Matrix &) const;
+      void putPredAvg(const Matrix &) const;
+      void putPredVar(const Matrix &) const;
 
    public:
       void save(std::shared_ptr<const Model> model, std::shared_ptr<const Result> pred, const std::vector<std::shared_ptr<ILatentPrior> >& priors) const;
@@ -60,11 +70,13 @@ namespace smurff {
       void remove(bool model, bool pred, bool priors) const;
 
    public:
+      unsigned getNModes() const;
       std::int32_t getIsample() const;
       bool isCheckpoint() const;
 
-   public:
+   private:
       bool hasDataSet(const std::string &section, const std::string& tag) const;
-      h5::DataSet getDataSet(const std::string &section, const std::string& tag) const;
+      std::shared_ptr<Matrix> getMatrix(const std::string &section, const std::string& tag) const;
+      void putMatrix(const std::string &section, const std::string& tag, const Matrix &) const;
    };
 }

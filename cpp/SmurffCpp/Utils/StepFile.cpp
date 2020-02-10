@@ -50,9 +50,14 @@ bool StepFile::hasModel(std::uint64_t index) const
    return hasDataSet(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
 }
 
-h5::DataSet StepFile::getModelDataSet(std::uint64_t index) const
+std::shared_ptr<Matrix> StepFile::getModel(std::uint64_t index) const
 {
-   return getDataSet(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
+   return getMatrix(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
+}
+
+void StepFile::putModel(std::uint64_t index, const Matrix &M) const
+{
+   putMatrix(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index), M);
 }
 
 bool StepFile::hasLinkMatrix(std::uint32_t mode) const
@@ -60,9 +65,9 @@ bool StepFile::hasLinkMatrix(std::uint32_t mode) const
    return hasDataSet(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode));
 }
 
-h5::DataSet StepFile::getLinkMatrixDataSet(std::uint32_t mode) const
+std::shared_ptr<Matrix> StepFile::getLinkMatrix(std::uint32_t mode) const
 {
-   return getDataSet(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode));
+   return getMatrix(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode));
 }
 
 bool StepFile::hasMu(std::uint64_t index) const
@@ -70,9 +75,9 @@ bool StepFile::hasMu(std::uint64_t index) const
    return hasDataSet(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index));
 }
 
-h5::DataSet StepFile::getMuDataSet(std::uint64_t index) const
+std::shared_ptr<Matrix> StepFile::getMu(std::uint64_t index) const
 {
-   return getDataSet(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index));
+   return getMatrix(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index));
 }
 
 bool StepFile::hasPred() const
@@ -81,25 +86,25 @@ bool StepFile::hasPred() const
 }
 
 
-h5::DataSet StepFile::getPredDataSet() const
+std::shared_ptr<Matrix> StepFile::getPred() const
 {
-   return getDataSet(PRED_SEC_TAG, PRED_TAG);
+   return getMatrix(PRED_SEC_TAG, PRED_TAG);
 }
 
-h5::DataSet StepFile::getPredStateDataSet() const
+std::shared_ptr<Matrix> StepFile::getPredState() const
 {
-   return getDataSet(PRED_SEC_TAG, PRED_STATE_TAG);
+   return getMatrix(PRED_SEC_TAG, PRED_STATE_TAG);
 }
 
-h5::DataSet StepFile::getPredAvgDataSet() const
+std::shared_ptr<Matrix> StepFile::getPredAvg() const
 {
-   return getDataSet(PRED_SEC_TAG, PRED_AVG_TAG);
+   return getMatrix(PRED_SEC_TAG, PRED_AVG_TAG);
 ;
 }
 
-h5::DataSet StepFile::getPredVarDataSet() const
+std::shared_ptr<Matrix> StepFile::getPredVar() const
 {
-   return getDataSet(PRED_SEC_TAG, PRED_VAR_TAG);
+   return getMatrix(PRED_SEC_TAG, PRED_VAR_TAG);
 }
 
 //save methods
@@ -184,11 +189,44 @@ bool StepFile::hasDataSet(const std::string& section, const std::string& tag) co
    return (section_group.exist(tag));
 }
 
-h5::DataSet StepFile::getDataSet(const std::string& section, const std::string& tag) const
+std::shared_ptr<Matrix> StepFile::getMatrix(const std::string& section, const std::string& tag) const
 {
-   return m_group.getGroup(section).getDataSet(tag);
+   auto dataset = m_group.getGroup(section).getDataSet(tag);
+   std::vector<size_t> dims = dataset.getDimensions();
+   Matrix data(dims[0], dims[1]);
+   dataset.read(data.data());
+
+   if (data.IsVectorAtCompileTime || data.IsRowMajor)
+      return std::shared_ptr<Matrix>(data);
+
+   // convert to ColMajor if needed (HDF5 always stores row-major)
+   std::make_shared<Matrix>(Eigen::Map<Eigen::Matrix<
+            typename Matrix::Scalar,
+            Matrix::RowsAtCompileTime,
+            Matrix::ColsAtCompileTime,
+            Matrix::ColsAtCompileTime==1?Eigen::ColMajor:Eigen::RowMajor,
+            Matrix::MaxRowsAtCompileTime,
+            Matrix::MaxColsAtCompileTime>>(data.data(), dims[0], dims[1]));
 }
 
+void StepFile::putMatrix(const std::string& section, const std::string& tag, const Matrix &M) const
+{
+   h5::Group group = m_group.getGroup(section);
+   h5::DataSet dataset = group.createDataSet<Matrix::Scalar>(DataSpace::From(M)));
+
+   Eigen::Ref<
+        const Eigen::Matrix<
+            Matrix::Scalar,
+            Matrix::RowsAtCompileTime,
+            Matrix::ColsAtCompileTime,
+            Matrix::ColsAtCompileTime==1?Eigen::ColMajor:Eigen::RowMajor,
+            Matrix::MaxRowsAtCompileTime,
+            Matrix::MaxColsAtCompileTime>,
+        0,
+        Eigen::InnerStride<1>> row_major(M);
+
+    dataset.write(row_major.data());
+}
 /*
 void StepFile::appendToStepFile(std::string section) const
 {
