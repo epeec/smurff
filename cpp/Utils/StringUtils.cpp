@@ -75,12 +75,8 @@ std::string smurff::fileName(const std::string& str)
 std::string smurff::fileExtension(const std::string& str)
 {
    std::size_t dotIndex = str.find_last_of(".");
-   if (dotIndex == std::string::npos)
-   {
-      THROWERROR("Extension is not specified in " + str);
-   }
-
-   return fname.substr(dotIndex);
+   if (dotIndex == std::string::npos) return std::string();
+   return str.substr(dotIndex);
 }
 
 std::string smurff::dirName(const std::string& str)
