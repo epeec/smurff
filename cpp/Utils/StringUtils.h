@@ -41,7 +41,9 @@ namespace smurff
 
    std::string stripPrefix(const std::string& str, const std::string& prefix);
    std::string fileName(const std::string& str);
+   std::string fileExtension(const std::string &str);
    std::string dirName(const std::string& str);
 
    std::string addDirName(const std::string& str,  const std::string& prefix);
+
 }
