@@ -9,10 +9,13 @@
 
 #include <highfive/H5Easy.hpp>
 
-#include <Utils/Error.h>
+#include <Utils/Error.h> 
+#include <Utils/StringUtils.h> 
 #include <SmurffCpp/Utils/MatrixUtils.h>
 
 #include <SmurffCpp/IO/GenericIO.h>
+
+namespace h5 = HighFive;
 
 namespace smurff {
 
@@ -802,7 +805,7 @@ void matrix_io::eigen::read_matrix(const std::string& filename, SparseMatrix& X)
 
 void matrix_io::eigen::read_matrix_hdf5(const std::string &filename, SparseMatrix &X)
 {
-   HighFive::File file(filename, HighFive::File::ReadOnly);
+   h5::File file(filename, h5::File::ReadOnly);
    
    std::string format;
    file.getAttribute("h5sparse_format").read(format);
@@ -815,16 +818,16 @@ void matrix_io::eigen::read_matrix_hdf5(const std::string &filename, SparseMatri
    X.makeCompressed();
 
    auto data = file.getDataSet("data");
-   THROWERROR_ASSERT(data.getDataType() == HighFive::AtomicType<SparseMatrix::value_type>());
+   THROWERROR_ASSERT(data.getDataType() == h5::AtomicType<SparseMatrix::value_type>());
    X.resizeNonZeros(data.getElementCount());
    data.read(X.valuePtr());
 
    auto indptr = file.getDataSet("indptr");
-   THROWERROR_ASSERT(indptr.getDataType() == HighFive::AtomicType<SparseMatrix::Index>());
+   THROWERROR_ASSERT(indptr.getDataType() == h5::AtomicType<SparseMatrix::Index>());
    indptr.read(X.outerIndexPtr());
 
    auto indices = file.getDataSet("indices");
-   THROWERROR_ASSERT(indices.getDataType() == HighFive::AtomicType<SparseMatrix::Index>());
+   THROWERROR_ASSERT(indices.getDataType() == h5::AtomicType<SparseMatrix::Index>());
    indices.read(X.innerIndexPtr());
 }
 
@@ -833,8 +836,22 @@ void matrix_io::eigen::read_matrix_hdf5(const std::string &filename, SparseMatri
 void matrix_io::eigen::write_matrix(const std::string& filename, const Matrix& X)
 {
    matrix_io::write_matrix(filename, matrix_utils::eigen_to_dense(X));
-   H5Easy::File file(filename + ".h5", H5Easy::File::Overwrite);
-   H5Easy::dump(file, "/path/to/A", X);
+
+}
+
+static std::vector<std::string> split_h5(const std::string& fullpath)
+{
+   std::vector<std::string> parts;
+   smurff::split(fullpath, parts, ';');
+   THROWERROR_ASSERT(parts.size() == 2);
+   return parts;
+}
+
+void matrix_io::eigen::write_matrix_hdf5(const std::string& fullpath, const Matrix& X)
+{
+   auto parts = split_h5(fullpath);
+   H5Easy::File file(parts[0], H5Easy::File::Overwrite);
+   H5Easy::dump(file, parts[1], X);
 }
 
 void matrix_io::eigen::write_matrix(const std::string& filename, const SparseMatrix& X)
@@ -844,19 +861,19 @@ void matrix_io::eigen::write_matrix(const std::string& filename, const SparseMat
 
 void matrix_io::eigen::write_matrix_hdf5(const std::string &filename, const SparseMatrix &X)
 {
-   HighFive::File file(filename, HighFive::File::ReadWrite | HighFive::File::Create | HighFive::File::Truncate);
+   h5::File file(filename, h5::File::ReadWrite | h5::File::Create | h5::File::Truncate);
 
    file.createAttribute<std::string>("h5sparse_format", (SparseMatrix::IsRowMajor ? "csr" : "csc"));
    std::vector<Eigen::Index> shape{X.innerSize(), X.outerSize()};
-   file.createAttribute<Eigen::Index>("h5sparse_shape", HighFive::DataSpace::From(shape)).write(shape);
+   file.createAttribute<Eigen::Index>("h5sparse_shape", h5::DataSpace::From(shape)).write(shape);
 
-   auto data = file.createDataSet<SparseMatrix::value_type>("data", HighFive::DataSpace(X.nonZeros()));
+   auto data = file.createDataSet<SparseMatrix::value_type>("data", h5::DataSpace(X.nonZeros()));
    data.write(X.valuePtr());
 
-   auto indptr = file.createDataSet<SparseMatrix::Index>("indptr", HighFive::DataSpace(X.outerSize() + 1));
+   auto indptr = file.createDataSet<SparseMatrix::Index>("indptr", h5::DataSpace(X.outerSize() + 1));
    indptr.write(X.outerIndexPtr());
 
-   auto indices = file.createDataSet<SparseMatrix::Index>("indices", HighFive::DataSpace(X.nonZeros()));
+   auto indices = file.createDataSet<SparseMatrix::Index>("indices", h5::DataSpace(X.nonZeros()));
    indices.write(X.innerIndexPtr());
 }
 
