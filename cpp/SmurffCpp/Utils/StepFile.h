@@ -8,6 +8,8 @@
 
 #include <highfive/H5File.hpp>
 
+#include <SmurffCpp/Types.h>
+
 namespace h5 = HighFive;
 
 namespace smurff {
