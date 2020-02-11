@@ -179,7 +179,7 @@ void Model::updateAggr(int m)
    m_num_aggr.at(m)++;
 }
 
-void Model::save(std::shared_ptr<const StepFile> sf, bool saveAggr) const
+void Model::save(std::shared_ptr<const StepFile> sf) const
 {
    std::uint64_t i = 0;
    for (auto U : m_factors)
@@ -188,7 +188,7 @@ void Model::save(std::shared_ptr<const StepFile> sf, bool saveAggr) const
    for (std::uint64_t m = 0; m < nmodes(); ++m)
    {
       sf->putModel(m, *m_factors[m]);
-      if (m_collect_aggr && saveAggr)
+      if (m_collect_aggr && m_save_aggr)
       {
          double n = m_num_aggr.at(m);
 

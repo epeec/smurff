@@ -38,7 +38,7 @@
 namespace smurff {
 
 StepFile::StepFile(h5::Group group, std::int32_t isample, bool checkpoint)
-   : m_group(group), m_isample(isample), m_checkpoint(checkpoint)
+   : m_isample(isample), m_group(group), m_checkpoint(checkpoint)
 {
    m_group.createAttribute<bool>(IS_CHECKPOINT_TAG, m_checkpoint);
    m_group.createAttribute<int>(NUMBER_TAG, m_isample);
@@ -94,7 +94,7 @@ bool StepFile::hasPred() const
 }
 
 void StepFile::putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample,
-                            int sample_iter, int burnin_iter) 
+                            int sample_iter, int burnin_iter) const
 {
    auto pred_group = m_group.getGroup(PRED_SEC_TAG);
    pred_group.createAttribute<double>(RMSE_AVG_TAG, rmse_avg);
@@ -112,7 +112,7 @@ void StepFile::getPredState(
    pred_group.getAttribute(RMSE_AVG_TAG).read(rmse_avg);
    pred_group.getAttribute(RMSE_1SAMPLE_TAG).read(rmse_1sample);
    pred_group.getAttribute(AUC_AVG_TAG).read(auc_avg);
-   pred_group.getAttribute>(AUC_1SAMPLE_TAG).read(auc_1sample);
+   pred_group.getAttribute(AUC_1SAMPLE_TAG).read(auc_1sample);
    pred_group.getAttribute(SAMPLE_ITER_TAG).read(sample_iter);
    pred_group.getAttribute(BURNIN_ITER_TAG).read(burnin_iter);
 
@@ -159,12 +159,13 @@ void StepFile::restoreModel(std::shared_ptr<Model> model, int skip_mode) const
    int nmodes = model->nmodes();
    for(int i=0; i<nmodes; ++i)
    {
-       std::shared_ptr<Matrix> mu, beta;
-       if hasDataset(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(i))
-         beta = matrix_io::eigen::read_matrix( LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(i))); 
+       std::shared_ptr<Vector> mu;
+       std::shared_ptr<Matrix> beta;
+       if (hasDataSet(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(i)))
+         beta = getMatrix( LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(i)); 
 
-       if hasDataset(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(i))
-         mu = matrix_io::eigen::read_matrix( LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(i))); 
+       if (hasDataSet(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(i)))
+         mu = getVector( LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(i)); 
 
        model->setLinkMatrix(i, beta, mu);
    }
@@ -223,17 +224,28 @@ std::shared_ptr<Matrix> StepFile::getMatrix(const std::string& section, const st
    Matrix data(dims[0], dims[1]);
    dataset.read(data.data());
 
-   if (data.IsVectorAtCompileTime || data.IsRowMajor)
-      return std::shared_ptr<Matrix>(data);
+   if (data.IsRowMajor)
+      return std::make_shared<Matrix>(data);
 
    // convert to ColMajor if needed (HDF5 always stores row-major)
-   std::make_shared<Matrix>(Eigen::Map<Eigen::Matrix<
+   return std::make_shared<Matrix>(Eigen::Map<Eigen::Matrix<
             typename Matrix::Scalar,
             Matrix::RowsAtCompileTime,
             Matrix::ColsAtCompileTime,
             Matrix::ColsAtCompileTime==1?Eigen::ColMajor:Eigen::RowMajor,
             Matrix::MaxRowsAtCompileTime,
             Matrix::MaxColsAtCompileTime>>(data.data(), dims[0], dims[1]));
+   
+}
+
+std::shared_ptr<Vector> StepFile::getVector(const std::string& section, const std::string& tag) const
+{
+   auto dataset = m_group.getGroup(section).getDataSet(tag);
+   std::vector<size_t> dims = dataset.getDimensions();
+   THROWERROR_ASSERT(dims[1] == 1);
+   Vector data(dims[0]);
+   dataset.read(data.data());
+   return std::make_shared<Vector>(data);
 }
 
 std::shared_ptr<SparseMatrix> StepFile::getSparseMatrix(const std::string& section, const std::string& tag) const
@@ -263,13 +275,13 @@ std::shared_ptr<SparseMatrix> StepFile::getSparseMatrix(const std::string& secti
    THROWERROR_ASSERT(indices.getDataType() == h5::AtomicType<SparseMatrix::Index>());
    indices.read(X.innerIndexPtr());
 
-   return std::shared_ptr<SparseMatrix>(X);
+   return std::make_shared<SparseMatrix>(X);
 }
 
 void StepFile::putMatrix(const std::string& section, const std::string& tag, const Matrix &M) const
 {
    h5::Group group = m_group.getGroup(section);
-   h5::DataSet dataset = group.createDataSet<Matrix::Scalar>(DataSpace::From(M)));
+   h5::DataSet dataset = group.createDataSet<Matrix::Scalar>(tag, h5::DataSpace::From(M));
 
    Eigen::Ref<
         const Eigen::Matrix<

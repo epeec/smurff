@@ -83,7 +83,8 @@ namespace smurff {
       bool hasDataSet(const std::string &section, const std::string& tag) const;
 
       std::shared_ptr<Matrix> getMatrix(const std::string &section, const std::string& tag) const;
-      std::shared_ptr<Matrix> getSparseMatrix(const std::string &section, const std::string& tag) const;
+      std::shared_ptr<Vector> getVector(const std::string &section, const std::string& tag) const;
+      std::shared_ptr<SparseMatrix> getSparseMatrix(const std::string &section, const std::string& tag) const;
 
       void putMatrix(const std::string &section, const std::string& tag, const Matrix &) const;
       void putSparseMatrix(const std::string &section, const std::string& tag, const SparseMatrix &) const;
