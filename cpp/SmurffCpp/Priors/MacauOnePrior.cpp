@@ -164,22 +164,16 @@ void MacauOnePrior::sample_beta_precision()
 bool MacauOnePrior::save(std::shared_ptr<const StepFile> sf) const
 {
    NormalOnePrior::save(sf);
-
-   std::string path = sf->makeLinkMatrixFileName(m_mode);
-   matrix_io::eigen::write_matrix(path, beta);
-
+   sf->putLinkMatrix(getMode(), beta);
+   sf->putMu(getMode(), hyperMu());
    return true;
 }
 
 void MacauOnePrior::restore(std::shared_ptr<const StepFile> sf)
 {
    NormalOnePrior::restore(sf);
-
-   std::string path = sf->getLinkMatrixFileName(m_mode);
-
-   THROWERROR_FILE_NOT_EXIST(path);
-
-   matrix_io::eigen::read_matrix(path, beta);
+   beta = *sf->getLinkMatrix(getMode());
+   hyperMu() = *sf->getMu(getMode());
 }
 
 std::ostream& MacauOnePrior::status(std::ostream &os, std::string indent) const

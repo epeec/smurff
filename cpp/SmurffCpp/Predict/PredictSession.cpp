@@ -147,17 +147,16 @@ bool PredictSession::step()
 void PredictSession::save()
 {
     //save this iteration
-    std::shared_ptr<StepFile> stepFile = getRootFile()->createSampleStepFile(m_iter, false);
+    std::shared_ptr<StepFile> stepFile = getRootFile()->createSampleStepFile(m_iter);
 
     if (m_config.getVerbose())
     {
-        std::cout << "-- Saving predictions into '" << stepFile->getStepIniFileName() << "'." << std::endl;
+        std::cout << "-- Saving predictions into '" << m_pred_rootfile->getFullPath() << "'." << std::endl;
     }
 
-    stepFile->savePred(m_result);
+    m_result->save(stepFile);
 
     m_pred_rootfile->addCsvStatusLine(*getStatus());
-    m_pred_rootfile->flushLast();
 }
 
 std::shared_ptr<StatusItem> PredictSession::getStatus() const

@@ -44,9 +44,9 @@ namespace smurff {
       std::shared_ptr<Matrix> getModel(std::uint64_t index) const;
       std::shared_ptr<Matrix> getMu(std::uint64_t index) const;
       std::shared_ptr<Matrix> getLinkMatrix(std::uint32_t mode) const;
+
       std::shared_ptr<Matrix> getPred() const;
       void getPredState(double &rmse_avg, double &rmse_1sample, double &auc_avg, double &auc_1sample, int &sample_iter, int &burnin_iter) const;
-      std::shared_ptr<Matrix> getPredState() const;
       std::shared_ptr<Matrix> getPredAvg() const;
       std::shared_ptr<Matrix> getPredVar() const;
 
@@ -54,8 +54,9 @@ namespace smurff {
       void putPostMuLambda(std::uint64_t index, const Matrix &, const Matrix &) const;
       void putMu(std::uint64_t index, const Matrix &) const;
       void putLinkMatrix(std::uint32_t mode, const Matrix &) const;
+
       void putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample, int sample_iter, int burnin_iter) const;
-      void putPredAvgVar(const SparseMatrix &, const SparseMatrix &) const;
+      void putPredAvgVar(const SparseMatrix &, const SparseMatrix &, const SparseMatrix &) const;
 
    public:
       void save(std::shared_ptr<const Model> model, std::shared_ptr<const Result> pred, const std::vector<std::shared_ptr<ILatentPrior> >& priors) const;

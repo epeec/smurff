@@ -23,6 +23,7 @@
 #define PRED_STATE_TAG "pred_state"
 #define PRED_AVG_TAG "pred_avg"
 #define PRED_VAR_TAG "pred_var"
+#define PRED_ONE_TAG "pred_1sample"
 
 #define RMSE_AVG_TAG "rmse_avg"
 #define RMSE_1SAMPLE_TAG "rmse_1sample"
@@ -77,11 +78,6 @@ std::shared_ptr<Matrix> StepFile::getLinkMatrix(std::uint32_t mode) const
    return getMatrix(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode));
 }
 
-bool StepFile::hasMu(std::uint64_t index) const
-{
-   return hasDataSet(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index));
-}
-
 std::shared_ptr<Matrix> StepFile::getMu(std::uint64_t index) const
 {
    return getMatrix(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index));
@@ -89,8 +85,7 @@ std::shared_ptr<Matrix> StepFile::getMu(std::uint64_t index) const
 
 bool StepFile::hasPred() const
 {
-   return hasDataSet(PRED_SEC_TAG, PRED_AVG_TAG) && 
-          hasDataSet(PRED_SEC_TAG, PRED_VAR_TAG);
+   return hasDataSet(PRED_SEC_TAG, PRED_AVG_TAG);
 }
 
 void StepFile::putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample,
@@ -118,10 +113,11 @@ void StepFile::getPredState(
 
 }
 
-void StepFile::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var) const
+void StepFile::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const SparseMatrix &one_sample) const
 {
    putSparseMatrix(PRED_SEC_TAG, PRED_AVG_TAG, avg);
    putSparseMatrix(PRED_SEC_TAG, PRED_VAR_TAG, var);
+   putSparseMatrix(PRED_SEC_TAG, PRED_ONE_TAG, one_sample);
 }
 
 

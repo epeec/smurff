@@ -97,8 +97,9 @@ void Result::save(std::shared_ptr<const StepFile> sf) const
    {
       auto pred_avg = toMatrix([](const ResultItem &p) { return p.pred_avg; });
       auto pred_var = toMatrix([](const ResultItem &p) { return p.var; });
+      auto pred_1sample = toMatrix([](const ResultItem &p) { return p.pred_1sample; });
 
-      sf->putPredAvgVar(*pred_avg, *pred_var);
+      sf->putPredAvgVar(*pred_avg, *pred_var, *pred_1sample);
    }
 
    sf->putPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);

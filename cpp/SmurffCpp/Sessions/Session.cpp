@@ -50,22 +50,19 @@ void Session::fromConfig(const Config &cfg)
     if (!cfg.getRootName().empty())
     {
         // open root file
-        m_rootFile = std::make_shared<RootFile>(cfg.getRootPrefix(), cfg.getSaveExtension(), false);
+        m_rootFile = std::make_shared<RootFile>(cfg.getRootPrefix());
     }
     else if (m_config.getSaveFreq() || m_config.getCheckpointFreq())
     {
 
         // create root file
-        m_rootFile = std::make_shared<RootFile>(m_config.getSavePrefix(), m_config.getSaveExtension(), true);
+        m_rootFile = std::make_shared<RootFile>(m_config.getSavePrefix());
 
         //save config
         m_rootFile->saveConfig(m_config);
 
         //csv status config
         m_rootFile->createCsvStatusFile();
-
-        //flush record about options.ini
-        m_rootFile->flushLast();
     }
 
     //base functionality
@@ -265,7 +262,7 @@ void Session::save(int iteration)
         else
         {
             //do save this iteration
-            std::shared_ptr<StepFile> stepFile = m_rootFile->createSampleStepFile(isample, isample == m_config.getNSamples());
+            std::shared_ptr<StepFile> stepFile = m_rootFile->createSampleStepFile(isample);
             saveInternal(stepFile);
         }
     }
@@ -277,15 +274,11 @@ void Session::saveInternal(std::shared_ptr<StepFile> stepFile)
 {
     if (m_config.getVerbose())
     {
-        std::cout << "-- Saving model, predictions,... into '" << stepFile->getStepIniFileName() << "'." << std::endl;
+        std::cout << "-- Saving model, predictions,... into '" << m_rootFile->getFullPath() << "'." << std::endl;
     }
     double start = tick();
 
     stepFile->save(m_model, m_pred, m_priors);
-
-
-    //flush last item in a root file
-    m_rootFile->flushLast();
 
     double stop = tick();
     if (m_config.getVerbose())
@@ -316,7 +309,7 @@ bool Session::restore(int &iteration)
     {
         if (m_config.getVerbose())
         {
-            std::cout << "-- Restoring model, predictions,... from '" << stepFile->getStepIniFileName() << "'." << std::endl;
+            std::cout << "-- Restoring model, predictions,... from '" << m_rootFile->getFullPath() << "'." << std::endl;
         }
 
         stepFile->restore(m_model, m_pred, m_priors);

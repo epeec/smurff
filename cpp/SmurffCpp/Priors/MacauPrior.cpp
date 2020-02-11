@@ -172,22 +172,16 @@ void MacauPrior::addSideInfo(const std::shared_ptr<ISideInfo>& side, double bp, 
 bool MacauPrior::save(std::shared_ptr<const StepFile> sf) const
 {
     NormalPrior::save(sf);
-
-   std::string path0 = sf->makeLinkMatrixFileName(m_mode);
-   matrix_io::eigen::write_matrix(path0, beta());
-   std::string path1 = sf->makeMuFileName(m_mode);
-   matrix_io::eigen::write_matrix(path1, hyperMu());
-
+    sf->putLinkMatrix(getMode(), beta());
+    sf->putMu(getMode(), hyperMu());
     return true;
 }
 
 void MacauPrior::restore(std::shared_ptr<const StepFile> sf)
 {
     NormalPrior::restore(sf);
-
-    std::string path = sf->getLinkMatrixFileName(m_mode);
-
-   matrix_io::eigen::read_matrix(path, beta());
+    m_beta = sf->getLinkMatrix(getMode());
+    hyperMu() = *sf->getMu(getMode());
 }
 
 std::ostream& MacauPrior::info(std::ostream &os, std::string indent)
