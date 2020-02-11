@@ -103,6 +103,8 @@ std::shared_ptr<StepFile> RootFile::createCheckpointStepFile(std::int32_t isampl
 std::shared_ptr<StepFile> RootFile::createStepFileInternal(std::int32_t isample, bool checkpoint)
 {
    std::string name = std::string(checkpoint ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(isample);
+   if (checkpoint)
+      m_h5.createAttribute(LAST_CHECKPOINT_TAG, name);
    h5::Group group = m_h5.createGroup(name);
    return std::make_shared<StepFile>(group, isample, checkpoint);
 }
@@ -125,10 +127,15 @@ void RootFile::removeStepFileInternal(std::int32_t isample, bool checkpoint)
 
 std::shared_ptr<StepFile> RootFile::openLastCheckpoint() const
 {
-   std::string lastCheckpointItem;
-   m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
-   h5::Group group = m_h5.getGroup(lastCheckpointItem);
-   return std::make_shared<StepFile>(group);
+   if (m_h5.hasAttribute(LAST_CHECKPOINT_TAG))
+   {
+      std::string lastCheckpointItem;
+      m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
+      h5::Group group = m_h5.getGroup(lastCheckpointItem);
+      return std::make_shared<StepFile>(group);
+   }
+
+   return std::shared_ptr<StepFile>();
 }
 
 std::vector<std::shared_ptr<StepFile>> RootFile::openSampleStepFiles() const
