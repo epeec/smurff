@@ -58,7 +58,7 @@ StepFile::StepFile(h5::Group group)
 unsigned StepFile::getNModes() const
 {
    unsigned nmodes;
-   m_group.getGroup(LATENTS_SEC_TAG).getAttribute(NUM_MODES_TAG).read(nmodes);
+   m_group.getAttribute(NUM_MODES_TAG).read(nmodes);
    return nmodes;
 }
 
@@ -72,9 +72,13 @@ std::shared_ptr<Matrix> StepFile::getModel(std::uint64_t index) const
    return getMatrix(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
 }
 
-void StepFile::putModel(std::uint64_t index, const Matrix &M) const
+void StepFile::putModel(const std::vector<std::shared_ptr<Matrix>> &F) const
 {
-   putMatrix(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index), M);
+   m_group.createAttribute(NUM_MODES_TAG, F.size());
+   for (std::uint64_t m = 0; m < F.size(); ++m)
+   {
+      putMatrix(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(m), *F[m]);
+   }
 }
 
 bool StepFile::hasLinkMatrix(std::uint32_t mode) const
@@ -261,6 +265,7 @@ std::shared_ptr<Matrix> StepFile::getMatrix(const std::string& section, const st
 
 std::shared_ptr<Vector> StepFile::getVector(const std::string& section, const std::string& tag) const
 {
+
    auto dataset = m_group.getGroup(section).getDataSet(tag);
    std::vector<size_t> dims = dataset.getDimensions();
    THROWERROR_ASSERT(dims[1] == 1);
@@ -301,6 +306,9 @@ std::shared_ptr<SparseMatrix> StepFile::getSparseMatrix(const std::string& secti
 
 void StepFile::putMatrix(const std::string& section, const std::string& tag, const Matrix &M) const
 {
+   if (!m_group.exist(section))
+      m_group.createGroup(section);
+
    h5::Group group = m_group.getGroup(section);
    h5::DataSet dataset = group.createDataSet<Matrix::Scalar>(tag, h5::DataSpace::From(M));
 
@@ -320,6 +328,9 @@ void StepFile::putMatrix(const std::string& section, const std::string& tag, con
 
 void StepFile::putSparseMatrix(const std::string& section, const std::string& tag, const SparseMatrix &X) const
 {
+   if (!m_group.exist(section))
+      m_group.createGroup(section);
+
    h5::Group sparse_group = m_group.getGroup(section).createGroup(tag);
 
    sparse_group.createAttribute<std::string>("h5sparse_format", (SparseMatrix::IsRowMajor ? "csr" : "csc"));

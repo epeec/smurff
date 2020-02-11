@@ -24,7 +24,7 @@ namespace smurff {
    {
    private:
       std::int32_t m_isample;
-      h5::Group m_group;
+      mutable h5::Group m_group;
       bool m_checkpoint;
       bool m_final;
 
@@ -50,7 +50,7 @@ namespace smurff {
       std::shared_ptr<Matrix> getPredAvg() const;
       std::shared_ptr<Matrix> getPredVar() const;
 
-      void putModel(std::uint64_t index, const Matrix &) const;
+      void putModel(const std::vector<std::shared_ptr<Matrix>> &) const;
       void putPostMuLambda(std::uint64_t index, const Matrix &, const Matrix &) const;
       void putMu(std::uint64_t index, const Matrix &) const;
       void putLinkMatrix(std::uint64_t mode, const Matrix &) const;
