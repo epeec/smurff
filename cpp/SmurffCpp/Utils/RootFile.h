@@ -63,9 +63,6 @@ public:
    std::vector<std::shared_ptr<StepFile>> openSampleStepFiles() const;
 
 public:
-   void flushLast() const;
-
-public:
   void createCsvStatusFile();
   void addCsvStatusLine(const StatusItem &status_item) const;
 };

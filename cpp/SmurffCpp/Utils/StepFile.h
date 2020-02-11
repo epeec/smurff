@@ -53,7 +53,7 @@ namespace smurff {
       void putModel(std::uint64_t index, const Matrix &) const;
       void putPostMuLambda(std::uint64_t index, const Matrix &, const Matrix &) const;
       void putMu(std::uint64_t index, const Matrix &) const;
-      void putLinkMatrix(std::uint32_t mode, const Matrix &) const;
+      void putLinkMatrix(std::uint64_t mode, const Matrix &) const;
 
       void putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample, int sample_iter, int burnin_iter) const;
       void putPredAvgVar(const SparseMatrix &, const SparseMatrix &, const SparseMatrix &) const;

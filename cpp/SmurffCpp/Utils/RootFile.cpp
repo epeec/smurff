@@ -28,6 +28,16 @@ RootFile::RootFile(std::string path)
 {
 }
 
+std::string RootFile::getFullPath() const
+{
+   return m_path;
+}
+
+std::string RootFile::getPrefix() const
+{
+   return dirName(m_path);
+}
+
 std::string RootFile::getOptionsFileName() const
 {
    return getPrefix() + "options.ini";

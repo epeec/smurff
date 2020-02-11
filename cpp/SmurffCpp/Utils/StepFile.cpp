@@ -35,6 +35,8 @@
 #define LATENTS_PREFIX "latents_"
 #define LINK_MATRIX_PREFIX "link_matrix_"
 #define MU_PREFIX "mu_"
+#define POST_MU_PREFIX "post_mu_"
+#define POST_LAMBDA_PREFIX "post_lambda_"
 
 namespace smurff {
 
@@ -53,6 +55,13 @@ StepFile::StepFile(h5::Group group)
 }
 
 //name methods
+unsigned StepFile::getNModes() const
+{
+   unsigned nmodes;
+   m_group.getGroup(LATENTS_SEC_TAG).getAttribute(NUM_MODES_TAG).read(nmodes);
+   return nmodes;
+}
+
 bool StepFile::hasModel(std::uint64_t index) const
 {
    return hasDataSet(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
@@ -81,6 +90,22 @@ std::shared_ptr<Matrix> StepFile::getLinkMatrix(std::uint32_t mode) const
 std::shared_ptr<Matrix> StepFile::getMu(std::uint64_t index) const
 {
    return getMatrix(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index));
+}
+
+void StepFile::putLinkMatrix(std::uint64_t index, const Matrix &M) const
+{
+   putMatrix(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(index), M);
+}
+
+void StepFile::putMu(std::uint64_t index, const Matrix &M) const
+{
+   putMatrix(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), M);
+}
+
+void StepFile::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda) const
+{
+   putMatrix(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
+   putMatrix(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
 }
 
 bool StepFile::hasPred() const

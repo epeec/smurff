@@ -236,9 +236,6 @@ void Session::save(int iteration)
 
             //remove previous iteration
             m_rootFile->removeCheckpointStepFile(icheckpointPrev);
-
-            //flush last item in a root file
-            m_rootFile->flushLast();
         }
 
         //upddate counters

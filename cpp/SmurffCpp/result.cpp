@@ -131,8 +131,6 @@ void Result::toCsv(std::string filename) const
 
 void Result::restore(std::shared_ptr<const StepFile> sf)
 {
-   restorePred(sf);
-   
    sf->getPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
 }
 
