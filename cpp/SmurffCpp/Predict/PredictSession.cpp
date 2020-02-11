@@ -103,7 +103,7 @@ void PredictSession::init()
     if (m_config.getSaveFreq())
     {
         // create root file
-        m_pred_rootfile = std::make_shared<RootFile>(m_config.getSavePrefix(), m_config.getSaveExtension(), true);
+        m_pred_rootfile = std::make_shared<RootFile>(m_config.getSavePrefix());
         m_pred_rootfile->createCsvStatusFile();
         m_pred_rootfile->flushLast();
     }
