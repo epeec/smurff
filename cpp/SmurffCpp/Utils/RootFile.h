@@ -21,7 +21,7 @@ private:
    h5::File m_h5;
 
 public:
-   RootFile(std::string path);
+   RootFile(std::string path, bool create = false);
 
 
 public:

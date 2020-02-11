@@ -23,8 +23,9 @@ namespace h5 = HighFive;
 
 namespace smurff {
 
-RootFile::RootFile(std::string path)
-   : m_path(path), m_h5(h5::File(path))
+RootFile::RootFile(std::string path, bool create)
+   : m_path(path)
+   , m_h5(path, create ? h5::File::Create : h5::File::ReadOnly)
 {
 }
 

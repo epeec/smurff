@@ -56,7 +56,7 @@ void Session::fromConfig(const Config &cfg)
     {
 
         // create root file
-        m_rootFile = std::make_shared<RootFile>(m_config.getSavePrefix());
+        m_rootFile = std::make_shared<RootFile>(m_config.getSavePrefix() + "root.h5", true);
 
         //save config
         m_rootFile->saveConfig(m_config);
