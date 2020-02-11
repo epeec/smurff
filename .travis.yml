@@ -19,6 +19,7 @@ addons:
       - libboost-all-dev
       - libopenmpi-dev
       - libeigen3-dev
+      - libhdf5-dev
 
 script:
     - cd "${TRAVIS_BUILD_DIR}"
