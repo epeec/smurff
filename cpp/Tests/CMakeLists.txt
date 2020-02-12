@@ -1,4 +1,4 @@
-FILE (GLOB HEADER_FILES "catch.hpp")
+FILE (GLOB HEADER_FILES "catch.hpp" "Tests.h")
 source_group ("Header Files" FILES ${HEADER_FILES})
 
 FILE (GLOB SOURCE_FILES "tests.cpp"
@@ -6,11 +6,14 @@ FILE (GLOB SOURCE_FILES "tests.cpp"
                         "TestsTensorIO.cpp"
                         "TestsMatrixConfig.cpp"
                         "TestsTensorConfig.cpp"
-     	  	   	        "TestsPVec.cpp"
+                        "TestsPVec.cpp"
                         "TestsTensor.cpp"
                         "TestsMatrixUtils.cpp"
                         "TestsLinop.cpp"
+                        "TestsInputData.cpp"
                         "TestsSmurff.cpp"
+                        "TestsMatrixVsTensor.cpp"
+                        "TestsPredict.cpp"
                         "TestsSparseSideInfo.cpp"
                         )
                         
