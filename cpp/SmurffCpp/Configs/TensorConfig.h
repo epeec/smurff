@@ -37,8 +37,8 @@ namespace smurff
       std::vector<double>  m_values;
 
    private:
+      PVec<>      m_pos;
       std::string m_filename;
-      std::shared_ptr<PVec<>> m_pos;
 
       std::vector<const std::uint32_t *> vec_to_ptr(const std::vector<std::vector<std::uint32_t>> &vec)
       {
@@ -51,16 +51,16 @@ namespace smurff
       // Empty c'tor for filling later
       TensorConfig(bool isDense, bool isBinary, bool isScarce,
                    std::uint64_t nmodes, std::uint64_t nnz, 
-                   const NoiseConfig& noiseConfig);
+                   const NoiseConfig& noiseConfig, PVec<> pos = {});
 
       // Dense double tensor constructors
       TensorConfig(const std::vector<std::uint64_t>& dims,
                    const double* values,
-                   const NoiseConfig& noiseConfig);
+                   const NoiseConfig& noiseConfig, PVec<> pos = {});
       TensorConfig(const std::vector<std::uint64_t>& dims,
                    const std::vector<double> &values,
-                   const NoiseConfig& noiseConfig) 
-       : TensorConfig(dims, values.data(), noiseConfig) {}
+                   const NoiseConfig& noiseConfig, PVec<> pos = {}) 
+       : TensorConfig(dims, values.data(), noiseConfig, pos) {}
 
       // Sparse double tensor constructors
       TensorConfig(const std::vector<std::uint64_t>& dims,
@@ -68,27 +68,27 @@ namespace smurff
                    const std::vector<const std::uint32_t *>& columns,
                    const double* values,
                    const NoiseConfig& noiseConfig,
-                   bool isScarce);
+                   bool isScarce, PVec<> pos = {});
 
       TensorConfig(const std::vector<std::uint64_t> &dims,
                    const std::vector<std::vector<std::uint32_t>> &columns,
                    const std::vector<double> values,
                    const NoiseConfig &noiseConfig,
-                   bool isScarce) 
-          : TensorConfig(dims, values.size(), vec_to_ptr(columns), values.data(), noiseConfig, isScarce) {} 
+                   bool isScarce, PVec<> pos = {}) 
+          : TensorConfig(dims, values.size(), vec_to_ptr(columns), values.data(), noiseConfig, isScarce, pos) {} 
 
       // Sparse binary tensor constructors
       TensorConfig(const std::vector<std::uint64_t>& dims,
                    std::uint64_t nnz,
                    const std::vector<const std::uint32_t *>& columns,
                    const NoiseConfig& noiseConfig,
-                   bool isScarce);
+                   bool isScarce, PVec<> pos = {});
 
       TensorConfig(const std::vector<std::uint64_t> &dims,
                    const std::vector<std::vector<std::uint32_t>> &columns,
                    const NoiseConfig &noiseConfig,
-                   bool isScarce) 
-          : TensorConfig(dims, columns[0].size(), vec_to_ptr(columns), noiseConfig, isScarce) {} 
+                   bool isScarce, PVec<> pos = {}) 
+          : TensorConfig(dims, columns[0].size(), vec_to_ptr(columns), noiseConfig, isScarce, pos) {} 
 
    public:
       virtual ~TensorConfig();
