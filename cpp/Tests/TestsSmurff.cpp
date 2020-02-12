@@ -147,20 +147,6 @@ void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem> &actualResultItems, cons
   }
 }
 
-void runAndCheck(int nr, Config config) {
-  std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-  session->run();
-
-  double actualRmseAvg = session->getRmseAvg();
-  const std::vector<ResultItem> &actualResults = session->getResultItems();
-
-  PRINT_ACTUAL_RESULTS(nr)
-  double &expectedRmseAvg = expectedResults[nr].rmseAvg;
-  auto &expectedResultItems = expectedResults[nr].resultItems;
-
-  REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-  REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
-}
 
 struct SmurffTest {
   Config config;
@@ -168,11 +154,6 @@ struct SmurffTest {
   SmurffTest(const MatrixConfig &train, const MatrixConfig &test, std::vector<PriorTypes> priors) : config(genConfig(train, test, priors)) {}
 
   SmurffTest(const TensorConfig &train, const TensorConfig &test, std::vector<PriorTypes> priors) : config(genConfig(train, test, priors)) {}
-
-  SmurffTest &addSideInfoConfig(int m, std::shared_ptr<SideInfoConfig> c) {
-    config.addSideInfoConfig(m, c);
-    return *this;
-  }
 
   SmurffTest &addSideInfoConfig(int m, const MatrixConfig &c,  bool direct = true, double tol = 1e-6)
   {
@@ -189,7 +170,21 @@ struct SmurffTest {
     return *this;
   }
 
-  void runAndCheck(int nr) { ::runAndCheck(nr, config); }
+  void runAndCheck(int nr) {
+      std::shared_ptr<ISession> session = SessionFactory::create_session(config);
+      session->run();
+
+      double actualRmseAvg = session->getRmseAvg();
+      const std::vector<ResultItem> &actualResults = session->getResultItems();
+
+      PRINT_ACTUAL_RESULTS(nr)
+          double &expectedRmseAvg = expectedResults[nr].rmseAvg;
+      auto &expectedResultItems = expectedResults[nr].resultItems;
+
+      REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
+      REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+  }
+
 };
 
 void compareSessions(Config &matrixSessionConfig, Config &tensorSessionConfig) {
