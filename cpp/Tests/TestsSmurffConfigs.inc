@@ -86,51 +86,40 @@ std::shared_ptr<MatrixConfig> colAuxDense() {
 
 // side info
 
-std::shared_ptr<MatrixConfig> rowSideDenseMatrix() {
-  NoiseConfig nc(NoiseTypes::sampled);
-  nc.setPrecision(10.0);
+static NoiseConfig sampled_nc = []() {
+    NoiseConfig nc(NoiseTypes::sampled);
+    nc.setPrecision(10.0);
+    return nc;
+}();
 
-  MatrixConfig rowSideInfoDenseMatrixConfig(3, 1, {1., 2., 3.},
-                                     nc);
+std::shared_ptr<MatrixConfig> rowSideDenseMatrix() {
+  MatrixConfig rowSideInfoDenseMatrixConfig(3, 1, {1., 2., 3.}, sampled_nc);
   return std::make_shared<MatrixConfig>(rowSideInfoDenseMatrixConfig);
 }
 
 std::shared_ptr<MatrixConfig> colSideDenseMatrix() {
-  NoiseConfig nc(NoiseTypes::sampled);
-  nc.setPrecision(10.0);
-
-  MatrixConfig colSideInfoDenseMatrixConfig(4, 1, {1., 2., 3., 4.},
-                                     nc);
+  MatrixConfig colSideInfoDenseMatrixConfig(4, 1, {1., 2., 3., 4.}, sampled_nc);
   return std::make_shared<MatrixConfig>(colSideInfoDenseMatrixConfig);
 }
 
 std::shared_ptr<MatrixConfig> rowSideSparseMatrix() {
-  NoiseConfig nc(NoiseTypes::sampled);
-  nc.setPrecision(10.0);
-
   MatrixConfig rowSideInfoSparseMatrixConfig(3, 1, {0, 1, 2},
                                      {0, 0, 0},
-                                     {1., 2., 3.}, nc,
+                                     {1., 2., 3.}, sampled_nc,
                                      true);
   return std::make_shared<MatrixConfig>(rowSideInfoSparseMatrixConfig);
 }
 
 std::shared_ptr<MatrixConfig> colSideSparseMatrix() {
-  NoiseConfig nc(NoiseTypes::sampled);
-  nc.setPrecision(10.0);
-
   MatrixConfig colSideInfoSparseMatrixConfig(4, 1, {0, 1, 2, 3},
                                      {0, 0, 0, 0},
-                                     {1., 2., 3., 4.}, nc,
+                                     {1., 2., 3., 4.}, sampled_nc,
                                      true);
   return std::make_shared<MatrixConfig>(colSideInfoSparseMatrixConfig);
 }
 
 std::shared_ptr<MatrixConfig> rowSideDenseMatrix3d() {
-  NoiseConfig nc(NoiseTypes::sampled);
-  nc.setPrecision(10.0);
-
   MatrixConfig rowSideInfoDenseMatrixConfig(2, 3, {1., 2., 3., 4., 5., 6.},
-                                     nc);
+                                     sampled_nc);
   return std::make_shared<MatrixConfig>(rowSideInfoDenseMatrixConfig);
 }
