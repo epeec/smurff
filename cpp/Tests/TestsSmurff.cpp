@@ -511,6 +511,8 @@ TEST_CASE("matrix vs 2D-tensor"
   Config matrixSessionConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
   Config tensorSessionConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
+
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
