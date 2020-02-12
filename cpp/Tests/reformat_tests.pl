@@ -17,7 +17,8 @@ sub assert_dead
     }
 }
 
-my @matrixconfig = ();
+my $matrixconfig = "";
+my $tensorconfig = "";
 my $sideconfig = "";
 my $priorconfig = "";
 my $in_testcase = 0;
@@ -30,10 +31,17 @@ while (<>) {
     # Config tensorSessionConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal});
     # compareSessions(matrixSessionConfig, tensorSessionConfig);
 
-    if ($in_testcase && $line =~ /Config (matrix|tensor)\w+Config = genConfig\((\w+), (\w+), ({.+})\)/) {
+    if ($in_testcase && $line =~ /Config (matrix|tensor)\w+Config = genConfig\((\w+, \w+), ({.+})\)/) {
         #print(join("\n", $line, $1, $2, $3, $4, $5));
-        push @matrixconfig, $2, $3;
-        $priorconfig = $4;
+        if ($1 eq "matrix")
+        {
+            $matrixconfig = $2;
+        }
+        elsif ($1 eq "tensor")
+        {
+            $tensorconfig = $2;
+        }
+        $priorconfig = $3;
         $printline = 0;
     }
 
@@ -43,12 +51,13 @@ while (<>) {
 
     if ($in_testcase && $line =~ /compareSessions/) {
         # CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
-        $line = "  CompareTest( " . join(", ", @matrixconfig) . ", $priorconfig)$sideconfig.runAndCheck();\n"
+        $line = "  CompareTest($matrixconfig, $tensorconfig, $priorconfig)$sideconfig.runAndCheck();\n";
     }
 
     if ($line =~ /TEST_CASE/)
     {
-        @matrixconfig = ();
+        $matrixconfig = "";
+        $tensorconfig = "";
         $priorconfig = "";
         $sideconfig = "";
         $in_testcase = 1;

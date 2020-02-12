@@ -203,6 +203,13 @@ struct CompareTest
       return *this;
   }
 
+  CompareTest &addSideInfoConfig(int m, std::shared_ptr<SideInfoConfig> c)
+  {
+      matrixConfig.addSideInfoConfig(m, c);
+      tensorConfig.addSideInfoConfig(m, c);
+      return *this;
+  }
+
   void runAndCheck() {
       compareSessions(matrixConfig, tensorConfig);
   }
@@ -508,9 +515,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normal --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
-  Config tensorSessionConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
 
   CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
 }
@@ -521,9 +526,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normal --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
-  Config tensorSessionConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
 }
 
 //             2. dense matrix
@@ -534,9 +537,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::spikeandslab});
-  Config tensorSessionConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::spikeandslab});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::spikeandslab}).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -545,9 +546,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::spikeandslab});
-  Config tensorSessionConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::spikeandslab});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::spikeandslab}).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -556,9 +555,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab normal --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::normal});
-  Config tensorSessionConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::normal});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::normal}).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -567,9 +564,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab normal --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::normal});
-  Config tensorSessionConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::normal});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::normal}).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -578,9 +573,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-  Config tensorSessionConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::spikeandslab}).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -589,9 +582,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-  Config tensorSessionConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::spikeandslab});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::spikeandslab}).runAndCheck();
 }
 
 //==========================================================================
@@ -602,9 +593,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normalone --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normalone});
-  Config tensorSessionConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normalone});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normalone}).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -613,9 +602,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normalone --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normalone});
-  Config tensorSessionConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normalone});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normalone}).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -624,9 +611,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normal --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normalone, PriorTypes::normal});
-  Config tensorSessionConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normal});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normal}).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -635,9 +620,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normal --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::normalone, PriorTypes::normal});
-  Config tensorSessionConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normal});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normal}).runAndCheck();
 }
 
 //             2. dense matrix
@@ -648,9 +631,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normalone --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normalone, PriorTypes::normalone});
-  Config tensorSessionConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normalone});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normalone}).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -659,9 +640,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normalone --aux-data none none",
           TAG_VS_TESTS) {
-  Config matrixSessionConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::normalone, PriorTypes::normalone});
-  Config tensorSessionConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normalone});
-  compareSessions(matrixSessionConfig, tensorSessionConfig);
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normalone}).runAndCheck();
 }
 
 //==========================================================================
@@ -675,9 +654,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  Config tensorRunConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  Config matrixRunConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  compareSessions(tensorRunConfig, matrixRunConfig);
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -689,9 +666,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  Config tensorRunConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  Config matrixRunConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  compareSessions(tensorRunConfig, matrixRunConfig);
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -703,9 +678,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  Config tensorRunConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  Config matrixRunConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  compareSessions(tensorRunConfig, matrixRunConfig);
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -717,9 +690,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  Config tensorRunConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  Config matrixRunConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  compareSessions(tensorRunConfig, matrixRunConfig);
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck();
 }
 
 TEST_CASE("PredictSession/BPMF") {
