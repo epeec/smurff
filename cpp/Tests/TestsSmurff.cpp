@@ -94,41 +94,18 @@ Config genConfig(const C& train,
   return config;
 }
 
-MatrixConfig trainDenseMatrix() {
-  return MatrixConfig(3, 4, {1., 5., 9.,  2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
-}
-
-TensorConfig trainDenseTensor2d() {
-  return TensorConfig({3, 4}, {1., 5., 9.,  2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
-}
-
-TensorConfig trainDenseTensor3d() {
-  return TensorConfig({2, 3, 4}, {1.,  2.,  3.,  4.,  5.,  6.,  7.,  8., 9.,  10., 11., 12., 13., 14., 15., 16., 17., 18., 19., 20., 21., 22., 23., 24.}, fixed_ncfg);
-}
+MatrixConfig trainDenseMatrix(3, 4, {1., 5., 9.,  2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
+TensorConfig trainDenseTensor2d({3, 4}, {1., 5., 9.,  2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
+TensorConfig trainDenseTensor3d({2, 3, 4}, {1.,  2.,  3.,  4.,  5.,  6.,  7.,  8., 9.,  10., 11., 12., 13., 14., 15., 16., 17., 18., 19., 20., 21., 22., 23., 24.}, fixed_ncfg);
 
 // sparse train data (matrix/tensor 2d)
-
-MatrixConfig trainSparseMatrix() {
-  return MatrixConfig(3, 4, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
-}
-
-TensorConfig trainSparseTensor2d() {
-  return TensorConfig({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
-}
+MatrixConfig trainSparseMatrix(3, 4, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
+TensorConfig trainSparseTensor2d({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
 
 // sparse test data (matrix/tensor 2d/tensor 3d)
-
-MatrixConfig testSparseMatrix() {
-  return MatrixConfig(3, 4, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
-}
-
-TensorConfig testSparseTensor2d() {
-  return TensorConfig({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
-}
-
-TensorConfig testSparseTensor3d() {
-  return TensorConfig({2, 3, 4}, { {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
-}
+MatrixConfig testSparseMatrix(3, 4, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
+TensorConfig testSparseTensor2d({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
+TensorConfig testSparseTensor3d({2, 3, 4}, { {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
 
 // aux data
 
@@ -228,8 +205,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal normal --aux-data none none",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(359, genConfig(trainDenseMatrix(),
-                             testSparseMatrix(),
+  runAndCheck(359, genConfig(trainDenseMatrix,
+                             testSparseMatrix,
                              {PriorTypes::normal, PriorTypes::normal}));
 }
 
@@ -243,8 +220,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "normal normal --aux-data none none",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(411, genConfig(trainSparseMatrix(),
-                             testSparseMatrix(),
+  runAndCheck(411, genConfig(trainSparseMatrix,
+                             testSparseMatrix,
                              {PriorTypes::normal, PriorTypes::normal}));
 }
 
@@ -258,8 +235,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal normal --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(467, genConfig(trainDenseMatrix(),
-                             testSparseMatrix(),
+  runAndCheck(467, genConfig(trainDenseMatrix,
+                             testSparseMatrix,
                              {PriorTypes::normal, PriorTypes::normal})
                        .addAuxData({rowAuxDense()})
                        .addAuxData({colAuxDense()}));
@@ -275,8 +252,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "normal normal --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(523, genConfig(trainSparseMatrix(),
-                             testSparseMatrix(),
+  runAndCheck(523, genConfig(trainSparseMatrix,
+                             testSparseMatrix,
                              {PriorTypes::normal, PriorTypes::normal})
                        .addAuxData({rowAuxDense()})
                        .addAuxData({colAuxDense()}));
@@ -295,7 +272,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           TAG_MATRIX_TESTS) {
 
   runAndCheck(
-      577, genConfig(trainDenseMatrix(), testSparseMatrix(),
+      577, genConfig(trainDenseMatrix, testSparseMatrix,
                      {PriorTypes::spikeandslab, PriorTypes::spikeandslab}));
 }
 
@@ -310,7 +287,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           TAG_MATRIX_TESTS) {
 
   runAndCheck(
-      629, genConfig(trainSparseMatrix(), testSparseMatrix(),
+      629, genConfig(trainSparseMatrix, testSparseMatrix,
                      {PriorTypes::spikeandslab, PriorTypes::spikeandslab}));
 }
 
@@ -325,7 +302,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           TAG_MATRIX_TESTS) {
 
   runAndCheck(
-      685, genConfig(trainDenseMatrix(), testSparseMatrix(),
+      685, genConfig(trainDenseMatrix, testSparseMatrix,
                      {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
                .addAuxData({rowAuxDense()})
                .addAuxData({colAuxDense()}));
@@ -342,7 +319,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           TAG_MATRIX_TESTS) {
 
   runAndCheck(
-      741, genConfig(trainSparseMatrix(), testSparseMatrix(),
+      741, genConfig(trainSparseMatrix, testSparseMatrix,
                      {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
                .addAuxData({rowAuxDense()})
                .addAuxData({colAuxDense()}));
@@ -360,8 +337,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normalone normalone --aux-data none none",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(795, genConfig(trainDenseMatrix(),
-                             testSparseMatrix(),
+  runAndCheck(795, genConfig(trainDenseMatrix,
+                             testSparseMatrix,
                              {PriorTypes::normalone, PriorTypes::normalone}));
 }
 
@@ -375,8 +352,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "normalone normalone --aux-data none none",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(847, genConfig(trainSparseMatrix(),
-                             testSparseMatrix(),
+  runAndCheck(847, genConfig(trainSparseMatrix,
+                             testSparseMatrix,
                              {PriorTypes::normalone, PriorTypes::normalone}));
 }
 
@@ -390,8 +367,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normalone normalone --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(903, genConfig(trainDenseMatrix(),
-                             testSparseMatrix(),
+  runAndCheck(903, genConfig(trainDenseMatrix,
+                             testSparseMatrix,
                              {PriorTypes::normalone, PriorTypes::normalone})
                        .addAuxData({rowAuxDense()})
                        .addAuxData({colAuxDense()}));
@@ -407,8 +384,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "normalone normalone --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(959, genConfig(trainSparseMatrix(),
-                             testSparseMatrix(),
+  runAndCheck(959, genConfig(trainSparseMatrix,
+                             testSparseMatrix,
                              {PriorTypes::normalone, PriorTypes::normalone})
                        .addAuxData({rowAuxDense()})
                        .addAuxData({colAuxDense()}));
@@ -428,8 +405,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1018, genConfig(trainDenseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1018, genConfig(trainDenseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::macau, PriorTypes::macau})
                         .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
                         .addSideInfoConfig(1, toSide(colSideDenseMatrix)));
@@ -447,8 +424,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1075, genConfig(trainSparseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1075, genConfig(trainSparseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::macau, PriorTypes::macau})
                         .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
                         .addSideInfoConfig(1, toSide(colSideDenseMatrix)));
@@ -468,8 +445,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_sparse_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1135, genConfig(trainDenseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1135, genConfig(trainDenseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::macauone, PriorTypes::macauone})
                         .addSideInfoConfig(0, toSide(rowSideSparseMatrix))
                         .addSideInfoConfig(1, toSide(colSideSparseMatrix)));
@@ -487,8 +464,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_sparse_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1193, genConfig(trainSparseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1193, genConfig(trainSparseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::macauone, PriorTypes::macauone})
                         .addSideInfoConfig(0, toSide(rowSideSparseMatrix))
                         .addSideInfoConfig(1, toSide(colSideSparseMatrix)));
@@ -507,8 +484,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "macau normal --aux-data <row_side_info_dense_matrix> none --direct",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1250, genConfig(trainDenseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1250, genConfig(trainDenseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::macau, PriorTypes::normal})
                         .addSideInfoConfig(0, toSide(rowSideDenseMatrix)));
 }
@@ -524,8 +501,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal macau --aux-data none <col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1305, genConfig(trainDenseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1305, genConfig(trainDenseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::normal, PriorTypes::macau})
                         .addSideInfoConfig(1, toSide(colSideDenseMatrix)));
 }
@@ -544,7 +521,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           TAG_MATRIX_TESTS) {
 
   Config config =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::macau, PriorTypes::normal})
           .addSideInfoConfig(1, toSide(rowSideDenseMatrix));
 
@@ -565,7 +542,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           TAG_MATRIX_TESTS) {
 
   Config config =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::macau, PriorTypes::normal})
           .addSideInfoConfig(1, toSide(colSideDenseMatrix));
 
@@ -584,8 +561,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal spikeandslab --aux-data none none",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1466, genConfig(trainDenseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1466, genConfig(trainDenseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::normal, PriorTypes::spikeandslab}));
 }
 
@@ -599,8 +576,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "spikeandslab normal --aux-data none none",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1518, genConfig(trainDenseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1518, genConfig(trainDenseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::spikeandslab, PriorTypes::normal}));
 }
 
@@ -614,8 +591,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal spikeandslab --aux-data none <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1572, genConfig(trainDenseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1572, genConfig(trainDenseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::spikeandslab, PriorTypes::normal})
                         .addAuxData({colAuxDense()}));
 }
@@ -630,8 +607,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "spikeandslab normal --aux-data <dense_matrix> none",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1626, genConfig(trainDenseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1626, genConfig(trainDenseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::spikeandslab, PriorTypes::normal})
                         .addAuxData({rowAuxDense()}));
 }
@@ -650,8 +627,8 @@ TEST_CASE(
     "spikeandslab --aux-data <row_side_info_dense_matrix> none --direct",
     TAG_MATRIX_TESTS) {
 
-  runAndCheck(1683, genConfig(trainDenseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1683, genConfig(trainDenseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::macau, PriorTypes::spikeandslab})
                         .addSideInfoConfig(0, toSide(rowSideDenseMatrix)));
 }
@@ -668,8 +645,8 @@ TEST_CASE(
     "spikeandslab macau --aux-data none <col_side_info_dense_matrix> --direct",
     TAG_MATRIX_TESTS) {
 
-  runAndCheck(1738, genConfig(trainDenseMatrix(),
-                              testSparseMatrix(),
+  runAndCheck(1738, genConfig(trainDenseMatrix,
+                              testSparseMatrix,
                               {PriorTypes::spikeandslab, PriorTypes::macau})
                         .addSideInfoConfig(1, toSide(colSideDenseMatrix)));
 }
@@ -686,8 +663,8 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normal --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
 
-  runAndCheck(1792, genConfig(trainDenseTensor2d(),
-                              testSparseTensor2d(),
+  runAndCheck(1792, genConfig(trainDenseTensor2d,
+                              testSparseTensor2d,
                               {PriorTypes::normal, PriorTypes::normal}));
 }
 
@@ -700,8 +677,8 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normal --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
-  runAndCheck(1844, genConfig(trainSparseTensor2d(),
-                              testSparseTensor2d(),
+  runAndCheck(1844, genConfig(trainSparseTensor2d,
+                              testSparseTensor2d,
                               {PriorTypes::normal, PriorTypes::normal}));
 }
 
@@ -716,8 +693,8 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
   runAndCheck(1898,
-              genConfig(trainDenseTensor2d(),
-                        testSparseTensor2d(),
+              genConfig(trainDenseTensor2d,
+                        testSparseTensor2d,
                         {PriorTypes::spikeandslab, PriorTypes::spikeandslab}));
 }
 
@@ -731,8 +708,8 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
   runAndCheck(1950,
-              genConfig(trainSparseTensor2d(),
-                        testSparseTensor2d(),
+              genConfig(trainSparseTensor2d,
+                        testSparseTensor2d,
                         {PriorTypes::spikeandslab, PriorTypes::spikeandslab}));
 }
 
@@ -747,8 +724,8 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
 TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normalone --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
-  runAndCheck(2004, genConfig(trainDenseTensor2d(),
-                              testSparseTensor2d(),
+  runAndCheck(2004, genConfig(trainDenseTensor2d,
+                              testSparseTensor2d,
                               {PriorTypes::normalone, PriorTypes::normalone}));
 }
 
@@ -761,8 +738,8 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normalone --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
-  runAndCheck(2056, genConfig(trainSparseTensor2d(),
-                              testSparseTensor2d(),
+  runAndCheck(2056, genConfig(trainSparseTensor2d,
+                              testSparseTensor2d,
                               {PriorTypes::normalone, PriorTypes::normalone}));
 }
 
@@ -779,7 +756,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS) {
   runAndCheck(
       2110,
-      genConfig(trainDenseTensor3d(), testSparseTensor3d(),
+      genConfig(trainDenseTensor3d, testSparseTensor3d,
                 {PriorTypes::normal, PriorTypes::normal, PriorTypes::normal}));
 }
 
@@ -796,8 +773,8 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS) {
 
   runAndCheck(2164,
-              genConfig(trainDenseTensor3d(),
-                        testSparseTensor3d(),
+              genConfig(trainDenseTensor3d,
+                        testSparseTensor3d,
                         {PriorTypes::spikeandslab, PriorTypes::spikeandslab,
                          PriorTypes::spikeandslab}));
 }
@@ -817,7 +794,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS) {
   runAndCheck(
       2222,
-      genConfig(trainDenseTensor3d(), testSparseTensor3d(),
+      genConfig(trainDenseTensor3d, testSparseTensor3d,
                 {PriorTypes::macau, PriorTypes::normal, PriorTypes::normal})
           .addSideInfoConfig(0, toSide(rowSideDenseMatrix3d)));
 }
@@ -837,7 +814,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS "[!mayfail]") {
   runAndCheck(
       2280,
-      genConfig(trainDenseTensor3d(), testSparseTensor3d(),
+      genConfig(trainDenseTensor3d, testSparseTensor3d,
                 {PriorTypes::macauone, PriorTypes::normal, PriorTypes::normal})
           .addSideInfoConfig(0, toSide(rowSideDenseMatrix3d)));
 }
@@ -865,10 +842,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior normal normal --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::normal, PriorTypes::normal});
   Config tensorSessionConfig =
-      genConfig(trainDenseTensor2d(), testSparseTensor2d(),
+      genConfig(trainDenseTensor2d, testSparseTensor2d,
                 {PriorTypes::normal, PriorTypes::normal});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -888,10 +865,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior normal normal --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainSparseMatrix(), testSparseMatrix(),
+      genConfig(trainSparseMatrix, testSparseMatrix,
                 {PriorTypes::normal, PriorTypes::normal});
   Config tensorSessionConfig =
-      genConfig(trainSparseTensor2d(), testSparseTensor2d(),
+      genConfig(trainSparseTensor2d, testSparseTensor2d,
                 {PriorTypes::normal, PriorTypes::normal});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -911,10 +888,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior normal spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::normal, PriorTypes::spikeandslab});
   Config tensorSessionConfig =
-      genConfig(trainDenseTensor2d(), testSparseTensor2d(),
+      genConfig(trainDenseTensor2d, testSparseTensor2d,
                 {PriorTypes::normal, PriorTypes::spikeandslab});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -934,10 +911,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior normal spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainSparseMatrix(), testSparseMatrix(),
+      genConfig(trainSparseMatrix, testSparseMatrix,
                 {PriorTypes::normal, PriorTypes::spikeandslab});
   Config tensorSessionConfig =
-      genConfig(trainSparseTensor2d(), testSparseTensor2d(),
+      genConfig(trainSparseTensor2d, testSparseTensor2d,
                 {PriorTypes::normal, PriorTypes::spikeandslab});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -957,10 +934,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior spikeandslab normal --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::spikeandslab, PriorTypes::normal});
   Config tensorSessionConfig =
-      genConfig(trainDenseTensor2d(), testSparseTensor2d(),
+      genConfig(trainDenseTensor2d, testSparseTensor2d,
                 {PriorTypes::spikeandslab, PriorTypes::normal});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -980,10 +957,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior spikeandslab normal --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainSparseMatrix(), testSparseMatrix(),
+      genConfig(trainSparseMatrix, testSparseMatrix,
                 {PriorTypes::spikeandslab, PriorTypes::normal});
   Config tensorSessionConfig =
-      genConfig(trainSparseTensor2d(), testSparseTensor2d(),
+      genConfig(trainSparseTensor2d, testSparseTensor2d,
                 {PriorTypes::spikeandslab, PriorTypes::normal});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -1003,10 +980,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::spikeandslab, PriorTypes::spikeandslab});
   Config tensorSessionConfig =
-      genConfig(trainDenseTensor2d(), testSparseTensor2d(),
+      genConfig(trainDenseTensor2d, testSparseTensor2d,
                 {PriorTypes::spikeandslab, PriorTypes::spikeandslab});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -1026,10 +1003,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainSparseMatrix(), testSparseMatrix(),
+      genConfig(trainSparseMatrix, testSparseMatrix,
                 {PriorTypes::spikeandslab, PriorTypes::spikeandslab});
   Config tensorSessionConfig =
-      genConfig(trainSparseTensor2d(), testSparseTensor2d(),
+      genConfig(trainSparseTensor2d, testSparseTensor2d,
                 {PriorTypes::spikeandslab, PriorTypes::spikeandslab});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -1051,10 +1028,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior normal normalone --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::normal, PriorTypes::normalone});
   Config tensorSessionConfig =
-      genConfig(trainDenseTensor2d(), testSparseTensor2d(),
+      genConfig(trainDenseTensor2d, testSparseTensor2d,
                 {PriorTypes::normal, PriorTypes::normalone});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -1074,10 +1051,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior normal normalone --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainSparseMatrix(), testSparseMatrix(),
+      genConfig(trainSparseMatrix, testSparseMatrix,
                 {PriorTypes::normal, PriorTypes::normalone});
   Config tensorSessionConfig =
-      genConfig(trainSparseTensor2d(), testSparseTensor2d(),
+      genConfig(trainSparseTensor2d, testSparseTensor2d,
                 {PriorTypes::normal, PriorTypes::normalone});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -1097,10 +1074,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior normalone normal --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::normalone, PriorTypes::normal});
   Config tensorSessionConfig =
-      genConfig(trainDenseTensor2d(), testSparseTensor2d(),
+      genConfig(trainDenseTensor2d, testSparseTensor2d,
                 {PriorTypes::normalone, PriorTypes::normal});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -1120,10 +1097,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior normalone normal --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainSparseMatrix(), testSparseMatrix(),
+      genConfig(trainSparseMatrix, testSparseMatrix,
                 {PriorTypes::normalone, PriorTypes::normal});
   Config tensorSessionConfig =
-      genConfig(trainSparseTensor2d(), testSparseTensor2d(),
+      genConfig(trainSparseTensor2d, testSparseTensor2d,
                 {PriorTypes::normalone, PriorTypes::normal});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -1143,10 +1120,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior normalone normalone --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::normalone, PriorTypes::normalone});
   Config tensorSessionConfig =
-      genConfig(trainDenseTensor2d(), testSparseTensor2d(),
+      genConfig(trainDenseTensor2d, testSparseTensor2d,
                 {PriorTypes::normalone, PriorTypes::normalone});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -1166,10 +1143,10 @@ TEST_CASE("matrix vs 2D-tensor"
           "--prior normalone normalone --aux-data none none",
           TAG_VS_TESTS) {
   Config matrixSessionConfig =
-      genConfig(trainSparseMatrix(), testSparseMatrix(),
+      genConfig(trainSparseMatrix, testSparseMatrix,
                 {PriorTypes::normalone, PriorTypes::normalone});
   Config tensorSessionConfig =
-      genConfig(trainSparseTensor2d(), testSparseTensor2d(),
+      genConfig(trainSparseTensor2d, testSparseTensor2d,
                 {PriorTypes::normalone, PriorTypes::normalone});
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
@@ -1194,12 +1171,12 @@ TEST_CASE("matrix vs 2D-tensor"
           TAG_VS_TESTS) {
 
   Config tensorRunConfig =
-      genConfig(trainDenseTensor2d(), testSparseTensor2d(),
+      genConfig(trainDenseTensor2d, testSparseTensor2d,
                 {PriorTypes::macau, PriorTypes::macau})
           .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
           .addSideInfoConfig(1, toSide(colSideDenseMatrix));
   Config matrixRunConfig =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::macau, PriorTypes::macau})
           .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
           .addSideInfoConfig(1, toSide(colSideDenseMatrix));
@@ -1225,12 +1202,12 @@ TEST_CASE("matrix vs 2D-tensor"
           TAG_VS_TESTS) {
 
   Config tensorRunConfig =
-      genConfig(trainSparseTensor2d(), testSparseTensor2d(),
+      genConfig(trainSparseTensor2d, testSparseTensor2d,
                 {PriorTypes::macau, PriorTypes::macau})
           .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
           .addSideInfoConfig(1, toSide(colSideDenseMatrix));
   Config matrixRunConfig =
-      genConfig(trainSparseMatrix(), testSparseMatrix(),
+      genConfig(trainSparseMatrix, testSparseMatrix,
                 {PriorTypes::macau, PriorTypes::macau})
           .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
           .addSideInfoConfig(1, toSide(colSideDenseMatrix));
@@ -1256,12 +1233,12 @@ TEST_CASE("matrix vs 2D-tensor"
           TAG_VS_TESTS) {
 
   Config tensorRunConfig =
-      genConfig(trainDenseTensor2d(), testSparseTensor2d(),
+      genConfig(trainDenseTensor2d, testSparseTensor2d,
                 {PriorTypes::macauone, PriorTypes::macauone})
           .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
           .addSideInfoConfig(1, toSide(colSideDenseMatrix));
   Config matrixRunConfig =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::macauone, PriorTypes::macauone})
           .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
           .addSideInfoConfig(1, toSide(colSideDenseMatrix));
@@ -1287,12 +1264,12 @@ TEST_CASE("matrix vs 2D-tensor"
           TAG_VS_TESTS) {
 
   Config tensorRunConfig =
-      genConfig(trainSparseTensor2d(), testSparseTensor2d(),
+      genConfig(trainSparseTensor2d, testSparseTensor2d,
                 {PriorTypes::macauone, PriorTypes::macauone})
           .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
           .addSideInfoConfig(1, toSide(colSideDenseMatrix));
   Config matrixRunConfig =
-      genConfig(trainSparseMatrix(), testSparseMatrix(),
+      genConfig(trainSparseMatrix, testSparseMatrix,
                 {PriorTypes::macauone, PriorTypes::macauone})
           .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
           .addSideInfoConfig(1, toSide(colSideDenseMatrix));
@@ -1303,7 +1280,7 @@ TEST_CASE("matrix vs 2D-tensor"
 TEST_CASE("PredictSession/BPMF") {
 
   Config config =
-      genConfig(trainDenseMatrix(), testSparseMatrix(),
+      genConfig(trainDenseMatrix, testSparseMatrix,
                 {PriorTypes::normal, PriorTypes::normal});
   config.setSaveFreq(1);
 
@@ -1353,7 +1330,7 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
   std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig =
       toSide(rowSideDenseMatrix);
 
-  Config config = genConfig(trainDenseMatrix(), testSparseMatrix(),
+  Config config = genConfig(trainDenseMatrix, testSparseMatrix,
                             {PriorTypes::macau, PriorTypes::normal})
                       .addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
   config.setSaveFreq(1);
@@ -1366,7 +1343,7 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
   auto sideInfoMatrix = matrix_utils::dense_to_eigen(
       *rowSideInfoDenseMatrixConfig->getSideInfo());
   auto trainMatrix =
-      smurff::matrix_utils::dense_to_eigen(trainDenseMatrix());
+      smurff::matrix_utils::dense_to_eigen(trainDenseMatrix);
 
 #if 0
     std::cout << "sideInfo =\n" << sideInfoMatrix << std::endl;
