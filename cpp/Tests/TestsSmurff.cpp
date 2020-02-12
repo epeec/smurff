@@ -66,7 +66,6 @@ std::map<int, ExpectedResult> expectedResults = {
 #include "TestsSmurff_ExpectedResults.h"
 };
 
-static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
 template <class C> Config genConfig(const C &train, const C &test, std::vector<PriorTypes> priors) {
   Config config;
@@ -81,6 +80,9 @@ template <class C> Config genConfig(const C &train, const C &test, std::vector<P
   config.setPriorTypes(priors);
   return config;
 }
+
+// noise config for train and test 
+static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
 // dense train data (matrix/tensor 2d/tensor 3d)
 MatrixConfig trainDenseMatrix(3, 4, {1., 5., 9., 2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
@@ -100,21 +102,21 @@ TensorConfig testSparseTensor3d({2, 3, 4}, {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 
 MatrixConfig rowAuxDense(3, 1, {1., 2., 3.}, fixed_ncfg, {0, 1});
 MatrixConfig colAuxDense(1, 4, {1., 2., 3., 4.}, fixed_ncfg, {1, 0});
 
-// side info
-
+// noise config for sideinfo
 static NoiseConfig sampled_nc = []() {
   NoiseConfig nc(NoiseTypes::sampled);
   nc.setPrecision(10.0);
   return nc;
 }();
 
+// side info
 static MatrixConfig rowSideDenseMatrix(3, 1, {1., 2., 3.}, sampled_nc);
 static MatrixConfig colSideDenseMatrix(4, 1, {1., 2., 3., 4.}, sampled_nc);
 static MatrixConfig rowSideSparseMatrix(3, 1, {0, 1, 2}, {0, 0, 0}, {1., 2., 3.}, sampled_nc, false);
 static MatrixConfig colSideSparseMatrix(4, 1, {0, 1, 2, 3}, {0, 0, 0, 0}, {1., 2., 3., 4.}, sampled_nc, false);
 static MatrixConfig rowSideDenseMatrix3d(2, 3, {1., 2., 3., 4., 5., 6.}, sampled_nc);
 
-std::shared_ptr<SideInfoConfig> toSide(const MatrixConfig &mcfg, bool direct = true, double tol = 1e-6) {
+std::shared_ptr<SideInfoConfig> makeSideInfoConfig(const MatrixConfig &mcfg, bool direct = true, double tol = 1e-6) {
   std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
   picfg->setSideInfo(std::make_shared<MatrixConfig>(mcfg));
   picfg->setDirect(direct);
@@ -149,7 +151,7 @@ struct SmurffTest {
 
   SmurffTest &addSideInfoConfig(int m, const MatrixConfig &c,  bool direct = true, double tol = 1e-6)
   {
-      config.addSideInfoConfig(m, toSide(c, direct, tol));
+      config.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));
       return *this;
   }
 
@@ -188,8 +190,8 @@ struct CompareTest
 
   CompareTest &addSideInfoConfig(int m, const MatrixConfig &c,  bool direct = true, double tol = 1e-6)
   {
-      matrixConfig.addSideInfoConfig(m, toSide(c, direct, tol));
-      tensorConfig.addSideInfoConfig(m, toSide(c, direct, tol));
+      matrixConfig.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));
+      tensorConfig.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));
       return *this;
   }
 
@@ -356,7 +358,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "macau normal --aux-data none none --direct",
           TAG_MATRIX_TESTS) {
 
-  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal}).addSideInfoConfig(1, toSide(rowSideDenseMatrix));
+  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal}).addSideInfoConfig(1, makeSideInfoConfig(rowSideDenseMatrix));
 
   REQUIRE_THROWS(SessionFactory::create_session(config));
 }
@@ -367,7 +369,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "macau normal --aux-data <col_side_info_dense_matrix> none --direct",
           TAG_MATRIX_TESTS) {
 
-  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal}).addSideInfoConfig(1, toSide(colSideDenseMatrix));
+  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal}).addSideInfoConfig(1, makeSideInfoConfig(colSideDenseMatrix));
 
   REQUIRE_THROWS(SessionFactory::create_session(config));
 }
@@ -505,8 +507,6 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normal --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
-
   CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
 }
 
@@ -722,7 +722,7 @@ TEST_CASE("PredictSession/BPMF") {
 //=================================================================
 
 TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
-  std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig = toSide(rowSideDenseMatrix);
+  std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig = makeSideInfoConfig(rowSideDenseMatrix);
 
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal}).addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
   config.setSaveFreq(1);
