@@ -77,8 +77,9 @@ static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 // dense train data (matrix/tensor 2d/tensor 3d)
 
 
-Config genConfig(const TensorConfig& train,
-                 const TensorConfig& test,
+template<class C>
+Config genConfig(const C& train,
+                 const C& test,
                  std::vector<PriorTypes> priors) {
   Config config;
   config.setBurnin(50);
@@ -87,25 +88,8 @@ Config genConfig(const TensorConfig& train,
   config.setRandomSeed(1234);
   config.setNumThreads(1);
   config.setNumLatent(4);
-  config.setTrain(std::make_shared<TensorConfig>(train));
-  config.setTest(std::make_shared<TensorConfig>(test));
-  config.setPriorTypes(priors);
-  return config;
-}
-
-
-Config genConfig(const MatrixConfig& train,
-                 const MatrixConfig& test,
-                 std::vector<PriorTypes> priors) {
-  Config config;
-  config.setBurnin(50);
-  config.setNSamples(50);
-  config.setVerbose(false);
-  config.setRandomSeed(1234);
-  config.setNumThreads(1);
-  config.setNumLatent(4);
-  config.setTrain(std::make_shared<MatrixConfig>(train));
-  config.setTest(std::make_shared<MatrixConfig>(test));
+  config.setTrain(std::make_shared<C>(train));
+  config.setTest(std::make_shared<C>(test));
   config.setPriorTypes(priors);
   return config;
 }
