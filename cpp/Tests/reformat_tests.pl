@@ -25,7 +25,7 @@ my $name;
 while (<>) {
     my $line = $_;
 
-    if ($in_func && /std::vector<double> (\w+) = ({.+});/) {
+    if ($in_func && !$found && /std::vector<std::uint32_t> (\w+) = ({.+});/) {
         $name = $1;
         $values = $2;
         $found = 1;

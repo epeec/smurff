@@ -24,10 +24,8 @@ std::shared_ptr<TensorConfig> trainDenseTensor3d() {
 // sparse train data (matrix/tensor 2d)
 
 std::shared_ptr<MatrixConfig> trainSparseMatrix() {
-  std::vector<std::uint32_t> trainMatrixConfigRows = {0, 0, 0, 0, 2, 2, 2, 2};
-  std::vector<std::uint32_t> trainMatrixConfigCols = {0, 1, 2, 3, 0, 1, 2, 3};
-  MatrixConfig trainMatrixConfig(3, 4, trainMatrixConfigRows,
-                                     trainMatrixConfigCols,
+  MatrixConfig trainMatrixConfig(3, 4, {0, 0, 0, 0, 2, 2, 2, 2},
+                                     {0, 1, 2, 3, 0, 1, 2, 3},
                                      {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
   return std::make_shared<MatrixConfig>(trainMatrixConfig);
 }
@@ -44,10 +42,8 @@ std::shared_ptr<TensorConfig> trainSparseTensor2d() {
 // sparse test data (matrix/tensor 2d/tensor 3d)
 
 std::shared_ptr<MatrixConfig> testSparseMatrix() {
-  std::vector<std::uint32_t> testMatrixConfigRows = {0, 0, 0, 0, 2, 2, 2, 2};
-  std::vector<std::uint32_t> testMatrixConfigCols = {0, 1, 2, 3, 0, 1, 2, 3};
-  MatrixConfig testMatrixConfig(3, 4, testMatrixConfigRows,
-                                     testMatrixConfigCols, {1., 2., 3., 4., 9., 10., 11., 12.},
+  MatrixConfig testMatrixConfig(3, 4, {0, 0, 0, 0, 2, 2, 2, 2},
+                                     {0, 1, 2, 3, 0, 1, 2, 3}, {1., 2., 3., 4., 9., 10., 11., 12.},
                                      fixed_ncfg, true);
   return std::make_shared<MatrixConfig>(testMatrixConfig);
 }
@@ -112,10 +108,8 @@ std::shared_ptr<MatrixConfig> rowSideSparseMatrix() {
   NoiseConfig nc(NoiseTypes::sampled);
   nc.setPrecision(10.0);
 
-  std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigRows = {0, 1, 2};
-  std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigCols = {0, 0, 0};
-  MatrixConfig rowSideInfoSparseMatrixConfig(3, 1, rowSideInfoSparseMatrixConfigRows,
-                                     rowSideInfoSparseMatrixConfigCols,
+  MatrixConfig rowSideInfoSparseMatrixConfig(3, 1, {0, 1, 2},
+                                     {0, 0, 0},
                                      {1., 2., 3.}, nc,
                                      true);
   return std::make_shared<MatrixConfig>(rowSideInfoSparseMatrixConfig);
@@ -125,10 +119,8 @@ std::shared_ptr<MatrixConfig> colSideSparseMatrix() {
   NoiseConfig nc(NoiseTypes::sampled);
   nc.setPrecision(10.0);
 
-  std::vector<std::uint32_t> colSideInfoSparseMatrixConfigRows = {0, 1, 2, 3};
-  std::vector<std::uint32_t> colSideInfoSparseMatrixConfigCols = {0, 0, 0, 0};
-  MatrixConfig colSideInfoSparseMatrixConfig(4, 1, colSideInfoSparseMatrixConfigRows,
-                                     colSideInfoSparseMatrixConfigCols,
+  MatrixConfig colSideInfoSparseMatrixConfig(4, 1, {0, 1, 2, 3},
+                                     {0, 0, 0, 0},
                                      {1., 2., 3., 4.}, nc,
                                      true);
   return std::make_shared<MatrixConfig>(colSideInfoSparseMatrixConfig);
