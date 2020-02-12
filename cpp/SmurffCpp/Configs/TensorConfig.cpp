@@ -33,6 +33,7 @@ TensorConfig::TensorConfig ( bool isDense
                            , std::uint64_t nmodes
                            , std::uint64_t nnz
                            , const NoiseConfig& noiseConfig
+                           , PVec<> pos
                            )
    : m_noiseConfig(noiseConfig)
    , m_isDense(isDense)
@@ -43,6 +44,7 @@ TensorConfig::TensorConfig ( bool isDense
    , m_nnz(nnz)
    , m_columns(nmodes)
    , m_values()
+   , m_pos(pos)
 {
   // check(); // can't check here -- because many things still empty
 }
@@ -51,6 +53,7 @@ TensorConfig::TensorConfig ( bool isDense
 TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
                           , const double* values
                           , const NoiseConfig& noiseConfig
+                          , PVec<> pos
                           )
    : m_noiseConfig(noiseConfig)
    , m_isDense(true)
@@ -61,6 +64,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    , m_nnz(std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<std::uint64_t>()))
    , m_columns()
    , m_values(values, values + m_nnz)
+   , m_pos(pos)
 {
    check();
 }
@@ -71,7 +75,8 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
                           , const std::vector<const std::uint32_t *>& columns
                           , const double* values
                           , const NoiseConfig& noiseConfig
-                          , bool isScarce
+                          , bool isScarce 
+                          , PVec<> pos
                           )
    : m_noiseConfig(noiseConfig)
    , m_isDense(false)
@@ -81,6 +86,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    , m_dims(dims)
    , m_nnz(nnz)
    , m_values(values, values + nnz)
+   , m_pos(pos)
 {
    for(auto col : columns)
    {
@@ -96,6 +102,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
                           , const std::vector<const std::uint32_t *>& columns
                           , const NoiseConfig& noiseConfig
                           , bool isScarce
+                          , PVec<> pos
                           )
    : m_noiseConfig(noiseConfig)
    , m_isDense(false)
@@ -105,6 +112,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    , m_dims(dims)
    , m_nnz(nnz)
    , m_values(nnz, 1.)
+   , m_pos(pos)
 {
    for(auto col : columns)
    {
@@ -213,17 +221,17 @@ const std::string &TensorConfig::getFilename() const
 
 void TensorConfig::setPos(const PVec<>& p)
 {
-   m_pos = std::make_shared<PVec<>>(p);
+   m_pos = p;
 }
 
 bool TensorConfig::hasPos() const
 {
-    return m_pos != nullptr;
+    return m_pos.size();
 }
 
 const PVec<>& TensorConfig::getPos() const
 {
-    return *m_pos;
+    return m_pos;
 }
 
 std::ostream& TensorConfig::info(std::ostream& os) const

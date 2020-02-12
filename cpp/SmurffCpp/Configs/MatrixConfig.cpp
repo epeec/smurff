@@ -9,8 +9,8 @@ namespace smurff {
 
 MatrixConfig::MatrixConfig(bool isDense, bool isBinary, bool isScarce,
                 std::uint64_t nrow, std::uint64_t ncol, std::uint64_t nnz,
-                const NoiseConfig& noiseConfig)
-   : TensorConfig(isDense, isBinary, isScarce, 2, nnz, noiseConfig)
+                const NoiseConfig& noiseConfig, PVec<> pos)
+   : TensorConfig(isDense, isBinary, isScarce, 2, nnz, noiseConfig, pos)
 {
    m_dims = {nrow, ncol};
 }
@@ -20,8 +20,9 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , std::uint64_t ncol
                           , const double* values
                           , const NoiseConfig& noiseConfig
+                          , PVec<> pos
                           )
-   : TensorConfig({nrow, ncol}, values, noiseConfig)
+   : TensorConfig({nrow, ncol}, values, noiseConfig, pos)
 {}
 
 // Sparse double matrix constructor
@@ -33,8 +34,9 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , const double* values
                           , const NoiseConfig& noiseConfig
                           , bool isScarce
+                          , PVec<> pos
                           )
-   : TensorConfig({nrow, ncol}, nnz, {rows, cols}, values, noiseConfig, isScarce)
+   : TensorConfig({nrow, ncol}, nnz, {rows, cols}, values, noiseConfig, isScarce, pos)
 {}
 
 // Sparse binary matrix constructors
@@ -45,8 +47,9 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , const std::uint32_t* cols
                           , const NoiseConfig& noiseConfig
                           , bool isScarce
+                          , PVec<> pos
                           )
-   : TensorConfig({nrow, ncol}, nnz, {rows, cols}, noiseConfig, isScarce)
+   : TensorConfig({nrow, ncol}, nnz, {rows, cols}, noiseConfig, isScarce, pos)
 {}
 
 //

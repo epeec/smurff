@@ -15,24 +15,24 @@ class MatrixConfig : public TensorConfig
 {
 public:
    // Empty c'tor for filling later
-   MatrixConfig(bool isDense, bool isBinary, bool isScarce, std::uint64_t nrow, std::uint64_t ncol, std::uint64_t nnz, const NoiseConfig &noiseConfig);
+   MatrixConfig(bool isDense, bool isBinary, bool isScarce, std::uint64_t nrow, std::uint64_t ncol, std::uint64_t nnz, const NoiseConfig &noiseConfig, PVec<> = {0,0});
 
    // Dense double matrix constructos
-   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const double *values, const NoiseConfig &noiseConfig);
-   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<double> values, const NoiseConfig &noiseConfig)
-       : MatrixConfig(nrow, ncol, values.data(), noiseConfig) {}
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const double *values, const NoiseConfig &noiseConfig, PVec<> = {0,0});
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<double> values, const NoiseConfig &noiseConfig, PVec<> pos = {0,0})
+       : MatrixConfig(nrow, ncol, values.data(), noiseConfig, pos) {}
 
    // Sparse double matrix constructors
-   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, std::uint64_t nnz, const std::uint32_t *rows, const std::uint32_t *cols, const double *values, const NoiseConfig &noiseConfig, bool isScarce);
-   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<std::uint32_t> &rows, const std::vector<std::uint32_t> &cols, const std::vector<double> values, const NoiseConfig &noiseConfig, bool isScarce)
-       : MatrixConfig(nrow, ncol, values.size(), rows.data(), cols.data(), values.data(), noiseConfig, isScarce) {}
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, std::uint64_t nnz, const std::uint32_t *rows, const std::uint32_t *cols, const double *values, const NoiseConfig &noiseConfig, bool isScarce, PVec<> = {0,0});
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<std::uint32_t> &rows, const std::vector<std::uint32_t> &cols, const std::vector<double> values, const NoiseConfig &noiseConfig, bool isScarce, PVec<> pos = {0,0})
+       : MatrixConfig(nrow, ncol, values.size(), rows.data(), cols.data(), values.data(), noiseConfig, isScarce, pos) {}
 
    // Sparse binary matrix constructors
-   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, std::uint64_t nnz, const std::uint32_t *rows, const std::uint32_t *cols, const NoiseConfig &noiseConfig, bool isScarce);
-   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<std::uint32_t> &rows, const std::vector<std::uint32_t> &cols, const NoiseConfig &noiseConfig, bool isScarce)
-       : MatrixConfig(nrow, ncol, rows.size(), rows.data(), cols.data(), noiseConfig, isScarce) {}
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, std::uint64_t nnz, const std::uint32_t *rows, const std::uint32_t *cols, const NoiseConfig &noiseConfig, bool isScarce, PVec<> = {0,0});
+   MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<std::uint32_t> &rows, const std::vector<std::uint32_t> &cols, const NoiseConfig &noiseConfig, bool isScarce, PVec<> pos = {0,0})
+       : MatrixConfig(nrow, ncol, rows.size(), rows.data(), cols.data(), noiseConfig, isScarce, pos) {}
 
-   MatrixConfig();
+   MatrixConfig() : MatrixConfig(true, false, false, 0, 0, 0, NoiseConfig()) {}
 
    std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const override;
 

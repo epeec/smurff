@@ -5940,19 +5940,19 @@ namespace Catch {
             BrightYellow = Bright | Yellow,
 
             // By intention
-            FileName = LightGrey,
-            Warning = BrightYellow,
-            ResultError = BrightRed,
-            ResultSuccess = BrightGreen,
+            FileName = Grey,
+            Warning = Yellow,
+            ResultError = Red,
+            ResultSuccess = Green,
             ResultExpectedFailure = Warning,
 
-            Error = BrightRed,
+            Error = Red,
             Success = Green,
 
             OriginalExpression = Cyan,
-            ReconstructedExpression = BrightYellow,
+            ReconstructedExpression = Yellow,
 
-            SecondaryText = LightGrey,
+            SecondaryText = Grey,
             Headers = White
         };
 

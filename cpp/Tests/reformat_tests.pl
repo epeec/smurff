@@ -17,27 +17,54 @@ sub assert_dead
     }
 }
 
-my $config = "";
+my $matrixconfig = "";
+my $tensorconfig = "";
+my $sideconfig = "";
+my $priorconfig = "";
 my $in_testcase = 0;
 
 while (<>) {
     my $line = $_;
+    my $printline = 1;
 
-    if ($in_testcase && /Config config = (genConfig.+);/) {
-        $config = $1;
-        next;
+    # Config matrixSessionConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
+    # Config tensorSessionConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal});
+    # compareSessions(matrixSessionConfig, tensorSessionConfig);
+
+    if ($in_testcase && $line =~ /Config (matrix|tensor)\w+Config = genConfig\((\w+, \w+), ({.+})\)/) {
+        #print(join("\n", $line, $1, $2, $3, $4, $5));
+        if ($1 eq "matrix")
+        {
+            $matrixconfig = $2;
+        }
+        elsif ($1 eq "tensor")
+        {
+            $tensorconfig = $2;
+        }
+        $priorconfig = $3;
+        $printline = 0;
     }
 
-    if ($in_testcase && /runAndCheck/)
-    {
-        $line =~ s/config/$config/g;
+    if ($in_testcase && $line =~ /(.addSideInfoConfig.+);/) {
+        $sideconfig = $1;
     }
 
-    if (/TEST_CASE/)
+    if ($in_testcase && $line =~ /compareSessions/) {
+        # CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
+        $line = "  CompareTest($matrixconfig, $tensorconfig, $priorconfig)$sideconfig.runAndCheck();\n";
+    }
+
+    if ($line =~ /TEST_CASE/)
     {
-        $config = "";
+        $matrixconfig = "";
+        $tensorconfig = "";
+        $priorconfig = "";
+        $sideconfig = "";
         $in_testcase = 1;
     }
 
-    print($line)
+    if ($printline)
+    {
+        print($line);
+    }
 }
