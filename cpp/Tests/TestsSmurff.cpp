@@ -44,8 +44,7 @@ void printActualResults(int nr, double actualRmseAvg, const std::vector<smurff::
 
   for (const auto &actualResultItem : actualResults) {
     os << std::setprecision(16);
-    os << "         { { " << actualResultItem.coords << " }, " << actualResultItem.val << ", " << std::fixed << actualResultItem.pred_1sample << ", " << actualResultItem.pred_avg << ", "
-       << actualResultItem.var << ", "
+    os << "         { { " << actualResultItem.coords << " }, " << actualResultItem.val << ", " << std::fixed << actualResultItem.pred_1sample << ", " << actualResultItem.pred_avg << ", " << actualResultItem.var << ", "
        << " }," << std::endl;
   }
 
@@ -67,9 +66,7 @@ std::map<int, ExpectedResult> expectedResults = {
 #include "TestsSmurff_ExpectedResults.h"
 };
 
-
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
-
 
 template <class C> Config genConfig(const C &train, const C &test, std::vector<PriorTypes> priors) {
   Config config;
@@ -165,32 +162,34 @@ void runAndCheck(int nr, Config config) {
   REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
 }
 
-struct SmurffTest
-{
-    Config config;
+struct SmurffTest {
+  Config config;
 
-    SmurffTest(const MatrixConfig &train, const MatrixConfig &test, std::vector<PriorTypes> priors)
-        : config(genConfig(train, test, priors)) {}
+  SmurffTest(const MatrixConfig &train, const MatrixConfig &test, std::vector<PriorTypes> priors) : config(genConfig(train, test, priors)) {}
 
-    SmurffTest(const TensorConfig &train, const TensorConfig &test, std::vector<PriorTypes> priors)
-        : config(genConfig(train, test, priors)) {}
+  SmurffTest(const TensorConfig &train, const TensorConfig &test, std::vector<PriorTypes> priors) : config(genConfig(train, test, priors)) {}
 
-    SmurffTest &addSideInfoConfig(int m, std::shared_ptr<SideInfoConfig> c) 
-    {
-        config.addSideInfoConfig(m, c);
-        return *this;
-    }
+  SmurffTest &addSideInfoConfig(int m, std::shared_ptr<SideInfoConfig> c) {
+    config.addSideInfoConfig(m, c);
+    return *this;
+  }
 
-    SmurffTest &addAuxData(std::shared_ptr<TensorConfig> c) 
-    {
-        config.addAuxData(c);
-        return *this;
-    }
+  SmurffTest &addSideInfo(int m, const MatrixConfig &c,  bool direct = true, double tol = 1e-6)
+  {
+      std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
+      picfg->setSideInfo(std::make_shared<MatrixConfig>(c));
+      picfg->setDirect(direct);
+      picfg->setTol(tol);
+      config.addSideInfoConfig(m, picfg);
+      return *this;
+  }
 
-    void runAndCheck(int nr)
-    {
-        ::runAndCheck(nr, config);
-    }
+  SmurffTest &addAuxData(std::shared_ptr<TensorConfig> c) {
+    config.addAuxData(c);
+    return *this;
+  }
+
+  void runAndCheck(int nr) { ::runAndCheck(nr, config); }
 };
 
 void compareSessions(Config &matrixSessionConfig, Config &tensorSessionConfig) {
@@ -203,15 +202,13 @@ void compareSessions(Config &matrixSessionConfig, Config &tensorSessionConfig) {
   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
 }
 
-
 ///===========================================================================
-
 
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal normal --aux-data none none",
           TAG_MATRIX_TESTS) {
 
-  //SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal}).runAndCheck(359);
+  // SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal}).runAndCheck(359);
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal}).runAndCheck(359);
 }
 
@@ -303,8 +300,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1018,
-              genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)));
+  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck(1018);
 }
 
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
@@ -312,8 +308,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(1075,
-              genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)));
+  SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck(1075);
 }
 
 //=================================================================
@@ -323,9 +318,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_sparse_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(
-      1135,
-      genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideSparseMatrix)).addSideInfoConfig(1, toSide(colSideSparseMatrix)));
+  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideSparseMatrix)).addSideInfoConfig(1, toSide(colSideSparseMatrix)).runAndCheck(1135);
 }
 
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
@@ -333,9 +326,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_sparse_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  runAndCheck(
-      1193,
-      genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideSparseMatrix)).addSideInfoConfig(1, toSide(colSideSparseMatrix)));
+  SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideSparseMatrix)).addSideInfoConfig(1, toSide(colSideSparseMatrix)).runAndCheck(1193);
 }
 
 //=================================================================
@@ -674,10 +665,8 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  Config tensorRunConfig =
-      genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  Config matrixRunConfig =
-      genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
+  Config tensorRunConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
+  Config matrixRunConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
   compareSessions(tensorRunConfig, matrixRunConfig);
 }
 
@@ -690,10 +679,8 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  Config tensorRunConfig =
-      genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  Config matrixRunConfig =
-      genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
+  Config tensorRunConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
+  Config matrixRunConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
   compareSessions(tensorRunConfig, matrixRunConfig);
 }
 
@@ -706,10 +693,8 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  Config tensorRunConfig =
-      genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  Config matrixRunConfig =
-      genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
+  Config tensorRunConfig = genConfig(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
+  Config matrixRunConfig = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
   compareSessions(tensorRunConfig, matrixRunConfig);
 }
 
@@ -722,11 +707,8 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  Config tensorRunConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone})
-                               .addSideInfoConfig(0, toSide(rowSideDenseMatrix))
-                               .addSideInfoConfig(1, toSide(colSideDenseMatrix));
-  Config matrixRunConfig =
-      genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
+  Config tensorRunConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
+  Config matrixRunConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix));
   compareSessions(tensorRunConfig, matrixRunConfig);
 }
 
