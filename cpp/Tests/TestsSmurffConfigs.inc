@@ -5,16 +5,12 @@ std::shared_ptr<MatrixConfig> trainDenseMatrix() {
 }
 
 std::shared_ptr<TensorConfig> trainDenseTensor2d() {
-  std::vector<double> trainTensorConfigVals = {1., 5., 9.,  2., 6., 10., 3., 7., 11., 4., 8., 12.};
-  TensorConfig trainTensorConfig(std::initializer_list<uint64_t>({3, 4}),
-                                     trainTensorConfigVals.data(), fixed_ncfg);
+  TensorConfig trainTensorConfig({3, 4}, {1., 5., 9.,  2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
   return std::make_shared<TensorConfig>(trainTensorConfig);
 }
 
 std::shared_ptr<TensorConfig> trainDenseTensor3d() {
-  std::vector<double> trainTensorConfigVals = {1.,  2.,  3.,  4.,  5.,  6.,  7.,  8., 9.,  10., 11., 12., 13., 14., 15., 16., 17., 18., 19., 20., 21., 22., 23., 24.};
-  TensorConfig trainTensorConfig(std::initializer_list<uint64_t>({2, 3, 4}),
-                                     trainTensorConfigVals, fixed_ncfg);
+  TensorConfig trainTensorConfig({2, 3, 4}, {1.,  2.,  3.,  4.,  5.,  6.,  7.,  8., 9.,  10., 11., 12., 13., 14., 15., 16., 17., 18., 19., 20., 21., 22., 23., 24.}, fixed_ncfg);
   return std::make_shared<TensorConfig>(trainTensorConfig);
 }
 
@@ -26,10 +22,7 @@ std::shared_ptr<MatrixConfig> trainSparseMatrix() {
 }
 
 std::shared_ptr<TensorConfig> trainSparseTensor2d() {
-  std::vector<std::vector<std::uint32_t>> trainTensorConfigCols = { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}};
-  TensorConfig trainTensorConfig(std::initializer_list<uint64_t>({3, 4}),
-                                     trainTensorConfigCols,
-                                     {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
+  TensorConfig trainTensorConfig({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
   return std::make_shared<TensorConfig>(trainTensorConfig);
 }
 
@@ -41,17 +34,13 @@ std::shared_ptr<MatrixConfig> testSparseMatrix() {
 }
 
 std::shared_ptr<TensorConfig> testSparseTensor2d() {
-  std::vector<std::vector<std::uint32_t>> testTensorConfigCols = { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}};
-  TensorConfig testTensorConfig(std::initializer_list<uint64_t>({3, 4}),
-                                     testTensorConfigCols, {1., 2., 3., 4., 9., 10., 11., 12.},
+  TensorConfig testTensorConfig({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.},
                                      fixed_ncfg, true);
   return std::make_shared<TensorConfig>(testTensorConfig);
 }
 
 std::shared_ptr<TensorConfig> testSparseTensor3d() {
-  std::vector<std::vector<std::uint32_t>> testTensorConfigCols = { {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}};
-  TensorConfig testTensorConfig(std::initializer_list<uint64_t>({2, 3, 4}),
-                                     testTensorConfigCols, {1., 2., 3., 4., 9., 10., 11., 12.},
+  TensorConfig testTensorConfig({2, 3, 4}, { {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.},
                                      fixed_ncfg, true);
   return std::make_shared<TensorConfig>(testTensorConfig);
 }
