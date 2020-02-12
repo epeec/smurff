@@ -277,54 +277,6 @@ std::shared_ptr<SideInfoConfig> toSide(std::shared_ptr<MatrixConfig> mcfg,
   return picfg;
 }
 
-std::shared_ptr<SideInfoConfig> rowSideDense(bool direct = true,
-                                                          double tol = 1e-6) {
-  std::shared_ptr<MatrixConfig> mcfg = rowSideDenseMatrix();
-
-  std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
-  picfg->setSideInfo(mcfg);
-  picfg->setDirect(direct);
-  picfg->setTol(tol);
-
-  return picfg;
-}
-
-std::shared_ptr<SideInfoConfig> colSideDense(bool direct = true,
-                                                          double tol = 1e-6) {
-  std::shared_ptr<MatrixConfig> mcfg = colSideDenseMatrix();
-
-  std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
-  picfg->setSideInfo(mcfg);
-  picfg->setDirect(direct);
-  picfg->setTol(tol);
-
-  return picfg;
-}
-
-std::shared_ptr<SideInfoConfig> rowSideSparse(bool direct = true,
-                                                           double tol = 1e-6) {
-  std::shared_ptr<MatrixConfig> mcfg = rowSideSparseMatrix();
-
-  std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
-  picfg->setSideInfo(mcfg);
-  picfg->setDirect(direct);
-  picfg->setTol(tol);
-
-  return picfg;
-}
-
-std::shared_ptr<SideInfoConfig> colSideSparse(bool direct = true,
-                                                           double tol = 1e-6) {
-  std::shared_ptr<MatrixConfig> mcfg = colSideSparseMatrix();
-
-  std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
-  picfg->setSideInfo(mcfg);
-  picfg->setDirect(direct);
-  picfg->setTol(tol);
-
-  return picfg;
-}
-
 std::shared_ptr<SideInfoConfig>
 rowSideDenseMacauPrior3d(bool direct = true, double tol = 1e-6) {
   std::shared_ptr<MatrixConfig> mcfg = rowSideDenseMatrix3d();
@@ -989,7 +941,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
       2222,
       genConfig(trainDenseTensor3d(), testSparseTensor3d(),
                 {PriorTypes::macau, PriorTypes::normal, PriorTypes::normal})
-          .addSideInfoConfig(0, rowSideDenseMacauPrior3d()));
+          .addSideInfoConfig(0, toSide(rowSideDenseMatrix3d())));
 }
 
 //=================================================================
@@ -1009,7 +961,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
       2280,
       genConfig(trainDenseTensor3d(), testSparseTensor3d(),
                 {PriorTypes::macauone, PriorTypes::normal, PriorTypes::normal})
-          .addSideInfoConfig(0, rowSideDenseMacauPrior3d()));
+          .addSideInfoConfig(0, toSide(rowSideDenseMatrix3d())));
 }
 
 //=================================================================
