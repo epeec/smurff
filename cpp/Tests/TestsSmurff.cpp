@@ -195,12 +195,6 @@ void compareSessions(Config &matrixSessionConfig, Config &tensorSessionConfig) {
                        tensorSession->getResultItems());
 }
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: normal normal
-//   aux-data: none none
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal normal --aux-data none none",
           TAG_MATRIX_TESTS) {
@@ -210,12 +204,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                              {PriorTypes::normal, PriorTypes::normal}));
 }
 
-//
-//      train: sparse matrix
-//       test: sparse matrix
-//     priors: normal normal
-//   aux-data: none none
-//
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "normal normal --aux-data none none",
           TAG_MATRIX_TESTS) {
@@ -225,12 +213,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
                              {PriorTypes::normal, PriorTypes::normal}));
 }
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: normal normal
-//   aux-data: dense_matrix dense_matrix
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal normal --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
@@ -242,12 +224,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                        .addAuxData({colAuxDense()}));
 }
 
-//
-//      train: sparse matrix
-//       test: sparse matrix
-//     priors: normal normal
-//   aux-data: dense_matrix dense_matrix
-//
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "normal normal --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
@@ -261,12 +237,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: spikeandslab spikeandslab
-//   aux-data: none none
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "spikeandslab spikeandslab --aux-data none none",
           TAG_MATRIX_TESTS) {
@@ -276,12 +246,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                      {PriorTypes::spikeandslab, PriorTypes::spikeandslab}));
 }
 
-//
-//      train: sparse matrix
-//       test: sparse matrix
-//     priors: spikeandslab spikeandslab
-//   aux-data: none none
-//
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "spikeandslab spikeandslab --aux-data none none",
           TAG_MATRIX_TESTS) {
@@ -291,12 +255,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
                      {PriorTypes::spikeandslab, PriorTypes::spikeandslab}));
 }
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: spikeandslab spikeandslab
-//   aux-data: dense_matrix dense_matrix
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
@@ -308,12 +266,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                .addAuxData({colAuxDense()}));
 }
 
-//
-//      train: sparse matrix
-//       test: sparse matrix
-//     priors: spikeandslab spikeandslab
-//   aux-data: dense_matrix dense_matrix
-//
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
@@ -327,12 +279,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: normalone normalone
-//   aux-data: none none
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normalone normalone --aux-data none none",
           TAG_MATRIX_TESTS) {
@@ -342,12 +288,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                              {PriorTypes::normalone, PriorTypes::normalone}));
 }
 
-//
-//      train: sparse matrix
-//       test: sparse matrix
-//     priors: normalone normalone
-//   aux-data: none none
-//
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "normalone normalone --aux-data none none",
           TAG_MATRIX_TESTS) {
@@ -357,12 +297,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
                              {PriorTypes::normalone, PriorTypes::normalone}));
 }
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: normalone normalone
-//   aux-data: dense_matrix dense_matrix
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normalone normalone --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
@@ -374,12 +308,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                        .addAuxData({colAuxDense()}));
 }
 
-//
-//      train: sparse matrix
-//       test: sparse matrix
-//     priors: normalone normalone
-//   aux-data: dense_matrix dense_matrix
-//
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "normalone normalone --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
@@ -393,13 +321,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: macau macau
-//   features: row_side_info_dense_matrix col_side_info_dense_matrix
-//     direct: true
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "macau macau --aux-data <row_side_info_dense_matrix> "
           "<col_side_info_dense_matrix> --direct",
@@ -412,13 +333,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                         .addSideInfoConfig(1, toSide(colSideDenseMatrix)));
 }
 
-//
-//      train: sparse matrix
-//       test: sparse matrix
-//     priors: macau macau
-//   features: row_side_info_dense_matrix col_side_info_dense_matrix
-//     direct: true
-//
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "macau macau --aux-data <row_side_info_dense_matrix> "
           "<col_side_info_dense_matrix> --direct",
@@ -433,13 +347,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: macauone macauone
-//   features: row_side_info_sparse_matrix col_side_info_sparse_matrix
-//     direct: true
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "macauone macauone --aux-data <row_side_info_sparse_matrix> "
           "<col_side_info_sparse_matrix> --direct",
@@ -452,13 +359,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                         .addSideInfoConfig(1, toSide(colSideSparseMatrix)));
 }
 
-//
-//      train: sparse matrix
-//       test: sparse matrix
-//     priors: macauone macauone
-//   features: row_side_info_sparse_matrix col_side_info_sparse_matrix
-//     direct: true
-//
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "macauone macauone --aux-data <row_side_info_sparse_matrix> "
           "<col_side_info_sparse_matrix> --direct",
@@ -473,13 +373,6 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: macau normal
-//   features: row_side_info_dense_matrix none
-//     direct: true
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "macau normal --aux-data <row_side_info_dense_matrix> none --direct",
           TAG_MATRIX_TESTS) {
@@ -490,13 +383,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                         .addSideInfoConfig(0, toSide(rowSideDenseMatrix)));
 }
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: normal macau
-//   features: none col_side_info_dense_matrix
-//     direct: true
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal macau --aux-data none <col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
@@ -509,13 +395,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
 
 // test throw - macau prior should have side info
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: macau normal
-//   features: none none
-//     direct: true
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "macau normal --aux-data none none --direct",
           TAG_MATRIX_TESTS) {
@@ -530,13 +409,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
 
 // test throw - wrong dimentions of side info
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: macau normal
-//   features: col_side_info_dense_matrix none
-//     direct: true
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "macau normal --aux-data <col_side_info_dense_matrix> none --direct",
           TAG_MATRIX_TESTS) {
@@ -551,12 +423,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: normal spikeandslab
-//   aux-data: none none
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal spikeandslab --aux-data none none",
           TAG_MATRIX_TESTS) {
@@ -566,12 +432,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                               {PriorTypes::normal, PriorTypes::spikeandslab}));
 }
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: spikeandslab normal
-//   aux-data: none none
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "spikeandslab normal --aux-data none none",
           TAG_MATRIX_TESTS) {
@@ -581,12 +441,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                               {PriorTypes::spikeandslab, PriorTypes::normal}));
 }
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: normal spikeandslab
-//   aux-data: none dense_matrix
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal spikeandslab --aux-data none <dense_matrix>",
           TAG_MATRIX_TESTS) {
@@ -597,12 +451,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
                         .addAuxData({colAuxDense()}));
 }
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: spikeandslab normal
-//   aux-data: dense_matrix none
-//
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "spikeandslab normal --aux-data <dense_matrix> none",
           TAG_MATRIX_TESTS) {
@@ -615,13 +463,6 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: macau spikeandslab
-//   features: row_side_info_dense_matrix none
-//     direct: true
-//
 TEST_CASE(
     "--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau "
     "spikeandslab --aux-data <row_side_info_dense_matrix> none --direct",
@@ -633,13 +474,6 @@ TEST_CASE(
                         .addSideInfoConfig(0, toSide(rowSideDenseMatrix)));
 }
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: spikeandslab macau
-//   features: none col_side_info_dense_matrix
-//     direct: true
-//
 TEST_CASE(
     "--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
     "spikeandslab macau --aux-data none <col_side_info_dense_matrix> --direct",
@@ -653,12 +487,6 @@ TEST_CASE(
 
 //=================================================================
 
-//
-//      train: dense 2D-tensor (matrix)
-//       test: sparse 2D-tensor (matrix)
-//     priors: normal normal
-//   aux-data: none none
-//
 TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normal --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
@@ -668,12 +496,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
                               {PriorTypes::normal, PriorTypes::normal}));
 }
 
-//
-//      train: sparse 2D-tensor (matrix)
-//       test: sparse 2D-tensor (matrix)
-//     priors: normal normal
-//   aux-data: none none
-//
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normal --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
@@ -683,12 +505,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
 }
 
 //=================================================================
-//
-//      train: dense 2D-tensor (matrix)
-//       test: sparse 2D-tensor (matrix)
-//     priors: spikeandslab spikeandslab
-//   aux-data: none none
-//
 TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
@@ -698,12 +514,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
                         {PriorTypes::spikeandslab, PriorTypes::spikeandslab}));
 }
 
-//
-//      train: sparse 2D-tensor (matrix)
-//       test: sparse 2D-tensor (matrix)
-//     priors: spikeandslab spikeandslab
-//   aux-data: none none
-//
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
@@ -715,12 +525,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
 
 //=================================================================
 
-//
-//      train: dense 2D-tensor (matrix)
-//       test: sparse 2D-tensor (matrix)
-//     priors: normalone normalone
-//   aux-data: none none
-//
 TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normalone --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
@@ -729,12 +533,6 @@ TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
                               {PriorTypes::normalone, PriorTypes::normalone}));
 }
 
-//
-//      train: sparse 2D-tensor (matrix)
-//       test: sparse 2D-tensor (matrix)
-//     priors: normalone normalone
-//   aux-data: none none
-//
 TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normalone --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
@@ -745,12 +543,6 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
 
 //=================================================================
 
-//
-//      train: dense 3D-tensor (matrix)
-//       test: sparse 3D-tensor (matrix)
-//     priors: normal normal normal
-//   aux-data: none none
-//
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
           "--prior normal normal --aux-data none none",
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS) {
@@ -762,12 +554,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
 
 //=================================================================
 
-//
-//      train: dense 3D-tensor (matrix)
-//       test: sparse 3D-tensor (matrix)
-//     priors: spikeandslab spikeandslab
-//   aux-data: none none
-//
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS) {
@@ -783,12 +569,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
 
 // not sure if this test produces correct results
 
-//
-//      train: dense 3D-tensor
-//       test: sparse 3D-tensor
-//     priors: macau normal
-//   aux-data: row_dense_side_info none
-//
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
           "--prior macau normal --side-info row_dense_side_info none",
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS) {
@@ -803,12 +583,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
 
 // not sure if this test produces correct results
 
-//
-//      train: dense 3D-tensor
-//       test: sparse 3D-tensor
-//     priors: macauone normal
-//   aux-data: row_dense_side_info none
-//
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
           "--prior macauone normal --side-info row_dense_side_info none",
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS "[!mayfail]") {
@@ -821,20 +595,6 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
 
 //=================================================================
 
-// pairwise tests for 2d matrix vs 2d tensor
-// normal normal
-// normal spikeandslab
-// spikeandslab normal
-// spikeandslab spikeandslab
-
-//
-//      train: 1. dense 2D-tensor (matrix)
-//             2. dense matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: normal normal
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_matrix>    --test <test_sparse_matrix>    "
           "--prior normal normal --aux-data none none"
@@ -850,14 +610,6 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: normal normal
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_matrix>    --test <test_sparse_matrix>    "
           "--prior normal normal --aux-data none none"
@@ -873,14 +625,8 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. dense 2D-tensor (matrix)
 //             2. dense matrix
-//       test: 1. sparse 2D-tensor (matrix)
 //             2. sparse matrix
-//     priors: normal spikeandslab
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_matrix>    --test <test_sparse_matrix>    "
           "--prior normal spikeandslab --aux-data none none"
@@ -896,14 +642,6 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: normal spikeandslab
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_matrix>    --test <test_sparse_matrix>    "
           "--prior normal spikeandslab --aux-data none none"
@@ -919,14 +657,6 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. dense 2D-tensor (matrix)
-//             2. dense matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: spikeandslab normal
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_matrix>    --test <test_sparse_matrix>    "
           "--prior spikeandslab normal --aux-data none none"
@@ -942,14 +672,6 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: spikeandslab normal
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_matrix>    --test <test_sparse_matrix>    "
           "--prior spikeandslab normal --aux-data none none"
@@ -965,14 +687,6 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. dense 2D-tensor (matrix)
-//             2. dense matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: spikeandslab spikeandslab
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_matrix>    --test <test_sparse_matrix>    "
           "--prior spikeandslab spikeandslab --aux-data none none"
@@ -988,14 +702,6 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: spikeandslab spikeandslab
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_matrix>    --test <test_sparse_matrix>    "
           "--prior spikeandslab spikeandslab --aux-data none none"
@@ -1013,14 +719,6 @@ TEST_CASE("matrix vs 2D-tensor"
 
 //==========================================================================
 
-//
-//      train: 1. dense 2D-tensor (matrix)
-//             2. dense matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: normal normalone
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_matrix>    --test <test_sparse_matrix>    "
           "--prior normal normalone --aux-data none none"
@@ -1036,14 +734,6 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: normal normalone
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_matrix>    --test <test_sparse_matrix>    "
           "--prior normal normalone --aux-data none none"
@@ -1059,14 +749,6 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. dense 2D-tensor (matrix)
-//             2. dense matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: normalone normal
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_matrix>    --test <test_sparse_matrix>    "
           "--prior normalone normal --aux-data none none"
@@ -1082,14 +764,6 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: normalone normal
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_matrix>    --test <test_sparse_matrix>    "
           "--prior normalone normal --aux-data none none"
@@ -1105,14 +779,8 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. dense 2D-tensor (matrix)
 //             2. dense matrix
-//       test: 1. sparse 2D-tensor (matrix)
 //             2. sparse matrix
-//     priors: normalone normalone
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_matrix>    --test <test_sparse_matrix>    "
           "--prior normalone normalone --aux-data none none"
@@ -1128,14 +796,6 @@ TEST_CASE("matrix vs 2D-tensor"
   compareSessions(matrixSessionConfig, tensorSessionConfig);
 }
 
-//
-//      train: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: normalone normalone
-//   aux-data: none none
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_matrix>    --test <test_sparse_matrix>    "
           "--prior normalone normalone --aux-data none none"
@@ -1153,14 +813,6 @@ TEST_CASE("matrix vs 2D-tensor"
 
 //==========================================================================
 
-//
-//      train: 1. dense 2D-tensor (matrix)
-//             2. dense matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: macau macau
-//  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior macau macau --side-info <row_side_info_dense_matrix> "
@@ -1184,14 +836,6 @@ TEST_CASE("matrix vs 2D-tensor"
   ;
 }
 
-//
-//      train: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: macau macau
-//  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior macau macau --side-info <row_side_info_dense_matrix> "
@@ -1215,14 +859,6 @@ TEST_CASE("matrix vs 2D-tensor"
   ;
 }
 
-//
-//      train: 1. dense 2D-tensor (matrix)
-//             2. dense matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: macauone macauone
-//  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior macauone macauone --side-info <row_side_info_dense_matrix> "
@@ -1246,14 +882,6 @@ TEST_CASE("matrix vs 2D-tensor"
   ;
 }
 
-//
-//      train: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//       test: 1. sparse 2D-tensor (matrix)
-//             2. sparse matrix
-//     priors: macauone macauone
-//  side-info: row_side_info_dense_matrix col_side_info_dense_matrix
-//
 TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior macauone macauone --side-info <row_side_info_dense_matrix> "
@@ -1319,13 +947,6 @@ TEST_CASE("PredictSession/BPMF") {
 
 //=================================================================
 
-//
-//      train: dense matrix
-//       test: sparse matrix
-//     priors: macau normal
-//   features: row_side_info_dense_matrix none
-//     direct: true
-//
 TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
   std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig =
       toSide(rowSideDenseMatrix);
