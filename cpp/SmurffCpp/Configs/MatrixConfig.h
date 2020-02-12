@@ -32,7 +32,7 @@ public:
    MatrixConfig(std::uint64_t nrow, std::uint64_t ncol, const std::vector<std::uint32_t> &rows, const std::vector<std::uint32_t> &cols, const NoiseConfig &noiseConfig, bool isScarce, PVec<> pos = {0,0})
        : MatrixConfig(nrow, ncol, rows.size(), rows.data(), cols.data(), noiseConfig, isScarce, pos) {}
 
-   MatrixConfig();
+   MatrixConfig() : MatrixConfig(true, false, false, 0, 0, 0, NoiseConfig()) {}
 
    std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const override;
 

@@ -77,8 +77,8 @@ static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 // dense train data (matrix/tensor 2d/tensor 3d)
 
 
-Config genConfig(std::shared_ptr<TensorConfig> train,
-                 std::shared_ptr<TensorConfig> test,
+Config genConfig(const TensorConfig& train,
+                 const TensorConfig& test,
                  std::vector<PriorTypes> priors) {
   Config config;
   config.setBurnin(50);
@@ -87,55 +87,63 @@ Config genConfig(std::shared_ptr<TensorConfig> train,
   config.setRandomSeed(1234);
   config.setNumThreads(1);
   config.setNumLatent(4);
-  config.setTrain(train);
-  config.setTest(test);
+  config.setTrain(std::make_shared<TensorConfig>(train));
+  config.setTest(std::make_shared<TensorConfig>(test));
   config.setPriorTypes(priors);
   return config;
 }
 
 
-std::shared_ptr<MatrixConfig> trainDenseMatrix() {
-  MatrixConfig trainMatrixConfig(3, 4, {1., 5., 9.,  2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
-  return std::make_shared<MatrixConfig>(trainMatrixConfig);
+Config genConfig(const MatrixConfig& train,
+                 const MatrixConfig& test,
+                 std::vector<PriorTypes> priors) {
+  Config config;
+  config.setBurnin(50);
+  config.setNSamples(50);
+  config.setVerbose(false);
+  config.setRandomSeed(1234);
+  config.setNumThreads(1);
+  config.setNumLatent(4);
+  config.setTrain(std::make_shared<MatrixConfig>(train));
+  config.setTest(std::make_shared<MatrixConfig>(test));
+  config.setPriorTypes(priors);
+  return config;
 }
 
-std::shared_ptr<TensorConfig> trainDenseTensor2d() {
-  TensorConfig trainTensorConfig({3, 4}, {1., 5., 9.,  2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
-  return std::make_shared<TensorConfig>(trainTensorConfig);
+MatrixConfig trainDenseMatrix() {
+  return MatrixConfig(3, 4, {1., 5., 9.,  2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
 }
 
-std::shared_ptr<TensorConfig> trainDenseTensor3d() {
-  TensorConfig trainTensorConfig({2, 3, 4}, {1.,  2.,  3.,  4.,  5.,  6.,  7.,  8., 9.,  10., 11., 12., 13., 14., 15., 16., 17., 18., 19., 20., 21., 22., 23., 24.}, fixed_ncfg);
-  return std::make_shared<TensorConfig>(trainTensorConfig);
+TensorConfig trainDenseTensor2d() {
+  return TensorConfig({3, 4}, {1., 5., 9.,  2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
+}
+
+TensorConfig trainDenseTensor3d() {
+  return TensorConfig({2, 3, 4}, {1.,  2.,  3.,  4.,  5.,  6.,  7.,  8., 9.,  10., 11., 12., 13., 14., 15., 16., 17., 18., 19., 20., 21., 22., 23., 24.}, fixed_ncfg);
 }
 
 // sparse train data (matrix/tensor 2d)
 
-std::shared_ptr<MatrixConfig> trainSparseMatrix() {
-  MatrixConfig trainMatrixConfig(3, 4, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
-  return std::make_shared<MatrixConfig>(trainMatrixConfig);
+MatrixConfig trainSparseMatrix() {
+  return MatrixConfig(3, 4, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
 }
 
-std::shared_ptr<TensorConfig> trainSparseTensor2d() {
-  TensorConfig trainTensorConfig({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
-  return std::make_shared<TensorConfig>(trainTensorConfig);
+TensorConfig trainSparseTensor2d() {
+  return TensorConfig({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
 }
 
 // sparse test data (matrix/tensor 2d/tensor 3d)
 
-std::shared_ptr<MatrixConfig> testSparseMatrix() {
-  MatrixConfig testMatrixConfig(3, 4, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
-  return std::make_shared<MatrixConfig>(testMatrixConfig);
+MatrixConfig testSparseMatrix() {
+  return MatrixConfig(3, 4, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
 }
 
-std::shared_ptr<TensorConfig> testSparseTensor2d() {
-  TensorConfig testTensorConfig({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
-  return std::make_shared<TensorConfig>(testTensorConfig);
+TensorConfig testSparseTensor2d() {
+  return TensorConfig({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
 }
 
-std::shared_ptr<TensorConfig> testSparseTensor3d() {
-  TensorConfig testTensorConfig({2, 3, 4}, { {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
-  return std::make_shared<TensorConfig>(testTensorConfig);
+TensorConfig testSparseTensor3d() {
+  return TensorConfig({2, 3, 4}, { {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
 }
 
 // aux data
@@ -1377,14 +1385,10 @@ TEST_CASE("PredictSession/BPMF") {
 //     direct: true
 //
 TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
-  std::shared_ptr<MatrixConfig> trainDenseMatrixConfig =
-      trainDenseMatrix();
-  std::shared_ptr<MatrixConfig> testSparseMatrixConfig =
-      testSparseMatrix();
   std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig =
       toSide(rowSideDenseMatrix());
 
-  Config config = genConfig(trainDenseMatrixConfig, testSparseMatrixConfig,
+  Config config = genConfig(trainDenseMatrix(), testSparseMatrix(),
                             {PriorTypes::macau, PriorTypes::normal})
                       .addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
   config.setSaveFreq(1);
@@ -1397,7 +1401,7 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
   auto sideInfoMatrix = matrix_utils::dense_to_eigen(
       *rowSideInfoDenseMatrixConfig->getSideInfo());
   auto trainMatrix =
-      smurff::matrix_utils::dense_to_eigen(*trainDenseMatrixConfig);
+      smurff::matrix_utils::dense_to_eigen(trainDenseMatrix());
 
 #if 0
     std::cout << "sideInfo =\n" << sideInfoMatrix << std::endl;
@@ -1432,7 +1436,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
      [-4, -4, -2, -4]])
   */
 
-  std::shared_ptr<MatrixConfig> trainMatrixConfig;
+  MatrixConfig trainMatrixConfig;
   {
     std::vector<std::uint32_t> trainMatrixConfigRows = {0, 0, 1, 1, 2, 2};
     std::vector<std::uint32_t> trainMatrixConfigCols = {0, 1, 2, 3, 0, 1};
@@ -1442,12 +1446,12 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
     // 2, 3}; std::vector<double> trainMatrixConfigVals = {2, 2, 2, 4, -2, -2,
     // -2, -4};
     fixed_ncfg.setPrecision(1.);
-    trainMatrixConfig = std::make_shared<MatrixConfig>(
+    trainMatrixConfig = MatrixConfig(
         4, 4, trainMatrixConfigRows, trainMatrixConfigCols,
         trainMatrixConfigVals, fixed_ncfg, true);
   }
 
-  std::shared_ptr<MatrixConfig> testMatrixConfig;
+  MatrixConfig testMatrixConfig;
   {
     std::vector<std::uint32_t> testMatrixConfigRows = {0, 0, 0, 0, 1, 1, 1, 1,
                                                        2, 2, 2, 2, 3, 3, 3, 3};
@@ -1455,7 +1459,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
                                                        0, 1, 2, 3, 0, 1, 2, 3};
     std::vector<double> testMatrixConfigVals = {2,  2,  1,  2,  4,  4,  2,  4,
                                                 -2, -2, -1, -2, -4, -4, -2, -4};
-    testMatrixConfig = std::make_shared<MatrixConfig>(
+    testMatrixConfig = MatrixConfig(
         4, 4, testMatrixConfigRows, testMatrixConfigCols, testMatrixConfigVals,
         fixed_ncfg, true);
   }
