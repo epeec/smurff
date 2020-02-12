@@ -125,12 +125,11 @@ std::shared_ptr<TensorConfig> trainDenseTensor3d() {
 std::shared_ptr<MatrixConfig> trainSparseMatrix() {
   std::vector<std::uint32_t> trainMatrixConfigRows = {0, 0, 0, 0, 2, 2, 2, 2};
   std::vector<std::uint32_t> trainMatrixConfigCols = {0, 1, 2, 3, 0, 1, 2, 3};
-  std::vector<double> trainMatrixConfigVals = {1, 2, 3, 4, 9, 10, 11, 12};
-  std::shared_ptr<MatrixConfig> trainMatrixConfig =
-      std::make_shared<MatrixConfig>(3, 4, trainMatrixConfigRows,
+  std::vector<double> trainMatrixConfigVals = {1., 2., 3., 4., 9., 10., 11., 12.};
+  MatrixConfig trainMatrixConfig(3, 4, trainMatrixConfigRows,
                                      trainMatrixConfigCols,
-                                     trainMatrixConfigVals, fixed_ncfg, true);
-  return trainMatrixConfig;
+                                     {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
+  return std::make_shared<MatrixConfig>(trainMatrixConfig);
 }
 
 std::shared_ptr<TensorConfig> trainSparseTensor2d() {

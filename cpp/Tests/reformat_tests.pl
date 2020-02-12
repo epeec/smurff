@@ -17,26 +17,35 @@ sub assert_dead
     }
 }
 
-my $config = "";
-my $in_testcase = 0;
+my $found = 0;
+my $in_func = 0;
+my $values;
+my $name;
 
 while (<>) {
     my $line = $_;
 
-    if ($in_testcase && /Config config = (genConfig.+);/) {
-        $config = $1;
+    if ($in_func && /std::vector<double> (\w+) = ({.+});/) {
+        $name = $1;
+        $values = $2;
+        $found = 1;
         next;
     }
 
-    if ($in_testcase && /runAndCheck/)
+    if ($in_func && $found && /$name/)
     {
-        $line =~ s/config/$config/g;
+        $line =~ s/$name/$values/g;
     }
 
-    if (/TEST_CASE/)
+    if ($in_func && /^}/)
     {
-        $config = "";
-        $in_testcase = 1;
+        $found = 0;
+        $in_func = 0;
+    }
+
+    if (/^std::shared_ptr<\w+Config>.+{/)
+    {
+        $in_func = 1;
     }
 
     print($line)
