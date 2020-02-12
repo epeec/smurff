@@ -174,7 +174,7 @@ struct SmurffTest {
     return *this;
   }
 
-  SmurffTest &addSideInfo(int m, const MatrixConfig &c,  bool direct = true, double tol = 1e-6)
+  SmurffTest &addSideInfoConfig(int m, const MatrixConfig &c,  bool direct = true, double tol = 1e-6)
   {
       std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
       picfg->setSideInfo(std::make_shared<MatrixConfig>(c));
@@ -300,7 +300,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck(1018);
+  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, rowSideDenseMatrix).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck(1018);
 }
 
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
@@ -308,7 +308,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck(1075);
+  SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, rowSideDenseMatrix).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck(1075);
 }
 
 //=================================================================
@@ -318,7 +318,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_sparse_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideSparseMatrix)).addSideInfoConfig(1, toSide(colSideSparseMatrix)).runAndCheck(1135);
+  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, rowSideSparseMatrix).addSideInfoConfig(1, colSideSparseMatrix).runAndCheck(1135);
 }
 
 TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
@@ -326,7 +326,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
           "<col_side_info_sparse_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideSparseMatrix)).addSideInfoConfig(1, toSide(colSideSparseMatrix)).runAndCheck(1193);
+  SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, rowSideSparseMatrix).addSideInfoConfig(1, colSideSparseMatrix).runAndCheck(1193);
 }
 
 //=================================================================
@@ -335,14 +335,14 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "macau normal --aux-data <row_side_info_dense_matrix> none --direct",
           TAG_MATRIX_TESTS) {
 
-  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).runAndCheck(1250);
+  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal}).addSideInfoConfig(0, rowSideDenseMatrix).runAndCheck(1250);
 }
 
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "normal macau --aux-data none <col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::macau}).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck(1305);
+  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::macau}).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck(1305);
 }
 
 // test throw - macau prior should have side info
@@ -403,14 +403,14 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
           "spikeandslab --aux-data <row_side_info_dense_matrix> none --direct",
           TAG_MATRIX_TESTS) {
 
-  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::spikeandslab}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).runAndCheck(1683);
+  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::spikeandslab}).addSideInfoConfig(0, rowSideDenseMatrix).runAndCheck(1683);
 }
 
 TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
           "spikeandslab macau --aux-data none <col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
-  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::macau}).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck(1738);
+  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::macau}).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck(1738);
 }
 
 //=================================================================
@@ -479,7 +479,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
           "--prior macau normal --side-info row_dense_side_info none",
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS) {
-  SmurffTest(trainDenseTensor3d, testSparseTensor3d, {PriorTypes::macau, PriorTypes::normal, PriorTypes::normal}).addSideInfoConfig(0, toSide(rowSideDenseMatrix3d)).runAndCheck(2222);
+  SmurffTest(trainDenseTensor3d, testSparseTensor3d, {PriorTypes::macau, PriorTypes::normal, PriorTypes::normal}).addSideInfoConfig(0, rowSideDenseMatrix3d).runAndCheck(2222);
 }
 
 //=================================================================
@@ -489,7 +489,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
 TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
           "--prior macauone normal --side-info row_dense_side_info none",
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS "[!mayfail]") {
-  SmurffTest(trainDenseTensor3d, testSparseTensor3d, {PriorTypes::macauone, PriorTypes::normal, PriorTypes::normal}).addSideInfoConfig(0, toSide(rowSideDenseMatrix3d)).runAndCheck(2280);
+  SmurffTest(trainDenseTensor3d, testSparseTensor3d, {PriorTypes::macauone, PriorTypes::normal, PriorTypes::normal}).addSideInfoConfig(0, rowSideDenseMatrix3d).runAndCheck(2280);
 }
 
 //=================================================================
