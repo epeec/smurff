@@ -150,36 +150,31 @@ static NoiseConfig sampled_nc = []() {
     return nc;
 }();
 
-std::shared_ptr<MatrixConfig> rowSideDenseMatrix() {
-  MatrixConfig rowSideInfoDenseMatrixConfig(3, 1, {1., 2., 3.}, sampled_nc);
-  return std::make_shared<MatrixConfig>(rowSideInfoDenseMatrixConfig);
+MatrixConfig rowSideDenseMatrix() {
+  return MatrixConfig(3, 1, {1., 2., 3.}, sampled_nc);
 }
 
-std::shared_ptr<MatrixConfig> colSideDenseMatrix() {
-  MatrixConfig colSideInfoDenseMatrixConfig(4, 1, {1., 2., 3., 4.}, sampled_nc);
-  return std::make_shared<MatrixConfig>(colSideInfoDenseMatrixConfig);
+MatrixConfig colSideDenseMatrix() {
+  return MatrixConfig(4, 1, {1., 2., 3., 4.}, sampled_nc);
 }
 
-std::shared_ptr<MatrixConfig> rowSideSparseMatrix() {
-  MatrixConfig rowSideInfoSparseMatrixConfig(3, 1, {0, 1, 2}, {0, 0, 0}, {1., 2., 3.}, sampled_nc, false);
-  return std::make_shared<MatrixConfig>(rowSideInfoSparseMatrixConfig);
+MatrixConfig rowSideSparseMatrix() {
+  return MatrixConfig(3, 1, {0, 1, 2}, {0, 0, 0}, {1., 2., 3.}, sampled_nc, false);
 }
 
-std::shared_ptr<MatrixConfig> colSideSparseMatrix() {
-  MatrixConfig colSideInfoSparseMatrixConfig(4, 1, {0, 1, 2, 3}, {0, 0, 0, 0}, {1., 2., 3., 4.}, sampled_nc, false);
-  return std::make_shared<MatrixConfig>(colSideInfoSparseMatrixConfig);
+MatrixConfig colSideSparseMatrix() {
+  return MatrixConfig(4, 1, {0, 1, 2, 3}, {0, 0, 0, 0}, {1., 2., 3., 4.}, sampled_nc, false);
 }
 
-std::shared_ptr<MatrixConfig> rowSideDenseMatrix3d() {
-  MatrixConfig rowSideInfoDenseMatrixConfig(2, 3, {1., 2., 3., 4., 5., 6.}, sampled_nc);
-  return std::make_shared<MatrixConfig>(rowSideInfoDenseMatrixConfig);
+MatrixConfig rowSideDenseMatrix3d() {
+  return MatrixConfig(2, 3, {1., 2., 3., 4., 5., 6.}, sampled_nc);
 }
 
-std::shared_ptr<SideInfoConfig> toSide(std::shared_ptr<MatrixConfig> mcfg,
+std::shared_ptr<SideInfoConfig> toSide(const MatrixConfig &mcfg,
                                        bool direct = true,
                                        double tol = 1e-6) {
   std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
-  picfg->setSideInfo(mcfg);
+  picfg->setSideInfo(std::make_shared<MatrixConfig>(mcfg));
   picfg->setDirect(direct);
   picfg->setTol(tol);
 
