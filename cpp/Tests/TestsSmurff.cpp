@@ -654,7 +654,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, rowSideDenseMatrix).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -666,7 +666,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, rowSideDenseMatrix).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -678,7 +678,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, rowSideDenseMatrix).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -690,7 +690,7 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, toSide(rowSideDenseMatrix)).addSideInfoConfig(1, toSide(colSideDenseMatrix)).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, rowSideDenseMatrix).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck();
 }
 
 TEST_CASE("PredictSession/BPMF") {
