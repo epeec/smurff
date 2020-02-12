@@ -103,23 +103,21 @@ std::shared_ptr<MatrixConfig> colSideDenseMatrix() {
 }
 
 std::shared_ptr<MatrixConfig> rowSideSparseMatrix() {
-  MatrixConfig rowSideInfoSparseMatrixConfig(3, 1, {0, 1, 2},
+  MatrixConfig rowSideInfoSparseMatrixConfig(3, 1,
+                                     {0, 1, 2},
                                      {0, 0, 0},
-                                     {1., 2., 3.}, sampled_nc,
-                                     true);
+                                     {1., 2., 3.}, sampled_nc);
   return std::make_shared<MatrixConfig>(rowSideInfoSparseMatrixConfig);
 }
 
 std::shared_ptr<MatrixConfig> colSideSparseMatrix() {
   MatrixConfig colSideInfoSparseMatrixConfig(4, 1, {0, 1, 2, 3},
                                      {0, 0, 0, 0},
-                                     {1., 2., 3., 4.}, sampled_nc,
-                                     true);
+                                     {1., 2., 3., 4.}, sampled_nc);
   return std::make_shared<MatrixConfig>(colSideInfoSparseMatrixConfig);
 }
 
 std::shared_ptr<MatrixConfig> rowSideDenseMatrix3d() {
-  MatrixConfig rowSideInfoDenseMatrixConfig(2, 3, {1., 2., 3., 4., 5., 6.},
-                                     sampled_nc);
+  MatrixConfig rowSideInfoDenseMatrixConfig(2, 3, {1., 2., 3., 4., 5., 6.}, sampled_nc);
   return std::make_shared<MatrixConfig>(rowSideInfoDenseMatrixConfig);
 }
