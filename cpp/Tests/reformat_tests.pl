@@ -17,36 +17,45 @@ sub assert_dead
     }
 }
 
-my $found = 0;
-my $in_func = 0;
-my $values;
-my $name;
+my @matrixconfig = ();
+my $sideconfig = "";
+my $priorconfig = "";
+my $in_testcase = 0;
 
 while (<>) {
     my $line = $_;
+    my $printline = 1;
 
-    if ($in_func && !$found && /std::vector<double> (\w+) = ({.+});/) {
-        $name = $1;
-        $values = $2;
-        $found = 1;
-        next;
+    # Config matrixSessionConfig = genConfig(trainSparseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
+    # Config tensorSessionConfig = genConfig(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal});
+    # compareSessions(matrixSessionConfig, tensorSessionConfig);
+
+    if ($in_testcase && $line =~ /Config (matrix|tensor)\w+Config = genConfig\((\w+), (\w+), ({.+})\)/) {
+        #print(join("\n", $line, $1, $2, $3, $4, $5));
+        push @matrixconfig, $2, $3;
+        $priorconfig = $4;
+        $printline = 0;
     }
 
-    if ($in_func && $found && /$name/)
+    if ($in_testcase && $line =~ /(.addSideInfoConfig.+);/) {
+        $sideconfig = $1;
+    }
+
+    if ($in_testcase && $line =~ /compareSessions/) {
+        # CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
+        $line = "  CompareTest( " . join(", ", @matrixconfig) . ", $priorconfig)$sideconfig.runAndCheck();\n"
+    }
+
+    if ($line =~ /TEST_CASE/)
     {
-        $line =~ s/$name/$values/g;
+        @matrixconfig = ();
+        $priorconfig = "";
+        $sideconfig = "";
+        $in_testcase = 1;
     }
 
-    if ($in_func && /^}/)
+    if ($printline)
     {
-        $found = 0;
-        $in_func = 0;
+        print($line);
     }
-
-    if (/^std::shared_ptr<\w+Config>.+{/)
-    {
-        $in_func = 1;
-    }
-
-    print($line)
 }
