@@ -183,7 +183,7 @@ std::shared_ptr<TensorConfig> testSparseTensor3d() {
 
 // aux data
 
-std::shared_ptr<MatrixConfig> getRowAuxDataDenseMatrixConfig() {
+std::shared_ptr<MatrixConfig> rowAuxDense() {
   std::vector<double> rowAuxDataDenseMatrixConfigVals = {1, 2, 3};
   std::shared_ptr<MatrixConfig> rowAuxDataDenseMatrixConfig =
       std::make_shared<MatrixConfig>(3, 1, rowAuxDataDenseMatrixConfigVals,
@@ -192,7 +192,7 @@ std::shared_ptr<MatrixConfig> getRowAuxDataDenseMatrixConfig() {
   return rowAuxDataDenseMatrixConfig;
 }
 
-std::shared_ptr<MatrixConfig> getColAuxDataDenseMatrixConfig() {
+std::shared_ptr<MatrixConfig> colAuxDense() {
   std::vector<double> colAuxDataDenseMatrixConfigVals = {1, 2, 3, 4};
   std::shared_ptr<MatrixConfig> colAuxDataDenseMatrixConfig =
       std::make_shared<MatrixConfig>(1, 4, colAuxDataDenseMatrixConfigVals,
@@ -420,8 +420,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
   runAndCheck(467, genConfig(trainDenseMatrix(),
                              testSparseMatrix(),
                              {PriorTypes::normal, PriorTypes::normal})
-                       .addAuxData({getRowAuxDataDenseMatrixConfig()})
-                       .addAuxData({getColAuxDataDenseMatrixConfig()}));
+                       .addAuxData({rowAuxDense()})
+                       .addAuxData({colAuxDense()}));
 }
 
 //
@@ -437,8 +437,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
   runAndCheck(523, genConfig(trainSparseMatrix(),
                              testSparseMatrix(),
                              {PriorTypes::normal, PriorTypes::normal})
-                       .addAuxData({getRowAuxDataDenseMatrixConfig()})
-                       .addAuxData({getColAuxDataDenseMatrixConfig()}));
+                       .addAuxData({rowAuxDense()})
+                       .addAuxData({colAuxDense()}));
 }
 
 //=================================================================
@@ -486,8 +486,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
   runAndCheck(
       685, genConfig(trainDenseMatrix(), testSparseMatrix(),
                      {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
-               .addAuxData({getRowAuxDataDenseMatrixConfig()})
-               .addAuxData({getColAuxDataDenseMatrixConfig()}));
+               .addAuxData({rowAuxDense()})
+               .addAuxData({colAuxDense()}));
 }
 
 //
@@ -503,8 +503,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
   runAndCheck(
       741, genConfig(trainSparseMatrix(), testSparseMatrix(),
                      {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
-               .addAuxData({getRowAuxDataDenseMatrixConfig()})
-               .addAuxData({getColAuxDataDenseMatrixConfig()}));
+               .addAuxData({rowAuxDense()})
+               .addAuxData({colAuxDense()}));
 }
 
 //=================================================================
@@ -552,8 +552,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
   runAndCheck(903, genConfig(trainDenseMatrix(),
                              testSparseMatrix(),
                              {PriorTypes::normalone, PriorTypes::normalone})
-                       .addAuxData({getRowAuxDataDenseMatrixConfig()})
-                       .addAuxData({getColAuxDataDenseMatrixConfig()}));
+                       .addAuxData({rowAuxDense()})
+                       .addAuxData({colAuxDense()}));
 }
 
 //
@@ -569,8 +569,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
   runAndCheck(959, genConfig(trainSparseMatrix(),
                              testSparseMatrix(),
                              {PriorTypes::normalone, PriorTypes::normalone})
-                       .addAuxData({getRowAuxDataDenseMatrixConfig()})
-                       .addAuxData({getColAuxDataDenseMatrixConfig()}));
+                       .addAuxData({rowAuxDense()})
+                       .addAuxData({colAuxDense()}));
 }
 
 //=================================================================
@@ -776,7 +776,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
   runAndCheck(1572, genConfig(trainDenseMatrix(),
                               testSparseMatrix(),
                               {PriorTypes::spikeandslab, PriorTypes::normal})
-                        .addAuxData({getColAuxDataDenseMatrixConfig()}));
+                        .addAuxData({colAuxDense()}));
 }
 
 //
@@ -792,7 +792,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
   runAndCheck(1626, genConfig(trainDenseMatrix(),
                               testSparseMatrix(),
                               {PriorTypes::spikeandslab, PriorTypes::normal})
-                        .addAuxData({getRowAuxDataDenseMatrixConfig()}));
+                        .addAuxData({rowAuxDense()}));
 }
 
 //=================================================================
