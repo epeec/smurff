@@ -277,18 +277,6 @@ std::shared_ptr<SideInfoConfig> toSide(std::shared_ptr<MatrixConfig> mcfg,
   return picfg;
 }
 
-std::shared_ptr<SideInfoConfig>
-rowSideDenseMacauPrior3d(bool direct = true, double tol = 1e-6) {
-  std::shared_ptr<MatrixConfig> mcfg = rowSideDenseMatrix3d();
-
-  std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
-  picfg->setSideInfo(mcfg);
-  picfg->setDirect(direct);
-  picfg->setTol(tol);
-
-  return picfg;
-}
-
 // result comparison
 
 void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem> &actualResultItems,
