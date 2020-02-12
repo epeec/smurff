@@ -641,8 +641,8 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
   runAndCheck(1135, genConfig(trainDenseMatrix(),
                               testSparseMatrix(),
                               {PriorTypes::macauone, PriorTypes::macauone})
-                        .addSideInfoConfig(0, rowSideSparse())
-                        .addSideInfoConfig(1, colSideSparse()));
+                        .addSideInfoConfig(0, toSide(rowSideSparseMatrix()))
+                        .addSideInfoConfig(1, toSide(colSideSparseMatrix())));
 }
 
 //
@@ -660,8 +660,8 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
   runAndCheck(1193, genConfig(trainSparseMatrix(),
                               testSparseMatrix(),
                               {PriorTypes::macauone, PriorTypes::macauone})
-                        .addSideInfoConfig(0, rowSideSparse())
-                        .addSideInfoConfig(1, colSideSparse()));
+                        .addSideInfoConfig(0, toSide(rowSideSparseMatrix()))
+                        .addSideInfoConfig(1, toSide(colSideSparseMatrix())));
 }
 
 //=================================================================
