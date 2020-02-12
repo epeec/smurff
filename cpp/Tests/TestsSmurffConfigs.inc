@@ -34,14 +34,12 @@ std::shared_ptr<MatrixConfig> testSparseMatrix() {
 }
 
 std::shared_ptr<TensorConfig> testSparseTensor2d() {
-  TensorConfig testTensorConfig({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.},
-                                     fixed_ncfg, true);
+  TensorConfig testTensorConfig({3, 4}, { {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
   return std::make_shared<TensorConfig>(testTensorConfig);
 }
 
 std::shared_ptr<TensorConfig> testSparseTensor3d() {
-  TensorConfig testTensorConfig({2, 3, 4}, { {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.},
-                                     fixed_ncfg, true);
+  TensorConfig testTensorConfig({2, 3, 4}, { {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
   return std::make_shared<TensorConfig>(testTensorConfig);
 }
 
@@ -88,7 +86,6 @@ std::shared_ptr<MatrixConfig> colSideSparseMatrix() {
 }
 
 std::shared_ptr<MatrixConfig> rowSideDenseMatrix3d() {
-  MatrixConfig rowSideInfoDenseMatrixConfig(2, 3, {1., 2., 3., 4., 5., 6.},
-                                     sampled_nc);
+  MatrixConfig rowSideInfoDenseMatrixConfig(2, 3, {1., 2., 3., 4., 5., 6.}, sampled_nc);
   return std::make_shared<MatrixConfig>(rowSideInfoDenseMatrixConfig);
 }
