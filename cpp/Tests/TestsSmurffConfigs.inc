@@ -46,14 +46,12 @@ std::shared_ptr<TensorConfig> testSparseTensor3d() {
 // aux data
 
 std::shared_ptr<MatrixConfig> rowAuxDense() {
-  MatrixConfig rowAuxDataDenseMatrixConfig(3, 1, {1., 2., 3.}, fixed_ncfg);
-  rowAuxDataDenseMatrixConfig.setPos(PVec<>({0, 1}));
+  MatrixConfig rowAuxDataDenseMatrixConfig(3, 1, {1., 2., 3.}, fixed_ncfg, {0, 1});
   return std::make_shared<MatrixConfig>(rowAuxDataDenseMatrixConfig);
 }
 
 std::shared_ptr<MatrixConfig> colAuxDense() {
-  MatrixConfig colAuxDataDenseMatrixConfig(1, 4, {1., 2., 3., 4.}, fixed_ncfg);
-  colAuxDataDenseMatrixConfig.setPos(PVec<>({1, 0}));
+  MatrixConfig colAuxDataDenseMatrixConfig(1, 4, {1., 2., 3., 4.}, fixed_ncfg, {1, 0});
   return std::make_shared<MatrixConfig>(colAuxDataDenseMatrixConfig);
 }
 
