@@ -97,7 +97,6 @@ TensorConfig testSparseTensor2d({3, 4}, {{0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 
 TensorConfig testSparseTensor3d({2, 3, 4}, {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 2, 2, 2}, {0, 1, 2, 3, 0, 1, 2, 3}}, {1., 2., 3., 4., 9., 10., 11., 12.}, fixed_ncfg, true);
 
 // aux data
-
 MatrixConfig rowAuxDense(3, 1, {1., 2., 3.}, fixed_ncfg, {0, 1});
 MatrixConfig colAuxDense(1, 4, {1., 2., 3., 4.}, fixed_ncfg, {1, 0});
 
@@ -150,21 +149,12 @@ struct SmurffTest {
 
   SmurffTest &addSideInfoConfig(int m, const MatrixConfig &c,  bool direct = true, double tol = 1e-6)
   {
-      std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
-      picfg->setSideInfo(std::make_shared<MatrixConfig>(c));
-      picfg->setDirect(direct);
-      picfg->setTol(tol);
-      config.addSideInfoConfig(m, picfg);
+      config.addSideInfoConfig(m, toSide(c, direct, tol));
       return *this;
   }
 
   SmurffTest &addAuxData(const TensorConfig &c) {
     config.addAuxData(std::make_shared<TensorConfig>(c));
-    return *this;
-  }
-
-  SmurffTest &addAuxData(std::shared_ptr<TensorConfig> c) {
-    config.addAuxData(c);
     return *this;
   }
 
@@ -194,6 +184,31 @@ void compareSessions(Config &matrixSessionConfig, Config &tensorSessionConfig) {
   REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
   REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
 }
+
+struct CompareTest
+{
+  Config matrixConfig, tensorConfig;
+
+  CompareTest(const MatrixConfig &matrix_train, const MatrixConfig &matrix_test, 
+             const TensorConfig &tensor_train, const TensorConfig &tensor_test,
+             std::vector<PriorTypes> priors)
+      : matrixConfig(genConfig(matrix_train, matrix_test, priors)) 
+      , tensorConfig(genConfig(tensor_train, tensor_test, priors)) 
+  {}
+
+  CompareTest &addSideInfoConfig(int m, const MatrixConfig &c,  bool direct = true, double tol = 1e-6)
+  {
+      matrixConfig.addSideInfoConfig(m, toSide(c, direct, tol));
+      tensorConfig.addSideInfoConfig(m, toSide(c, direct, tol));
+      return *this;
+  }
+
+  void runAndCheck() {
+      compareSessions(matrixConfig, tensorConfig);
+  }
+
+};
+
 
 ///===========================================================================
 
