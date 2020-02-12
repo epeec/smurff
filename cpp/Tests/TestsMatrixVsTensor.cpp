@@ -14,37 +14,32 @@
 
 #include "Tests.h"
 
-namespace smurff { namespace test {
+namespace smurff {
+namespace test {
 
-struct CompareTest
-{
+struct CompareTest {
   Config matrixConfig, tensorConfig;
 
-  CompareTest(const MatrixConfig &matrix_train, const MatrixConfig &matrix_test, 
-             const TensorConfig &tensor_train, const TensorConfig &tensor_test,
-             std::vector<PriorTypes> priors)
-      : matrixConfig(genConfig(matrix_train, matrix_test, priors)) 
-      , tensorConfig(genConfig(tensor_train, tensor_test, priors)) 
-  {}
+  CompareTest(const MatrixConfig &matrix_train, const MatrixConfig &matrix_test, const TensorConfig &tensor_train,
+              const TensorConfig &tensor_test, std::vector<PriorTypes> priors)
+      : matrixConfig(genConfig(matrix_train, matrix_test, priors)),
+        tensorConfig(genConfig(tensor_train, tensor_test, priors)) {}
 
-  CompareTest &addSideInfoConfig(int m, const MatrixConfig &c,  bool direct = true, double tol = 1e-6)
-  {
-      matrixConfig.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));
-      tensorConfig.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));
-      return *this;
+  CompareTest &addSideInfoConfig(int m, const MatrixConfig &c, bool direct = true, double tol = 1e-6) {
+    matrixConfig.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));
+    tensorConfig.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));
+    return *this;
   }
 
   void runAndCheck() {
-      std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixConfig);
-      std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorConfig);
-      matrixSession->run();
-      tensorSession->run();
+    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixConfig);
+    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorConfig);
+    matrixSession->run();
+    tensorSession->run();
 
-      REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-      REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
-
+    REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
+    REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
   }
-
 };
 
 #ifdef USE_BOOST_RANDOM
@@ -61,7 +56,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normal --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
+              {PriorTypes::normal, PriorTypes::normal})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -70,7 +67,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normal --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
+              {PriorTypes::normal, PriorTypes::normal})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -79,7 +78,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::spikeandslab}).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
+              {PriorTypes::normal, PriorTypes::spikeandslab})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -88,7 +89,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::spikeandslab}).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
+              {PriorTypes::normal, PriorTypes::spikeandslab})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -97,7 +100,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab normal --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::normal}).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
+              {PriorTypes::spikeandslab, PriorTypes::normal})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -106,7 +111,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab normal --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::normal}).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
+              {PriorTypes::spikeandslab, PriorTypes::normal})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -115,7 +122,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::spikeandslab}).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
+              {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -124,7 +133,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior spikeandslab spikeandslab --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::spikeandslab}).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
+              {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
+      .runAndCheck();
 }
 
 //==========================================================================
@@ -135,7 +146,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normalone --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normalone}).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
+              {PriorTypes::normal, PriorTypes::normalone})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -144,7 +157,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normal normalone --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normalone}).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
+              {PriorTypes::normal, PriorTypes::normalone})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -153,7 +168,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normal --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normal}).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
+              {PriorTypes::normalone, PriorTypes::normal})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -162,7 +179,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normal --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normal}).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
+              {PriorTypes::normalone, PriorTypes::normal})
+      .runAndCheck();
 }
 
 //             2. dense matrix
@@ -173,7 +192,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normalone --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normalone}).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
+              {PriorTypes::normalone, PriorTypes::normalone})
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -182,7 +203,9 @@ TEST_CASE("matrix vs 2D-tensor"
           "--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
           "--prior normalone normalone --aux-data none none",
           TAG_VS_TESTS) {
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normalone}).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
+              {PriorTypes::normalone, PriorTypes::normalone})
+      .runAndCheck();
 }
 
 //==========================================================================
@@ -196,7 +219,11 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, rowSideDenseMatrix).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
+              {PriorTypes::macau, PriorTypes::macau})
+      .addSideInfoConfig(0, rowSideDenseMatrix)
+      .addSideInfoConfig(1, colSideDenseMatrix)
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -208,7 +235,11 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macau, PriorTypes::macau}).addSideInfoConfig(0, rowSideDenseMatrix).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
+              {PriorTypes::macau, PriorTypes::macau})
+      .addSideInfoConfig(0, rowSideDenseMatrix)
+      .addSideInfoConfig(1, colSideDenseMatrix)
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -220,7 +251,11 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, rowSideDenseMatrix).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck();
+  CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
+              {PriorTypes::macauone, PriorTypes::macauone})
+      .addSideInfoConfig(0, rowSideDenseMatrix)
+      .addSideInfoConfig(1, colSideDenseMatrix)
+      .runAndCheck();
 }
 
 TEST_CASE("matrix vs 2D-tensor"
@@ -232,8 +267,12 @@ TEST_CASE("matrix vs 2D-tensor"
           "<col_side_info_dense_matrix> --direct",
           TAG_VS_TESTS) {
 
-  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d, {PriorTypes::macauone, PriorTypes::macauone}).addSideInfoConfig(0, rowSideDenseMatrix).addSideInfoConfig(1, colSideDenseMatrix).runAndCheck();
+  CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
+              {PriorTypes::macauone, PriorTypes::macauone})
+      .addSideInfoConfig(0, rowSideDenseMatrix)
+      .addSideInfoConfig(1, colSideDenseMatrix)
+      .runAndCheck();
 }
 
-
-} } //end namespace smurff::test
+} // namespace test
+} // namespace smurff

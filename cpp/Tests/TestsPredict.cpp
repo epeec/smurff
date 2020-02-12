@@ -20,7 +20,8 @@
 #define TAG_MATRIX_TESTS "[matrix][random][!mayfail]"
 #endif
 
-namespace smurff { namespace test {
+namespace smurff {
+namespace test {
 
 TEST_CASE("PredictSession/BPMF") {
 
@@ -63,7 +64,8 @@ TEST_CASE("PredictSession/BPMF") {
 TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
   std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig = makeSideInfoConfig(rowSideDenseMatrix);
 
-  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal}).addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
+  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal})
+                      .addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
   config.setSaveFreq(1);
 
   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
@@ -115,8 +117,8 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
     std::vector<std::uint32_t> trainMatrixConfigCols = {0, 1, 2, 3, 0, 1};
     std::vector<double> trainMatrixConfigVals = {2, 2, 2, 4, -2, -2};
 
-
-    trainMatrixConfig = MatrixConfig(4, 4, trainMatrixConfigRows, trainMatrixConfigCols, trainMatrixConfigVals, noise_cfg, true);
+    trainMatrixConfig =
+        MatrixConfig(4, 4, trainMatrixConfigRows, trainMatrixConfigCols, trainMatrixConfigVals, noise_cfg, true);
   }
 
   MatrixConfig testMatrixConfig;
@@ -124,7 +126,8 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
     std::vector<std::uint32_t> testMatrixConfigRows = {0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3};
     std::vector<std::uint32_t> testMatrixConfigCols = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
     std::vector<double> testMatrixConfigVals = {2, 2, 1, 2, 4, 4, 2, 4, -2, -2, -1, -2, -4, -4, -2, -4};
-    testMatrixConfig = MatrixConfig(4, 4, testMatrixConfigRows, testMatrixConfigCols, testMatrixConfigVals, noise_cfg, true);
+    testMatrixConfig =
+        MatrixConfig(4, 4, testMatrixConfigRows, testMatrixConfigCols, testMatrixConfigVals, noise_cfg, true);
   }
 
   std::shared_ptr<SideInfoConfig> rowSideInfoConfig;
@@ -136,13 +139,16 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
     std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigCols = {0, 0, 0, 0};
     std::vector<double> rowSideInfoSparseMatrixConfigVals = {2, 4, -2, -4};
 
-    auto mcfg = std::make_shared<MatrixConfig>(4, 1, rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols, rowSideInfoSparseMatrixConfigVals, nc, true);
+    auto mcfg =
+        std::make_shared<MatrixConfig>(4, 1, rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols,
+                                       rowSideInfoSparseMatrixConfigVals, nc, true);
 
     rowSideInfoConfig = std::make_shared<SideInfoConfig>();
     rowSideInfoConfig->setSideInfo(mcfg);
     rowSideInfoConfig->setDirect(true);
   }
-  Config config = genConfig(trainMatrixConfig, testMatrixConfig, {PriorTypes::macau, PriorTypes::normal}).addSideInfoConfig(0, rowSideInfoConfig);
+  Config config = genConfig(trainMatrixConfig, testMatrixConfig, {PriorTypes::macau, PriorTypes::normal})
+                      .addSideInfoConfig(0, rowSideInfoConfig);
   config.setSaveFreq(1);
 
   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
@@ -172,4 +178,5 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   }
 }
 
-} } // end namespace smurff::test
+} // namespace test
+} // namespace smurff
