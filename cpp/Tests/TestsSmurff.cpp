@@ -175,16 +175,6 @@ struct SmurffTest {
 
 };
 
-void compareSessions(Config &matrixSessionConfig, Config &tensorSessionConfig) {
-  std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixSessionConfig);
-  std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorSessionConfig);
-  matrixSession->run();
-  tensorSession->run();
-
-  REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-  REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
-}
-
 struct CompareTest
 {
   Config matrixConfig, tensorConfig;
@@ -203,15 +193,15 @@ struct CompareTest
       return *this;
   }
 
-  CompareTest &addSideInfoConfig(int m, std::shared_ptr<SideInfoConfig> c)
-  {
-      matrixConfig.addSideInfoConfig(m, c);
-      tensorConfig.addSideInfoConfig(m, c);
-      return *this;
-  }
-
   void runAndCheck() {
-      compareSessions(matrixConfig, tensorConfig);
+      std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixConfig);
+      std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorConfig);
+      matrixSession->run();
+      tensorSession->run();
+
+      REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
+      REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+
   }
 
 };
