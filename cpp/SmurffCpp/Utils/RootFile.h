@@ -41,12 +41,10 @@ private:
 public:
    std::shared_ptr<StepFile> createSampleStepFile(std::int32_t isample);
    std::shared_ptr<StepFile> createCheckpointStepFile(std::int32_t isample);
+   std::shared_ptr<StepFile> createStepFile(std::int32_t isample, bool checkpoint);
 
 public:
    void removeOldCheckpoints();
-
-private:
-   std::shared_ptr<StepFile> createStepFileInternal(std::int32_t isample, bool burnin);
 
 public:
    std::shared_ptr<StepFile> openLastCheckpoint() const;

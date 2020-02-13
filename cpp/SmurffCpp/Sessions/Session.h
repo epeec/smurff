@@ -81,9 +81,9 @@ public:
 
 private:
    //save current iteration
-   void save(int iteration);
+   void save();
 
-   void saveInternal(std::shared_ptr<StepFile> stepFile);
+   void saveInternal(int iteration, bool checkpoint);
 
    //restore last iteration
    bool restore(int& iteration);

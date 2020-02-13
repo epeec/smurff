@@ -179,7 +179,7 @@ bool Session::step()
 
         printStatus(std::cout);
 
-        save(m_iter);
+        save();
     }
 
     return isStep;
@@ -208,30 +208,29 @@ std::ostream &Session::info(std::ostream &os, std::string indent) const
     return os;
 }
 
-void Session::save(int iteration)
+void Session::save()
 {
     //do not save if 'never save' mode is selected
     if (!m_config.getSaveFreq() &&
         !m_config.getCheckpointFreq())
         return;
 
-    std::int32_t isample = iteration - m_config.getBurnin() + 1;
+    std::int32_t isample = m_iter - m_config.getBurnin() + 1;
 
     //save if checkpoint threshold overdue
     if (m_config.getCheckpointFreq() && (tick() - m_lastCheckpointTime) >= m_config.getCheckpointFreq())
     {
-        std::int32_t icheckpoint = iteration + 1;
+        std::int32_t icheckpoint = m_iter + 1;
 
         //save this iteration
-        std::shared_ptr<StepFile> stepFile = m_rootFile->createCheckpointStepFile(icheckpoint);
-        saveInternal(stepFile);
+        saveInternal(icheckpoint, true);
 
         //remove previous iteration if required (initial m_lastCheckpointIter is -1 which means that it does not exist)
         m_rootFile->removeOldCheckpoints();
 
         //upddate counters
         m_lastCheckpointTime = tick();
-        m_lastCheckpointIter = iteration;
+        m_lastCheckpointIter = m_iter;
     }
 
     //save model during sampling stage
@@ -250,14 +249,15 @@ void Session::save(int iteration)
         else
         {
             //do save this iteration
-            std::shared_ptr<StepFile> stepFile = m_rootFile->createSampleStepFile(isample);
-            saveInternal(stepFile);
+            saveInternal(isample, false);
         }
     }
 }
 
-void Session::saveInternal(std::shared_ptr<StepFile> stepFile)
+void Session::saveInternal(int iteration, bool checkpoint)
 {
+    std::shared_ptr<StepFile> stepFile = m_rootFile->createStepFile(iteration, checkpoint);
+
     if (m_config.getVerbose())
     {
         std::cout << "-- Saving model, predictions,... into '" << m_rootFile->getFullPath() << "'." << std::endl;

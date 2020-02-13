@@ -16,6 +16,7 @@ namespace h5 = HighFive;
 
 namespace smurff {
 
+const char* NONE_TAG = "none";
 const char* OPTIONS_TAG = "options";
 const char* STEPS_TAG = "steps";
 const char* STATUS_TAG = "status";
@@ -27,6 +28,7 @@ RootFile::RootFile(std::string path, bool create)
    : m_path(path)
    , m_h5(path, create ? h5::File::Create : h5::File::ReadOnly)
 {
+   m_h5.createAttribute(LAST_CHECKPOINT_TAG, std::string(NONE_TAG));
 }
 
 std::string RootFile::getFullPath() const
@@ -69,15 +71,15 @@ void RootFile::restoreConfig(Config& config)
 
 std::shared_ptr<StepFile> RootFile::createSampleStepFile(std::int32_t isample)
 {
-   return createStepFileInternal(isample, false);
+   return createStepFile(isample, false);
 }
 
 std::shared_ptr<StepFile> RootFile::createCheckpointStepFile(std::int32_t isample)
 {
-   return createStepFileInternal(isample, true);
+   return createStepFile(isample, true);
 }
 
-std::shared_ptr<StepFile> RootFile::createStepFileInternal(std::int32_t isample, bool checkpoint)
+std::shared_ptr<StepFile> RootFile::createStepFile(std::int32_t isample, bool checkpoint)
 {
    return std::make_shared<StepFile>(m_h5, isample, checkpoint);
 }
@@ -85,24 +87,26 @@ std::shared_ptr<StepFile> RootFile::createStepFileInternal(std::int32_t isample,
 void RootFile::removeOldCheckpoints()
 {
    std::string lastCheckpointItem;
-   if (m_h5.hasAttribute(LAST_CHECKPOINT_TAG))
       m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
+   std::cout << "Last checkpoint " << lastCheckpointItem << std::endl;
 
    std::vector<std::string> h5_objects = m_h5.listObjectNames();
-   for (auto& name : h5_objects)
+   for (auto &name : h5_objects)
 {
       if (startsWith(name, CHECKPOINT_PREFIX) && name != lastCheckpointItem)
+      {
          m_h5.unlink(name);
+         std::cout << "Remove checkpoint " << name << std::endl;
+      }
    }
 }
 
-
 std::shared_ptr<StepFile> RootFile::openLastCheckpoint() const
 {
-   if (m_h5.hasAttribute(LAST_CHECKPOINT_TAG))
-   {
       std::string lastCheckpointItem;
       m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
+   if (lastCheckpointItem != NONE_TAG)
+   {
       h5::Group group = m_h5.getGroup(lastCheckpointItem);
       return std::make_shared<StepFile>(m_h5, group);
    }
