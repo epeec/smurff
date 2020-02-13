@@ -26,9 +26,12 @@ const char* SAMPLE_PREFIX = "sample_";
 
 RootFile::RootFile(std::string path, bool create)
    : m_path(path)
-   , m_h5(path, create ? h5::File::Create : h5::File::ReadOnly)
+   , m_h5(path, create ? h5::File::Create : h5::File::ReadWrite)
 {
-   m_h5.createAttribute(LAST_CHECKPOINT_TAG, std::string(NONE_TAG));
+   if (create)
+   {
+      m_h5.createAttribute(LAST_CHECKPOINT_TAG, std::string(NONE_TAG));
+   }
 }
 
 std::string RootFile::getFullPath() const
