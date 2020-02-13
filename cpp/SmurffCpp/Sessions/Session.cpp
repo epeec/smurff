@@ -50,7 +50,7 @@ void Session::fromConfig(const Config &cfg)
     if (!cfg.getRootName().empty())
     {
         // open root file
-        m_rootFile = std::make_shared<RootFile>(cfg.getRootPrefix());
+        m_rootFile = std::make_shared<RootFile>(cfg.getRootName());
     }
     else if (m_config.getSaveFreq() || m_config.getCheckpointFreq())
     {

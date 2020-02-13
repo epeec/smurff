@@ -134,10 +134,11 @@ public:
    bool validate() const;
 
    void save(std::string fname) const;
-
    bool restore(std::string fname);
 
    static bool restoreSaveInfo(std::string fname, std::string& save_prefix, std::string& save_extension);
+   //std::string to_string() const;
+   //bool from_string(std::string str);
 
    std::ostream& info(std::ostream &os, std::string indent) const;
 
@@ -451,8 +452,6 @@ public:
    {
        return m_root_name;
    }
-
-   std::string getRootPrefix() const;
 
    void setRootName(std::string value)
    {

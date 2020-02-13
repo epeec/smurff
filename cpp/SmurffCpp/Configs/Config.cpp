@@ -193,12 +193,6 @@ std::string Config::getSavePrefix() const
     return m_save_prefix;
 }
 
-std::string Config::getRootPrefix() const
-{
-    THROWERROR_ASSERT(fileName(m_root_name) == "root.ini");
-    return dirName(m_root_name);
-}
-
 const std::vector<std::shared_ptr<SideInfoConfig> >& Config::getSideInfoConfigs(int mode) const
 {
   auto iter = m_sideInfoConfigs.find(mode);
