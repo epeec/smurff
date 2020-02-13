@@ -14,6 +14,9 @@ namespace smurff {
 
 struct StatusItem;
 
+
+extern const char* LAST_CHECKPOINT_TAG;
+
 class RootFile
 {
 private:
@@ -23,18 +26,10 @@ private:
 public:
    RootFile(std::string path, bool create = false);
 
-
 public:
    std::string getPrefix() const;
    std::string getFullPath() const;
    std::string getOptionsFileName() const;
-   std::string getCsvStatusFileName() const;
-
-private:
-   std::string getFullPathFromIni(const std::string &section, const std::string &field) const;
-
-private:
-   void appendToRootFile(std::string name, std::string value) const;
 
 public:
    void saveConfig(Config& config);
@@ -48,23 +43,15 @@ public:
    std::shared_ptr<StepFile> createCheckpointStepFile(std::int32_t isample);
 
 public:
-   void removeSampleStepFile(std::int32_t isample);
-   void removeCheckpointStepFile(std::int32_t isample);
+   void removeOldCheckpoints();
 
 private:
    std::shared_ptr<StepFile> createStepFileInternal(std::int32_t isample, bool burnin);
-
-private:
-   void removeStepFileInternal(std::int32_t isample, bool burnin);
 
 public:
    std::shared_ptr<StepFile> openLastCheckpoint() const;
    std::shared_ptr<StepFile> openSampleStepFile(int isample) const;
    std::vector<std::shared_ptr<StepFile>> openSampleStepFiles() const;
-
-public:
-  void createCsvStatusFile();
-  void addCsvStatusLine(const StatusItem &status_item) const;
 };
 
 }

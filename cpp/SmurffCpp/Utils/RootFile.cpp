@@ -10,18 +10,18 @@
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/StatusItem.h>
 
-#define OPTIONS_TAG "options"
-#define STEPS_TAG "steps"
-#define STATUS_TAG "status"
-#define LAST_CHECKPOINT_TAG "last_checkpoint"
-#define LAST_SAMPLE_TAG "last_checkpoint"
 
-#define CHECKPOINT_PREFIX "checkpoint_"
-#define SAMPLE_PREFIX "sample_"
 
 namespace h5 = HighFive;
 
 namespace smurff {
+
+const char* OPTIONS_TAG = "options";
+const char* STEPS_TAG = "steps";
+const char* STATUS_TAG = "status";
+const char* LAST_CHECKPOINT_TAG = "last_checkpoint";
+const char* CHECKPOINT_PREFIX = "checkpoint_";
+const char* SAMPLE_PREFIX = "sample_";
 
 RootFile::RootFile(std::string path, bool create)
    : m_path(path)
@@ -43,29 +43,6 @@ std::string RootFile::getOptionsFileName() const
 {
    return getPrefix() + "options.ini";
 }
-
-std::string RootFile::getCsvStatusFileName() const
-{
-   return getPrefix() + "status.csv";
-}
-
-void RootFile::createCsvStatusFile()
-{
-   //write header to status file
-   const std::string statusPath = getCsvStatusFileName();
-   std::ofstream csv_out(getCsvStatusFileName(), std::ofstream::out);
-   csv_out << StatusItem::getCsvHeader() << std::endl;
-   m_h5.createAttribute<std::string>(STATUS_TAG, statusPath);
-}
-
-void RootFile::addCsvStatusLine(const StatusItem &status_item) const
-{
-    const std::string statusPath = getCsvStatusFileName();
-    std::ofstream csv_out(statusPath, std::ofstream::out | std::ofstream::app);
-    THROWERROR_ASSERT_MSG(csv_out, "Could not open status csv file: " + statusPath);;
-    csv_out << status_item.asCsvString() << std::endl;
-}
-
 void RootFile::saveConfig(Config& config)
 {
    std::string configPath = getOptionsFileName();
@@ -102,28 +79,23 @@ std::shared_ptr<StepFile> RootFile::createCheckpointStepFile(std::int32_t isampl
 
 std::shared_ptr<StepFile> RootFile::createStepFileInternal(std::int32_t isample, bool checkpoint)
 {
-   std::string name = std::string(checkpoint ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(isample);
-   if (checkpoint)
-      m_h5.createAttribute(LAST_CHECKPOINT_TAG, name);
-   h5::Group group = m_h5.createGroup(name);
-   return std::make_shared<StepFile>(group, isample, checkpoint);
+   return std::make_shared<StepFile>(m_h5, isample, checkpoint);
 }
 
-void RootFile::removeSampleStepFile(std::int32_t isample) 
+void RootFile::removeOldCheckpoints()
 {
-   removeStepFileInternal(isample, false);
+   std::string lastCheckpointItem;
+   if (m_h5.hasAttribute(LAST_CHECKPOINT_TAG))
+      m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
+
+   std::vector<std::string> h5_objects = m_h5.listObjectNames();
+   for (auto& name : h5_objects)
+{
+      if (startsWith(name, CHECKPOINT_PREFIX) && name != lastCheckpointItem)
+         m_h5.unlink(name);
+   }
 }
 
-void RootFile::removeCheckpointStepFile(std::int32_t isample)
-{
-   removeStepFileInternal(isample, true);
-}
-
-void RootFile::removeStepFileInternal(std::int32_t isample, bool checkpoint)
-{
-   std::string m_name = std::string(checkpoint ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(isample);
-   m_h5.unlink(m_name);
-}
 
 std::shared_ptr<StepFile> RootFile::openLastCheckpoint() const
 {
@@ -132,7 +104,7 @@ std::shared_ptr<StepFile> RootFile::openLastCheckpoint() const
       std::string lastCheckpointItem;
       m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
       h5::Group group = m_h5.getGroup(lastCheckpointItem);
-      return std::make_shared<StepFile>(group);
+      return std::make_shared<StepFile>(m_h5, group);
    }
 
    return std::shared_ptr<StepFile>();
@@ -148,22 +120,11 @@ std::vector<std::shared_ptr<StepFile>> RootFile::openSampleStepFiles() const
       if (startsWith(name, SAMPLE_PREFIX))
       {
          h5::Group group = m_h5.getGroup(name);
-         samples.push_back(std::make_shared<StepFile>(group));
+         samples.push_back(std::make_shared<StepFile>(m_h5, group));
       }
    }
 
    return samples;
-}
-
-std::string RootFile::getFullPathFromIni(const std::string &section, const std::string &field) const
-{
-   std::string item;
-   m_h5.getAttribute(section).read(item);
-
-   if (startsWith(item, getPrefix()))
-      return item;
-
-   return getPrefix() + item;
 }
 
 } // end namespace smurff

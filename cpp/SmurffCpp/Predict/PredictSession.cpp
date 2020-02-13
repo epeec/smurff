@@ -104,7 +104,7 @@ void PredictSession::init()
     {
         // create root file
         m_pred_rootfile = std::make_shared<RootFile>(m_config.getSavePrefix() + "root.h5", true);
-        m_pred_rootfile->createCsvStatusFile();
+        //m_pred_rootfile->createCsvStatusFile();
     }
 
     if (m_config.getVerbose())
@@ -155,7 +155,7 @@ void PredictSession::save()
 
     m_result->save(stepFile);
 
-    m_pred_rootfile->addCsvStatusLine(*getStatus());
+    //m_pred_rootfile->addCsvStatusLine(*getStatus());
 }
 
 std::shared_ptr<StatusItem> PredictSession::getStatus() const

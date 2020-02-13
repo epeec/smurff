@@ -60,9 +60,6 @@ void Session::fromConfig(const Config &cfg)
 
         //save config
         m_rootFile->saveConfig(m_config);
-
-        //csv status config
-        m_rootFile->createCsvStatusFile();
     }
 
     //base functionality
@@ -230,13 +227,7 @@ void Session::save(int iteration)
         saveInternal(stepFile);
 
         //remove previous iteration if required (initial m_lastCheckpointIter is -1 which means that it does not exist)
-        if (m_lastCheckpointIter >= 0)
-        {
-            std::int32_t icheckpointPrev = m_lastCheckpointIter + 1;
-
-            //remove previous iteration
-            m_rootFile->removeCheckpointStepFile(icheckpointPrev);
-        }
+        m_rootFile->removeOldCheckpoints();
 
         //upddate counters
         m_lastCheckpointTime = tick();
@@ -263,8 +254,6 @@ void Session::save(int iteration)
             saveInternal(stepFile);
         }
     }
-
-    m_rootFile->addCsvStatusLine(*getStatus());
 }
 
 void Session::saveInternal(std::shared_ptr<StepFile> stepFile)

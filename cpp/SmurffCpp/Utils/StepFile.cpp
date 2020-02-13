@@ -38,20 +38,41 @@
 #define POST_MU_PREFIX "post_mu_"
 #define POST_LAMBDA_PREFIX "post_lambda_"
 
+#define CHECKPOINT_PREFIX "checkpoint_"
+#define SAMPLE_PREFIX "sample_"
+
 namespace smurff {
 
-StepFile::StepFile(h5::Group group, std::int32_t isample, bool checkpoint)
-   : m_isample(isample), m_group(group), m_checkpoint(checkpoint)
+StepFile::StepFile(h5::File file, std::int32_t isample, bool checkpoint)
+   : m_isample(isample), m_file(file), m_checkpoint(checkpoint)
 {
+   m_group = m_file.createGroup(getName());
    m_group.createAttribute<bool>(IS_CHECKPOINT_TAG, m_checkpoint);
    m_group.createAttribute<int>(NUMBER_TAG, m_isample);
 }
 
-StepFile::StepFile(h5::Group group)
-   : m_group(group)
+StepFile::StepFile(h5::File file, h5::Group group)
+   : m_group(group), m_file(file)
 {
    group.getAttribute(NUMBER_TAG).read(m_isample);
    group.getAttribute(IS_CHECKPOINT_TAG).read(m_checkpoint);
+}
+
+StepFile::~StepFile()
+{
+   if (isCheckpoint())
+   {
+      if (m_file.hasAttribute(LAST_CHECKPOINT_TAG))
+      {
+         m_file.getAttribute(LAST_CHECKPOINT_TAG).write(getName());
+      }
+      else
+      {
+         m_file.createAttribute(LAST_CHECKPOINT_TAG, getName());
+      }
+   }
+
+   m_file.flush();
 }
 
 //name methods
@@ -70,6 +91,11 @@ bool StepFile::hasModel(std::uint64_t index) const
 std::shared_ptr<Matrix> StepFile::getModel(std::uint64_t index) const
 {
    return getMatrix(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
+}
+
+std::string StepFile::getName() const
+{
+   return std::string(isCheckpoint() ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(getIsample());
 }
 
 void StepFile::putModel(const std::vector<std::shared_ptr<Matrix>> &F) const
@@ -168,8 +194,6 @@ void StepFile::save(
    const std::vector<std::shared_ptr<ILatentPrior> >& priors
    ) const
 {
-
-
    model->save(shared_from_this());
    pred->save(shared_from_this());
    for (auto &p : priors) p->save(shared_from_this());
@@ -346,14 +370,5 @@ void StepFile::putSparseMatrix(const std::string& section, const std::string& ta
    auto indices = sparse_group.createDataSet<SparseMatrix::Index>("indices", h5::DataSpace(X.nonZeros()));
    indices.write(X.innerIndexPtr());
 }
-
-
-/*
-void StepFile::appendToStepFile(std::string section) const
-{
-   if (m_group.hasGroup(section)) return;
-   m_group.createGroup(section);
-}
-*/
 
 } // end namespace smurff

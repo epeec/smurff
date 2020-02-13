@@ -25,15 +25,18 @@ namespace smurff {
    private:
       std::int32_t m_isample;
       mutable h5::Group m_group;
+      mutable h5::File m_file;
       bool m_checkpoint;
       bool m_final;
 
    public:
       //this constructor should be used to create a step file on a first run of session
-      StepFile(h5::Group group, std::int32_t isample, bool checkpoint);
+      StepFile(h5::File file, std::int32_t isample, bool checkpoint);
 
       //this constructor should be used to  open existing step file when previous session is continued
-      StepFile(h5::Group group);
+      StepFile(h5::File file, h5::Group group);
+
+      ~StepFile();
 
    public:
       bool hasModel(std::uint64_t index) const;
