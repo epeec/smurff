@@ -400,14 +400,6 @@ void Config::save(std::string fname) const
 {
    INIFile ini;
 
-   //write header with time and version
-
-   auto t = std::time(nullptr);
-   auto tm = *std::localtime(&t);
-   char time_str[1024];
-   strftime (time_str, 1023, "%Y-%m-%d %H:%M:%S", &tm);
-
-
    //write global options section
 
    //count data

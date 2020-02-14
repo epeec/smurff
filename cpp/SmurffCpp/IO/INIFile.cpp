@@ -1,13 +1,9 @@
 // Read an INI file into easy-to-access name/value pairs.
 // this code is based on https://github.com/Blandinium/inih/blob/master/cpp/INIReader.cpp 61bf1b3  on Dec 18, 2014
 
-#include <iostream>
 #include <fstream>
-#include <algorithm>
 
 #include "INIFile.h"
-
-#include <Utils/Error.h>
 
 #include <boost/property_tree/ini_parser.hpp>
 

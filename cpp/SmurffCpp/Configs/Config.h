@@ -137,8 +137,8 @@ public:
    void save(std::string fname) const;
    bool restore(std::string fname);
 
-   //std::string to_string() const;
-   //bool from_string(std::string str);
+   std::string to_string() const;
+   bool from_string(std::string str);
 
    std::ostream& info(std::ostream &os, std::string indent) const;
 
