@@ -15,7 +15,7 @@ FILE (GLOB UTIL_FILES
 
 source_group ("Utils" FILES ${UTIL_FILES})
 
-FILE (GLOB IO_FILES     "IO/ini.h"
+FILE (GLOB IO_FILES     
                         "IO/INIFile.h"
                         "IO/GenericIO.h"
                         "IO/MatrixIO.h"
@@ -23,7 +23,6 @@ FILE (GLOB IO_FILES     "IO/ini.h"
                         "IO/IDataWriter.h"
                         "IO/DataWriter.h"
 
-                        "IO/ini.c"
                         "IO/INIFile.cpp"
                         "IO/GenericIO.cpp"
                         "IO/MatrixIO.cpp"

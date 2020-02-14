@@ -26,14 +26,11 @@ private:
    pt::ptree m_tree;
 
 public:
-    // Construct INIReader and parse given filename. See ini.h for more info about the parsing.
     INIFile();
-    
     ~INIFile();
 
 public:
    void open(const std::string& filename);
-
    void create(const std::string& filename);
 
 public:
@@ -58,10 +55,6 @@ public:
 public:
    //will throw exception if section or name are not found
    std::string get(const std::string& section, const std::string& name) const;
-
-public:
-   //will return pair with false and empty string if section or name are not found
-   std::pair<bool, std::string> tryGet(const std::string& section, const std::string& name) const;
 
 public:
     // Returns all the section names from the INI file in alphabetical order

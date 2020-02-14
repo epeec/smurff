@@ -5,7 +5,6 @@
 #include <fstream>
 #include <algorithm>
 
-#include "ini.h"
 #include "INIFile.h"
 
 #include <Utils/Error.h>
@@ -66,15 +65,6 @@ bool INIFile::getBoolean(const std::string& section, const std::string& name, bo
 std::string INIFile::get(const std::string& section, const std::string& name) const
 {
    return m_tree.get<std::string>(section + "." + name);
-}
-
-std::pair<bool, std::string> INIFile::tryGet(const std::string& section, const std::string& name) const
-{
-   auto v = m_tree.get_optional<std::string>(section + "." + name);
-   if (!v)
-      return std::make_pair(false, std::string());
-   else
-      return std::make_pair(true, v.get());
 }
 
 const std::set<std::string> INIFile::getSections() const
