@@ -107,12 +107,18 @@ bool Step::hasLinkMatrix(std::uint32_t mode) const
 
 std::shared_ptr<Matrix> Step::getLinkMatrix(std::uint32_t mode) const
 {
-   return getMatrix(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode));
+   if (hasDataSet(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode)))
+      return getMatrix(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode));
+
+   return std::shared_ptr<Matrix>();
 }
 
-std::shared_ptr<Matrix> Step::getMu(std::uint64_t index) const
+std::shared_ptr<Vector> Step::getMu(std::uint64_t index) const
 {
-   return getMatrix(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index));
+   if (hasDataSet(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index)))
+      return getVector(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index));
+
+   return std::shared_ptr<Vector>();
 }
 
 void Step::putLinkMatrix(std::uint64_t index, const Matrix &M) const
@@ -198,19 +204,6 @@ void Step::restoreModel(std::shared_ptr<Model> model, int skip_mode) const
 {
    model->restore(shared_from_this(), skip_mode);
 
-   int nmodes = model->nmodes();
-   for(int i=0; i<nmodes; ++i)
-   {
-       std::shared_ptr<Vector> mu;
-       std::shared_ptr<Matrix> beta;
-       if (hasDataSet(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(i)))
-         beta = getMatrix( LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(i)); 
-
-       if (hasDataSet(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(i)))
-         mu = getVector( LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(i)); 
-
-       model->setLinkMatrix(i, beta, mu);
-   }
 }
 
 //-- used in PredictSession

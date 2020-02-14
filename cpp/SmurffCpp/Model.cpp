@@ -235,6 +235,14 @@ void Model::restore(std::shared_ptr<const Step> sf, int skip_mode)
 
    m_link_matrices.resize(nmodes);
    m_mus.resize(nmodes);
+
+   for(int i=0; i<nmodes; ++i)
+   {
+       std::shared_ptr<Vector> mu = sf->getMu(i);
+       std::shared_ptr<Matrix> beta = sf->getLinkMatrix(i);
+       setLinkMatrix(i, beta, mu);
+   }
+
    Pcache.init(Array1D::Ones(m_num_latent));
 }
 
