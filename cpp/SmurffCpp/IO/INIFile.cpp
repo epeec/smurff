@@ -42,7 +42,7 @@ void INIFile::flush()
    pt::ini_parser::write_ini(file, m_tree);
 }
 
-std::string INIFile::get(const std::string& section, const std::string& name, const std::string& default_value) const
+std::string INIFile::getString(const std::string& section, const std::string& name, const std::string& default_value) const
 {
    return m_tree.get<std::string>(section + "." + name, default_value);
 }

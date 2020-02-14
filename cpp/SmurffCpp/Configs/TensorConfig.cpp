@@ -315,12 +315,12 @@ void TensorConfig::save(INIFile& writer, const std::string& section_name) const
 std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const INIFile& reader, const std::string& sec_name)
 {
    //restore filename
-   std::string filename = reader.get(sec_name, FILE_TAG, NONE_TAG);
+   std::string filename = reader.getString(sec_name, FILE_TAG, NONE_TAG);
    if (filename == NONE_TAG)
       return std::shared_ptr<TensorConfig>();
 
    //restore type
-   bool is_scarce = reader.get(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
+   bool is_scarce = reader.getString(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
 
    //restore data
    auto cfg = generic_io::read_data_config(filename, is_scarce);
@@ -334,7 +334,7 @@ std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const INIFile&
 bool TensorConfig::restore(const INIFile& reader, const std::string& sec_name)
 {
    //restore position
-   std::string pos_str = reader.get(sec_name, POS_TAG, NONE_TAG);
+   std::string pos_str = reader.getString(sec_name, POS_TAG, NONE_TAG);
    if (pos_str != NONE_TAG)
    {
       std::vector<int> tokens;
@@ -347,7 +347,7 @@ bool TensorConfig::restore(const INIFile& reader, const std::string& sec_name)
    //restore noise model
    NoiseConfig noise;
 
-   NoiseTypes noiseType = stringToNoiseType(reader.get(sec_name, NOISE_MODEL_TAG, noiseTypeToString(NoiseTypes::unset)));
+   NoiseTypes noiseType = stringToNoiseType(reader.getString(sec_name, NOISE_MODEL_TAG, noiseTypeToString(NoiseTypes::unset)));
    if (noiseType != NoiseTypes::unset)
    {
       noise.setNoiseType(noiseType);
