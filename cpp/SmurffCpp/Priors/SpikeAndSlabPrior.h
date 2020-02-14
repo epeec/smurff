@@ -34,7 +34,7 @@ public:
    virtual ~SpikeAndSlabPrior() {}
    void init() override;
 
-   void restore(std::shared_ptr<const StepFile> sf) override;
+   void restore(std::shared_ptr<const Step> sf) override;
 
    std::pair<float_type,float_type> sample_latent(int d, int k, const Matrix& XX, const Vector& yX) override;
 

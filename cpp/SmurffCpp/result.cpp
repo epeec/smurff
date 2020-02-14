@@ -17,7 +17,7 @@
 #include <SmurffCpp/result.h>
 
 #include <Utils/Error.h>
-#include <SmurffCpp/Utils/StepFile.h>
+#include <SmurffCpp/Utils/Step.h>
 #include <Utils/StringUtils.h>
 
 #include <SmurffCpp/IO/GenericIO.h>
@@ -88,7 +88,7 @@ std::shared_ptr<const SparseMatrix> Result::toMatrix(const Accessor &acc) const
    return ret;
 }
 
-void Result::save(std::shared_ptr<const StepFile> sf) const
+void Result::save(std::shared_ptr<const Step> sf) const
 {
    if (isEmpty())
       return;
@@ -129,7 +129,7 @@ void Result::toCsv(std::string filename) const
    predFile.close();
 }
 
-void Result::restore(std::shared_ptr<const StepFile> sf)
+void Result::restore(std::shared_ptr<const Step> sf)
 {
    sf->getPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
 }

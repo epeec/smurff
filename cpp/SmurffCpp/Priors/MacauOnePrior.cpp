@@ -161,7 +161,7 @@ void MacauOnePrior::sample_beta_precision()
    }
 }
 
-bool MacauOnePrior::save(std::shared_ptr<const StepFile> sf) const
+bool MacauOnePrior::save(std::shared_ptr<const Step> sf) const
 {
    NormalOnePrior::save(sf);
    sf->putLinkMatrix(getMode(), beta);
@@ -169,7 +169,7 @@ bool MacauOnePrior::save(std::shared_ptr<const StepFile> sf) const
    return true;
 }
 
-void MacauOnePrior::restore(std::shared_ptr<const StepFile> sf)
+void MacauOnePrior::restore(std::shared_ptr<const Step> sf)
 {
    NormalOnePrior::restore(sf);
    beta = *sf->getLinkMatrix(getMode());

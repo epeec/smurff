@@ -72,19 +72,19 @@ void OutputFile::restoreConfig(Config& config)
    THROWERROR_ASSERT_MSG(success, "Could not load ini file '" + optionsFileName + "'");
 }
 
-std::shared_ptr<StepFile> OutputFile::createSampleStepFile(std::int32_t isample)
+std::shared_ptr<Step> OutputFile::createSampleStep(std::int32_t isample)
 {
-   return createStepFile(isample, false);
+   return createStep(isample, false);
 }
 
-std::shared_ptr<StepFile> OutputFile::createCheckpointStepFile(std::int32_t isample)
+std::shared_ptr<Step> OutputFile::createCheckpointStep(std::int32_t isample)
 {
-   return createStepFile(isample, true);
+   return createStep(isample, true);
 }
 
-std::shared_ptr<StepFile> OutputFile::createStepFile(std::int32_t isample, bool checkpoint)
+std::shared_ptr<Step> OutputFile::createStep(std::int32_t isample, bool checkpoint)
 {
-   return std::make_shared<StepFile>(m_h5, isample, checkpoint);
+   return std::make_shared<Step>(m_h5, isample, checkpoint);
 }
 
 void OutputFile::removeOldCheckpoints()
@@ -104,30 +104,30 @@ void OutputFile::removeOldCheckpoints()
    }
 }
 
-std::shared_ptr<StepFile> OutputFile::openLastCheckpoint() const
+std::shared_ptr<Step> OutputFile::openLastCheckpoint() const
 {
    std::string lastCheckpointItem;
    m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
    if (lastCheckpointItem != NONE_TAG)
    {
       h5::Group group = m_h5.getGroup(lastCheckpointItem);
-      return std::make_shared<StepFile>(m_h5, group);
+      return std::make_shared<Step>(m_h5, group);
    }
 
-   return std::shared_ptr<StepFile>();
+   return std::shared_ptr<Step>();
 }
 
-std::vector<std::shared_ptr<StepFile>> OutputFile::openSampleStepFiles() const
+std::vector<std::shared_ptr<Step>> OutputFile::openSampleSteps() const
 {
    std::vector<std::string> h5_objects = m_h5.listObjectNames();
-   std::vector<std::shared_ptr<StepFile>> samples;
+   std::vector<std::shared_ptr<Step>> samples;
 
    for (auto &name : h5_objects)
    {
       if (startsWith(name, SAMPLE_PREFIX))
       {
          h5::Group group = m_h5.getGroup(name);
-         samples.push_back(std::make_shared<StepFile>(m_h5, group));
+         samples.push_back(std::make_shared<Step>(m_h5, group));
       }
    }
 

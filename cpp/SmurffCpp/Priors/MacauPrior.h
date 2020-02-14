@@ -68,8 +68,8 @@ public:
    void addSideInfo(const std::shared_ptr<ISideInfo>& side_info_a, double beta_precision_a, double tolerance_a, bool direct_a, bool enable_beta_precision_sampling_a, bool throw_on_cholesky_error_a);
 
 public:
-   bool save(std::shared_ptr<const StepFile> sf) const override;
-   void restore(std::shared_ptr<const StepFile> sf) override;
+   bool save(std::shared_ptr<const Step> sf) const override;
+   void restore(std::shared_ptr<const Step> sf) override;
 
 public:
    std::ostream& info(std::ostream &os, std::string indent) override;

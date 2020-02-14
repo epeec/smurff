@@ -18,7 +18,7 @@
 
 namespace smurff {
 
-class StepFile;
+class Step;
 
 class ILatentPrior
 {
@@ -69,8 +69,8 @@ public:
    const Vector& getUsum() { return Usum; } 
    const Matrix& getUUsum()  { return UUsum; }
 
-   virtual bool save(std::shared_ptr<const StepFile> sf) const;
-   virtual void restore(std::shared_ptr<const StepFile> sf);
+   virtual bool save(std::shared_ptr<const Step> sf) const;
+   virtual void restore(std::shared_ptr<const Step> sf);
    virtual std::ostream &info(std::ostream &os, std::string indent);
    virtual std::ostream &status(std::ostream &os, std::string indent) const = 0;
 

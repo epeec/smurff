@@ -261,7 +261,7 @@ void Session::save()
 
 void Session::saveInternal(int iteration, bool checkpoint)
 {
-    std::shared_ptr<StepFile> stepFile = m_rootFile->createStepFile(iteration, checkpoint);
+    std::shared_ptr<Step> stepFile = m_rootFile->createStep(iteration, checkpoint);
 
     if (m_config.getVerbose())
     {
@@ -280,7 +280,7 @@ void Session::saveInternal(int iteration, bool checkpoint)
 
 bool Session::restore(int &iteration)
 {
-    std::shared_ptr<StepFile> stepFile = nullptr;
+    std::shared_ptr<Step> stepFile = nullptr;
     if (m_rootFile)
     {
         stepFile = m_rootFile->openLastCheckpoint();

@@ -4,13 +4,13 @@ FILE (GLOB UTIL_FILES
                         "Utils/TensorUtils.h"
                         "Utils/PVec.hpp"
                         "Utils/OutputFile.h"
-                        "Utils/StepFile.h"
+                        "Utils/Step.h"
 
                         "Utils/Distribution.cpp"
                         "Utils/MatrixUtils.cpp"
                         "Utils/TensorUtils.cpp"
                         "Utils/OutputFile.cpp"
-                        "Utils/StepFile.cpp"
+                        "Utils/Step.cpp"
                         )
 
 source_group ("Utils" FILES ${UTIL_FILES})

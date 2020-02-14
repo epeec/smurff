@@ -35,7 +35,7 @@ def read_config_file(file_name, dir_name = None):
 
 class Sample:
     @classmethod
-    def fromStepFile(cls, file_name, dir_name):
+    def fromStep(cls, file_name, dir_name):
         cp = read_config_file(file_name, dir_name)
         nmodes = int(cp["global"]["num_modes"])
         iter = int(cp["global"]["number"])
@@ -187,7 +187,7 @@ class PredictSession:
         # load only one sample
         for step_name, step_file in cp["steps"].items():
             if (step_name.startswith("sample_step")):
-                one_sample = Sample.fromStepFile(step_file, self.root_dir)
+                one_sample = Sample.fromStep(step_file, self.root_dir)
                 self.num_latent = one_sample.num_latent()
                 self.data_shape = one_sample.data_shape()
                 self.beta_shape = one_sample.beta_shape()
@@ -198,13 +198,13 @@ class PredictSession:
     def samples(self):
         for step_name, step_file in self.root_config["steps"].items():
             if (step_name.startswith("sample_step")):
-                yield Sample.fromStepFile(step_file, self.root_dir)
+                yield Sample.fromStep(step_file, self.root_dir)
 
     def lastSample(self):
         steps = list(self.root_config["steps"].items())
         last_step_name, last_step_file = steps[-1]
         if last_step_name.startswith("sample_step"):
-            return Sample.fromStepFile(last_step_file, self.root_dir)
+            return Sample.fromStep(last_step_file, self.root_dir)
         else:
             return None
 

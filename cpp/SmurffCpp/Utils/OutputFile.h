@@ -8,7 +8,7 @@
 namespace h5 = HighFive;
 
 #include <SmurffCpp/Configs/Config.h>
-#include <SmurffCpp/Utils/StepFile.h>
+#include <SmurffCpp/Utils/Step.h>
 
 namespace smurff {
 
@@ -39,17 +39,17 @@ private:
    std::string restoreGetOptionsFileName() const;
 
 public:
-   std::shared_ptr<StepFile> createSampleStepFile(std::int32_t isample);
-   std::shared_ptr<StepFile> createCheckpointStepFile(std::int32_t isample);
-   std::shared_ptr<StepFile> createStepFile(std::int32_t isample, bool checkpoint);
+   std::shared_ptr<Step> createSampleStep(std::int32_t isample);
+   std::shared_ptr<Step> createCheckpointStep(std::int32_t isample);
+   std::shared_ptr<Step> createStep(std::int32_t isample, bool checkpoint);
 
 public:
    void removeOldCheckpoints();
 
 public:
-   std::shared_ptr<StepFile> openLastCheckpoint() const;
-   std::shared_ptr<StepFile> openSampleStepFile(int isample) const;
-   std::vector<std::shared_ptr<StepFile>> openSampleStepFiles() const;
+   std::shared_ptr<Step> openLastCheckpoint() const;
+   std::shared_ptr<Step> openSampleStep(int isample) const;
+   std::vector<std::shared_ptr<Step>> openSampleSteps() const;
 };
 
 }

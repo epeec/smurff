@@ -63,7 +63,7 @@ void SpikeAndSlabPrior::update_prior()
    log_r = - r.log() + (Array2D::Ones(K, nview) - r).log();
 }
 
-void SpikeAndSlabPrior::restore(std::shared_ptr<const StepFile> sf)
+void SpikeAndSlabPrior::restore(std::shared_ptr<const Step> sf)
 {
   const int K = num_latent();
   const int nview = data().nview(m_mode);

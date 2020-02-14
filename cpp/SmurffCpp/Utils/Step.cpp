@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <SmurffCpp/Utils/StepFile.h>
+#include <SmurffCpp/Utils/Step.h>
 
 #include <SmurffCpp/Model.h>
 #include <SmurffCpp/result.h>
@@ -43,7 +43,7 @@
 
 namespace smurff {
 
-StepFile::StepFile(h5::File file, std::int32_t isample, bool checkpoint)
+Step::Step(h5::File file, std::int32_t isample, bool checkpoint)
    : m_isample(isample), m_file(file), m_checkpoint(checkpoint)
 {
    m_group = m_file.createGroup(getName());
@@ -51,14 +51,14 @@ StepFile::StepFile(h5::File file, std::int32_t isample, bool checkpoint)
    m_group.createAttribute<int>(NUMBER_TAG, m_isample);
 }
 
-StepFile::StepFile(h5::File file, h5::Group group)
+Step::Step(h5::File file, h5::Group group)
    : m_group(group), m_file(file)
 {
    group.getAttribute(NUMBER_TAG).read(m_isample);
    group.getAttribute(IS_CHECKPOINT_TAG).read(m_checkpoint);
 }
 
-StepFile::~StepFile()
+Step::~Step()
 {
    if (isCheckpoint())
    {
@@ -69,29 +69,29 @@ StepFile::~StepFile()
 }
 
 //name methods
-unsigned StepFile::getNModes() const
+unsigned Step::getNModes() const
 {
    unsigned nmodes;
    m_group.getAttribute(NUM_MODES_TAG).read(nmodes);
    return nmodes;
 }
 
-bool StepFile::hasModel(std::uint64_t index) const
+bool Step::hasModel(std::uint64_t index) const
 {
    return hasDataSet(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
 }
 
-std::shared_ptr<Matrix> StepFile::getModel(std::uint64_t index) const
+std::shared_ptr<Matrix> Step::getModel(std::uint64_t index) const
 {
    return getMatrix(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
 }
 
-std::string StepFile::getName() const
+std::string Step::getName() const
 {
    return std::string(isCheckpoint() ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(getIsample());
 }
 
-void StepFile::putModel(const std::vector<std::shared_ptr<Matrix>> &F) const
+void Step::putModel(const std::vector<std::shared_ptr<Matrix>> &F) const
 {
    m_group.createAttribute(NUM_MODES_TAG, F.size());
    for (std::uint64_t m = 0; m < F.size(); ++m)
@@ -100,43 +100,43 @@ void StepFile::putModel(const std::vector<std::shared_ptr<Matrix>> &F) const
    }
 }
 
-bool StepFile::hasLinkMatrix(std::uint32_t mode) const
+bool Step::hasLinkMatrix(std::uint32_t mode) const
 {
    return hasDataSet(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode));
 }
 
-std::shared_ptr<Matrix> StepFile::getLinkMatrix(std::uint32_t mode) const
+std::shared_ptr<Matrix> Step::getLinkMatrix(std::uint32_t mode) const
 {
    return getMatrix(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode));
 }
 
-std::shared_ptr<Matrix> StepFile::getMu(std::uint64_t index) const
+std::shared_ptr<Matrix> Step::getMu(std::uint64_t index) const
 {
    return getMatrix(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index));
 }
 
-void StepFile::putLinkMatrix(std::uint64_t index, const Matrix &M) const
+void Step::putLinkMatrix(std::uint64_t index, const Matrix &M) const
 {
    putMatrix(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(index), M);
 }
 
-void StepFile::putMu(std::uint64_t index, const Matrix &M) const
+void Step::putMu(std::uint64_t index, const Matrix &M) const
 {
    putMatrix(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), M);
 }
 
-void StepFile::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda) const
+void Step::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda) const
 {
    putMatrix(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
    putMatrix(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
 }
 
-bool StepFile::hasPred() const
+bool Step::hasPred() const
 {
    return hasDataSet(PRED_SEC_TAG, PRED_AVG_TAG);
 }
 
-void StepFile::putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample,
+void Step::putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample,
                             int sample_iter, int burnin_iter) const
 {
    auto pred_group = m_group.getGroup(PRED_SEC_TAG);
@@ -148,7 +148,7 @@ void StepFile::putPredState(double rmse_avg, double rmse_1sample, double auc_avg
    pred_group.createAttribute<int>(BURNIN_ITER_TAG, burnin_iter);
 }
 
-void StepFile::getPredState(
+void Step::getPredState(
    double &rmse_avg, double &rmse_1sample, double &auc_avg, double &auc_1sample, int &sample_iter, int &burnin_iter) const
 {
    auto pred_group = m_group.getGroup(PRED_SEC_TAG);
@@ -161,7 +161,7 @@ void StepFile::getPredState(
 
 }
 
-void StepFile::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const SparseMatrix &one_sample) const
+void Step::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const SparseMatrix &one_sample) const
 {
    putSparseMatrix(PRED_SEC_TAG, PRED_AVG_TAG, avg);
    putSparseMatrix(PRED_SEC_TAG, PRED_VAR_TAG, var);
@@ -169,19 +169,19 @@ void StepFile::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, c
 }
 
 
-std::shared_ptr<Matrix> StepFile::getPredAvg() const
+std::shared_ptr<Matrix> Step::getPredAvg() const
 {
    return getMatrix(PRED_SEC_TAG, PRED_AVG_TAG);
 }
 
-std::shared_ptr<Matrix> StepFile::getPredVar() const
+std::shared_ptr<Matrix> Step::getPredVar() const
 {
    return getMatrix(PRED_SEC_TAG, PRED_VAR_TAG);
 }
 
 //save methods
 
-void StepFile::save(
+void Step::save(
          std::shared_ptr<const Model> model,
          std::shared_ptr<const Result> pred,
    const std::vector<std::shared_ptr<ILatentPrior> >& priors
@@ -194,7 +194,7 @@ void StepFile::save(
 
 //restore methods
 
-void StepFile::restoreModel(std::shared_ptr<Model> model, int skip_mode) const
+void Step::restoreModel(std::shared_ptr<Model> model, int skip_mode) const
 {
    model->restore(shared_from_this(), skip_mode);
 
@@ -214,24 +214,24 @@ void StepFile::restoreModel(std::shared_ptr<Model> model, int skip_mode) const
 }
 
 //-- used in PredictSession
-std::shared_ptr<Model> StepFile::restoreModel(int skip_mode) const
+std::shared_ptr<Model> Step::restoreModel(int skip_mode) const
 {
     auto model = std::make_shared<Model>();
     restoreModel(model, skip_mode);
     return model;
 }
 
-void StepFile::restorePred(std::shared_ptr<Result> m_pred) const
+void Step::restorePred(std::shared_ptr<Result> m_pred) const
 {
    m_pred->restore(shared_from_this());
 }
 
-void StepFile::restorePriors(std::vector<std::shared_ptr<ILatentPrior> >& priors) const
+void Step::restorePriors(std::vector<std::shared_ptr<ILatentPrior> >& priors) const
 {
    for (auto &p : priors) p->restore(shared_from_this());
 }
 
-void StepFile::restore(std::shared_ptr<Model> model, std::shared_ptr<Result> pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const
+void Step::restore(std::shared_ptr<Model> model, std::shared_ptr<Result> pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const
 {
    restoreModel(model);
    restorePred(pred);
@@ -240,26 +240,26 @@ void StepFile::restore(std::shared_ptr<Model> model, std::shared_ptr<Result> pre
 
 //getters
 
-std::int32_t StepFile::getIsample() const
+std::int32_t Step::getIsample() const
 {
    return m_isample;
 }
 
-bool StepFile::isCheckpoint() const
+bool Step::isCheckpoint() const
 {
    return m_checkpoint;
 }
 
 //ini methods
 
-bool StepFile::hasDataSet(const std::string& section, const std::string& tag) const
+bool Step::hasDataSet(const std::string& section, const std::string& tag) const
 {
    if (!m_group.exist(section)) return false;
    auto section_group = m_group.getGroup(section);
    return (section_group.exist(tag));
 }
 
-std::shared_ptr<Matrix> StepFile::getMatrix(const std::string& section, const std::string& tag) const
+std::shared_ptr<Matrix> Step::getMatrix(const std::string& section, const std::string& tag) const
 {
    auto dataset = m_group.getGroup(section).getDataSet(tag);
    std::vector<size_t> dims = dataset.getDimensions();
@@ -280,7 +280,7 @@ std::shared_ptr<Matrix> StepFile::getMatrix(const std::string& section, const st
    
 }
 
-std::shared_ptr<Vector> StepFile::getVector(const std::string& section, const std::string& tag) const
+std::shared_ptr<Vector> Step::getVector(const std::string& section, const std::string& tag) const
 {
 
    auto dataset = m_group.getGroup(section).getDataSet(tag);
@@ -291,7 +291,7 @@ std::shared_ptr<Vector> StepFile::getVector(const std::string& section, const st
    return std::make_shared<Vector>(data);
 }
 
-std::shared_ptr<SparseMatrix> StepFile::getSparseMatrix(const std::string& section, const std::string& tag) const
+std::shared_ptr<SparseMatrix> Step::getSparseMatrix(const std::string& section, const std::string& tag) const
 {
    auto sparse_group = m_group.getGroup(section).getGroup(tag); 
 
@@ -321,7 +321,7 @@ std::shared_ptr<SparseMatrix> StepFile::getSparseMatrix(const std::string& secti
    return std::make_shared<SparseMatrix>(X);
 }
 
-void StepFile::putMatrix(const std::string& section, const std::string& tag, const Matrix &M) const
+void Step::putMatrix(const std::string& section, const std::string& tag, const Matrix &M) const
 {
    if (!m_group.exist(section))
       m_group.createGroup(section);
@@ -343,7 +343,7 @@ void StepFile::putMatrix(const std::string& section, const std::string& tag, con
     dataset.write(row_major.data());
 }
 
-void StepFile::putSparseMatrix(const std::string& section, const std::string& tag, const SparseMatrix &X) const
+void Step::putSparseMatrix(const std::string& section, const std::string& tag, const SparseMatrix &X) const
 {
    if (!m_group.exist(section))
       m_group.createGroup(section);

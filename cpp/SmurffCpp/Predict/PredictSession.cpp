@@ -22,7 +22,7 @@ PredictSession::PredictSession(std::shared_ptr<OutputFile> rf)
       m_has_config(false), m_num_latent(-1),
       m_dims(PVec<>(0)), m_is_init(false)
 {
-    m_stepfiles = m_model_rootfile->openSampleStepFiles();
+    m_stepfiles = m_model_rootfile->openSampleSteps();
 }
 
 PredictSession::PredictSession(std::shared_ptr<OutputFile> rf, const Config &config)
@@ -30,7 +30,7 @@ PredictSession::PredictSession(std::shared_ptr<OutputFile> rf, const Config &con
       m_config(config), m_has_config(true), m_num_latent(-1),
       m_dims(PVec<>(0)), m_is_init(false)
 {
-    m_stepfiles = m_model_rootfile->openSampleStepFiles();
+    m_stepfiles = m_model_rootfile->openSampleSteps();
 }
 PredictSession::PredictSession(const Config &config)
     : m_pred_rootfile(0), m_config(config), m_has_config(true),
@@ -38,7 +38,7 @@ PredictSession::PredictSession(const Config &config)
 {
     THROWERROR_ASSERT(config.getRootName().size())
     m_model_rootfile = std::make_shared<OutputFile>(config.getRootName());
-    m_stepfiles = m_model_rootfile->openSampleStepFiles();
+    m_stepfiles = m_model_rootfile->openSampleSteps();
 }
 
 void PredictSession::run()
@@ -146,7 +146,7 @@ bool PredictSession::step()
 void PredictSession::save()
 {
     //save this iteration
-    std::shared_ptr<StepFile> stepFile = getOutputFile()->createSampleStepFile(m_iter);
+    std::shared_ptr<Step> stepFile = getOutputFile()->createSampleStep(m_iter);
 
     if (m_config.getVerbose())
     {
@@ -216,7 +216,7 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
     return os;
 }
 
-std::shared_ptr<Model> PredictSession::restoreModel(const std::shared_ptr<StepFile> &sf, int skip_mode)
+std::shared_ptr<Model> PredictSession::restoreModel(const std::shared_ptr<Step> &sf, int skip_mode)
 {
     auto model = sf->restoreModel(skip_mode);
 
@@ -242,7 +242,7 @@ std::shared_ptr<Model> PredictSession::restoreModel(int i, int skip_mode)
 }
 
 // predict one element
-ResultItem PredictSession::predict(PVec<> pos, const StepFile &sf)
+ResultItem PredictSession::predict(PVec<> pos, const Step &sf)
 {
     ResultItem ret{pos};
     predict(ret, sf);
@@ -250,7 +250,7 @@ ResultItem PredictSession::predict(PVec<> pos, const StepFile &sf)
 }
 
 // predict one element
-void PredictSession::predict(ResultItem &res, const StepFile &sf)
+void PredictSession::predict(ResultItem &res, const Step &sf)
 {
     auto model = sf.restoreModel();
     auto pred = model->predict(res.coords);
@@ -260,7 +260,7 @@ void PredictSession::predict(ResultItem &res, const StepFile &sf)
 // predict one element
 void PredictSession::predict(ResultItem &res)
 {
-    auto stepfiles = getModelRoot()->openSampleStepFiles();
+    auto stepfiles = getModelRoot()->openSampleSteps();
 
     for (const auto &sf : stepfiles)
         predict(res, *sf);

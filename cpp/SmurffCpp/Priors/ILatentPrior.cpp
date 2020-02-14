@@ -125,12 +125,12 @@ void ILatentPrior::sample_latents()
    UUsum = UUcol.combine();
 }
 
-bool ILatentPrior::save(std::shared_ptr<const StepFile> sf) const
+bool ILatentPrior::save(std::shared_ptr<const Step> sf) const
 {
     return false;
 }
 
-void ILatentPrior::restore(std::shared_ptr<const StepFile> sf)
+void ILatentPrior::restore(std::shared_ptr<const Step> sf)
 {
     init_Usum();
     update_prior();

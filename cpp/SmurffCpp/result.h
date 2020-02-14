@@ -8,7 +8,7 @@
 
 namespace smurff {
 
-class StepFile;
+class Step;
 class OutputFile;
 
 class Model;
@@ -79,8 +79,8 @@ public:
    // general
 
 public:
-   void save(std::shared_ptr<const StepFile> sf) const;
-   void restore(std::shared_ptr<const StepFile> sf);
+   void save(std::shared_ptr<const Step> sf) const;
+   void restore(std::shared_ptr<const Step> sf);
 
 private:
    template<typename Accessor>

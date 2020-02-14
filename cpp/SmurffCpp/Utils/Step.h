@@ -20,7 +20,7 @@ namespace smurff {
    class ILatentPrior;
    class MatrixConfig;
 
-   class StepFile : public std::enable_shared_from_this<StepFile>
+   class Step : public std::enable_shared_from_this<Step>
    {
    private:
       std::int32_t m_isample;
@@ -31,12 +31,12 @@ namespace smurff {
 
    public:
       //this constructor should be used to create a step file on a first run of session
-      StepFile(h5::File file, std::int32_t isample, bool checkpoint);
+      Step(h5::File file, std::int32_t isample, bool checkpoint);
 
       //this constructor should be used to  open existing step file when previous session is continued
-      StepFile(h5::File file, h5::Group group);
+      Step(h5::File file, h5::Group group);
 
-      ~StepFile();
+      ~Step();
 
    public:
       bool hasModel(std::uint64_t index) const;
