@@ -412,35 +412,35 @@ void Config::save(std::string fname) const
    //write global options section
 
    //count data
-   ini.appendItem(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, std::to_string(m_prior_types.size()));
-   ini.appendItem(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, std::to_string(m_auxData.size()));
+   ini.put(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, std::to_string(m_prior_types.size()));
+   ini.put(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, std::to_string(m_auxData.size()));
 
    //priors data
    for (std::size_t pIndex = 0; pIndex < m_prior_types.size(); pIndex++)
-      ini.appendItem(GLOBAL_SECTION_TAG, std::string(PRIOR_PREFIX) + "_" + std::to_string(pIndex), priorTypeToString(m_prior_types.at(pIndex)));
+      ini.put(GLOBAL_SECTION_TAG, std::string(PRIOR_PREFIX) + "_" + std::to_string(pIndex), priorTypeToString(m_prior_types.at(pIndex)));
 
    //save data
-   ini.appendItem(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, m_save_prefix);
-   ini.appendItem(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, m_save_extension);
-   ini.appendItem(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, std::to_string(m_save_freq));
-   ini.appendItem(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, std::to_string(m_save_pred));
-   ini.appendItem(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, std::to_string(m_save_model));
-   ini.appendItem(GLOBAL_SECTION_TAG, CHECKPOINT_FREQ_TAG, std::to_string(m_checkpoint_freq));
+   ini.put(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, m_save_prefix);
+   ini.put(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, m_save_extension);
+   ini.put(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, std::to_string(m_save_freq));
+   ini.put(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, std::to_string(m_save_pred));
+   ini.put(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, std::to_string(m_save_model));
+   ini.put(GLOBAL_SECTION_TAG, CHECKPOINT_FREQ_TAG, std::to_string(m_checkpoint_freq));
 
    //general data
-   ini.appendItem(GLOBAL_SECTION_TAG, VERBOSE_TAG, std::to_string(m_verbose));
-   ini.appendItem(GLOBAL_SECTION_TAG, BURNING_TAG, std::to_string(m_burnin));
-   ini.appendItem(GLOBAL_SECTION_TAG, NSAMPLES_TAG, std::to_string(m_nsamples));
-   ini.appendItem(GLOBAL_SECTION_TAG, NUM_LATENT_TAG, std::to_string(m_num_latent));
-   ini.appendItem(GLOBAL_SECTION_TAG, NUM_THREADS_TAG, std::to_string(m_num_threads));
-   ini.appendItem(GLOBAL_SECTION_TAG, RANDOM_SEED_SET_TAG, std::to_string(m_random_seed_set));
-   ini.appendItem(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, std::to_string(m_random_seed));
-   ini.appendItem(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(m_model_init_type));
+   ini.put(GLOBAL_SECTION_TAG, VERBOSE_TAG, std::to_string(m_verbose));
+   ini.put(GLOBAL_SECTION_TAG, BURNING_TAG, std::to_string(m_burnin));
+   ini.put(GLOBAL_SECTION_TAG, NSAMPLES_TAG, std::to_string(m_nsamples));
+   ini.put(GLOBAL_SECTION_TAG, NUM_LATENT_TAG, std::to_string(m_num_latent));
+   ini.put(GLOBAL_SECTION_TAG, NUM_THREADS_TAG, std::to_string(m_num_threads));
+   ini.put(GLOBAL_SECTION_TAG, RANDOM_SEED_SET_TAG, std::to_string(m_random_seed_set));
+   ini.put(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, std::to_string(m_random_seed));
+   ini.put(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(m_model_init_type));
 
 
    //probit prior data
-   ini.appendItem(GLOBAL_SECTION_TAG, CLASSIFY_TAG, std::to_string(m_classify));
-   ini.appendItem(GLOBAL_SECTION_TAG, THRESHOLD_TAG, std::to_string(m_threshold));
+   ini.put(GLOBAL_SECTION_TAG, CLASSIFY_TAG, std::to_string(m_classify));
+   ini.put(GLOBAL_SECTION_TAG, THRESHOLD_TAG, std::to_string(m_threshold));
 
 
    //write train data section
@@ -472,8 +472,8 @@ void Config::save(std::string fname) const
        if (hasPropagatedPosterior(pIndex))
        {
            auto section = add_index(POSTPROP_PREFIX, pIndex);
-           ini.appendItem(section, MU_TAG, getMuPropagatedPosterior(pIndex)->getFilename());
-           ini.appendItem(section, LAMBDA_TAG, getLambdaPropagatedPosterior(pIndex)->getFilename());
+           ini.put(section, MU_TAG, getMuPropagatedPosterior(pIndex)->getFilename());
+           ini.put(section, LAMBDA_TAG, getLambdaPropagatedPosterior(pIndex)->getFilename());
        }
    }
 }

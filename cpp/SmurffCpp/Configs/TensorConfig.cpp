@@ -276,7 +276,7 @@ void TensorConfig::save_tensor_config(INIFile& writer, const std::string& sec_na
    else
    {
       //save a placeholder since config can not serialize itself
-      writer.appendItem(section_name, FILE_TAG, NONE_TAG);
+      writer.put(section_name, FILE_TAG, NONE_TAG);
    }
 }
 
@@ -289,25 +289,25 @@ void TensorConfig::save(INIFile& writer, const std::string& section_name) const
    {
       std::stringstream ss;
       ss << this->getPos();
-      writer.appendItem(section_name, POS_TAG, ss.str());
+      writer.put(section_name, POS_TAG, ss.str());
    }
 
    //write tensor config filename
-   writer.appendItem(section_name, FILE_TAG, this->getFilename());
+   writer.put(section_name, FILE_TAG, this->getFilename());
 
    //write tensor config type
    std::string type_str = this->isDense() ? DENSE_TAG : this->isScarce() ? SCARCE_TAG : SPARSE_TAG;
-   writer.appendItem(section_name, TYPE_TAG, type_str);
+   writer.put(section_name, TYPE_TAG, type_str);
 
    //write noise config
    auto &noise_config = this->getNoiseConfig();
    if (noise_config.getNoiseType() != NoiseTypes::unset)
    {
-      writer.appendItem(section_name, NOISE_MODEL_TAG, noiseTypeToString(noise_config.getNoiseType()));
-      writer.appendItem(section_name, PRECISION_TAG, std::to_string(noise_config.getPrecision()));
-      writer.appendItem(section_name, SN_INIT_TAG, std::to_string(noise_config.getSnInit()));
-      writer.appendItem(section_name, SN_MAX_TAG, std::to_string(noise_config.getSnMax()));
-      writer.appendItem(section_name, NOISE_THRESHOLD_TAG, std::to_string(noise_config.getThreshold()));
+      writer.put(section_name, NOISE_MODEL_TAG, noiseTypeToString(noise_config.getNoiseType()));
+      writer.put(section_name, PRECISION_TAG, std::to_string(noise_config.getPrecision()));
+      writer.put(section_name, SN_INIT_TAG, std::to_string(noise_config.getSnInit()));
+      writer.put(section_name, SN_MAX_TAG, std::to_string(noise_config.getSnMax()));
+      writer.put(section_name, NOISE_THRESHOLD_TAG, std::to_string(noise_config.getThreshold()));
    }
 
 }

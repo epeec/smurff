@@ -42,7 +42,7 @@ public:
 
 public:
    template<typename T>
-   void appendItem(const std::string& section, const std::string& tag, const T& value)
+   void put(const std::string& section, const std::string& tag, const T& value)
    {
       m_modified = true;
       m_tree.put(section + "." + tag, value);
