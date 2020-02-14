@@ -315,12 +315,12 @@ void TensorConfig::save(INIFile& writer, const std::string& section_name) const
 std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const INIFile& reader, const std::string& sec_name)
 {
    //restore filename
-   std::string filename = reader.getString(sec_name, FILE_TAG, NONE_TAG);
+   std::string filename = reader.get<std::string>(sec_name, FILE_TAG, NONE_TAG);
    if (filename == NONE_TAG)
       return std::shared_ptr<TensorConfig>();
 
    //restore type
-   bool is_scarce = reader.getString(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
+   bool is_scarce = reader.get<std::string>(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
 
    //restore data
    auto cfg = generic_io::read_data_config(filename, is_scarce);
@@ -334,7 +334,7 @@ std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const INIFile&
 bool TensorConfig::restore(const INIFile& reader, const std::string& sec_name)
 {
    //restore position
-   std::string pos_str = reader.getString(sec_name, POS_TAG, NONE_TAG);
+   std::string pos_str = reader.get<std::string>(sec_name, POS_TAG, NONE_TAG);
    if (pos_str != NONE_TAG)
    {
       std::vector<int> tokens;
@@ -347,14 +347,14 @@ bool TensorConfig::restore(const INIFile& reader, const std::string& sec_name)
    //restore noise model
    NoiseConfig noise;
 
-   NoiseTypes noiseType = stringToNoiseType(reader.getString(sec_name, NOISE_MODEL_TAG, noiseTypeToString(NoiseTypes::unset)));
+   NoiseTypes noiseType = stringToNoiseType(reader.get<std::string>(sec_name, NOISE_MODEL_TAG, noiseTypeToString(NoiseTypes::unset)));
    if (noiseType != NoiseTypes::unset)
    {
       noise.setNoiseType(noiseType);
-      noise.setPrecision(reader.getReal(sec_name, PRECISION_TAG, NoiseConfig::PRECISION_DEFAULT_VALUE));
-      noise.setSnInit(reader.getReal(sec_name, SN_INIT_TAG, NoiseConfig::ADAPTIVE_SN_INIT_DEFAULT_VALUE));
-      noise.setSnMax(reader.getReal(sec_name, SN_MAX_TAG, NoiseConfig::ADAPTIVE_SN_MAX_DEFAULT_VALUE));
-      noise.setThreshold(reader.getReal(sec_name, NOISE_THRESHOLD_TAG, NoiseConfig::PROBIT_DEFAULT_VALUE));
+      noise.setPrecision(reader.get<double>(sec_name, PRECISION_TAG, NoiseConfig::PRECISION_DEFAULT_VALUE));
+      noise.setSnInit(reader.get<double>(sec_name, SN_INIT_TAG, NoiseConfig::ADAPTIVE_SN_INIT_DEFAULT_VALUE));
+      noise.setSnMax(reader.get<double>(sec_name, SN_MAX_TAG, NoiseConfig::ADAPTIVE_SN_MAX_DEFAULT_VALUE));
+      noise.setThreshold(reader.get<double>(sec_name, NOISE_THRESHOLD_TAG, NoiseConfig::PROBIT_DEFAULT_VALUE));
    }
 
    //assign noise model

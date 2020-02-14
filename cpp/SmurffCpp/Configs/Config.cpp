@@ -494,11 +494,11 @@ bool Config::restore(std::string fname)
    //restore global data
 
    //restore priors
-   std::size_t num_priors = reader.getInteger(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, 0);
+   std::size_t num_priors = reader.get<int>(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, 0);
    std::vector<std::string> pNames;
    for(std::size_t pIndex = 0; pIndex < num_priors; pIndex++)
    {
-      pNames.push_back(reader.getString(GLOBAL_SECTION_TAG, add_index(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
+      pNames.push_back(reader.get<std::string>(GLOBAL_SECTION_TAG, add_index(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
    }
    setPriorTypes(pNames);
 
@@ -519,7 +519,7 @@ bool Config::restore(std::string fname)
    }
 
    //restore aux data
-   std::size_t num_aux_data = reader.getInteger(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, 0);
+   std::size_t num_aux_data = reader.get<int>(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, 0);
    for(std::size_t pIndex = 0; pIndex < num_aux_data; pIndex++)
    {
       m_auxData.push_back(TensorConfig::restore_tensor_config(reader, add_index(AUX_DATA_PREFIX, pIndex)));
@@ -532,7 +532,7 @@ bool Config::restore(std::string fname)
        auto lambda = std::shared_ptr<MatrixConfig>();
 
        {
-           std::string filename = reader.getString(add_index(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_TAG);
+           std::string filename = reader.get<std::string>(add_index(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_TAG);
            if (filename != NONE_TAG)
            {
                mu = matrix_io::read_matrix(filename, false);
@@ -541,7 +541,7 @@ bool Config::restore(std::string fname)
        }
 
        {
-           std::string filename = reader.getString(add_index(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_TAG);
+           std::string filename = reader.get<std::string>(add_index(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_TAG);
            if (filename != NONE_TAG)
            {
                lambda = matrix_io::read_matrix(filename, false);
@@ -556,26 +556,26 @@ bool Config::restore(std::string fname)
    }
 
    //restore save data
-   m_save_prefix = reader.getString(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
-   m_save_extension = reader.getString(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
-   m_save_freq = reader.getInteger(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
-   m_save_pred = reader.getBoolean(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
-   m_save_model = reader.getBoolean(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, Config::SAVE_MODEL_DEFAULT_VALUE);
-   m_checkpoint_freq = reader.getInteger(GLOBAL_SECTION_TAG, CHECKPOINT_FREQ_TAG, Config::CHECKPOINT_FREQ_DEFAULT_VALUE);
+   m_save_prefix = reader.get<std::string>(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
+   m_save_extension = reader.get<std::string>(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
+   m_save_freq = reader.get<int>(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
+   m_save_pred = reader.get<bool>(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
+   m_save_model = reader.get<bool>(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, Config::SAVE_MODEL_DEFAULT_VALUE);
+   m_checkpoint_freq = reader.get<int>(GLOBAL_SECTION_TAG, CHECKPOINT_FREQ_TAG, Config::CHECKPOINT_FREQ_DEFAULT_VALUE);
 
    //restore general data
-   m_verbose = reader.getInteger(GLOBAL_SECTION_TAG, VERBOSE_TAG, Config::VERBOSE_DEFAULT_VALUE);
-   m_burnin = reader.getInteger(GLOBAL_SECTION_TAG, BURNING_TAG, Config::BURNIN_DEFAULT_VALUE);
-   m_nsamples = reader.getInteger(GLOBAL_SECTION_TAG, NSAMPLES_TAG, Config::NSAMPLES_DEFAULT_VALUE);
-   m_num_latent = reader.getInteger(GLOBAL_SECTION_TAG, NUM_LATENT_TAG, Config::NUM_LATENT_DEFAULT_VALUE);
-   m_num_threads = reader.getInteger(GLOBAL_SECTION_TAG, NUM_THREADS_TAG, Config::NUM_THREADS_DEFAULT_VALUE);
-   m_random_seed_set = reader.getBoolean(GLOBAL_SECTION_TAG, RANDOM_SEED_SET_TAG,  false);
-   m_random_seed = reader.getInteger(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, Config::RANDOM_SEED_DEFAULT_VALUE);
-   m_model_init_type = stringToModelInitType(reader.getString(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(Config::INIT_MODEL_DEFAULT_VALUE)));
+   m_verbose = reader.get<int>(GLOBAL_SECTION_TAG, VERBOSE_TAG, Config::VERBOSE_DEFAULT_VALUE);
+   m_burnin = reader.get<int>(GLOBAL_SECTION_TAG, BURNING_TAG, Config::BURNIN_DEFAULT_VALUE);
+   m_nsamples = reader.get<int>(GLOBAL_SECTION_TAG, NSAMPLES_TAG, Config::NSAMPLES_DEFAULT_VALUE);
+   m_num_latent = reader.get<int>(GLOBAL_SECTION_TAG, NUM_LATENT_TAG, Config::NUM_LATENT_DEFAULT_VALUE);
+   m_num_threads = reader.get<int>(GLOBAL_SECTION_TAG, NUM_THREADS_TAG, Config::NUM_THREADS_DEFAULT_VALUE);
+   m_random_seed_set = reader.get<bool>(GLOBAL_SECTION_TAG, RANDOM_SEED_SET_TAG,  false);
+   m_random_seed = reader.get<int>(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, Config::RANDOM_SEED_DEFAULT_VALUE);
+   m_model_init_type = stringToModelInitType(reader.get<std::string>(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(Config::INIT_MODEL_DEFAULT_VALUE)));
 
    //restore probit prior data
-   m_classify = reader.getBoolean(GLOBAL_SECTION_TAG, CLASSIFY_TAG,  false);
-   m_threshold = reader.getReal(GLOBAL_SECTION_TAG, THRESHOLD_TAG, Config::THRESHOLD_DEFAULT_VALUE);
+   m_classify = reader.get<bool>(GLOBAL_SECTION_TAG, CLASSIFY_TAG,  false);
+   m_threshold = reader.get<double>(GLOBAL_SECTION_TAG, THRESHOLD_TAG, Config::THRESHOLD_DEFAULT_VALUE);
 
    return true;
 }
@@ -587,8 +587,8 @@ bool Config::restoreSaveInfo(std::string fname, std::string& save_prefix, std::s
    INIFile reader;
    reader.open(fname);
 
-   save_prefix = reader.getString(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
-   save_extension = reader.getString(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
+   save_prefix = reader.get<std::string>(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
+   save_extension = reader.get<std::string>(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
 
    return true;
 }

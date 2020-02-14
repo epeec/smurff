@@ -34,23 +34,11 @@ public:
    void create(const std::string& filename);
 
 public:
-    // Get a string value from INI file, 
-    // returning default_value if not found.
-    std::string getString(const std::string& section, const std::string& name, const std::string& default_value) const;
-
-    // Get an integer (long) value from INI file, 
-    // returning default_value if not found or not a valid integer (decimal "1234", "-1234", or hex "0x4d2").
-    int getInteger(const std::string& section, const std::string& name, int default_value) const;
-
-    // Get a real (floating point double) value from INI file, 
-    // returning default_value if not found or not a valid floating point value according to strtod().
-    double getReal(const std::string& section, const std::string& name, double default_value) const;
-
-    // Get a boolean value from INI file, 
-    // returning default_value if not found or if not a valid true/false value. 
-    // Valid true values are "true", "yes", "on", "1",
-    // and valid false values are "false", "no", "off", "0" (not case sensitive).
-    bool getBoolean(const std::string& section, const std::string& name, bool default_value) const;
+   template<typename T>
+   T get(const std::string& section, const std::string& name, const T& default_value) const
+   {
+      return m_tree.get<T>(section + "." + name, default_value);
+   }
 
 public:
     // Returns true is section with name exists

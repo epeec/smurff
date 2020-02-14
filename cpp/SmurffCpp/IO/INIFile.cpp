@@ -42,26 +42,6 @@ void INIFile::flush()
    pt::ini_parser::write_ini(file, m_tree);
 }
 
-std::string INIFile::getString(const std::string& section, const std::string& name, const std::string& default_value) const
-{
-   return m_tree.get<std::string>(section + "." + name, default_value);
-}
-
-int INIFile::getInteger(const std::string& section, const std::string& name, int default_value) const
-{
-   return m_tree.get<int>(section + "." + name, default_value);
-}
-
-double INIFile::getReal(const std::string& section, const std::string& name, double default_value) const
-{
-   return m_tree.get<double>(section + "." + name, default_value);
-}
-
-bool INIFile::getBoolean(const std::string& section, const std::string& name, bool default_value) const
-{
-   return m_tree.get<bool>(section + "." + name, default_value);
-}
-
 bool INIFile::hasSection(const std::string &name) const
 {
    return m_tree.get_child_optional(name) != boost::none;

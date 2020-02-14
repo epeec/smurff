@@ -64,9 +64,9 @@ bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index, std
    }
 
    //restore side info properties
-   m_tol = reader.getReal(section.str(), TOL_TAG, SideInfoConfig::TOL_DEFAULT_VALUE);
-   m_direct = reader.getBoolean(section.str(), DIRECT_TAG, false);
-   m_throw_on_cholesky_error = reader.getBoolean(section.str(), THROW_ON_CHOLESKY_ERROR_TAG, false);
+   m_tol = reader.get<double>(section.str(), TOL_TAG, SideInfoConfig::TOL_DEFAULT_VALUE);
+   m_direct = reader.get<bool>(section.str(), DIRECT_TAG, false);
+   m_throw_on_cholesky_error = reader.get<bool>(section.str(), THROW_ON_CHOLESKY_ERROR_TAG, false);
 
    std::stringstream ss;
    ss << SIDE_INFO_PREFIX << "_" << prior_index;
