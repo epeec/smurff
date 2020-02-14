@@ -399,7 +399,6 @@ static std::string add_index(const std::string name, int idx = -1)
 void Config::save(std::string fname) const
 {
    INIFile ini;
-   ini.create(fname);
 
    //write header with time and version
 
@@ -476,6 +475,8 @@ void Config::save(std::string fname) const
            ini.put(section, LAMBDA_TAG, getLambdaPropagatedPosterior(pIndex)->getFilename());
        }
    }
+
+   ini.write(fname);
 }
 
 bool Config::restore(std::string fname)
@@ -483,7 +484,7 @@ bool Config::restore(std::string fname)
    THROWERROR_FILE_NOT_EXIST(fname);
 
    INIFile reader;
-   reader.open(fname);
+   reader.read(fname);
 
    //restore train data
    setTest(TensorConfig::restore_tensor_config(reader, TEST_SECTION_TAG));
@@ -576,19 +577,6 @@ bool Config::restore(std::string fname)
    //restore probit prior data
    m_classify = reader.get<bool>(GLOBAL_SECTION_TAG, CLASSIFY_TAG,  false);
    m_threshold = reader.get<double>(GLOBAL_SECTION_TAG, THRESHOLD_TAG, Config::THRESHOLD_DEFAULT_VALUE);
-
-   return true;
-}
-
-bool Config::restoreSaveInfo(std::string fname, std::string& save_prefix, std::string& save_extension)
-{
-   THROWERROR_FILE_NOT_EXIST(fname);
-
-   INIFile reader;
-   reader.open(fname);
-
-   save_prefix = reader.get<std::string>(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
-   save_extension = reader.get<std::string>(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
 
    return true;
 }

@@ -137,7 +137,6 @@ public:
    void save(std::string fname) const;
    bool restore(std::string fname);
 
-   static bool restoreSaveInfo(std::string fname, std::string& save_prefix, std::string& save_extension);
    //std::string to_string() const;
    //bool from_string(std::string str);
 

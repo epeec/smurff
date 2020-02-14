@@ -17,17 +17,11 @@ namespace pt = boost::property_tree;
 class INIFile
 {
 private:
-   std::string m_filePath;
-   bool m_modified;
    pt::ptree m_tree;
 
 public:
-    INIFile();
-    ~INIFile();
-
-public:
-   void open(const std::string& filename);
-   void create(const std::string& filename);
+   void read(const std::string& filename);
+   void write(const std::string& filename);
 
 public:
    template<typename T>
@@ -44,10 +38,6 @@ public:
    template<typename T>
    void put(const std::string& section, const std::string& tag, const T& value)
    {
-      m_modified = true;
       m_tree.put(section + "." + tag, value);
    }
-
-   //flushes write buffer to file
-   void flush();
 };
