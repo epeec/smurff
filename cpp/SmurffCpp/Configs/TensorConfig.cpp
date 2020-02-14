@@ -304,10 +304,10 @@ void TensorConfig::save(INIFile& writer, const std::string& section_name) const
    if (noise_config.getNoiseType() != NoiseTypes::unset)
    {
       writer.put(section_name, NOISE_MODEL_TAG, noiseTypeToString(noise_config.getNoiseType()));
-      writer.put(section_name, PRECISION_TAG, std::to_string(noise_config.getPrecision()));
-      writer.put(section_name, SN_INIT_TAG, std::to_string(noise_config.getSnInit()));
-      writer.put(section_name, SN_MAX_TAG, std::to_string(noise_config.getSnMax()));
-      writer.put(section_name, NOISE_THRESHOLD_TAG, std::to_string(noise_config.getThreshold()));
+      writer.put(section_name, PRECISION_TAG, noise_config.getPrecision());
+      writer.put(section_name, SN_INIT_TAG, noise_config.getSnInit());
+      writer.put(section_name, SN_MAX_TAG, noise_config.getSnMax());
+      writer.put(section_name, NOISE_THRESHOLD_TAG, noise_config.getThreshold());
    }
 
 }

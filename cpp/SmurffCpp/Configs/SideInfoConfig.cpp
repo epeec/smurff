@@ -36,9 +36,9 @@ void SideInfoConfig::save(INIFile& writer, std::size_t prior_index, std::size_t 
    //macau prior config item section
 
    //config item data
-   writer.put(sectionName, TOL_TAG, std::to_string(m_tol));
-   writer.put(sectionName, DIRECT_TAG, std::to_string(m_direct));
-   writer.put(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, std::to_string(m_throw_on_cholesky_error));
+   writer.put(sectionName, TOL_TAG, m_tol);
+   writer.put(sectionName, DIRECT_TAG, m_direct);
+   writer.put(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, m_throw_on_cholesky_error);
 
 
    std::string sideInfoName = std::string(SIDE_INFO_PREFIX) + "_" + std::to_string(prior_index);
