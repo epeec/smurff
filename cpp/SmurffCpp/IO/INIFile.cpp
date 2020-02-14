@@ -46,9 +46,3 @@ bool INIFile::hasSection(const std::string &name) const
 {
    return m_tree.get_child_optional(name) != boost::none;
 }
-
-void INIFile::appendItem(const std::string& section, const std::string& tag, const std::string& value)
-{
-   m_modified = true;
-   m_tree.put(section + "." + tag, value);
-}

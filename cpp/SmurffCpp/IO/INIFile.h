@@ -45,8 +45,12 @@ public:
     bool hasSection(const std::string &name) const;
 
 public:
-   //appends item to the end of file - this is not possible to easily insert item in the arbitrary section so it is not supported - write is buffered
-   void appendItem(const std::string& section, const std::string& tag, const std::string& value);
+   template<typename T>
+   void appendItem(const std::string& section, const std::string& tag, const T& value);
+   {
+      m_modified = true;
+      m_tree.put(section + "." + tag, value);
+   }
 
    //flushes write buffer to file
    void flush();
