@@ -8,7 +8,7 @@
 #include <SmurffCpp/Configs/MatrixConfig.h>
 
 namespace smurff {
-   class RootFile;
+   class OutputFile;
    class Result;
 
    class ISession
@@ -27,7 +27,7 @@ namespace smurff {
 
       virtual std::shared_ptr<StatusItem> getStatus() const = 0;
       virtual std::shared_ptr<Result> getResult() const = 0;
-      virtual std::shared_ptr<RootFile> getRootFile() const = 0;
+      virtual std::shared_ptr<OutputFile> getOutputFile() const = 0;
 
       double getRmseAvg() { return getStatus()->rmse_avg; }
       const std::vector<ResultItem> & getResultItems() const;

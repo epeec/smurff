@@ -1,7 +1,7 @@
 from libcpp.vector cimport vector
 
 from PVec cimport PVec
-from RootFile cimport RootFile
+from OutputFile cimport OutputFile
 
 cdef extern from "<SmurffCpp/ResultItem.h>" namespace "smurff":
     cdef cppclass ResultItem:

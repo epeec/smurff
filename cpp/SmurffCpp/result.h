@@ -9,7 +9,7 @@
 namespace smurff {
 
 class StepFile;
-class RootFile;
+class OutputFile;
 
 class Model;
 class Data;

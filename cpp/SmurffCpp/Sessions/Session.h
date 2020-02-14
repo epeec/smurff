@@ -6,7 +6,7 @@
 #include <Utils/Error.h>
 #include <SmurffCpp/Configs/Config.h>
 #include <SmurffCpp/Priors/IPriorFactory.h>
-#include <SmurffCpp/Utils/RootFile.h>
+#include <SmurffCpp/Utils/OutputFile.h>
 #include <SmurffCpp/StatusItem.h>
 #include <SmurffCpp/Sessions/ISession.h>
 
@@ -34,7 +34,7 @@ protected:
    std::shared_ptr<Data> data_ptr;
 
 private:
-   std::shared_ptr<RootFile> m_rootFile;
+   std::shared_ptr<OutputFile> m_rootFile;
 
 protected:
    Config m_config;
@@ -100,7 +100,7 @@ private:
 public:
    virtual std::shared_ptr<IPriorFactory> create_prior_factory() const;
 
-   std::shared_ptr<RootFile> getRootFile() const override
+   std::shared_ptr<OutputFile> getOutputFile() const override
    {
        THROWERROR_ASSERT_MSG(m_rootFile, "No root file found. Did you save any models?");
        return m_rootFile;

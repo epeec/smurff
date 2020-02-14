@@ -62,14 +62,7 @@ StepFile::~StepFile()
 {
    if (isCheckpoint())
    {
-      if (m_file.hasAttribute(LAST_CHECKPOINT_TAG))
-      {
-         m_file.getAttribute(LAST_CHECKPOINT_TAG).write(getName());
-      }
-      else
-      {
-         m_file.createAttribute(LAST_CHECKPOINT_TAG, getName());
-      }
+      m_file.getAttribute(LAST_CHECKPOINT_TAG).write(getName());
    }
 
    m_file.flush();

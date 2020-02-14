@@ -15,7 +15,7 @@
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 
-#include <SmurffCpp/Utils/RootFile.h>
+#include <SmurffCpp/Utils/OutputFile.h>
 #include <Utils/StringUtils.h>
 
 namespace smurff {
@@ -150,7 +150,7 @@ fill_config(const po::variables_map &vm)
 
         //  skip if predict-session
         if (!vm.count(PREDICT_NAME) && !vm.count(ROW_FEAT_NAME) && !vm.count(COL_FEAT_NAME))
-            RootFile(root_name).restoreConfig(config);
+            OutputFile(root_name).restoreConfig(config);
     }
 
     //restore ini file if it was specified
@@ -272,7 +272,7 @@ Config parse_options(int argc, char *argv[])
     if (std::string(argv[1]) == "--" + std::string(ROOT_NAME))
     {
         std::string root_name(argv[2]);
-        RootFile(root_name).restoreConfig(config);
+        OutputFile(root_name).restoreConfig(config);
         config.setRootName(root_name);
      }
 

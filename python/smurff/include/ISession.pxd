@@ -6,7 +6,7 @@ from libcpp.string cimport string
 from MatrixConfig cimport MatrixConfig
 from ResultItem cimport ResultItem
 from StatusItem cimport StatusItem
-from RootFile cimport RootFile
+from OutputFile cimport OutputFile
 
 cdef extern from "<SmurffCpp/Sessions/ISession.h>" namespace "smurff":
     cdef cppclass ISession:
@@ -18,7 +18,7 @@ cdef extern from "<SmurffCpp/Sessions/ISession.h>" namespace "smurff":
         const vector[ResultItem]& getResultItems() except +
         shared_ptr[StatusItem] getStatus() except +
         MatrixConfig getSample(int mode) except +
-        shared_ptr[RootFile] getRootFile() except +
+        shared_ptr[OutputFile] getOutputFile() except +
 
         string infoAsString() 
 

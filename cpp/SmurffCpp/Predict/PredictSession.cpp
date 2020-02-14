@@ -4,7 +4,7 @@
 #include <SmurffCpp/Types.h>
 
 #include <Utils/counters.h>
-#include <SmurffCpp/Utils/RootFile.h>
+#include <SmurffCpp/Utils/OutputFile.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/result.h>
@@ -17,7 +17,7 @@
 namespace smurff
 {
 
-PredictSession::PredictSession(std::shared_ptr<RootFile> rf)
+PredictSession::PredictSession(std::shared_ptr<OutputFile> rf)
     : m_model_rootfile(rf), m_pred_rootfile(0),
       m_has_config(false), m_num_latent(-1),
       m_dims(PVec<>(0)), m_is_init(false)
@@ -25,7 +25,7 @@ PredictSession::PredictSession(std::shared_ptr<RootFile> rf)
     m_stepfiles = m_model_rootfile->openSampleStepFiles();
 }
 
-PredictSession::PredictSession(std::shared_ptr<RootFile> rf, const Config &config)
+PredictSession::PredictSession(std::shared_ptr<OutputFile> rf, const Config &config)
     : m_model_rootfile(rf), m_pred_rootfile(0),
       m_config(config), m_has_config(true), m_num_latent(-1),
       m_dims(PVec<>(0)), m_is_init(false)
@@ -37,7 +37,7 @@ PredictSession::PredictSession(const Config &config)
       m_num_latent(-1), m_dims(PVec<>(0)), m_is_init(false)
 {
     THROWERROR_ASSERT(config.getRootName().size())
-    m_model_rootfile = std::make_shared<RootFile>(config.getRootName());
+    m_model_rootfile = std::make_shared<OutputFile>(config.getRootName());
     m_stepfiles = m_model_rootfile->openSampleStepFiles();
 }
 
@@ -103,7 +103,7 @@ void PredictSession::init()
     if (m_config.getSaveFreq())
     {
         // create root file
-        m_pred_rootfile = std::make_shared<RootFile>(m_config.getSavePrefix() + "root.h5", true);
+        m_pred_rootfile = std::make_shared<OutputFile>(m_config.getSavePrefix() + "root.h5", true);
         //m_pred_rootfile->createCsvStatusFile();
     }
 
@@ -146,7 +146,7 @@ bool PredictSession::step()
 void PredictSession::save()
 {
     //save this iteration
-    std::shared_ptr<StepFile> stepFile = getRootFile()->createSampleStepFile(m_iter);
+    std::shared_ptr<StepFile> stepFile = getOutputFile()->createSampleStepFile(m_iter);
 
     if (m_config.getVerbose())
     {
@@ -199,13 +199,13 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
     {
         os << indent << "    Save predictions: every " << m_config.getSaveFreq() << " iteration\n";
         os << indent << "    Save extension: " << m_config.getSaveExtension() << "\n";
-        os << indent << "    Output root-file: " << getRootFile()->getFullPath() << "\n";
+        os << indent << "    Output root-file: " << getOutputFile()->getFullPath() << "\n";
     }
     else if (m_config.getSaveFreq() < 0)
     {
         os << indent << "    Save predictions after last iteration\n";
         os << indent << "    Save extension: " << m_config.getSaveExtension() << "\n";
-        os << indent << "    Output root-file: " << getRootFile()->getFullPath() << "\n";
+        os << indent << "    Output root-file: " << getOutputFile()->getFullPath() << "\n";
     }
     else
     {

@@ -29,7 +29,7 @@ Session::Session()
 void Session::fromRootPath(std::string rootPath)
 {
     // open root file
-    m_rootFile = std::make_shared<RootFile>(rootPath);
+    m_rootFile = std::make_shared<OutputFile>(rootPath);
 
     //restore config
     m_rootFile->restoreConfig(m_config);
@@ -50,13 +50,13 @@ void Session::fromConfig(const Config &cfg)
     if (!cfg.getRootName().empty())
     {
         // open root file
-        m_rootFile = std::make_shared<RootFile>(cfg.getRootName());
+        m_rootFile = std::make_shared<OutputFile>(cfg.getRootName());
     }
     else if (m_config.getSaveFreq() || m_config.getCheckpointFreq())
     {
 
         // create root file
-        m_rootFile = std::make_shared<RootFile>(m_config.getSavePrefix() + "root.h5", true);
+        m_rootFile = std::make_shared<OutputFile>(m_config.getSavePrefix() + "root.h5", true);
 
         //save config
         m_rootFile->saveConfig(m_config);

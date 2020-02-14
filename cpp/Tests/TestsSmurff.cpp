@@ -9,7 +9,7 @@
 #include <SmurffCpp/Predict/PredictSession.h>
 #include <SmurffCpp/Sessions/SessionFactory.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <SmurffCpp/Utils/RootFile.h>
+#include <SmurffCpp/Utils/OutputFile.h>
 #include <SmurffCpp/result.h>
 
 #include "Tests.h"

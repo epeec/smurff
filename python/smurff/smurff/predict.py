@@ -165,7 +165,7 @@ class PredictSession:
 
     """
     @classmethod
-    def fromRootFile(cls, root_file):
+    def fromOutputFile(cls, root_file):
         return PredictSession(root_file)
 
     def __init__(self, root_file):

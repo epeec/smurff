@@ -13,15 +13,15 @@
 
 namespace smurff {
 
-class RootFile;
+class OutputFile;
 class Result;
 struct ResultItem;
 
 class PredictSession : public ISession
 {
 private:
-    std::shared_ptr<RootFile> m_model_rootfile;
-    std::shared_ptr<RootFile> m_pred_rootfile;
+    std::shared_ptr<OutputFile> m_model_rootfile;
+    std::shared_ptr<OutputFile> m_pred_rootfile;
     Config m_config;
     bool m_has_config;
 
@@ -56,21 +56,21 @@ public:
     std::shared_ptr<StatusItem> getStatus() const override;
     std::shared_ptr<Result>     getResult() const override;
 
-    std::shared_ptr<RootFile> getRootFile() const override {
+    std::shared_ptr<OutputFile> getOutputFile() const override {
         return m_pred_rootfile;
     }
 
 private:
     void save();
 
-    std::shared_ptr<RootFile> getModelRoot() const {
+    std::shared_ptr<OutputFile> getModelRoot() const {
         return m_model_rootfile;
     }
 
   public:
     PredictSession(const Config &config);
-    PredictSession(std::shared_ptr<RootFile> rf, const Config &config);
-    PredictSession(std::shared_ptr<RootFile> rf);
+    PredictSession(std::shared_ptr<OutputFile> rf, const Config &config);
+    PredictSession(std::shared_ptr<OutputFile> rf);
 
     std::ostream& info(std::ostream &os, std::string indent) const override;
 

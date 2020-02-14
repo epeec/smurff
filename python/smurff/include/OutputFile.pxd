@@ -4,8 +4,8 @@ from libcpp.string cimport string
 
 from StepFile cimport StepFile
 
-cdef extern from "<SmurffCpp/Utils/RootFile.h>" namespace "smurff":
-    cdef cppclass RootFile:
+cdef extern from "<SmurffCpp/Utils/OutputFile.h>" namespace "smurff":
+    cdef cppclass OutputFile:
         string getFullPath() 
         string getOptionsFileName() 
         vector[shared_ptr[StepFile]] openSampleStepFiles()

@@ -1,4 +1,4 @@
-#include "RootFile.h"
+#include "OutputFile.h"
 
 #include <iostream>
 #include <fstream>
@@ -24,7 +24,7 @@ const char* LAST_CHECKPOINT_TAG = "last_checkpoint";
 const char* CHECKPOINT_PREFIX = "checkpoint_";
 const char* SAMPLE_PREFIX = "sample_";
 
-RootFile::RootFile(std::string path, bool create)
+OutputFile::OutputFile(std::string path, bool create)
    : m_path(path)
    , m_h5(path, create ? h5::File::Create : h5::File::ReadWrite)
 {
@@ -34,35 +34,35 @@ RootFile::RootFile(std::string path, bool create)
    }
 }
 
-std::string RootFile::getFullPath() const
+std::string OutputFile::getFullPath() const
 {
    return m_path;
 }
 
-std::string RootFile::getPrefix() const
+std::string OutputFile::getPrefix() const
 {
    return dirName(m_path);
 }
 
-std::string RootFile::getOptionsFileName() const
+std::string OutputFile::getOptionsFileName() const
 {
    return getPrefix() + "options.ini";
 }
-void RootFile::saveConfig(Config& config)
+void OutputFile::saveConfig(Config& config)
 {
    std::string configPath = getOptionsFileName();
    config.save(configPath);
    m_h5.createAttribute<std::string>(OPTIONS_TAG, configPath);
 }
 
-std::string RootFile::restoreGetOptionsFileName() const
+std::string OutputFile::restoreGetOptionsFileName() const
 {
    std::string options_filename;
    m_h5.getAttribute(OPTIONS_TAG).read(options_filename);
    return options_filename;
 }
 
-void RootFile::restoreConfig(Config& config)
+void OutputFile::restoreConfig(Config& config)
 {
    //get options filename
    std::string optionsFileName = restoreGetOptionsFileName();
@@ -72,30 +72,30 @@ void RootFile::restoreConfig(Config& config)
    THROWERROR_ASSERT_MSG(success, "Could not load ini file '" + optionsFileName + "'");
 }
 
-std::shared_ptr<StepFile> RootFile::createSampleStepFile(std::int32_t isample)
+std::shared_ptr<StepFile> OutputFile::createSampleStepFile(std::int32_t isample)
 {
    return createStepFile(isample, false);
 }
 
-std::shared_ptr<StepFile> RootFile::createCheckpointStepFile(std::int32_t isample)
+std::shared_ptr<StepFile> OutputFile::createCheckpointStepFile(std::int32_t isample)
 {
    return createStepFile(isample, true);
 }
 
-std::shared_ptr<StepFile> RootFile::createStepFile(std::int32_t isample, bool checkpoint)
+std::shared_ptr<StepFile> OutputFile::createStepFile(std::int32_t isample, bool checkpoint)
 {
    return std::make_shared<StepFile>(m_h5, isample, checkpoint);
 }
 
-void RootFile::removeOldCheckpoints()
+void OutputFile::removeOldCheckpoints()
 {
    std::string lastCheckpointItem;
-      m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
+   m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
    std::cout << "Last checkpoint " << lastCheckpointItem << std::endl;
 
    std::vector<std::string> h5_objects = m_h5.listObjectNames();
    for (auto &name : h5_objects)
-{
+   {
       if (startsWith(name, CHECKPOINT_PREFIX) && name != lastCheckpointItem)
       {
          m_h5.unlink(name);
@@ -104,10 +104,10 @@ void RootFile::removeOldCheckpoints()
    }
 }
 
-std::shared_ptr<StepFile> RootFile::openLastCheckpoint() const
+std::shared_ptr<StepFile> OutputFile::openLastCheckpoint() const
 {
-      std::string lastCheckpointItem;
-      m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
+   std::string lastCheckpointItem;
+   m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
    if (lastCheckpointItem != NONE_TAG)
    {
       h5::Group group = m_h5.getGroup(lastCheckpointItem);
@@ -117,12 +117,12 @@ std::shared_ptr<StepFile> RootFile::openLastCheckpoint() const
    return std::shared_ptr<StepFile>();
 }
 
-std::vector<std::shared_ptr<StepFile>> RootFile::openSampleStepFiles() const
+std::vector<std::shared_ptr<StepFile>> OutputFile::openSampleStepFiles() const
 {
    std::vector<std::string> h5_objects = m_h5.listObjectNames();
    std::vector<std::shared_ptr<StepFile>> samples;
 
-   for (auto& name : h5_objects)
+   for (auto &name : h5_objects)
    {
       if (startsWith(name, SAMPLE_PREFIX))
       {
