@@ -7,6 +7,12 @@
 
 #include <boost/property_tree/ini_parser.hpp>
 
+std::string INIFile::add_index(const std::string name, int idx = -1)
+{
+    if (idx >= 0) return name + "_" + std::to_string(idx);
+    return name;
+}
+
 void INIFile::read(const std::string& filename)
 {
    std::ifstream file;
