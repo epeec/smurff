@@ -62,50 +62,13 @@ bool INIFile::getBoolean(const std::string& section, const std::string& name, bo
    return m_tree.get<bool>(section + "." + name, default_value);
 }
 
-std::string INIFile::get(const std::string& section, const std::string& name) const
-{
-   return m_tree.get<std::string>(section + "." + name);
-}
-
-const std::set<std::string> INIFile::getSections() const
-{
-   std::set<std::string> sections;
-   std::transform(m_tree.begin(), m_tree.end(),
-                  std::inserter(sections, sections.end()),
-                  [](auto pair) { return pair.first; });
-   return sections;
-}
-
 bool INIFile::hasSection(const std::string &name) const
 {
-   auto sections = getSections();
-   return sections.find(name) != sections.end();
-}
-
-bool INIFile::empty() const
-{
-   return m_tree.empty();
+   return m_tree.get_child_optional(name) != boost::none;
 }
 
 void INIFile::appendItem(const std::string& section, const std::string& tag, const std::string& value)
 {
    m_modified = true;
    m_tree.put(section + "." + tag, value);
-}
-
-
-void INIFile::appendComment(const std::string& comment)
-{
-   m_modified = true;
-//FIXM: remove unneeded
-}
-
-void INIFile::startSection(const std::string& section)
-{
-//FIXM: remove unneededE
-}
-
-void INIFile::endSection()
-{
-//FIXME
 }

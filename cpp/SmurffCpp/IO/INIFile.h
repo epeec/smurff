@@ -53,34 +53,13 @@ public:
     bool getBoolean(const std::string& section, const std::string& name, bool default_value) const;
 
 public:
-   //will throw exception if section or name are not found
-   std::string get(const std::string& section, const std::string& name) const;
-
-public:
-    // Returns all the section names from the INI file in alphabetical order
-    const std::set<std::string> getSections() const;
-
     // Returns true is section with name exists
     bool hasSection(const std::string &name) const;
 
-
 public:
-   bool empty() const;
-
-public:
-
    //appends item to the end of file - this is not possible to easily insert item in the arbitrary section so it is not supported - write is buffered
    void appendItem(const std::string& section, const std::string& tag, const std::string& value);
 
    //flushes write buffer to file
    void flush();
-
-   //writes comment directly to file - it is not stored anywhere else and is not buffered
-   void appendComment(const std::string& comment);
-
-public:
-   //writes new section header directly to file - it is not buffered
-   void startSection(const std::string& section);
-
-   void endSection();
 };

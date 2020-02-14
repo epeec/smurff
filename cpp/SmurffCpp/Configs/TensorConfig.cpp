@@ -276,16 +276,13 @@ void TensorConfig::save_tensor_config(INIFile& writer, const std::string& sec_na
    else
    {
       //save a placeholder since config can not serialize itself
-      writer.startSection(section_name);
       writer.appendItem(section_name, FILE_TAG, NONE_TAG);
-      writer.endSection();
    }
 }
 
 void TensorConfig::save(INIFile& writer, const std::string& section_name) const
 {
    //write section name
-   writer.startSection(section_name);
 
    //write tensor config position
    if (this->hasPos())
@@ -313,7 +310,6 @@ void TensorConfig::save(INIFile& writer, const std::string& section_name) const
       writer.appendItem(section_name, NOISE_THRESHOLD_TAG, std::to_string(noise_config.getThreshold()));
    }
 
-   writer.endSection();
 }
 
 std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const INIFile& reader, const std::string& sec_name)

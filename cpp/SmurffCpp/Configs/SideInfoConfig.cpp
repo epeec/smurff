@@ -33,14 +33,12 @@ void SideInfoConfig::save(INIFile& writer, std::size_t prior_index, std::size_t 
    std::string sectionName = std::string(MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG) + "_" + std::to_string(prior_index) + "_" + std::to_string(config_item_index);
 
    //macau prior config item section
-   writer.startSection(sectionName);
 
    //config item data
    writer.appendItem(sectionName, TOL_TAG, std::to_string(m_tol));
    writer.appendItem(sectionName, DIRECT_TAG, std::to_string(m_direct));
    writer.appendItem(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, std::to_string(m_throw_on_cholesky_error));
 
-   writer.endSection();
 
    std::string sideInfoName = std::string(SIDE_INFO_PREFIX) + "_" + std::to_string(prior_index);
    
