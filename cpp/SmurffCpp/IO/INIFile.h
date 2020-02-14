@@ -14,24 +14,16 @@
 #include <string>
 #include <vector>
 
+#include <boost/property_tree/ptree.hpp>
+
+namespace pt = boost::property_tree;
+
 class INIFile
 {
 private:
    std::string m_filePath;
-
-   int m_error;
-
-   //map with values from ini file - key is <section> + <tag> - does not maintain order of sections and tags from ini file
-   std::map<std::string, std::string> m_values;
-
-   //set with all section names - does not maintain order of sections from ini file
-   std::set<std::string> m_sections;
-
-   //map with vector of tags per section - key is <section> - maintains original order of tags from ini file
-   std::map<std::string, std::vector<std::string> > m_fields;
-
-   //buffer that holds new values befure flush
-   std::vector<std::pair<std::string, std::string> > m_writeBuffer;
+   bool m_modified;
+   pt::ptree m_tree;
 
 public:
     // Construct INIReader and parse given filename. See ini.h for more info about the parsing.
@@ -45,11 +37,6 @@ public:
    void create(const std::string& filename);
 
 public:
-    // Return the result of ini_parse(), i.e., 0 on success, 
-    // line number of first error on parse error, 
-    // or -1 on file open error.
-    int getParseError() const;
-
     // Get a string value from INI file, 
     // returning default_value if not found.
     std::string get(const std::string& section, const std::string& name, const std::string& default_value) const;
@@ -78,22 +65,11 @@ public:
 
 public:
     // Returns all the section names from the INI file in alphabetical order
-    const std::set<std::string>& getSections() const;
+    const std::set<std::string> getSections() const;
 
     // Returns true is section with name exists
     bool hasSection(const std::string &name) const;
 
-    // Returns all the field names from a section in the INI file in original order
-    // Returns end iterator if section name is not found
-    std::map<std::string, std::vector<std::string> >::const_iterator getFields(const std::string& section) const;
-
-private:
-    static std::string MakeKey(const std::string& section, const std::string& name);
-
-    //callback for handling values parsed by ini_parse
-    static int ValueHandler(void* user, const char* section, const char* name, const char* value);
-
-    int insertItem(const std::string& section, const std::string& name, const std::string& value);
 
 public:
    bool empty() const;
@@ -105,9 +81,6 @@ public:
 
    //flushes write buffer to file
    void flush();
-
-   //this will only remove item from dictionaries and not from the file - it is not easy to implement removal from the file so it is not supported
-   void removeItem(const std::string& section, const std::string& tag);
 
    //writes comment directly to file - it is not stored anywhere else and is not buffered
    void appendComment(const std::string& comment);

@@ -497,14 +497,6 @@ bool Config::restore(std::string fname)
    INIFile reader;
    reader.open(fname);
 
-   if (reader.getParseError() < 0)
-   {
-      std::cout << "Can't load '" << fname << "'\n";
-      return false;
-   }
-
-
-
    //restore train data
    setTest(TensorConfig::restore_tensor_config(reader, TEST_SECTION_TAG));
 
@@ -606,12 +598,6 @@ bool Config::restoreSaveInfo(std::string fname, std::string& save_prefix, std::s
 
    INIFile reader;
    reader.open(fname);
-
-   if (reader.getParseError() < 0)
-   {
-      std::cout << "Can't load '" << fname << "'\n";
-      return false;
-   }
 
    save_prefix = reader.get(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
    save_extension = reader.get(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
