@@ -45,23 +45,9 @@ const Vector MacauOnePrior::fullMu(int n) const
 
 void MacauOnePrior::addSideInfo(const std::shared_ptr<ISideInfo>& side_info_a, double beta_precision_a, double tolerance_a, bool direct_a, bool enable_beta_precision_sampling_a, bool)
 {
-   //FIXME: remove old code
-
-   // old code
-
    Features = side_info_a;
    bp0 = beta_precision_a;
    enable_beta_precision_sampling = enable_beta_precision_sampling_a;
-
-   // new code
-
-   // side information
-   side_info_values.push_back(side_info_a);
-   beta_precision_values.push_back(beta_precision_a);
-   enable_beta_precision_sampling_values.push_back(enable_beta_precision_sampling_a);
-
-   // other code
-
    F_colsq = Features->col_square_sum();
 }
 
