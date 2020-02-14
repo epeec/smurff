@@ -3,8 +3,9 @@
 #include <memory>
 
 #include "SideInfoConfig.h"
-
 #include "TensorConfig.h"
+
+#include <SmurffCpp/IO/INIFile.h>
 
 #define MACAU_PRIOR_CONFIG_PREFIX_TAG "macau_prior_config"
 #define MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG "macau_prior_config_item"

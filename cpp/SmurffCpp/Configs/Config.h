@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <map>
 
 #include <SmurffCpp/Utils/PVec.hpp>
 #include <Utils/Error.h>

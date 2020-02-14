@@ -6,7 +6,7 @@
 #include <SmurffCpp/IO/IDataWriter.h>
 #include <SmurffCpp/DataMatrices/IDataCreator.h>
 #include <SmurffCpp/IO/GenericIO.h>
-
+#include <SmurffCpp/IO/INIFile.h>
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
 

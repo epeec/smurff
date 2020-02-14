@@ -4,9 +4,9 @@
 #include <memory>
 #include <string>
 
-#include <SmurffCpp/IO/INIFile.h>
-
 #include "MatrixConfig.h"
+
+class INIFile;
 
 namespace smurff
 {

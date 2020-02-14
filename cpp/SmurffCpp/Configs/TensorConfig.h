@@ -8,7 +8,8 @@
 
 #include <SmurffCpp/Utils/PVec.hpp>
 #include <SmurffCpp/Configs/NoiseConfig.h>
-#include <SmurffCpp/IO/INIFile.h>
+
+class INIFile;
 
 namespace smurff
 {
