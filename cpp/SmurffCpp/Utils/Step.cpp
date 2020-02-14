@@ -200,35 +200,19 @@ void Step::save(
 
 //restore methods
 
-void Step::restoreModel(std::shared_ptr<Model> model, int skip_mode) const
-{
-   model->restore(shared_from_this(), skip_mode);
-
-}
-
 //-- used in PredictSession
 std::shared_ptr<Model> Step::restoreModel(int skip_mode) const
 {
     auto model = std::make_shared<Model>();
-    restoreModel(model, skip_mode);
+    model->restore(shared_from_this(), skip_mode);
     return model;
-}
-
-void Step::restorePred(std::shared_ptr<Result> m_pred) const
-{
-   m_pred->restore(shared_from_this());
-}
-
-void Step::restorePriors(std::vector<std::shared_ptr<ILatentPrior> >& priors) const
-{
-   for (auto &p : priors) p->restore(shared_from_this());
 }
 
 void Step::restore(std::shared_ptr<Model> model, std::shared_ptr<Result> pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const
 {
-   restoreModel(model);
-   restorePred(pred);
-   restorePriors(priors);
+   model->restore(shared_from_this());
+   pred->restore(shared_from_this());
+   for (auto &p : priors) p->restore(shared_from_this());
 }
 
 //getters

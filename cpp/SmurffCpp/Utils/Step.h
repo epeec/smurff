@@ -65,11 +65,6 @@ namespace smurff {
    public:
       void save(std::shared_ptr<const Model> model, std::shared_ptr<const Result> pred, const std::vector<std::shared_ptr<ILatentPrior> >& priors) const;
 
-   private:
-      void restoreModel(std::shared_ptr<Model> model, int skip_mode = -1) const;
-      void restorePred(std::shared_ptr<Result> m_pred) const;
-      void restorePriors(std::vector<std::shared_ptr<ILatentPrior> >& priors) const;
-
    public:
       //-- used in PredictSession
       std::shared_ptr<Model> restoreModel(int skip_mode = -1) const;
