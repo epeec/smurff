@@ -16,6 +16,8 @@
 #define DIRECT_TAG "direct"
 #define THROW_ON_CHOLESKY_ERROR_TAG "throw_on_cholesky_error"
 #define SIDE_INFO_PREFIX "side_info"
+#define MODE_TAG "mode"
+#define NUMBER_TAG "nr"
 
 namespace smurff {
 
@@ -39,6 +41,8 @@ void SideInfoConfig::save(INIFile& writer, std::size_t prior_index, std::size_t 
    writer.put(sectionName, TOL_TAG, m_tol);
    writer.put(sectionName, DIRECT_TAG, m_direct);
    writer.put(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, m_throw_on_cholesky_error);
+   writer.put(sectionName, MODE_TAG, prior_index);
+   writer.put(sectionName, NUMBER_TAG, config_item_index);
 
 
    std::string sideInfoName = std::string(SIDE_INFO_PREFIX) + "_" + std::to_string(prior_index);
@@ -69,9 +73,17 @@ bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index, std
    m_direct = reader.get<bool>(section.str(), DIRECT_TAG, false);
    m_throw_on_cholesky_error = reader.get<bool>(section.str(), THROW_ON_CHOLESKY_ERROR_TAG, false);
 
+   int mode = reader.get<int>(section.str(), MODE_TAG, -1);
+   THROWERROR_ASSERT(mode == prior_index);
+
+   int no = reader.get<int>(section.str(), NUMBER_TAG, -1);
+   THROWERROR_ASSERT(no == config_item_index);
+
+
+
    std::stringstream ss;
    ss << SIDE_INFO_PREFIX << "_" << prior_index;
-
+   
    auto tensor_cfg = TensorConfig::restore_tensor_config(reader, add_index(ss.str(), config_item_index));
    m_sideInfo = std::dynamic_pointer_cast<MatrixConfig>(tensor_cfg);
 
