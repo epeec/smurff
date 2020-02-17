@@ -6,12 +6,10 @@
 #include <set>
 #include <cstdint>
 
-#include <highfive/H5File.hpp>
-
 #include <SmurffCpp/Types.h>
+#include <SmurffCpp/Utils/HDF5.h>
 
 namespace h5 = HighFive;
-
 
 namespace smurff {
 
@@ -20,12 +18,10 @@ namespace smurff {
    class ILatentPrior;
    class MatrixConfig;
 
-   class Step : public std::enable_shared_from_this<Step>
+   class Step : public std::enable_shared_from_this<Step>, private HDF5
    {
    private:
       std::int32_t m_isample;
-      mutable h5::Group m_group;
-      mutable h5::File m_file;
       bool m_checkpoint;
       bool m_final;
 
@@ -79,15 +75,5 @@ namespace smurff {
       std::int32_t getIsample() const;
       bool isCheckpoint() const;
       std::string getName() const;
-
-   private:
-      bool hasDataSet(const std::string &section, const std::string& tag) const;
-
-      std::shared_ptr<Matrix> getMatrix(const std::string &section, const std::string& tag) const;
-      std::shared_ptr<Vector> getVector(const std::string &section, const std::string& tag) const;
-      std::shared_ptr<SparseMatrix> getSparseMatrix(const std::string &section, const std::string& tag) const;
-
-      void putMatrix(const std::string &section, const std::string& tag, const Matrix &) const;
-      void putSparseMatrix(const std::string &section, const std::string& tag, const SparseMatrix &) const;
    };
 }
