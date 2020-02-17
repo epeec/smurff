@@ -21,6 +21,7 @@ namespace smurff {
    class Step : public std::enable_shared_from_this<Step>, private HDF5
    {
    private:
+      mutable h5::File m_file;
       std::int32_t m_isample;
       bool m_checkpoint;
       bool m_final;

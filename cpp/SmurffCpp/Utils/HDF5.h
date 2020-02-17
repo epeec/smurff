@@ -16,12 +16,10 @@ namespace smurff {
    class HDF5 
    {
    protected:
-      mutable h5::File m_file;
       mutable h5::Group m_group;
 
    public:
-      HDF5(h5::File file, h5::Group group) : m_file(file), m_group(group) {}
-      HDF5(h5::File file) : m_file(file) {}
+      HDF5(h5::Group group) : m_group(group) {}
 
       bool hasDataSet(const std::string &section, const std::string& tag) const;
 
