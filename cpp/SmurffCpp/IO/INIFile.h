@@ -40,6 +40,8 @@ public:
 public:
     // Returns true is section with name exists
     bool hasSection(const std::string &name) const;
+    const pt::ptree &getSection(const std::string &name) const;
+    pt::ptree &addSection(const std::string &name);
 
 public:
    template<typename T>

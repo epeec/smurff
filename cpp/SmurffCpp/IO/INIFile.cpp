@@ -31,3 +31,13 @@ bool INIFile::hasSection(const std::string &name) const
 {
    return m_tree.get_child_optional(name) != boost::none;
 }
+
+const pt::ptree &INIFile::getSection(const std::string &name) const
+{
+   return m_tree.get_child(name);
+}
+
+pt::ptree &INIFile::addSection(const std::string &name)
+{
+   return m_tree.add_child(name, pt::ptree());
+}

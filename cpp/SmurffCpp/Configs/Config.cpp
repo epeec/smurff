@@ -398,37 +398,38 @@ void Config::save(std::string fname) const
    INIFile ini;
 
    //write global options section
+   auto &global_section = ini.addSection(GLOBAL_SECTION_TAG);
 
    //count data
-   ini.put(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, m_prior_types.size());
-   ini.put(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, m_auxData.size());
+   global_section.put(NUM_PRIORS_TAG, m_prior_types.size());
+   global_section.put(NUM_AUX_DATA_TAG, m_auxData.size());
 
    //priors data
    for (std::size_t pIndex = 0; pIndex < m_prior_types.size(); pIndex++)
-      ini.put(GLOBAL_SECTION_TAG, std::string(PRIOR_PREFIX) + "_" + std::to_string(pIndex), priorTypeToString(m_prior_types.at(pIndex)));
+      global_section.put(std::string(PRIOR_PREFIX) + "_" + std::to_string(pIndex), priorTypeToString(m_prior_types.at(pIndex)));
 
    //save data
-   ini.put(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, m_save_prefix);
-   ini.put(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, m_save_extension);
-   ini.put(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, m_save_freq);
-   ini.put(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, m_save_pred);
-   ini.put(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, m_save_model);
-   ini.put(GLOBAL_SECTION_TAG, CHECKPOINT_FREQ_TAG, m_checkpoint_freq);
+   global_section.put(SAVE_PREFIX_TAG, m_save_prefix);
+   global_section.put(SAVE_EXTENSION_TAG, m_save_extension);
+   global_section.put(SAVE_FREQ_TAG, m_save_freq);
+   global_section.put(SAVE_PRED_TAG, m_save_pred);
+   global_section.put(SAVE_MODEL_TAG, m_save_model);
+   global_section.put(CHECKPOINT_FREQ_TAG, m_checkpoint_freq);
 
    //general data
-   ini.put(GLOBAL_SECTION_TAG, VERBOSE_TAG, m_verbose);
-   ini.put(GLOBAL_SECTION_TAG, BURNING_TAG, m_burnin);
-   ini.put(GLOBAL_SECTION_TAG, NSAMPLES_TAG, m_nsamples);
-   ini.put(GLOBAL_SECTION_TAG, NUM_LATENT_TAG, m_num_latent);
-   ini.put(GLOBAL_SECTION_TAG, NUM_THREADS_TAG, m_num_threads);
-   ini.put(GLOBAL_SECTION_TAG, RANDOM_SEED_SET_TAG, m_random_seed_set);
-   ini.put(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, m_random_seed);
-   ini.put(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(m_model_init_type));
+   global_section.put(VERBOSE_TAG, m_verbose);
+   global_section.put(BURNING_TAG, m_burnin);
+   global_section.put(NSAMPLES_TAG, m_nsamples);
+   global_section.put(NUM_LATENT_TAG, m_num_latent);
+   global_section.put(NUM_THREADS_TAG, m_num_threads);
+   global_section.put(RANDOM_SEED_SET_TAG, m_random_seed_set);
+   global_section.put(RANDOM_SEED_TAG, m_random_seed);
+   global_section.put(INIT_MODEL_TAG, modelInitTypeToString(m_model_init_type));
 
 
    //probit prior data
-   ini.put(GLOBAL_SECTION_TAG, CLASSIFY_TAG, m_classify);
-   ini.put(GLOBAL_SECTION_TAG, THRESHOLD_TAG, m_threshold);
+   global_section.put(CLASSIFY_TAG, m_classify);
+   global_section.put(THRESHOLD_TAG, m_threshold);
 
 
    //write train data section
@@ -479,13 +480,14 @@ bool Config::restore(std::string fname)
    setTrain(TensorConfig::restore_tensor_config(reader, TRAIN_SECTION_TAG));
 
    //restore global data
+   auto &global_section = reader.getSection(GLOBAL_SECTION_TAG);
 
    //restore priors
-   std::size_t num_priors = reader.get<int>(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, 0);
+   std::size_t num_priors = global_section.get<int>(NUM_PRIORS_TAG, 0);
    std::vector<std::string> pNames;
    for(std::size_t pIndex = 0; pIndex < num_priors; pIndex++)
    {
-      pNames.push_back(reader.get<std::string>(GLOBAL_SECTION_TAG, add_index(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
+      pNames.push_back(global_section.get<std::string>(add_index(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
    }
    setPriorTypes(pNames);
 
@@ -498,7 +500,7 @@ bool Config::restore(std::string fname)
    }
 
    //restore aux data
-   std::size_t num_aux_data = reader.get<int>(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, 0);
+   std::size_t num_aux_data = global_section.get<int>(NUM_AUX_DATA_TAG, 0);
    for(std::size_t pIndex = 0; pIndex < num_aux_data; pIndex++)
    {
       m_auxData.push_back(TensorConfig::restore_tensor_config(reader, add_index(AUX_DATA_PREFIX, pIndex)));
@@ -534,27 +536,28 @@ bool Config::restore(std::string fname)
        }
    }
 
+
    //restore save data
-   m_save_prefix = reader.get<std::string>(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
-   m_save_extension = reader.get<std::string>(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
-   m_save_freq = reader.get<int>(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
-   m_save_pred = reader.get<bool>(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
-   m_save_model = reader.get<bool>(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, Config::SAVE_MODEL_DEFAULT_VALUE);
-   m_checkpoint_freq = reader.get<int>(GLOBAL_SECTION_TAG, CHECKPOINT_FREQ_TAG, Config::CHECKPOINT_FREQ_DEFAULT_VALUE);
+   m_save_prefix = global_section.get<std::string>(SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
+   m_save_extension = global_section.get<std::string>(SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
+   m_save_freq = global_section.get<int>(SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
+   m_save_pred = global_section.get<bool>(SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
+   m_save_model = global_section.get<bool>(SAVE_MODEL_TAG, Config::SAVE_MODEL_DEFAULT_VALUE);
+   m_checkpoint_freq = global_section.get<int>(CHECKPOINT_FREQ_TAG, Config::CHECKPOINT_FREQ_DEFAULT_VALUE);
 
    //restore general data
-   m_verbose = reader.get<int>(GLOBAL_SECTION_TAG, VERBOSE_TAG, Config::VERBOSE_DEFAULT_VALUE);
-   m_burnin = reader.get<int>(GLOBAL_SECTION_TAG, BURNING_TAG, Config::BURNIN_DEFAULT_VALUE);
-   m_nsamples = reader.get<int>(GLOBAL_SECTION_TAG, NSAMPLES_TAG, Config::NSAMPLES_DEFAULT_VALUE);
-   m_num_latent = reader.get<int>(GLOBAL_SECTION_TAG, NUM_LATENT_TAG, Config::NUM_LATENT_DEFAULT_VALUE);
-   m_num_threads = reader.get<int>(GLOBAL_SECTION_TAG, NUM_THREADS_TAG, Config::NUM_THREADS_DEFAULT_VALUE);
-   m_random_seed_set = reader.get<bool>(GLOBAL_SECTION_TAG, RANDOM_SEED_SET_TAG,  false);
-   m_random_seed = reader.get<int>(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, Config::RANDOM_SEED_DEFAULT_VALUE);
-   m_model_init_type = stringToModelInitType(reader.get<std::string>(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(Config::INIT_MODEL_DEFAULT_VALUE)));
+   m_verbose = global_section.get<int>(VERBOSE_TAG, Config::VERBOSE_DEFAULT_VALUE);
+   m_burnin = global_section.get<int>(BURNING_TAG, Config::BURNIN_DEFAULT_VALUE);
+   m_nsamples = global_section.get<int>(NSAMPLES_TAG, Config::NSAMPLES_DEFAULT_VALUE);
+   m_num_latent = global_section.get<int>(NUM_LATENT_TAG, Config::NUM_LATENT_DEFAULT_VALUE);
+   m_num_threads = global_section.get<int>(NUM_THREADS_TAG, Config::NUM_THREADS_DEFAULT_VALUE);
+   m_random_seed_set = global_section.get<bool>(RANDOM_SEED_SET_TAG,  false);
+   m_random_seed = global_section.get<int>(RANDOM_SEED_TAG, Config::RANDOM_SEED_DEFAULT_VALUE);
+   m_model_init_type = stringToModelInitType(global_section.get<std::string>(INIT_MODEL_TAG, modelInitTypeToString(Config::INIT_MODEL_DEFAULT_VALUE)));
 
    //restore probit prior data
-   m_classify = reader.get<bool>(GLOBAL_SECTION_TAG, CLASSIFY_TAG,  false);
-   m_threshold = reader.get<double>(GLOBAL_SECTION_TAG, THRESHOLD_TAG, Config::THRESHOLD_DEFAULT_VALUE);
+   m_classify = global_section.get<bool>(CLASSIFY_TAG,  false);
+   m_threshold = global_section.get<double>(THRESHOLD_TAG, Config::THRESHOLD_DEFAULT_VALUE);
 
    return true;
 }
