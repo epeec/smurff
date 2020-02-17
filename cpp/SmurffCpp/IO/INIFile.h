@@ -19,6 +19,7 @@ class INIFile
 private:
    pt::ptree m_tree;
 
+public:
    static std::string add_index(std::string name, int index);
 
 public:

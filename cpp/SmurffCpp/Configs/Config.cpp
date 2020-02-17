@@ -386,13 +386,6 @@ bool Config::validate() const
    return true;
 }
 
-static std::string add_index(const std::string name, int idx = -1)
-{
-    if (idx >= 0)
-        return name + "_" + std::to_string(idx);
-    return name;
-}
-
 void Config::save(std::string fname) const
 {
    INIFile ini;
@@ -406,7 +399,7 @@ void Config::save(std::string fname) const
 
    //priors data
    for (std::size_t pIndex = 0; pIndex < m_prior_types.size(); pIndex++)
-      global_section.put(std::string(PRIOR_PREFIX) + "_" + std::to_string(pIndex), priorTypeToString(m_prior_types.at(pIndex)));
+      global_section.put(INIFile::add_index(PRIOR_PREFIX, pIndex), priorTypeToString(m_prior_types.at(pIndex)));
 
    //save data
    global_section.put(SAVE_PREFIX_TAG, m_save_prefix);
@@ -457,7 +450,7 @@ void Config::save(std::string fname) const
    {
        if (hasPropagatedPosterior(pIndex))
        {
-           auto section = add_index(POSTPROP_PREFIX, pIndex);
+           auto section = INIFile::add_index(POSTPROP_PREFIX, pIndex);
            ini.put(section, MU_TAG, getMuPropagatedPosterior(pIndex)->getFilename());
            ini.put(section, LAMBDA_TAG, getLambdaPropagatedPosterior(pIndex)->getFilename());
        }
@@ -487,7 +480,7 @@ bool Config::restore(std::string fname)
    std::vector<std::string> pNames;
    for(std::size_t pIndex = 0; pIndex < num_priors; pIndex++)
    {
-      pNames.push_back(global_section.get<std::string>(add_index(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
+      pNames.push_back(global_section.get<std::string>(INIFile::add_index(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
    }
    setPriorTypes(pNames);
 
@@ -503,7 +496,7 @@ bool Config::restore(std::string fname)
    std::size_t num_aux_data = global_section.get<int>(NUM_AUX_DATA_TAG, 0);
    for(std::size_t pIndex = 0; pIndex < num_aux_data; pIndex++)
    {
-      m_auxData.push_back(TensorConfig::restore_tensor_config(reader, add_index(AUX_DATA_PREFIX, pIndex)));
+      m_auxData.push_back(TensorConfig::restore_tensor_config(reader, INIFile::add_index(AUX_DATA_PREFIX, pIndex)));
    }
 
    // restore posterior propagated data
@@ -513,7 +506,7 @@ bool Config::restore(std::string fname)
        auto lambda = std::shared_ptr<MatrixConfig>();
 
        {
-           std::string filename = reader.get<std::string>(add_index(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_TAG);
+           std::string filename = reader.get<std::string>(INIFile::add_index(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_TAG);
            if (filename != NONE_TAG)
            {
                mu = matrix_io::read_matrix(filename, false);
@@ -522,7 +515,7 @@ bool Config::restore(std::string fname)
        }
 
        {
-           std::string filename = reader.get<std::string>(add_index(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_TAG);
+           std::string filename = reader.get<std::string>(INIFile::add_index(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_TAG);
            if (filename != NONE_TAG)
            {
                lambda = matrix_io::read_matrix(filename, false);
