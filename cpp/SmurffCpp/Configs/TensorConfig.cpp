@@ -266,21 +266,21 @@ std::string TensorConfig::info() const
 
 void TensorConfig::save_tensor_config(INIFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg)
 {
-   std::string section_name = (sec_idx >= 0) ? sec_name + "_" + std::to_string(sec_idx) : sec_name;
+   std::string sectionName = INIFile::add_index(sec_name, sec_idx);
    
    if (cfg)
    {
       //save tensor config and noise config internally
-      cfg->save(writer, section_name);
+      cfg->save(writer, sectionName);
    }
    else
    {
       //save a placeholder since config can not serialize itself
-      writer.put(section_name, FILE_TAG, NONE_TAG);
+      writer.put(sectionName, FILE_TAG, NONE_TAG);
    }
 }
 
-void TensorConfig::save(INIFile& writer, const std::string& section_name) const
+void TensorConfig::save(INIFile& writer, const std::string& sectionName) const
 {
    //write section name
 
@@ -289,25 +289,25 @@ void TensorConfig::save(INIFile& writer, const std::string& section_name) const
    {
       std::stringstream ss;
       ss << this->getPos();
-      writer.put(section_name, POS_TAG, ss.str());
+      writer.put(sectionName, POS_TAG, ss.str());
    }
 
    //write tensor config filename
-   writer.put(section_name, FILE_TAG, this->getFilename());
+   writer.put(sectionName, FILE_TAG, this->getFilename());
 
    //write tensor config type
    std::string type_str = this->isDense() ? DENSE_TAG : this->isScarce() ? SCARCE_TAG : SPARSE_TAG;
-   writer.put(section_name, TYPE_TAG, type_str);
+   writer.put(sectionName, TYPE_TAG, type_str);
 
    //write noise config
    auto &noise_config = this->getNoiseConfig();
    if (noise_config.getNoiseType() != NoiseTypes::unset)
    {
-      writer.put(section_name, NOISE_MODEL_TAG, noiseTypeToString(noise_config.getNoiseType()));
-      writer.put(section_name, PRECISION_TAG, noise_config.getPrecision());
-      writer.put(section_name, SN_INIT_TAG, noise_config.getSnInit());
-      writer.put(section_name, SN_MAX_TAG, noise_config.getSnMax());
-      writer.put(section_name, NOISE_THRESHOLD_TAG, noise_config.getThreshold());
+      writer.put(sectionName, NOISE_MODEL_TAG, noiseTypeToString(noise_config.getNoiseType()));
+      writer.put(sectionName, PRECISION_TAG, noise_config.getPrecision());
+      writer.put(sectionName, SN_INIT_TAG, noise_config.getSnInit());
+      writer.put(sectionName, SN_MAX_TAG, noise_config.getSnMax());
+      writer.put(sectionName, NOISE_THRESHOLD_TAG, noise_config.getThreshold());
    }
 
 }

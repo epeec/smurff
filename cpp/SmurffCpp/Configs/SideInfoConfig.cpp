@@ -33,7 +33,7 @@ SideInfoConfig::SideInfoConfig()
 
 void SideInfoConfig::save(INIFile& writer, std::size_t prior_index) const
 {
-   std::string sectionName = std::string(MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG) + "_" + std::to_string(prior_index);
+   std::string sectionName = INIFile::add_index(MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG, prior_index);
 
    //macau data
    writer.put(sectionName, TOL_TAG, m_tol);
@@ -47,30 +47,22 @@ void SideInfoConfig::save(INIFile& writer, std::size_t prior_index) const
 
 bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index)
 {
-   auto add_index = [](const std::string name, int idx = -1) -> std::string
-   {
-      if (idx >= 0)
-         return name + "_" + std::to_string(idx);
-      return name;
-   };
+   std::string sectionName = INIFile::add_index(MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG, prior_index);
 
-   std::stringstream section;
-   section << MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG << "_" << prior_index;
-
-   if (!reader.hasSection(section.str()))
+   if (!reader.hasSection(sectionName))
    {
        return false;
    }
 
    //restore side info properties
-   m_tol = reader.get<double>(section.str(), TOL_TAG, SideInfoConfig::TOL_DEFAULT_VALUE);
-   m_direct = reader.get<bool>(section.str(), DIRECT_TAG, false);
-   m_throw_on_cholesky_error = reader.get<bool>(section.str(), THROW_ON_CHOLESKY_ERROR_TAG, false);
+   m_tol = reader.get<double>(sectionName, TOL_TAG, SideInfoConfig::TOL_DEFAULT_VALUE);
+   m_direct = reader.get<bool>(sectionName, DIRECT_TAG, false);
+   m_throw_on_cholesky_error = reader.get<bool>(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, false);
 
-   int mode = reader.get<int>(section.str(), MODE_TAG, -1);
+   int mode = reader.get<int>(sectionName, MODE_TAG, -1);
    THROWERROR_ASSERT(mode == prior_index);
 
-   auto tensor_cfg = TensorConfig::restore_tensor_config(reader, section.str());
+   auto tensor_cfg = TensorConfig::restore_tensor_config(reader, sectionName);
    m_sideInfo = std::dynamic_pointer_cast<MatrixConfig>(tensor_cfg);
 
    return true;
