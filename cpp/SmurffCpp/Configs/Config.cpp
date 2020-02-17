@@ -193,7 +193,7 @@ std::string Config::getSavePrefix() const
     return m_save_prefix;
 }
 
-const std::vector<std::shared_ptr<SideInfoConfig> >& Config::getSideInfoConfigs(int mode) const
+const std::shared_ptr<SideInfoConfig>& Config::getSideInfoConfig(int mode) const
 {
   auto iter = m_sideInfoConfigs.find(mode);
   THROWERROR_ASSERT(iter != m_sideInfoConfigs.end());
@@ -202,7 +202,7 @@ const std::vector<std::shared_ptr<SideInfoConfig> >& Config::getSideInfoConfigs(
 
 Config& Config::addSideInfoConfig(int mode, std::shared_ptr<SideInfoConfig> c)
 {
-    m_sideInfoConfigs[mode].push_back(c);
+    m_sideInfoConfigs[mode] = c;
 
     // automagically update prior type 
     // normal(one) prior -> macau(one) prior
@@ -265,18 +265,15 @@ bool Config::validate() const
    for (auto p : m_sideInfoConfigs)
    {
       int mode = p.first;
-      auto &configItems = p.second;
-      for (auto configItem : configItems)
-      {
-          const auto& sideInfo = configItem->getSideInfo();
-          THROWERROR_ASSERT(sideInfo);
+      auto &configItem = p.second;
+      const auto &sideInfo = configItem->getSideInfo();
+      THROWERROR_ASSERT(sideInfo);
 
-          if (sideInfo->getDims()[0] != m_train->getDims()[mode])
-          {
-              std::stringstream ss;
-              ss << "Side info should have the same number of rows as size of dimension " << mode << " in train data";
-              THROWERROR(ss.str());
-          }
+      if (sideInfo->getDims()[0] != m_train->getDims()[mode])
+      {
+         std::stringstream ss;
+         ss << "Side info should have the same number of rows as size of dimension " << mode << " in train data";
+         THROWERROR(ss.str());
       }
    }
 
@@ -444,11 +441,8 @@ void Config::save(std::string fname) const
    for (auto p : m_sideInfoConfigs)
    {
        int mode = p.first;
-       auto &configItems = p.second;
-       for (std::size_t mIndex = 0; mIndex < configItems.size(); mIndex++)
-       {
-           configItems.at(mIndex)->save(ini, mode, mIndex);
-       }
+       auto &configItem = p.second;
+       configItem->save(ini, mode);
    }
 
    //write aux data section
@@ -498,17 +492,9 @@ bool Config::restore(std::string fname)
    //restore macau prior configs section
    for (std::size_t mPriorIndex = 0; mPriorIndex < num_priors; mPriorIndex++)
    {
-      int mSideInfoIndex = 0;
-      while (true) {
-          auto sideInfoConfig = std::make_shared<SideInfoConfig>();
-
-          if (sideInfoConfig->restore(reader, mPriorIndex, mSideInfoIndex))
-             m_sideInfoConfigs[mPriorIndex].push_back(sideInfoConfig);
-          else
-             break;
-
-          mSideInfoIndex++;
-      }
+      auto sideInfoConfig = std::make_shared<SideInfoConfig>();
+      if (sideInfoConfig->restore(reader, mPriorIndex))
+         m_sideInfoConfigs[mPriorIndex] = sideInfoConfig;
    }
 
    //restore aux data

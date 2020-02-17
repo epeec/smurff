@@ -9,7 +9,6 @@ MacauOnePrior::MacauOnePrior(std::shared_ptr<Session> session, uint32_t mode)
    : NormalOnePrior(session, mode, "MacauOnePrior")
 {
    bp0 = SideInfoConfig::BETA_PRECISION_DEFAULT_VALUE;
-
    enable_beta_precision_sampling = Config::ENABLE_BETA_PRECISION_SAMPLING_DEFAULT_VALUE;
 }
 
@@ -43,11 +42,11 @@ const Vector MacauOnePrior::fullMu(int n) const
    return this->hyperMu() + Uhat.col(n);
 }
 
-void MacauOnePrior::addSideInfo(const std::shared_ptr<ISideInfo>& side_info_a, double beta_precision_a, double tolerance_a, bool direct_a, bool enable_beta_precision_sampling_a, bool)
+void MacauOnePrior::addSideInfo(const std::shared_ptr<ISideInfo>& si, double bp, double tol, bool, bool ebps, bool toce)
 {
-   Features = side_info_a;
-   bp0 = beta_precision_a;
-   enable_beta_precision_sampling = enable_beta_precision_sampling_a;
+   Features = si;
+   bp0 = bp;
+   enable_beta_precision_sampling = ebps;
    F_colsq = Features->col_square_sum();
 }
 

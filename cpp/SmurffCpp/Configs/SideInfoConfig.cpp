@@ -31,27 +31,21 @@ SideInfoConfig::SideInfoConfig()
    m_throw_on_cholesky_error = false;
 }
 
-void SideInfoConfig::save(INIFile& writer, std::size_t prior_index, std::size_t config_item_index) const
+void SideInfoConfig::save(INIFile& writer, std::size_t prior_index) const
 {
-   std::string sectionName = std::string(MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG) + "_" + std::to_string(prior_index) + "_" + std::to_string(config_item_index);
+   std::string sectionName = std::string(MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG) + "_" + std::to_string(prior_index);
 
-   //macau prior config item section
-
-   //config item data
+   //macau data
    writer.put(sectionName, TOL_TAG, m_tol);
    writer.put(sectionName, DIRECT_TAG, m_direct);
    writer.put(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, m_throw_on_cholesky_error);
    writer.put(sectionName, MODE_TAG, prior_index);
-   writer.put(sectionName, NUMBER_TAG, config_item_index);
 
-
-   std::string sideInfoName = std::string(SIDE_INFO_PREFIX) + "_" + std::to_string(prior_index);
-   
-   //config item side info
-   TensorConfig::save_tensor_config(writer, sideInfoName, config_item_index, m_sideInfo);
+   //TensorConfig data
+   TensorConfig::save_tensor_config(writer, sectionName, -1, m_sideInfo);
 }
 
-bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index, std::size_t config_item_index)
+bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index)
 {
    auto add_index = [](const std::string name, int idx = -1) -> std::string
    {
@@ -61,7 +55,7 @@ bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index, std
    };
 
    std::stringstream section;
-   section << MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG << "_" << prior_index << "_" << config_item_index;
+   section << MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG << "_" << prior_index;
 
    if (!reader.hasSection(section.str()))
    {
@@ -76,15 +70,7 @@ bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index, std
    int mode = reader.get<int>(section.str(), MODE_TAG, -1);
    THROWERROR_ASSERT(mode == prior_index);
 
-   int no = reader.get<int>(section.str(), NUMBER_TAG, -1);
-   THROWERROR_ASSERT(no == config_item_index);
-
-
-
-   std::stringstream ss;
-   ss << SIDE_INFO_PREFIX << "_" << prior_index;
-   
-   auto tensor_cfg = TensorConfig::restore_tensor_config(reader, add_index(ss.str(), config_item_index));
+   auto tensor_cfg = TensorConfig::restore_tensor_config(reader, section.str());
    m_sideInfo = std::dynamic_pointer_cast<MatrixConfig>(tensor_cfg);
 
    return true;
