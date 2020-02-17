@@ -18,6 +18,7 @@ class INIFile
 {
 private:
    pt::ptree m_tree;
+   pt::ptree makeUnique(const pt::ptree &pt);
 
 public:
    static std::string add_index(std::string name, int index);

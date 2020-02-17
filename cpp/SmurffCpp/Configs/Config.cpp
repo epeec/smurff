@@ -398,8 +398,8 @@ void Config::save(std::string fname) const
    global_section.put(NUM_AUX_DATA_TAG, m_auxData.size());
 
    //priors data
-   for (std::size_t pIndex = 0; pIndex < m_prior_types.size(); pIndex++)
-      global_section.put(INIFile::add_index(PRIOR_PREFIX, pIndex), priorTypeToString(m_prior_types.at(pIndex)));
+   for(const auto &pt : m_prior_types)
+      global_section.add(PRIOR_PREFIX, priorTypeToString(pt));
 
    //save data
    global_section.put(SAVE_PREFIX_TAG, m_save_prefix);
@@ -419,11 +419,9 @@ void Config::save(std::string fname) const
    global_section.put(RANDOM_SEED_TAG, m_random_seed);
    global_section.put(INIT_MODEL_TAG, modelInitTypeToString(m_model_init_type));
 
-
    //probit prior data
    global_section.put(CLASSIFY_TAG, m_classify);
    global_section.put(THRESHOLD_TAG, m_threshold);
-
 
    //write train data section
    TensorConfig::save_tensor_config(ini, TRAIN_SECTION_TAG, -1, m_train);
