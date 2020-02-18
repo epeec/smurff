@@ -386,12 +386,11 @@ bool Config::validate() const
    return true;
 }
 
-void Config::save(std::string fname) const
+template<class ConfigFile>
+ConfigFile &Config::save(ConfigFile &cfg_file) const
 {
-   INIFile ini;
-
    //write global options section
-   auto &global_section = ini.addSection(GLOBAL_SECTION_TAG);
+   auto &global_section = cfg_file.addSection(GLOBAL_SECTION_TAG);
 
    //count data
    global_section.put(NUM_PRIORS_TAG, m_prior_types.size());
@@ -424,23 +423,23 @@ void Config::save(std::string fname) const
    global_section.put(THRESHOLD_TAG, m_threshold);
 
    //write train data section
-   TensorConfig::save_tensor_config(ini, TRAIN_SECTION_TAG, -1, m_train);
+   TensorConfig::save_tensor_config(cfg_file, TRAIN_SECTION_TAG, -1, m_train);
 
    //write test data section
-   TensorConfig::save_tensor_config(ini, TEST_SECTION_TAG, -1, m_test);
+   TensorConfig::save_tensor_config(cfg_file, TEST_SECTION_TAG, -1, m_test);
 
    //write macau prior configs section
    for (auto p : m_sideInfoConfigs)
    {
        int mode = p.first;
        auto &configItem = p.second;
-       configItem->save(ini, mode);
+       configItem->save(cfg_file, mode);
    }
 
    //write aux data section
    for (std::size_t sIndex = 0; sIndex < m_auxData.size(); sIndex++)
    {
-      TensorConfig::save_tensor_config(ini, AUX_DATA_PREFIX, sIndex, m_auxData.at(sIndex));
+      TensorConfig::save_tensor_config(cfg_file, AUX_DATA_PREFIX, sIndex, m_auxData.at(sIndex));
    }
 
    //write posterior propagation
@@ -448,14 +447,17 @@ void Config::save(std::string fname) const
    {
        if (hasPropagatedPosterior(pIndex))
        {
-           auto section = INIFile::add_index(POSTPROP_PREFIX, pIndex);
-           ini.put(section, MU_TAG, getMuPropagatedPosterior(pIndex)->getFilename());
-           ini.put(section, LAMBDA_TAG, getLambdaPropagatedPosterior(pIndex)->getFilename());
+           auto section = addIndex(POSTPROP_PREFIX, pIndex);
+           cfg_file.put(section, MU_TAG, getMuPropagatedPosterior(pIndex)->getFilename());
+           cfg_file.put(section, LAMBDA_TAG, getLambdaPropagatedPosterior(pIndex)->getFilename());
        }
    }
 
-   ini.write(fname);
+   return cfg_file;
 }
+
+template
+INIFile &Config::save(INIFile &) const;
 
 bool Config::restore(std::string fname)
 {

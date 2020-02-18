@@ -7,10 +7,9 @@
 
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
+#include <SmurffCpp/IO/INIFile.h>
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/StatusItem.h>
-
-
 
 namespace h5 = HighFive;
 
@@ -48,10 +47,13 @@ std::string OutputFile::getOptionsFileName() const
 {
    return getPrefix() + "options.ini";
 }
+
 void OutputFile::saveConfig(Config& config)
 {
    std::string configPath = getOptionsFileName();
-   config.save(configPath);
+   INIFile cfg_file;
+   config.save(cfg_file);
+   cfg_file.write(configPath);
    m_h5.createAttribute<std::string>(OPTIONS_TAG, configPath);
 }
 
@@ -91,7 +93,7 @@ void OutputFile::removeOldCheckpoints()
 {
    std::string lastCheckpointItem;
    m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
-   std::cout << "Last checkpoint " << lastCheckpointItem << std::endl;
+   //std::cout << "Last checkpoint " << lastCheckpointItem << std::endl;
 
    std::vector<std::string> h5_objects = m_h5.listObjectNames();
    for (auto &name : h5_objects)
@@ -99,7 +101,7 @@ void OutputFile::removeOldCheckpoints()
       if (startsWith(name, CHECKPOINT_PREFIX) && name != lastCheckpointItem)
       {
          m_h5.unlink(name);
-         std::cout << "Remove checkpoint " << name << std::endl;
+         //std::cout << "Remove checkpoint " << name << std::endl;
       }
    }
 }

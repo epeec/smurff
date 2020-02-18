@@ -134,7 +134,9 @@ private:
 public:
    bool validate() const;
 
-   void save(std::string fname) const;
+   template<class ConfigFile>
+   ConfigFile &save(ConfigFile &cfg_file) const;
+
    bool restore(std::string fname);
 
    std::string to_string() const;
