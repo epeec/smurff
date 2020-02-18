@@ -7,6 +7,7 @@
 #include <SmurffCpp/DataMatrices/IDataCreator.h>
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/INIFile.h>
+#include <SmurffCpp/Utils/HDF5.h>
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
 
@@ -17,7 +18,7 @@
 #define SPARSE_TAG "sparse"
 #define TYPE_TAG "type"
 
-#define NONE_TAG "none"
+static const std::string NONE_VALUE("none");
 
 #define NOISE_MODEL_TAG "noise_model"
 #define PRECISION_TAG "precision"
@@ -264,7 +265,8 @@ std::string TensorConfig::info() const
     return ss.str();
 }
 
-void TensorConfig::save_tensor_config(INIFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg)
+template<class ConfigFile>
+void TensorConfig::save_tensor_config(ConfigFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg)
 {
    std::string sectionName = addIndex(sec_name, sec_idx);
    
@@ -276,11 +278,18 @@ void TensorConfig::save_tensor_config(INIFile& writer, const std::string& sec_na
    else
    {
       //save a placeholder since config can not serialize itself
-      writer.put(sectionName, FILE_TAG, NONE_TAG);
+      writer.put(sectionName, FILE_TAG, NONE_VALUE);
    }
 }
 
-void TensorConfig::save(INIFile& writer, const std::string& sectionName) const
+template
+void TensorConfig::save_tensor_config(INIFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg);
+
+template
+void TensorConfig::save_tensor_config(HDF5& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg);
+
+template<class ConfigFile>
+void TensorConfig::save(ConfigFile& writer, const std::string& sectionName) const
 {
    //write tensor config position
    if (this->hasPos())
@@ -310,11 +319,17 @@ void TensorConfig::save(INIFile& writer, const std::string& sectionName) const
 
 }
 
+template
+void TensorConfig::save(INIFile& writer, const std::string& sectionName) const;
+
+template
+void TensorConfig::save(HDF5& writer, const std::string& sectionName) const;
+
 std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const INIFile& reader, const std::string& sec_name)
 {
    //restore filename
-   std::string filename = reader.get<std::string>(sec_name, FILE_TAG, NONE_TAG);
-   if (filename == NONE_TAG)
+   std::string filename = reader.get<std::string>(sec_name, FILE_TAG, NONE_VALUE);
+   if (filename == NONE_VALUE)
       return std::shared_ptr<TensorConfig>();
 
    //restore type
@@ -332,8 +347,8 @@ std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const INIFile&
 bool TensorConfig::restore(const INIFile& reader, const std::string& sec_name)
 {
    //restore position
-   std::string pos_str = reader.get<std::string>(sec_name, POS_TAG, NONE_TAG);
-   if (pos_str != NONE_TAG)
+   std::string pos_str = reader.get<std::string>(sec_name, POS_TAG, NONE_VALUE);
+   if (pos_str != NONE_VALUE)
    {
       std::vector<int> tokens;
       split(pos_str, tokens, ',');

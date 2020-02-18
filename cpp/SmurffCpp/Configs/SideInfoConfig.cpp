@@ -3,6 +3,8 @@
 #include <memory>
 
 #include <SmurffCpp/IO/INIFile.h>
+#include <SmurffCpp/Utils/HDF5.h>
+
 #include <Utils/StringUtils.h>
 
 #include "SideInfoConfig.h"
@@ -27,18 +29,25 @@ SideInfoConfig::SideInfoConfig()
    m_throw_on_cholesky_error = false;
 }
 
-void SideInfoConfig::save(INIFile& writer, std::size_t prior_index) const
+template<class ConfigFile>
+void SideInfoConfig::save(ConfigFile& cfg_file, std::size_t prior_index) const
 {
    std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
 
    //macau data
-   writer.put(sectionName, TOL_TAG, m_tol);
-   writer.put(sectionName, DIRECT_TAG, m_direct);
-   writer.put(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, m_throw_on_cholesky_error);
+   cfg_file.put(sectionName, TOL_TAG, m_tol);
+   cfg_file.put(sectionName, DIRECT_TAG, m_direct);
+   cfg_file.put(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, m_throw_on_cholesky_error);
 
    //TensorConfig data
-   TensorConfig::save_tensor_config(writer, sectionName, -1, m_sideInfo);
+   TensorConfig::save_tensor_config(cfg_file, sectionName, -1, m_sideInfo);
 }
+
+template
+void SideInfoConfig::save(INIFile& cfg_file, std::size_t prior_index) const;
+
+template
+void SideInfoConfig::save(HDF5& cfg_file, std::size_t prior_index) const;
 
 bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index)
 {

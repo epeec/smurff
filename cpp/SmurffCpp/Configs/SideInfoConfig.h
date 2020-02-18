@@ -67,7 +67,8 @@ namespace smurff
       }
 
    public:
-      void save(INIFile& writer, std::size_t prior_index) const;
+      template <typename ConfigFile>
+      void save(ConfigFile& writer, std::size_t prior_index) const;
 
       bool restore(const INIFile& reader, std::size_t prior_index);
    };
