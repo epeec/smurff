@@ -23,7 +23,7 @@
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <Utils/StringUtils.h>
 
-#define NONE_TAG "none"
+#define NONE_VALUE "none"
 
 #define GLOBAL_SECTION_TAG "global"
 #define TRAIN_SECTION_TAG "train"
@@ -394,8 +394,9 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
    cfg_file.put(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, m_auxData.size());
 
    //priors data
+   int prior_idx = 0;
    for(const auto &pt : m_prior_types)
-      global_section.add(PRIOR_PREFIX, priorTypeToString(pt));
+      cfg_file.put(GLOBAL_SECTION_TAG, addIndex(PRIOR_PREFIX, prior_idx++), priorTypeToString(pt));
 
    //save data
    cfg_file.put(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, m_save_prefix);
@@ -460,14 +461,14 @@ bool Config::restore(std::string fname)
 {
    THROWERROR_FILE_NOT_EXIST(fname);
 
-   INIFile reader;
-   reader.read(fname);
+   INIFile cfg_file;
+   cfg_file.read(fname);
 
    //restore train data
-   setTest(TensorConfig::restore_tensor_config(reader, TEST_SECTION_TAG));
+   setTest(TensorConfig::restore_tensor_config(cfg_file, TEST_SECTION_TAG));
 
    //restore test data
-   setTrain(TensorConfig::restore_tensor_config(reader, TRAIN_SECTION_TAG));
+   setTrain(TensorConfig::restore_tensor_config(cfg_file, TRAIN_SECTION_TAG));
 
    //restore priors
    std::size_t num_priors = cfg_file.get<int>(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, 0);
@@ -482,7 +483,7 @@ bool Config::restore(std::string fname)
    for (std::size_t mPriorIndex = 0; mPriorIndex < num_priors; mPriorIndex++)
    {
       auto sideInfoConfig = std::make_shared<SideInfoConfig>();
-      if (sideInfoConfig->restore(reader, mPriorIndex))
+      if (sideInfoConfig->restore(cfg_file, mPriorIndex))
          m_sideInfoConfigs[mPriorIndex] = sideInfoConfig;
    }
 
@@ -490,7 +491,7 @@ bool Config::restore(std::string fname)
    std::size_t num_aux_data = cfg_file.get<int>(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, 0);
    for(std::size_t pIndex = 0; pIndex < num_aux_data; pIndex++)
    {
-      m_auxData.push_back(TensorConfig::restore_tensor_config(reader, addIndex(AUX_DATA_PREFIX, pIndex)));
+      m_auxData.push_back(TensorConfig::restore_tensor_config(cfg_file, addIndex(AUX_DATA_PREFIX, pIndex)));
    }
 
    // restore posterior propagated data
@@ -500,8 +501,8 @@ bool Config::restore(std::string fname)
        auto lambda = std::shared_ptr<MatrixConfig>();
 
        {
-           std::string filename = reader.get<std::string>(addIndex(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_TAG);
-           if (filename != NONE_TAG)
+           std::string filename = cfg_file.get<std::string>(addIndex(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_VALUE);
+           if (filename != NONE_VALUE)
            {
                mu = matrix_io::read_matrix(filename, false);
                mu->setFilename(filename);
@@ -509,8 +510,8 @@ bool Config::restore(std::string fname)
        }
 
        {
-           std::string filename = reader.get<std::string>(addIndex(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_TAG);
-           if (filename != NONE_TAG)
+           std::string filename = cfg_file.get<std::string>(addIndex(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_VALUE);
+           if (filename != NONE_VALUE)
            {
                lambda = matrix_io::read_matrix(filename, false);
                lambda->setFilename(filename);

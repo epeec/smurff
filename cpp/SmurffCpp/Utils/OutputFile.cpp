@@ -15,7 +15,7 @@ namespace h5 = HighFive;
 
 namespace smurff {
 
-const char* NONE_TAG = "none";
+const char* NONE_VALUE = "none";
 const char* OPTIONS_TAG = "options";
 const char* STEPS_TAG = "steps";
 const char* STATUS_TAG = "status";
@@ -29,7 +29,7 @@ OutputFile::OutputFile(std::string path, bool create)
 {
    if (create)
    {
-      m_h5.createAttribute(LAST_CHECKPOINT_TAG, std::string(NONE_TAG));
+      m_h5.createAttribute(LAST_CHECKPOINT_TAG, std::string(NONE_VALUE));
    }
 }
 
@@ -110,7 +110,7 @@ std::shared_ptr<Step> OutputFile::openLastCheckpoint() const
 {
    std::string lastCheckpointItem;
    m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
-   if (lastCheckpointItem != NONE_TAG)
+   if (lastCheckpointItem != NONE_VALUE)
    {
       h5::Group group = m_h5.getGroup(lastCheckpointItem);
       return std::make_shared<Step>(m_h5, group);
