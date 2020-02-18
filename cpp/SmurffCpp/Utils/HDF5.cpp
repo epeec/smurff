@@ -15,6 +15,17 @@ bool HDF5::hasDataSet(const std::string& section, const std::string& tag) const
    return (section_group.exist(tag));
 }
 
+h5::Group HDF5::addGroup(const std::string& name)
+{
+   if (!m_group.exist(name)) m_group.createGroup(name);
+   return getGroup(name);
+}
+
+h5::Group HDF5::getGroup(const std::string& name) const
+{
+   return m_group.getGroup(name);
+}
+
 std::shared_ptr<Matrix> HDF5::getMatrix(const std::string& section, const std::string& tag) const
 {
    auto dataset = m_group.getGroup(section).getDataSet(tag);
@@ -77,7 +88,7 @@ std::shared_ptr<SparseMatrix> HDF5::getSparseMatrix(const std::string& section, 
    return std::make_shared<SparseMatrix>(X);
 }
 
-void HDF5::putMatrix(const std::string& section, const std::string& tag, const Matrix &M) const
+void HDF5::putMatrix(const std::string& section, const std::string& tag, const Matrix &M)
 {
    if (!m_group.exist(section))
       m_group.createGroup(section);
@@ -99,7 +110,7 @@ void HDF5::putMatrix(const std::string& section, const std::string& tag, const M
     dataset.write(row_major.data());
 }
 
-void HDF5::putSparseMatrix(const std::string& section, const std::string& tag, const SparseMatrix &X) const
+void HDF5::putSparseMatrix(const std::string& section, const std::string& tag, const SparseMatrix &X)
 {
    if (!m_group.exist(section))
       m_group.createGroup(section);

@@ -50,11 +50,14 @@ std::string OutputFile::getOptionsFileName() const
 
 void OutputFile::saveConfig(Config& config)
 {
-   std::string configPath = getOptionsFileName();
+   // save to INIFile
    INIFile cfg_file;
    config.save(cfg_file);
-   cfg_file.write(configPath);
-   m_h5.createAttribute<std::string>(OPTIONS_TAG, configPath);
+   cfg_file.write(getOptionsFileName());
+
+   // save to HDF5
+   HDF5 h5_cfg(m_h5.createGroup(OPTIONS_TAG));
+   config.save(h5_cfg);
 }
 
 std::string OutputFile::restoreGetOptionsFileName() const

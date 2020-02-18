@@ -18,6 +18,7 @@
 #include <Utils/Error.h>
 #include <SmurffCpp/Utils/TensorUtils.h>
 #include <SmurffCpp/IO/INIFile.h>
+#include <SmurffCpp/Utils/HDF5.h>
 #include <SmurffCpp/DataMatrices/Data.h>
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>
@@ -456,6 +457,9 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
 
 template
 INIFile &Config::save(INIFile &) const;
+
+template
+HDF5 &Config::save(HDF5 &) const;
 
 bool Config::restore(std::string fname)
 {
