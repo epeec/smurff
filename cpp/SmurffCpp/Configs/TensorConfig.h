@@ -139,14 +139,19 @@ namespace smurff
    public:
       virtual std::ostream& info(std::ostream& os) const;
       virtual std::string info() const;
+
       template <class ConfigFile>
       void save(ConfigFile& writer, const std::string& section_name) const;
-      virtual bool restore(const INIFile& reader, const std::string& sec_name);
+
+      template <class ConfigFile>
+      bool restore(const ConfigFile& reader, const std::string& sec_name);
 
    public:
       template <class ConfigFile>
       static void save_tensor_config(ConfigFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg);
-      static std::shared_ptr<TensorConfig> restore_tensor_config(const INIFile& reader, const std::string& sec_name);
+
+      template <class ConfigFile>
+      static std::shared_ptr<TensorConfig> restore_tensor_config(const ConfigFile& reader, const std::string& sec_name);
 
    public:
       virtual std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const;

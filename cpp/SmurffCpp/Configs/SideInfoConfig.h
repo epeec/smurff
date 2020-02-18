@@ -70,6 +70,7 @@ namespace smurff
       template <typename ConfigFile>
       void save(ConfigFile& writer, std::size_t prior_index) const;
 
-      bool restore(const INIFile& reader, std::size_t prior_index);
+      template <typename ConfigFile>
+      bool restore(const ConfigFile& reader, std::size_t prior_index);
    };
 }

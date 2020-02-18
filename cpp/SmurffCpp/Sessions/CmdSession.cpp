@@ -12,6 +12,7 @@
 
 #include <SmurffCpp/Configs/Config.h>
 #include <Utils/Error.h>
+#include <SmurffCpp/IO/INIFile.h>
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>
 
@@ -156,10 +157,12 @@ fill_config(const po::variables_map &vm)
     //restore ini file if it was specified
     if (vm.count(INI_NAME))
     {
-        auto ini_file = vm[INI_NAME].as<std::string>();
+        const auto ini_filename = vm[INI_NAME].as<std::string>();
+        INIFile ini_file;
+        ini_file.read(ini_filename);
         bool success = config.restore(ini_file);
-        THROWERROR_ASSERT_MSG(success, "Could not load ini file '" + ini_file + "'");
-        config.setIniName(ini_file);
+        THROWERROR_ASSERT_MSG(success, "Could not load ini file '" + ini_filename + "'");
+        config.setIniName(ini_filename);
     }
 
     filler.set_tensor<&Config::setPredict>(PREDICT_NAME, false);

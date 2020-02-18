@@ -27,11 +27,18 @@ namespace smurff {
 
       bool hasDataSet(const std::string &section, const std::string& tag) const;
 
+      bool hasSection(const std::string &section) const;
+
       template <typename T>
-      T get(const std::string &section, const std::string& tag) const
+      T get(const std::string &section, const std::string& tag, const T &default_value) const
       {
          T value;
-         this->getGroup(section).getAttribute(tag).read(value);
+
+         if (this->getGroup(section).hasAttribute(tag))
+            this->getGroup(section).getAttribute(tag).read(value);
+         else 
+            value = default_value;
+
          return value;
       }
 

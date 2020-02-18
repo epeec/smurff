@@ -49,23 +49,31 @@ void SideInfoConfig::save(INIFile& cfg_file, std::size_t prior_index) const;
 template
 void SideInfoConfig::save(HDF5& cfg_file, std::size_t prior_index) const;
 
-bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index)
+template<class ConfigFile>
+bool SideInfoConfig::restore(const ConfigFile& cfg_file, std::size_t prior_index)
 {
    std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
 
-   if (!reader.hasSection(sectionName))
+   if (!cfg_file.hasSection(sectionName))
    {
        return false;
    }
 
    //restore side info properties
-   m_tol = reader.get<double>(sectionName, TOL_TAG, SideInfoConfig::TOL_DEFAULT_VALUE);
-   m_direct = reader.get<bool>(sectionName, DIRECT_TAG, false);
-   m_throw_on_cholesky_error = reader.get<bool>(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, false);
+   m_tol = cfg_file. template get<double>(sectionName, TOL_TAG, SideInfoConfig::TOL_DEFAULT_VALUE);
+   m_direct = cfg_file. template get<bool>(sectionName, DIRECT_TAG, false);
+   m_throw_on_cholesky_error = cfg_file. template get<bool>(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, false);
 
-   auto tensor_cfg = TensorConfig::restore_tensor_config(reader, sectionName);
+   auto tensor_cfg = TensorConfig::restore_tensor_config(cfg_file, sectionName);
    m_sideInfo = std::dynamic_pointer_cast<MatrixConfig>(tensor_cfg);
 
    return (bool)m_sideInfo;
 }
+
+template
+bool SideInfoConfig::restore(const INIFile& cfg_file, std::size_t prior_index);
+
+template
+bool SideInfoConfig::restore(const HDF5& cfg_file, std::size_t prior_index);
+
 } // end namespace smurff

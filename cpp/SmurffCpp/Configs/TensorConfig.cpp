@@ -325,29 +325,37 @@ void TensorConfig::save(INIFile& writer, const std::string& sectionName) const;
 template
 void TensorConfig::save(HDF5& writer, const std::string& sectionName) const;
 
-std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const INIFile& reader, const std::string& sec_name)
+template <class ConfigFile>
+std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const ConfigFile& cfg_file, const std::string& sec_name)
 {
    //restore filename
-   std::string filename = reader.get<std::string>(sec_name, FILE_TAG, NONE_VALUE);
+   std::string filename = cfg_file. template get<std::string>(sec_name, FILE_TAG, NONE_VALUE);
    if (filename == NONE_VALUE)
       return std::shared_ptr<TensorConfig>();
 
    //restore type
-   bool is_scarce = reader.get<std::string>(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
+   bool is_scarce = cfg_file. template get<std::string>(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
 
    //restore data
    auto cfg = generic_io::read_data_config(filename, is_scarce);
 
    //restore instance
-   cfg->restore(reader, sec_name);
+   cfg->restore(cfg_file, sec_name);
 
    return cfg;
 }
 
-bool TensorConfig::restore(const INIFile& reader, const std::string& sec_name)
+template
+std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const INIFile& cfg_file, const std::string& sec_name);
+
+template
+std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const HDF5& cfg_file, const std::string& sec_name);
+
+template<class ConfigFile>
+bool TensorConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name)
 {
    //restore position
-   std::string pos_str = reader.get<std::string>(sec_name, POS_TAG, NONE_VALUE);
+   std::string pos_str = cfg_file. template get<std::string>(sec_name, POS_TAG, NONE_VALUE);
    if (pos_str != NONE_VALUE)
    {
       std::vector<int> tokens;
@@ -360,14 +368,14 @@ bool TensorConfig::restore(const INIFile& reader, const std::string& sec_name)
    //restore noise model
    NoiseConfig noise;
 
-   NoiseTypes noiseType = stringToNoiseType(reader.get<std::string>(sec_name, NOISE_MODEL_TAG, noiseTypeToString(NoiseTypes::unset)));
+   NoiseTypes noiseType = stringToNoiseType(cfg_file. template get<std::string>(sec_name, NOISE_MODEL_TAG, noiseTypeToString(NoiseTypes::unset)));
    if (noiseType != NoiseTypes::unset)
    {
       noise.setNoiseType(noiseType);
-      noise.setPrecision(reader.get<double>(sec_name, PRECISION_TAG, NoiseConfig::PRECISION_DEFAULT_VALUE));
-      noise.setSnInit(reader.get<double>(sec_name, SN_INIT_TAG, NoiseConfig::ADAPTIVE_SN_INIT_DEFAULT_VALUE));
-      noise.setSnMax(reader.get<double>(sec_name, SN_MAX_TAG, NoiseConfig::ADAPTIVE_SN_MAX_DEFAULT_VALUE));
-      noise.setThreshold(reader.get<double>(sec_name, NOISE_THRESHOLD_TAG, NoiseConfig::PROBIT_DEFAULT_VALUE));
+      noise.setPrecision(cfg_file. template get<double>(sec_name, PRECISION_TAG, NoiseConfig::PRECISION_DEFAULT_VALUE));
+      noise.setSnInit(cfg_file. template get<double>(sec_name, SN_INIT_TAG, NoiseConfig::ADAPTIVE_SN_INIT_DEFAULT_VALUE));
+      noise.setSnMax(cfg_file. template get<double>(sec_name, SN_MAX_TAG, NoiseConfig::ADAPTIVE_SN_MAX_DEFAULT_VALUE));
+      noise.setThreshold(cfg_file. template get<double>(sec_name, NOISE_THRESHOLD_TAG, NoiseConfig::PROBIT_DEFAULT_VALUE));
    }
 
    //assign noise model
@@ -375,6 +383,12 @@ bool TensorConfig::restore(const INIFile& reader, const std::string& sec_name)
 
    return true;
 }
+
+template
+bool TensorConfig::restore(const INIFile& cfg_file, const std::string& sec_name);
+
+template
+bool TensorConfig::restore(const HDF5& cfg_file, const std::string& sec_name);
 
 std::shared_ptr<Data> TensorConfig::create(std::shared_ptr<IDataCreator> creator) const
 {

@@ -15,6 +15,11 @@ bool HDF5::hasDataSet(const std::string& section, const std::string& tag) const
    return (section_group.exist(tag));
 }
 
+bool HDF5::hasSection(const std::string& section) const
+{
+   return m_group.exist(section);
+}
+
 h5::Group HDF5::addGroup(const std::string& name)
 {
    if (!m_group.exist(name)) m_group.createGroup(name);

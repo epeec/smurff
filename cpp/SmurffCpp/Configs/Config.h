@@ -135,9 +135,10 @@ public:
    bool validate() const;
 
    template<class ConfigFile>
-   ConfigFile &save(ConfigFile &cfg_file) const;
+   ConfigFile &save(ConfigFile &) const;
 
-   bool restore(std::string fname);
+   template<class ConfigFile>
+   bool restore(const ConfigFile &);
 
    std::string to_string() const;
    bool from_string(std::string str);

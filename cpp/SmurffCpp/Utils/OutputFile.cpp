@@ -71,9 +71,13 @@ void OutputFile::restoreConfig(Config& config)
 {
    //get options filename
    std::string optionsFileName = restoreGetOptionsFileName();
+   THROWERROR_FILE_NOT_EXIST(optionsFileName);
 
    //restore config
-   bool success = config.restore(optionsFileName);
+   INIFile cfg_file;
+   cfg_file.read(optionsFileName);
+
+   bool success = config.restore(cfg_file);
    THROWERROR_ASSERT_MSG(success, "Could not load ini file '" + optionsFileName + "'");
 }
 
