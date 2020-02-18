@@ -79,7 +79,7 @@ public:
    // general
 
 public:
-   void save(std::shared_ptr<const Step> sf) const;
+   void save(std::shared_ptr<Step> sf) const;
    void restore(std::shared_ptr<const Step> sf);
 
 private:

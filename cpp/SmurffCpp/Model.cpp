@@ -179,7 +179,7 @@ void Model::updateAggr(int m)
    m_num_aggr.at(m)++;
 }
 
-void Model::save(std::shared_ptr<const Step> sf) const
+void Model::save(std::shared_ptr<Step> sf) const
 {
    sf->putModel(m_factors);
    for (std::uint64_t m = 0; m < nmodes(); ++m)

@@ -50,17 +50,17 @@ namespace smurff {
       std::shared_ptr<Matrix> getPredAvg() const;
       std::shared_ptr<Matrix> getPredVar() const;
 
-      void putModel(const std::vector<std::shared_ptr<Matrix>> &) const;
-      void putPostMuLambda(std::uint64_t index, const Matrix &, const Matrix &) const;
+      void putModel(const std::vector<std::shared_ptr<Matrix>> &);
+      void putPostMuLambda(std::uint64_t index, const Matrix &, const Matrix &);
 
-      void putMu(std::uint64_t index, const Matrix &) const;
-      void putLinkMatrix(std::uint64_t mode, const Matrix &) const;
+      void putMu(std::uint64_t index, const Matrix &);
+      void putLinkMatrix(std::uint64_t mode, const Matrix &);
 
-      void putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample, int sample_iter, int burnin_iter) const;
-      void putPredAvgVar(const SparseMatrix &, const SparseMatrix &, const SparseMatrix &) const;
+      void putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample, int sample_iter, int burnin_iter);
+      void putPredAvgVar(const SparseMatrix &, const SparseMatrix &, const SparseMatrix &);
 
    public:
-      void save(std::shared_ptr<const Model> model, std::shared_ptr<const Result> pred, const std::vector<std::shared_ptr<ILatentPrior> >& priors) const;
+      void save(std::shared_ptr<const Model> model, std::shared_ptr<const Result> pred, const std::vector<std::shared_ptr<ILatentPrior> >& priors);
 
    public:
       //-- used in PredictSession
@@ -69,7 +69,7 @@ namespace smurff {
       void restore(std::shared_ptr<Model> model, std::shared_ptr<Result> pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const;
 
    public:
-      void remove(bool model, bool pred, bool priors) const;
+      void remove(bool model, bool pred, bool priors);
 
    public:
       unsigned getNModes() const;

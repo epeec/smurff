@@ -113,7 +113,7 @@ public:
 
 public:
    // output to file
-   void save(std::shared_ptr<const Step> sf) const;
+   void save(std::shared_ptr<Step> sf) const;
    bool m_save_model = true;
    bool m_save_aggr = false;
    void restore(std::shared_ptr<const Step> sf, int skip_mode = -1);

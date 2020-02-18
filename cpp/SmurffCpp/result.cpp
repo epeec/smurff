@@ -88,7 +88,7 @@ std::shared_ptr<const SparseMatrix> Result::toMatrix(const Accessor &acc) const
    return ret;
 }
 
-void Result::save(std::shared_ptr<const Step> sf) const
+void Result::save(std::shared_ptr<Step> sf) const
 {
    if (isEmpty())
       return;

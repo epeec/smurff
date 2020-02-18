@@ -93,7 +93,7 @@ std::string Step::getName() const
    return std::string(isCheckpoint() ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(getIsample());
 }
 
-void Step::putModel(const std::vector<std::shared_ptr<Matrix>> &F) const
+void Step::putModel(const std::vector<std::shared_ptr<Matrix>> &F)
 {
    m_group.createAttribute(NUM_MODES_TAG, F.size());
    for (std::uint64_t m = 0; m < F.size(); ++m)
@@ -123,17 +123,17 @@ std::shared_ptr<Vector> Step::getMu(std::uint64_t index) const
    return std::shared_ptr<Vector>();
 }
 
-void Step::putLinkMatrix(std::uint64_t index, const Matrix &M) const
+void Step::putLinkMatrix(std::uint64_t index, const Matrix &M)
 {
    putMatrix(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(index), M);
 }
 
-void Step::putMu(std::uint64_t index, const Matrix &M) const
+void Step::putMu(std::uint64_t index, const Matrix &M) 
 {
    putMatrix(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), M);
 }
 
-void Step::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda) const
+void Step::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda)
 {
    putMatrix(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
    putMatrix(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
@@ -145,7 +145,7 @@ bool Step::hasPred() const
 }
 
 void Step::putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample,
-                            int sample_iter, int burnin_iter) const
+                            int sample_iter, int burnin_iter)
 {
    auto pred_group = m_group.getGroup(PRED_SEC_TAG);
    pred_group.createAttribute<double>(RMSE_AVG_TAG, rmse_avg);
@@ -169,7 +169,7 @@ void Step::getPredState(
 
 }
 
-void Step::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const SparseMatrix &one_sample) const
+void Step::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const SparseMatrix &one_sample)
 {
    putSparseMatrix(PRED_SEC_TAG, PRED_AVG_TAG, avg);
    putSparseMatrix(PRED_SEC_TAG, PRED_VAR_TAG, var);
@@ -193,7 +193,7 @@ void Step::save(
          std::shared_ptr<const Model> model,
          std::shared_ptr<const Result> pred,
    const std::vector<std::shared_ptr<ILatentPrior> >& priors
-   ) const
+   )
 {
    model->save(shared_from_this());
    pred->save(shared_from_this());

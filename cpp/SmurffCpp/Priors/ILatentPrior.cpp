@@ -125,7 +125,7 @@ void ILatentPrior::sample_latents()
    UUsum = UUcol.combine();
 }
 
-bool ILatentPrior::save(std::shared_ptr<const Step> sf) const
+bool ILatentPrior::save(std::shared_ptr<Step> sf) const
 {
     return false;
 }

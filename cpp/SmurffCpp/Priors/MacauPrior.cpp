@@ -169,7 +169,7 @@ void MacauPrior::addSideInfo(const std::shared_ptr<ISideInfo>& side, double bp, 
     beta_precision_nu0 = 1e-3;
 }
 
-bool MacauPrior::save(std::shared_ptr<const Step> sf) const
+bool MacauPrior::save(std::shared_ptr<Step> sf) const
 {
     NormalPrior::save(sf);
     sf->putLinkMatrix(getMode(), beta());
