@@ -2,10 +2,12 @@
 #include <fstream>
 #include <memory>
 
+#include <SmurffCpp/IO/INIFile.h>
+#include <Utils/StringUtils.h>
+
 #include "SideInfoConfig.h"
 #include "TensorConfig.h"
 
-#include <SmurffCpp/IO/INIFile.h>
 
 #define SIDE_INFO_PREFIX "side_info"
 #define TOL_TAG "tol"

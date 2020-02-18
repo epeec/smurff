@@ -96,5 +96,9 @@ std::string smurff::addDirName(const std::string& str,  const std::string& dirna
    return dirname + str;
 }
 
+std::string smurff::addIndex(const std::string& str, int idx)
+{
+   return str + "_" + std::to_string(idx);
+}
 
 
