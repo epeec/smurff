@@ -282,8 +282,6 @@ void TensorConfig::save_tensor_config(INIFile& writer, const std::string& sec_na
 
 void TensorConfig::save(INIFile& writer, const std::string& sectionName) const
 {
-   //write section name
-
    //write tensor config position
    if (this->hasPos())
    {
