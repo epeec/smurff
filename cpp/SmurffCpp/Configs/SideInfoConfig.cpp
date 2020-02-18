@@ -7,12 +7,10 @@
 
 #include <SmurffCpp/IO/INIFile.h>
 
-#define MACAU_PRIOR_CONFIG_PREFIX "macau_prior_config"
-
+#define SIDE_INFO_PREFIX "side_info"
 #define TOL_TAG "tol"
 #define DIRECT_TAG "direct"
 #define THROW_ON_CHOLESKY_ERROR_TAG "throw_on_cholesky_error"
-#define SIDE_INFO_PREFIX "side_info"
 #define NUMBER_TAG "nr"
 
 namespace smurff {
@@ -29,7 +27,7 @@ SideInfoConfig::SideInfoConfig()
 
 void SideInfoConfig::save(INIFile& writer, std::size_t prior_index) const
 {
-   std::string sectionName = INIFile::add_index(MACAU_PRIOR_CONFIG_PREFIX, prior_index);
+   std::string sectionName = INIFile::add_index(SIDE_INFO_PREFIX, prior_index);
 
    //macau data
    writer.put(sectionName, TOL_TAG, m_tol);
@@ -42,7 +40,7 @@ void SideInfoConfig::save(INIFile& writer, std::size_t prior_index) const
 
 bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index)
 {
-   std::string sectionName = INIFile::add_index(MACAU_PRIOR_CONFIG_PREFIX, prior_index);
+   std::string sectionName = INIFile::add_index(SIDE_INFO_PREFIX, prior_index);
 
    if (!reader.hasSection(sectionName))
    {
@@ -57,6 +55,6 @@ bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index)
    auto tensor_cfg = TensorConfig::restore_tensor_config(reader, sectionName);
    m_sideInfo = std::dynamic_pointer_cast<MatrixConfig>(tensor_cfg);
 
-   return true;
+   return (bool)m_sideInfo;
 }
 } // end namespace smurff
