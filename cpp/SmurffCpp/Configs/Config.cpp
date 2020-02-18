@@ -478,7 +478,7 @@ bool Config::restore(std::string fname)
    std::vector<std::string> pNames;
    for(std::size_t pIndex = 0; pIndex < num_priors; pIndex++)
    {
-      pNames.push_back(global_section.get<std::string>(INIFile::add_index(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
+      pNames.push_back(global_section.get<std::string>(addIndex(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
    }
    setPriorTypes(pNames);
 
@@ -494,7 +494,7 @@ bool Config::restore(std::string fname)
    std::size_t num_aux_data = global_section.get<int>(NUM_AUX_DATA_TAG, 0);
    for(std::size_t pIndex = 0; pIndex < num_aux_data; pIndex++)
    {
-      m_auxData.push_back(TensorConfig::restore_tensor_config(reader, INIFile::add_index(AUX_DATA_PREFIX, pIndex)));
+      m_auxData.push_back(TensorConfig::restore_tensor_config(reader, addIndex(AUX_DATA_PREFIX, pIndex)));
    }
 
    // restore posterior propagated data
@@ -504,7 +504,7 @@ bool Config::restore(std::string fname)
        auto lambda = std::shared_ptr<MatrixConfig>();
 
        {
-           std::string filename = reader.get<std::string>(INIFile::add_index(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_TAG);
+           std::string filename = reader.get<std::string>(addIndex(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_TAG);
            if (filename != NONE_TAG)
            {
                mu = matrix_io::read_matrix(filename, false);
@@ -513,7 +513,7 @@ bool Config::restore(std::string fname)
        }
 
        {
-           std::string filename = reader.get<std::string>(INIFile::add_index(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_TAG);
+           std::string filename = reader.get<std::string>(addIndex(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_TAG);
            if (filename != NONE_TAG)
            {
                lambda = matrix_io::read_matrix(filename, false);

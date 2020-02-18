@@ -20,8 +20,7 @@ private:
    pt::ptree m_tree;
    pt::ptree makeUnique(const pt::ptree &pt);
 
-public:
-   static std::string add_index(std::string name, int index);
+
 
 public:
    void read(const std::string& filename);
@@ -33,11 +32,7 @@ public:
    {
       return m_tree.get<T>(section + "." + name, default_value);
    }
-   template<typename T>
-   T get(const std::string& section, int idx,  const std::string& name, const T& default_value) const
-   {
-      return get(add_index(section, idx), name, default_value);
-   }
+
    
 public:
     // Returns true is section with name exists
@@ -50,10 +45,5 @@ public:
    void put(const std::string& section, const std::string& tag, const T& value)
    {
       m_tree.put(section + "." + tag, value);
-   }
-   template<typename T>
-   void put(const std::string& section, int index, const std::string& tag, const T& value)
-   {
-      put(add_index(section, index), tag, value);
    }
 };

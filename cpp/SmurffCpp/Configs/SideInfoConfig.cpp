@@ -27,7 +27,7 @@ SideInfoConfig::SideInfoConfig()
 
 void SideInfoConfig::save(INIFile& writer, std::size_t prior_index) const
 {
-   std::string sectionName = INIFile::add_index(SIDE_INFO_PREFIX, prior_index);
+   std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
 
    //macau data
    writer.put(sectionName, TOL_TAG, m_tol);
@@ -40,7 +40,7 @@ void SideInfoConfig::save(INIFile& writer, std::size_t prior_index) const
 
 bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index)
 {
-   std::string sectionName = INIFile::add_index(SIDE_INFO_PREFIX, prior_index);
+   std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
 
    if (!reader.hasSection(sectionName))
    {

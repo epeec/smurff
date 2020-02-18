@@ -8,12 +8,6 @@
 
 #include <boost/property_tree/ini_parser.hpp>
 
-std::string INIFile::add_index(const std::string name, int idx = -1)
-{
-    if (idx >= 0) return name + "_" + std::to_string(idx);
-    return name;
-}
-
 pt::ptree INIFile::makeUnique(const pt::ptree &pt)
 {
    if (pt.size() <= 1)

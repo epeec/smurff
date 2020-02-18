@@ -46,4 +46,5 @@ namespace smurff
 
    std::string addDirName(const std::string& str,  const std::string& prefix);
 
+   std::string addIndex(const std::string& str, int idx);
 }

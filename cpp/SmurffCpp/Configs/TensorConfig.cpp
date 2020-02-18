@@ -266,7 +266,7 @@ std::string TensorConfig::info() const
 
 void TensorConfig::save_tensor_config(INIFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg)
 {
-   std::string sectionName = INIFile::add_index(sec_name, sec_idx);
+   std::string sectionName = addIndex(sec_name, sec_idx);
    
    if (cfg)
    {
