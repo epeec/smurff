@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #include <SmurffCpp/Utils/PVec.hpp>
-#include <SmurffCpp/Configs/NoiseConfig.h>
+#include <SmurffCpp/Configs/DataConfig.h>
 
 namespace smurff
 {
@@ -16,30 +16,16 @@ namespace smurff
    class IDataCreator;
    class ConfigFile;
 
-   class TensorConfig : public std::enable_shared_from_this<TensorConfig>
+   class TensorConfig : public DataConfig,  public std::enable_shared_from_this<TensorConfig>
    {
    public:
       typedef std::vector<std::vector<std::uint32_t>> columns_type;
 
-   private:
-      NoiseConfig m_noiseConfig;
-
    protected:
-      bool m_isDense;
-      bool m_isBinary;
-      bool m_isScarce;
-
-      std::uint64_t m_nmodes;
-      std::vector<std::uint64_t> m_dims;
-      std::uint64_t m_nnz;
-
       columns_type         m_columns;
       std::vector<double>  m_values;
 
    private:
-      PVec<>      m_pos;
-      std::string m_filename;
-
       std::vector<const std::uint32_t *> vec_to_ptr(const std::vector<std::vector<std::uint32_t>> &vec)
       {
          std::vector<const std::uint32_t *> ret;
@@ -94,22 +80,8 @@ namespace smurff
       virtual ~TensorConfig();
 
    public:
-      const NoiseConfig& getNoiseConfig() const;
-      void setNoiseConfig(const NoiseConfig& value);
-
-      bool isDense() const;
-      bool isBinary() const;
-      bool isScarce() const;
-
-      std::uint64_t getNModes() const;
-      std::uint64_t getNNZ() const;
-
       std::pair<PVec<>, double> get(std::uint64_t) const;
       void set(std::uint64_t, PVec<>, double);
-
-      const std::vector<std::uint64_t>& getDims() const;
-      std::uint64_t getNRow() const { return getDims().at(0); }
-      std::uint64_t getNCol() const { return getDims().at(1); }
 
       const std::vector<std::uint32_t>& getRows() const { return getColumn(0); }
       const std::vector<std::uint32_t>& getCols() const { return getColumn(1); }
@@ -127,18 +99,7 @@ namespace smurff
          return m_columns[i];
       }
 
-      void setFilename(const std::string& f);
-      const std::string &getFilename() const;
-
-      void setPos(const PVec<>& p);
-      void setPos(const std::vector<int> &p) { setPos(PVec<>(p)); }
-      bool hasPos() const;
-      const PVec<> &getPos() const;
-
    public:
-      virtual std::ostream& info(std::ostream& os) const;
-      virtual std::string info() const;
-
       void save(ConfigFile& writer, const std::string& section_name) const;
       bool restore(const ConfigFile& reader, const std::string& sec_name);
 
@@ -147,10 +108,10 @@ namespace smurff
       static std::shared_ptr<TensorConfig> restore_tensor_config(const ConfigFile& reader, const std::string& sec_name);
 
    public:
-      virtual std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const;
+      virtual std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const override;
 
    public:
-      virtual void write(std::shared_ptr<IDataWriter> writer) const;
+      virtual void write(std::shared_ptr<IDataWriter> writer) const override;
 
    public:
       void check() const;

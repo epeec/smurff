@@ -35,12 +35,14 @@ FILE (GLOB IO_FILES
 source_group ("IO" FILES ${IO_FILES})
 
 FILE (GLOB CONFIG_FILES "Configs/Config.h"
+                        "Configs/DataConfig.h"
                         "Configs/MatrixConfig.h"
                         "Configs/TensorConfig.h"
                         "Configs/NoiseConfig.h"
                         "Configs/SideInfoConfig.h"
 
                         "Configs/Config.cpp"
+                        "Configs/DataConfig.cpp"
                         "Configs/MatrixConfig.cpp"
                         "Configs/TensorConfig.cpp"
                         "Configs/NoiseConfig.cpp"
