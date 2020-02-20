@@ -16,6 +16,19 @@ namespace smurff {
 #define EXTENSION_CSV ".csv" //dense tensor (txt file)
 #define EXTENSION_DDT ".ddt" //dense double tensor (binary file)
 
+bool tensor_io::isTensorExtension(const std::string& fname);
+{
+   const std::set<std::string> extensions = {
+       EXTENSION_SDT,
+       EXTENSION_SBT,
+       EXTENSION_TNS,
+       EXTENSION_CSV,
+       EXTENSION_DDT,
+   };
+
+   return extensions.find(fileExtension(fname)) != extensions.end();
+}
+
 tensor_io::TensorType tensor_io::ExtensionToTensorType(const std::string& fname)
 {
    std::size_t dotIndex = fname.find_last_of(".");

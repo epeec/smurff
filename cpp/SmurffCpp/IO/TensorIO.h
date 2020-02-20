@@ -19,6 +19,7 @@ namespace smurff { namespace tensor_io
       ddt
    };
 
+   bool isTensorExtension(const std::string& fname);
    TensorType ExtensionToTensorType(const std::string& fname);
 
    std::shared_ptr<TensorConfig> read_tensor(const std::string& filename, bool isScarce);

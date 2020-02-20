@@ -37,6 +37,7 @@ namespace smurff { namespace matrix_io
       ddm
    };
 
+   bool isMatrixExtension(const std::string& fname);
    MatrixType ExtensionToMatrixType(const std::string& fname);
 
    std::shared_ptr<MatrixConfig> read_matrix(const std::string& filename, bool isScarce);

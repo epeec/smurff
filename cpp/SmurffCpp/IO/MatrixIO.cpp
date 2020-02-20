@@ -33,6 +33,20 @@ namespace smurff {
 #define MM_FLD_PATTERN  "PATTERN"
 #define MM_SYM_GENERAL  "GENERAL"
 
+bool matrix_io::isMatrixExtension(const std::string& fname);
+{
+   const std::set<std::string> extensions = {
+       EXTENSION_SDM,
+       EXTENSION_SBM,
+       EXTENSION_MTX,
+       EXTENSION_MM,
+       EXTENSION_CSV,
+       EXTENSION_DDM,
+   };
+
+   return extensions.find(fileExtension(fname)) != extensions.end();
+}
+
 matrix_io::MatrixType matrix_io::ExtensionToMatrixType(const std::string& fname)
 {
    std::size_t dotIndex = fname.find_last_of(".");
