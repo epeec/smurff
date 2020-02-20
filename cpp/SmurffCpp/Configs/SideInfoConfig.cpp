@@ -2,9 +2,7 @@
 #include <fstream>
 #include <memory>
 
-#include <SmurffCpp/IO/INIFile.h>
-#include <SmurffCpp/Utils/HDF5.h>
-
+#include <SmurffCpp/Utils/ConfigFile.h>
 #include <Utils/StringUtils.h>
 
 #include "SideInfoConfig.h"
@@ -29,7 +27,6 @@ SideInfoConfig::SideInfoConfig()
    m_throw_on_cholesky_error = false;
 }
 
-template<class ConfigFile>
 void SideInfoConfig::save(ConfigFile& cfg_file, std::size_t prior_index) const
 {
    std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
@@ -43,13 +40,6 @@ void SideInfoConfig::save(ConfigFile& cfg_file, std::size_t prior_index) const
    TensorConfig::save_tensor_config(cfg_file, sectionName, -1, m_sideInfo);
 }
 
-template
-void SideInfoConfig::save(INIFile& cfg_file, std::size_t prior_index) const;
-
-template
-void SideInfoConfig::save(HDF5& cfg_file, std::size_t prior_index) const;
-
-template<class ConfigFile>
 bool SideInfoConfig::restore(const ConfigFile& cfg_file, std::size_t prior_index)
 {
    std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
@@ -69,11 +59,5 @@ bool SideInfoConfig::restore(const ConfigFile& cfg_file, std::size_t prior_index
 
    return (bool)m_sideInfo;
 }
-
-template
-bool SideInfoConfig::restore(const INIFile& cfg_file, std::size_t prior_index);
-
-template
-bool SideInfoConfig::restore(const HDF5& cfg_file, std::size_t prior_index);
 
 } // end namespace smurff

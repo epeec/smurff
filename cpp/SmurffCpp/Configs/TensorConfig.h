@@ -9,13 +9,12 @@
 #include <SmurffCpp/Utils/PVec.hpp>
 #include <SmurffCpp/Configs/NoiseConfig.h>
 
-class INIFile;
-
 namespace smurff
 {
    class Data;
    class IDataWriter;
    class IDataCreator;
+   class ConfigFile;
 
    class TensorConfig : public std::enable_shared_from_this<TensorConfig>
    {
@@ -140,17 +139,11 @@ namespace smurff
       virtual std::ostream& info(std::ostream& os) const;
       virtual std::string info() const;
 
-      template <class ConfigFile>
       void save(ConfigFile& writer, const std::string& section_name) const;
-
-      template <class ConfigFile>
       bool restore(const ConfigFile& reader, const std::string& sec_name);
 
    public:
-      template <class ConfigFile>
       static void save_tensor_config(ConfigFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg);
-
-      template <class ConfigFile>
       static std::shared_ptr<TensorConfig> restore_tensor_config(const ConfigFile& reader, const std::string& sec_name);
 
    public:

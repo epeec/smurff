@@ -6,10 +6,10 @@
 
 #include "MatrixConfig.h"
 
-class INIFile;
-
 namespace smurff
 {
+   class ConfigFile;
+
    class SideInfoConfig
    {
    public:
@@ -67,10 +67,7 @@ namespace smurff
       }
 
    public:
-      template <typename ConfigFile>
       void save(ConfigFile& writer, std::size_t prior_index) const;
-
-      template <typename ConfigFile>
       bool restore(const ConfigFile& reader, std::size_t prior_index);
    };
 }

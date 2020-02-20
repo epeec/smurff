@@ -266,7 +266,6 @@ std::string TensorConfig::info() const
     return ss.str();
 }
 
-template<class ConfigFile>
 void TensorConfig::save_tensor_config(ConfigFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg)
 {
    std::string sectionName = addIndex(sec_name, sec_idx);
@@ -283,13 +282,6 @@ void TensorConfig::save_tensor_config(ConfigFile& writer, const std::string& sec
    }
 }
 
-template
-void TensorConfig::save_tensor_config(INIFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg);
-
-template
-void TensorConfig::save_tensor_config(HDF5& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg);
-
-template<class ConfigFile>
 void TensorConfig::save(ConfigFile& writer, const std::string& sectionName) const
 {
    //write tensor config position
@@ -320,13 +312,6 @@ void TensorConfig::save(ConfigFile& writer, const std::string& sectionName) cons
 
 }
 
-template
-void TensorConfig::save(INIFile& writer, const std::string& sectionName) const;
-
-template
-void TensorConfig::save(HDF5& writer, const std::string& sectionName) const;
-
-template <class ConfigFile>
 std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const ConfigFile& cfg_file, const std::string& sec_name)
 {
    //restore filename
@@ -346,13 +331,6 @@ std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const ConfigFi
    return cfg;
 }
 
-template
-std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const INIFile& cfg_file, const std::string& sec_name);
-
-template
-std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const HDF5& cfg_file, const std::string& sec_name);
-
-template<class ConfigFile>
 bool TensorConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name)
 {
    //restore position
@@ -384,12 +362,6 @@ bool TensorConfig::restore(const ConfigFile& cfg_file, const std::string& sec_na
 
    return true;
 }
-
-template
-bool TensorConfig::restore(const INIFile& cfg_file, const std::string& sec_name);
-
-template
-bool TensorConfig::restore(const HDF5& cfg_file, const std::string& sec_name);
 
 std::shared_ptr<Data> TensorConfig::create(std::shared_ptr<IDataCreator> creator) const
 {

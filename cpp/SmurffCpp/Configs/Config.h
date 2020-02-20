@@ -10,9 +10,9 @@
 #include "MatrixConfig.h"
 #include "SideInfoConfig.h"
 
-
-
 namespace smurff {
+
+class ConfigFile;
 
 enum class PriorTypes
 {
@@ -126,10 +126,7 @@ private:
 public:
    bool validate() const;
 
-   template<class ConfigFile>
    ConfigFile &save(ConfigFile &) const;
-
-   template<class ConfigFile>
    bool restore(const ConfigFile &);
 
    std::string to_string() const;

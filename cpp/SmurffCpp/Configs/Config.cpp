@@ -17,8 +17,7 @@
 
 #include <Utils/Error.h>
 #include <SmurffCpp/Utils/TensorUtils.h>
-#include <SmurffCpp/IO/INIFile.h>
-#include <SmurffCpp/Utils/HDF5.h>
+#include <SmurffCpp/Utils/ConfigFile.h>
 #include <SmurffCpp/DataMatrices/Data.h>
 #include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/IO/MatrixIO.h>
@@ -398,7 +397,6 @@ bool Config::validate() const
    return true;
 }
 
-template<class ConfigFile>
 ConfigFile &Config::save(ConfigFile &cfg_file) const
 {
    //count data
@@ -466,13 +464,6 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
    return cfg_file;
 }
 
-template
-INIFile &Config::save(INIFile &) const;
-
-template
-HDF5 &Config::save(HDF5 &) const;
-
-template <class ConfigFile>
 bool Config::restore(const ConfigFile &cfg_file)
 {
 
@@ -592,12 +583,5 @@ std::ostream& Config::info(std::ostream &os, std::string indent) const
 
    return os;
 }
-
-template
-bool Config::restore(const INIFile &cfg_file);
-
-template
-bool Config::restore(const HDF5 &cfg_file);
-
 
 } // end namespace smurff
