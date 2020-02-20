@@ -60,25 +60,11 @@ void OutputFile::saveConfig(Config& config)
    config.save(h5_cfg);
 }
 
-std::string OutputFile::restoreGetOptionsFileName() const
-{
-   std::string options_filename;
-   m_h5.getAttribute(OPTIONS_TAG).read(options_filename);
-   return options_filename;
-}
-
 void OutputFile::restoreConfig(Config& config)
 {
    //get options filename
-   std::string optionsFileName = restoreGetOptionsFileName();
-   THROWERROR_FILE_NOT_EXIST(optionsFileName);
-
-   //restore config
-   INIFile cfg_file;
-   cfg_file.read(optionsFileName);
-
-   bool success = config.restore(cfg_file);
-   THROWERROR_ASSERT_MSG(success, "Could not load ini file '" + optionsFileName + "'");
+   HDF5 h5_cfg(m_h5.getGroup(OPTIONS_TAG));
+   config.restore(h5_cfg);
 }
 
 std::shared_ptr<Step> OutputFile::createSampleStep(std::int32_t isample)

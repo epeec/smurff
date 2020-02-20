@@ -35,9 +35,6 @@ public:
    void saveConfig(Config& config);
    void restoreConfig(Config& config);
 
-private:
-   std::string restoreGetOptionsFileName() const;
-
 public:
    std::shared_ptr<Step> createSampleStep(std::int32_t isample);
    std::shared_ptr<Step> createCheckpointStep(std::int32_t isample);
