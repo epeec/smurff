@@ -9,7 +9,7 @@ namespace smurff {
 
 std::shared_ptr<ILatentPrior> MPIPriorFactory::create_macau_prior(std::shared_ptr<Session> session, PriorTypes prior_type, 
                                                                   const std::shared_ptr<ISideInfo>& side_info,
-                                                                  const std::shared_ptr<SideInfoConfig>& config_item)
+                                                                  const SideInfoConfig& config_item)
 {
    return PriorFactory::create_macau_prior<MPIMacauPrior>(session, side_info, config_item);
 }

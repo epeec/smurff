@@ -83,7 +83,7 @@ private:
    std::vector<std::shared_ptr<TensorConfig> > m_auxData; //set of aux data matrices for normal and spikeandslab priors
 
    //-- sideinfo per mode
-   std::map<int, std::shared_ptr<SideInfoConfig> > m_sideInfoConfigs;
+   std::map<int, SideInfoConfig> m_sideInfoConfigs;
 
    // -- priors
    std::vector<PriorTypes> m_prior_types;
@@ -206,14 +206,14 @@ public:
       return *this;
    }
 
-   const std::map<int, std::shared_ptr<SideInfoConfig> >& getSideInfoConfigs() const
+   const std::map<int, SideInfoConfig >& getSideInfoConfigs() const
    {
       return m_sideInfoConfigs;
    }
 
-   const std::shared_ptr<SideInfoConfig>& getSideInfoConfig(int mode) const;
+   const SideInfoConfig& getSideInfoConfig(int mode) const;
 
-   Config& addSideInfoConfig(int mode, std::shared_ptr<SideInfoConfig> c);
+   Config& addSideInfoConfig(int mode, SideInfoConfig c);
 
    bool hasSideInfo(int mode) const
    {

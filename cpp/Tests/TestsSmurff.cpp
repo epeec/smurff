@@ -68,11 +68,11 @@ std::map<int, ExpectedResult> expectedResults = {
 #include "TestsSmurff_ExpectedResults.h"
 };
 
-std::shared_ptr<SideInfoConfig> makeSideInfoConfig(const MatrixConfig &mcfg, bool direct, double tol) {
-  std::shared_ptr<SideInfoConfig> picfg = std::make_shared<SideInfoConfig>();
-  picfg->setSideInfo(std::make_shared<MatrixConfig>(mcfg));
-  picfg->setDirect(direct);
-  picfg->setTol(tol);
+SideInfoConfig makeSideInfoConfig(const MatrixConfig &mcfg, bool direct, double tol) {
+  SideInfoConfig picfg;
+  picfg.setSideInfo(std::make_shared<MatrixConfig>(mcfg));
+  picfg.setDirect(direct);
+  picfg.setTol(tol);
 
   return picfg;
 }

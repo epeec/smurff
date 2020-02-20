@@ -21,7 +21,7 @@ namespace smurff {
 
 std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(std::shared_ptr<Session> session, PriorTypes prior_type,
    const std::shared_ptr<ISideInfo>& side_info,
-   const std::shared_ptr<SideInfoConfig>& config_item)
+   const SideInfoConfig& config_item)
 {
    if(prior_type == PriorTypes::macau || prior_type == PriorTypes::default_prior)
    {

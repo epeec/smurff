@@ -204,14 +204,14 @@ std::string Config::getSavePrefix() const
     return m_save_prefix;
 }
 
-const std::shared_ptr<SideInfoConfig>& Config::getSideInfoConfig(int mode) const
+const SideInfoConfig& Config::getSideInfoConfig(int mode) const
 {
   auto iter = m_sideInfoConfigs.find(mode);
   THROWERROR_ASSERT(iter != m_sideInfoConfigs.end());
   return iter->second;
 }
 
-Config& Config::addSideInfoConfig(int mode, std::shared_ptr<SideInfoConfig> c)
+Config& Config::addSideInfoConfig(int mode, SideInfoConfig c)
 {
     m_sideInfoConfigs[mode] = c;
 
@@ -277,7 +277,7 @@ bool Config::validate() const
    {
       int mode = p.first;
       auto &configItem = p.second;
-      const auto &sideInfo = configItem->getSideInfo();
+      const auto &sideInfo = configItem.getSideInfo();
       THROWERROR_ASSERT(sideInfo);
 
       if (sideInfo->getDims()[0] != m_train->getDims()[mode])
@@ -443,7 +443,7 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
    {
        int mode = p.first;
        auto &configItem = p.second;
-       configItem->save(cfg_file, mode);
+       configItem.save(cfg_file, mode);
    }
 
    //write aux data section
@@ -485,8 +485,8 @@ bool Config::restore(const ConfigFile &cfg_file)
    //restore macau prior configs section
    for (std::size_t mPriorIndex = 0; mPriorIndex < num_priors; mPriorIndex++)
    {
-      auto sideInfoConfig = std::make_shared<SideInfoConfig>();
-      if (sideInfoConfig->restore(cfg_file, mPriorIndex))
+      SideInfoConfig sideInfoConfig;
+      if (sideInfoConfig.restore(cfg_file, mPriorIndex))
          m_sideInfoConfigs[mPriorIndex] = sideInfoConfig;
    }
 

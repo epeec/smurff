@@ -99,7 +99,7 @@ void TensorConfig::check() const
 
    if (isDense())
    {
-      THROWERROR_ASSERT(!isBinary());
+      THROWERROR_ASSERT(!isScarce());
       THROWERROR_ASSERT(m_nnz == std::accumulate(m_dims.begin(), m_dims.end(), 1ULL, std::multiplies<std::uint64_t>()));
    }
 }
@@ -144,8 +144,6 @@ std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const ConfigFi
 
    return cfg;
 }
-
-
 
 std::shared_ptr<Data> TensorConfig::create(std::shared_ptr<IDataCreator> creator) const
 {

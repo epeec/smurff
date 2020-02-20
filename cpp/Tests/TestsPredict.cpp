@@ -89,7 +89,7 @@ TEST_CASE("PredictSession/BPMF")
 //=================================================================
 
 TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
-  std::shared_ptr<SideInfoConfig> rowSideInfoDenseMatrixConfig = makeSideInfoConfig(rowSideDenseMatrix);
+  SideInfoConfig rowSideInfoDenseMatrixConfig = makeSideInfoConfig(rowSideDenseMatrix);
 
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal})
                       .addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
@@ -100,7 +100,7 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
 
   PredictSession predict_session(session->getOutputFile());
 
-  auto sideInfoMatrix = matrix_utils::dense_to_eigen(*rowSideInfoDenseMatrixConfig->getSideInfo());
+  auto sideInfoMatrix = matrix_utils::dense_to_eigen(*rowSideInfoDenseMatrixConfig.getSideInfo());
   auto trainMatrix = smurff::matrix_utils::dense_to_eigen(trainDenseMatrix);
 
 #if 0
@@ -157,7 +157,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
         MatrixConfig(4, 4, testMatrixConfigRows, testMatrixConfigCols, testMatrixConfigVals, noise_cfg, true);
   }
 
-  std::shared_ptr<SideInfoConfig> rowSideInfoConfig;
+  SideInfoConfig rowSideInfoConfig;
   {
     NoiseConfig nc(NoiseTypes::sampled);
     nc.setPrecision(10.0);
@@ -170,10 +170,10 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
         std::make_shared<MatrixConfig>(4, 1, rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols,
                                        rowSideInfoSparseMatrixConfigVals, nc, true);
 
-    rowSideInfoConfig = std::make_shared<SideInfoConfig>();
-    rowSideInfoConfig->setSideInfo(mcfg);
-    rowSideInfoConfig->setDirect(true);
+    rowSideInfoConfig.setSideInfo(mcfg);
+    rowSideInfoConfig.setDirect(true);
   }
+
   Config config = genConfig(trainMatrixConfig, testMatrixConfig, {PriorTypes::macau, PriorTypes::normal})
                       .addSideInfoConfig(0, rowSideInfoConfig);
   prepareResultDir(config, Catch::getResultCapture().getCurrentTestName());
@@ -185,7 +185,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   auto in_matrix_predictions = predict_session_in.predict(config.getTest())->m_predictions;
 
   PredictSession predict_session_out(session->getOutputFile());
-  auto sideInfoMatrix = matrix_utils::sparse_to_eigen(*rowSideInfoConfig->getSideInfo());
+  auto sideInfoMatrix = matrix_utils::sparse_to_eigen(*rowSideInfoConfig.getSideInfo());
   int d = config.getTrain()->getDims()[0];
   for (int r = 0; r < d; r++) {
     auto feat = sideInfoMatrix.row(r).transpose();

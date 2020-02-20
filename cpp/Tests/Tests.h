@@ -35,7 +35,7 @@ extern smurff::MatrixConfig rowSideDenseMatrix3d;
 
 void REQUIRE_RESULT_ITEMS(const std::vector<smurff::ResultItem> &actualResultItems,
                           const std::vector<smurff::ResultItem> &expectedResultItems);
-std::shared_ptr<SideInfoConfig> makeSideInfoConfig(const MatrixConfig &mcfg, bool direct = true, double tol = 1e-6);
+SideInfoConfig makeSideInfoConfig(const MatrixConfig &mcfg, bool direct = true, double tol = 1e-6);
 
 template <class C> Config genConfig(const C &train, const C &test, std::vector<PriorTypes> priors) {
   Config config;
