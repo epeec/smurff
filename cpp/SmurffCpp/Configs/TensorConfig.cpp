@@ -330,12 +330,12 @@ template <class ConfigFile>
 std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const ConfigFile& cfg_file, const std::string& sec_name)
 {
    //restore filename
-   std::string filename = cfg_file. template get<std::string>(sec_name, FILE_TAG, NONE_VALUE);
+   std::string filename = cfg_file.get(sec_name, FILE_TAG, NONE_VALUE);
    if (filename == NONE_VALUE)
       return std::shared_ptr<TensorConfig>();
 
    //restore type
-   bool is_scarce = cfg_file. template get<std::string>(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
+   bool is_scarce = cfg_file.get(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
 
    //restore data
    auto cfg = generic_io::read_data_config(filename, is_scarce);
@@ -356,7 +356,7 @@ template<class ConfigFile>
 bool TensorConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name)
 {
    //restore position
-   std::string pos_str = cfg_file. template get<std::string>(sec_name, POS_TAG, NONE_VALUE);
+   std::string pos_str = cfg_file.get(sec_name, POS_TAG, NONE_VALUE);
    if (pos_str != NONE_VALUE)
    {
       std::vector<int> tokens;
@@ -369,14 +369,14 @@ bool TensorConfig::restore(const ConfigFile& cfg_file, const std::string& sec_na
    //restore noise model
    NoiseConfig noise;
 
-   NoiseTypes noiseType = stringToNoiseType(cfg_file. template get<std::string>(sec_name, NOISE_MODEL_TAG, noiseTypeToString(NoiseTypes::unset)));
+   NoiseTypes noiseType = stringToNoiseType(cfg_file.get(sec_name, NOISE_MODEL_TAG, noiseTypeToString(NoiseTypes::unset)));
    if (noiseType != NoiseTypes::unset)
    {
       noise.setNoiseType(noiseType);
-      noise.setPrecision(cfg_file. template get<double>(sec_name, PRECISION_TAG, NoiseConfig::PRECISION_DEFAULT_VALUE));
-      noise.setSnInit(cfg_file. template get<double>(sec_name, SN_INIT_TAG, NoiseConfig::ADAPTIVE_SN_INIT_DEFAULT_VALUE));
-      noise.setSnMax(cfg_file. template get<double>(sec_name, SN_MAX_TAG, NoiseConfig::ADAPTIVE_SN_MAX_DEFAULT_VALUE));
-      noise.setThreshold(cfg_file. template get<double>(sec_name, NOISE_THRESHOLD_TAG, NoiseConfig::PROBIT_DEFAULT_VALUE));
+      noise.setPrecision(cfg_file.get(sec_name, PRECISION_TAG, NoiseConfig::PRECISION_DEFAULT_VALUE));
+      noise.setSnInit(cfg_file.get(sec_name, SN_INIT_TAG, NoiseConfig::ADAPTIVE_SN_INIT_DEFAULT_VALUE));
+      noise.setSnMax(cfg_file.get(sec_name, SN_MAX_TAG, NoiseConfig::ADAPTIVE_SN_MAX_DEFAULT_VALUE));
+      noise.setThreshold(cfg_file.get(sec_name, NOISE_THRESHOLD_TAG, NoiseConfig::PROBIT_DEFAULT_VALUE));
    }
 
    //assign noise model

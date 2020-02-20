@@ -98,7 +98,7 @@ void Step::putModel(const std::vector<std::shared_ptr<Matrix>> &F)
    m_group.createAttribute(NUM_MODES_TAG, F.size());
    for (std::uint64_t m = 0; m < F.size(); ++m)
    {
-      putMatrix(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(m), *F[m]);
+      put(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(m), *F[m]);
    }
 }
 
@@ -125,18 +125,18 @@ std::shared_ptr<Vector> Step::getMu(std::uint64_t index) const
 
 void Step::putLinkMatrix(std::uint64_t index, const Matrix &M)
 {
-   putMatrix(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(index), M);
+   put(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(index), M);
 }
 
 void Step::putMu(std::uint64_t index, const Matrix &M) 
 {
-   putMatrix(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), M);
+   put(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), M);
 }
 
 void Step::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda)
 {
-   putMatrix(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
-   putMatrix(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
+   put(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
+   put(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
 }
 
 bool Step::hasPred() const
@@ -171,9 +171,9 @@ void Step::getPredState(
 
 void Step::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const SparseMatrix &one_sample)
 {
-   putSparseMatrix(PRED_SEC_TAG, PRED_AVG_TAG, avg);
-   putSparseMatrix(PRED_SEC_TAG, PRED_VAR_TAG, var);
-   putSparseMatrix(PRED_SEC_TAG, PRED_ONE_TAG, one_sample);
+   put(PRED_SEC_TAG, PRED_AVG_TAG, avg);
+   put(PRED_SEC_TAG, PRED_VAR_TAG, var);
+   put(PRED_SEC_TAG, PRED_ONE_TAG, one_sample);
 }
 
 

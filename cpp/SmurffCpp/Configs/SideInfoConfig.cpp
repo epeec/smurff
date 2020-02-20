@@ -60,9 +60,9 @@ bool SideInfoConfig::restore(const ConfigFile& cfg_file, std::size_t prior_index
    }
 
    //restore side info properties
-   m_tol = cfg_file. template get<double>(sectionName, TOL_TAG, SideInfoConfig::TOL_DEFAULT_VALUE);
-   m_direct = cfg_file. template get<bool>(sectionName, DIRECT_TAG, false);
-   m_throw_on_cholesky_error = cfg_file. template get<bool>(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, false);
+   m_tol = cfg_file.get(sectionName, TOL_TAG, SideInfoConfig::TOL_DEFAULT_VALUE);
+   m_direct = cfg_file.get(sectionName, DIRECT_TAG, false);
+   m_throw_on_cholesky_error = cfg_file.get(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, false);
 
    auto tensor_cfg = TensorConfig::restore_tensor_config(cfg_file, sectionName);
    m_sideInfo = std::dynamic_pointer_cast<MatrixConfig>(tensor_cfg);

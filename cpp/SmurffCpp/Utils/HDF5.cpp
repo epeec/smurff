@@ -93,7 +93,7 @@ std::shared_ptr<SparseMatrix> HDF5::getSparseMatrix(const std::string& section, 
    return std::make_shared<SparseMatrix>(X);
 }
 
-void HDF5::putMatrix(const std::string& section, const std::string& tag, const Matrix &M)
+void HDF5::put(const std::string& section, const std::string& tag, const Matrix &M)
 {
    if (!m_group.exist(section))
       m_group.createGroup(section);
@@ -115,7 +115,7 @@ void HDF5::putMatrix(const std::string& section, const std::string& tag, const M
     dataset.write(row_major.data());
 }
 
-void HDF5::putSparseMatrix(const std::string& section, const std::string& tag, const SparseMatrix &X)
+void HDF5::put(const std::string& section, const std::string& tag, const SparseMatrix &X)
 {
    if (!m_group.exist(section))
       m_group.createGroup(section);

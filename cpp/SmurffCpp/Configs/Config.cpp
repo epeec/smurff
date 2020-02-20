@@ -483,11 +483,11 @@ bool Config::restore(const ConfigFile &cfg_file)
    setTrain(TensorConfig::restore_tensor_config(cfg_file, TRAIN_SECTION_TAG));
 
    //restore priors
-   std::size_t num_priors = cfg_file.template get<int>(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, 0);
+   std::size_t num_priors = cfg_file.get(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, 0);
    std::vector<std::string> pNames;
    for(std::size_t pIndex = 0; pIndex < num_priors; pIndex++)
    {
-      pNames.push_back(cfg_file. template get<std::string>(GLOBAL_SECTION_TAG, addIndex(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
+      pNames.push_back(cfg_file.get(GLOBAL_SECTION_TAG, addIndex(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
    }
    setPriorTypes(pNames);
 
@@ -500,7 +500,7 @@ bool Config::restore(const ConfigFile &cfg_file)
    }
 
    //restore aux data
-   std::size_t num_aux_data = cfg_file. template get<int>(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, 0);
+   std::size_t num_aux_data = cfg_file.get(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, 0);
    for(std::size_t pIndex = 0; pIndex < num_aux_data; pIndex++)
    {
       m_auxData.push_back(TensorConfig::restore_tensor_config(cfg_file, addIndex(AUX_DATA_PREFIX, pIndex)));
@@ -513,7 +513,7 @@ bool Config::restore(const ConfigFile &cfg_file)
        auto lambda = std::shared_ptr<MatrixConfig>();
 
        {
-           std::string filename = cfg_file. template get<std::string>(addIndex(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_VALUE);
+           std::string filename = cfg_file.get(addIndex(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_VALUE);
            if (filename != NONE_VALUE)
            {
                mu = matrix_io::read_matrix(filename, false);
@@ -522,7 +522,7 @@ bool Config::restore(const ConfigFile &cfg_file)
        }
 
        {
-           std::string filename = cfg_file. template get<std::string>(addIndex(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_VALUE);
+           std::string filename = cfg_file.get(addIndex(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_VALUE);
            if (filename != NONE_VALUE)
            {
                lambda = matrix_io::read_matrix(filename, false);
@@ -538,26 +538,26 @@ bool Config::restore(const ConfigFile &cfg_file)
 
 
    //restore save data
-   m_save_prefix = cfg_file. template get<std::string>(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
-   m_save_extension = cfg_file. template get<std::string>(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
-   m_save_freq = cfg_file. template get<int>(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
-   m_save_pred = cfg_file. template get<bool>(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
-   m_save_model = cfg_file. template get<bool>(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, Config::SAVE_MODEL_DEFAULT_VALUE);
-   m_checkpoint_freq = cfg_file. template get<int>(GLOBAL_SECTION_TAG, CHECKPOINT_FREQ_TAG, Config::CHECKPOINT_FREQ_DEFAULT_VALUE);
+   m_save_prefix = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
+   m_save_extension = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
+   m_save_freq = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
+   m_save_pred = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
+   m_save_model = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, Config::SAVE_MODEL_DEFAULT_VALUE);
+   m_checkpoint_freq = cfg_file.get(GLOBAL_SECTION_TAG, CHECKPOINT_FREQ_TAG, Config::CHECKPOINT_FREQ_DEFAULT_VALUE);
 
    //restore general data
-   m_verbose = cfg_file. template get<int>(GLOBAL_SECTION_TAG, VERBOSE_TAG, Config::VERBOSE_DEFAULT_VALUE);
-   m_burnin = cfg_file. template get<int>(GLOBAL_SECTION_TAG, BURNING_TAG, Config::BURNIN_DEFAULT_VALUE);
-   m_nsamples = cfg_file. template get<int>(GLOBAL_SECTION_TAG, NSAMPLES_TAG, Config::NSAMPLES_DEFAULT_VALUE);
-   m_num_latent = cfg_file. template get<int>(GLOBAL_SECTION_TAG, NUM_LATENT_TAG, Config::NUM_LATENT_DEFAULT_VALUE);
-   m_num_threads = cfg_file. template get<int>(GLOBAL_SECTION_TAG, NUM_THREADS_TAG, Config::NUM_THREADS_DEFAULT_VALUE);
-   m_random_seed_set = cfg_file. template get<bool>(GLOBAL_SECTION_TAG, RANDOM_SEED_SET_TAG,  false);
-   m_random_seed = cfg_file. template get<int>(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, Config::RANDOM_SEED_DEFAULT_VALUE);
-   m_model_init_type = stringToModelInitType(cfg_file. template get<std::string>(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(Config::INIT_MODEL_DEFAULT_VALUE)));
+   m_verbose = cfg_file.get(GLOBAL_SECTION_TAG, VERBOSE_TAG, Config::VERBOSE_DEFAULT_VALUE);
+   m_burnin = cfg_file.get(GLOBAL_SECTION_TAG, BURNING_TAG, Config::BURNIN_DEFAULT_VALUE);
+   m_nsamples = cfg_file.get(GLOBAL_SECTION_TAG, NSAMPLES_TAG, Config::NSAMPLES_DEFAULT_VALUE);
+   m_num_latent = cfg_file.get(GLOBAL_SECTION_TAG, NUM_LATENT_TAG, Config::NUM_LATENT_DEFAULT_VALUE);
+   m_num_threads = cfg_file.get(GLOBAL_SECTION_TAG, NUM_THREADS_TAG, Config::NUM_THREADS_DEFAULT_VALUE);
+   m_random_seed_set = cfg_file.get(GLOBAL_SECTION_TAG, RANDOM_SEED_SET_TAG,  false);
+   m_random_seed = cfg_file.get(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, Config::RANDOM_SEED_DEFAULT_VALUE);
+   m_model_init_type = stringToModelInitType(cfg_file.get(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(Config::INIT_MODEL_DEFAULT_VALUE)));
 
    //restore probit prior data
-   m_classify = cfg_file. template get<bool>(GLOBAL_SECTION_TAG, CLASSIFY_TAG,  false);
-   m_threshold = cfg_file. template get<double>(GLOBAL_SECTION_TAG, THRESHOLD_TAG, Config::THRESHOLD_DEFAULT_VALUE);
+   m_classify = cfg_file.get(GLOBAL_SECTION_TAG, CLASSIFY_TAG,  false);
+   m_threshold = cfg_file.get(GLOBAL_SECTION_TAG, THRESHOLD_TAG, Config::THRESHOLD_DEFAULT_VALUE);
 
    return true;
 }
