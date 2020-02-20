@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Utils/SparseTensor.h>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 

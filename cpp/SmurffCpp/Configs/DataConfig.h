@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <algorithm>
 
+#include <SmurffCpp/Types.h>
 #include <SmurffCpp/Utils/PVec.hpp>
 #include <SmurffCpp/Configs/NoiseConfig.h>
 
@@ -32,6 +33,10 @@ namespace smurff
    private:
       PVec<>      m_pos;
       std::string m_filename;
+
+      Matrix       m_dense_matrix_data;
+      SparseMatrix m_sparse_matrix_data;
+      SparseTensor m_sparse_tensor_data;
 
    public:
       virtual ~DataConfig();

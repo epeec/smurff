@@ -5,7 +5,8 @@
 #include <SmurffCpp/Utils/PVec.hpp>
 #include <SmurffCpp/IO/IDataWriter.h>
 #include <SmurffCpp/DataMatrices/IDataCreator.h>
-#include <SmurffCpp/IO/GenericIO.h>
+#include <SmurffCpp/IO/MatrixIO.h>
+#include <SmurffCpp/IO/TensorIO.h>
 #include <SmurffCpp/Utils/ConfigFile.h>
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
@@ -204,6 +205,28 @@ bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name
       this->setPos(PVec<>(tokens));
    }
 
+   //restore type
+   m_isDense = cfg_file.get(sec_name, TYPE_TAG, DENSE_TAG) == DENSE_TAG;
+   m_isScarce = cfg_file.get(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
+
+   //restore filename and content
+   std::string filename = cfg_file.get(sec_name, FILE_TAG, NONE_VALUE);
+   if (filename != NONE_VALUE)
+   { 
+      bool isMatrix = matrix_io::isMatrixExtension(filename);
+      if (isMatrix)
+      {
+         if (isDense())
+            matrix_io::eigen::read_matrix(filename, m_dense_matrix_data);
+         else
+            matrix_io::eigen::read_matrix(filename, m_sparse_matrix_data);
+      }
+      else
+      {
+         /* .. */
+      }
+   }
+      
    //restore noise model
    NoiseConfig noise;
 
