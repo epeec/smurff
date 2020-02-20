@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <fstream>
 
+#include <boost/filesystem/operations.hpp>
+
 #include "catch.hpp"
 
 #include <SmurffCpp/Types.h>
@@ -20,13 +22,37 @@
 #define TAG_MATRIX_TESTS "[matrix][random][!mayfail]"
 #endif
 
+namespace fs = boost::filesystem;
+
 namespace smurff {
 namespace test {
 
-TEST_CASE("PredictSession/BPMF") {
+static Config& prepareResultDir(Config &config, const std::string &dir)
+{
+  fs::path output_dir("tests_output");
+  fs::create_directory(output_dir);
 
-  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
+  std::string save_dir(dir);
+  save_dir.erase(std::remove_if(save_dir.begin(), save_dir.end(),
+                           [](char c) {
+                              const std::string special_chars("\\/:*\"<>|");
+                              return special_chars.find(c) != std::string::npos;
+                           }
+            ), save_dir.end());
+  
+  output_dir /= fs::path(save_dir);
+ 
   config.setSaveFreq(1);
+  config.setSavePrefix(output_dir.native());
+  fs::remove_all(output_dir);
+  fs::create_directory(output_dir);
+  return config;
+}
+
+TEST_CASE("PredictSession/BPMF")
+{
+  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
+  prepareResultDir(config, Catch::getResultCapture().getCurrentTestName() + "_train");
 
   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
   session->run();
@@ -38,7 +64,8 @@ TEST_CASE("PredictSession/BPMF") {
   auto rf = std::make_shared<OutputFile>(root_fname);
 
   {
-    PredictSession s(rf);
+    prepareResultDir(config, Catch::getResultCapture().getCurrentTestName() + "_predict");
+    PredictSession s(rf, config);
 
     // test predict from TensorConfig
     auto result = s.predict(config.getTest());
@@ -66,7 +93,7 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
 
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal})
                       .addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
-  config.setSaveFreq(1);
+  prepareResultDir(config, Catch::getResultCapture().getCurrentTestName());
 
   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
   session->run();
@@ -149,7 +176,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   }
   Config config = genConfig(trainMatrixConfig, testMatrixConfig, {PriorTypes::macau, PriorTypes::normal})
                       .addSideInfoConfig(0, rowSideInfoConfig);
-  config.setSaveFreq(1);
+  prepareResultDir(config, Catch::getResultCapture().getCurrentTestName());
 
   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
   session->run();

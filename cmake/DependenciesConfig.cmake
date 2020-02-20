@@ -111,14 +111,15 @@ macro(configure_boost)
   if(${ENABLE_BOOST})
       set (Boost_USE_STATIC_LIBS OFF)
       set (Boost_USE_MULTITHREADED ON)
+      set (SMURFF_BOOST_COMPONENTS system program_options filesystem)
 
       # find boost random library - optional
       if(${BOOST_RANDOM_VERSION})
-        FIND_PACKAGE(Boost ${BOOST_RANDOM_VERSION} EXACT COMPONENTS random system program_options REQUIRED)
+        FIND_PACKAGE(Boost ${BOOST_RANDOM_VERSION} EXACT COMPONENTS random ${SMURFF_BOOST_COMPONENTS} REQUIRED)
         message(STATUS "Found Boost random library")
         add_definitions(-DUSE_BOOST_RANDOM)
       else()
-        FIND_PACKAGE(Boost COMPONENTS system program_options REQUIRED)
+        FIND_PACKAGE(Boost COMPONENTS ${SMURFF_BOOST_COMPONENTS} REQUIRED)
       endif()
 
       message("-- Found Boost_VERSION: ${Boost_VERSION}")
