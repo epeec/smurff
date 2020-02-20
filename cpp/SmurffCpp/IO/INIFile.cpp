@@ -61,27 +61,42 @@ bool INIFile::hasDataSet(const std::string &name, const std::string &tag) const
    THROWERROR_NOTIMPL();
 }
 
-std::shared_ptr<Matrix> INIFile::getMatrix(const std::string& section, const std::string& tag) const
+void INIFile::read(const std::string& section, const std::string& tag, Vector &) const
 {
    THROWERROR_NOTIMPL();
 }
 
-std::shared_ptr<Vector> INIFile::getVector(const std::string& section, const std::string& tag) const
+void INIFile::read(const std::string& section, const std::string& tag, Matrix &) const
 {
    THROWERROR_NOTIMPL();
 }
 
-std::shared_ptr<SparseMatrix> INIFile::getSparseMatrix(const std::string& section, const std::string& tag) const
+void INIFile::read(const std::string& section, const std::string& tag, SparseMatrix &) const
 {
    THROWERROR_NOTIMPL();
 }
 
-void INIFile::put(const std::string& section, const std::string& tag, const Matrix &M)
+void INIFile::read(const std::string& section, const std::string& tag, SparseTensor &) const
 {
    THROWERROR_NOTIMPL();
 }
 
-void INIFile::put(const std::string& section, const std::string& tag, const SparseMatrix &X)
+void INIFile::write(const std::string& section, const std::string& tag, const Vector &M)
+{
+   THROWERROR_NOTIMPL();
+}
+
+void INIFile::write(const std::string& section, const std::string& tag, const Matrix &M)
+{
+   THROWERROR_NOTIMPL();
+}
+
+void INIFile::write(const std::string& section, const std::string& tag, const SparseMatrix &X)
+{
+   THROWERROR_NOTIMPL();
+}
+
+void INIFile::write(const std::string& section, const std::string& tag, const SparseTensor &X)
 {
    THROWERROR_NOTIMPL();
 }

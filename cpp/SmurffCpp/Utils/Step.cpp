@@ -98,7 +98,7 @@ void Step::putModel(const std::vector<std::shared_ptr<Matrix>> &F)
    m_group.createAttribute(NUM_MODES_TAG, F.size());
    for (std::uint64_t m = 0; m < F.size(); ++m)
    {
-      put(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(m), *F[m]);
+      write(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(m), *F[m]);
    }
 }
 
@@ -125,18 +125,18 @@ std::shared_ptr<Vector> Step::getMu(std::uint64_t index) const
 
 void Step::putLinkMatrix(std::uint64_t index, const Matrix &M)
 {
-   put(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(index), M);
+   write(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(index), M);
 }
 
 void Step::putMu(std::uint64_t index, const Matrix &M) 
 {
-   put(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), M);
+   write(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), M);
 }
 
 void Step::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda)
 {
-   put(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
-   put(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
+   write(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
+   write(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
 }
 
 bool Step::hasPred() const
@@ -171,9 +171,9 @@ void Step::getPredState(
 
 void Step::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const SparseMatrix &one_sample)
 {
-   put(PRED_SEC_TAG, PRED_AVG_TAG, avg);
-   put(PRED_SEC_TAG, PRED_VAR_TAG, var);
-   put(PRED_SEC_TAG, PRED_ONE_TAG, one_sample);
+   write(PRED_SEC_TAG, PRED_AVG_TAG, avg);
+   write(PRED_SEC_TAG, PRED_VAR_TAG, var);
+   write(PRED_SEC_TAG, PRED_ONE_TAG, one_sample);
 }
 
 
@@ -227,6 +227,27 @@ std::int32_t Step::getIsample() const
 bool Step::isCheckpoint() const
 {
    return m_checkpoint;
+}
+
+std::shared_ptr<Matrix> Step::getMatrix(const std::string &section, const std::string &tag) const
+{
+   auto ret = std::make_shared<Matrix>();
+   read(section, tag, *ret);
+   return ret;
+}
+
+std::shared_ptr<Vector> Step::getVector(const std::string &section, const std::string &tag) const
+{
+   auto ret = std::make_shared<Vector>();
+   read(section, tag, *ret);
+   return ret;
+}
+
+std::shared_ptr<SparseMatrix> Step::getSparseMatrix(const std::string &section, const std::string &tag) const
+{
+   auto ret = std::make_shared<SparseMatrix>(); 
+   read(section, tag, *ret);
+   return ret;
 }
 
 } // end namespace

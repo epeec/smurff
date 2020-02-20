@@ -19,9 +19,10 @@ namespace smurff {
       virtual bool        get(const std::string &section, const std::string& tag, const bool        &default_value) const = 0;
       virtual std::string get(const std::string &section, const std::string& tag, const std::string &default_value) const = 0;
 
-      virtual std::shared_ptr<Matrix>       getMatrix(const std::string &section, const std::string& tag) const = 0;
-      virtual std::shared_ptr<Vector>       getVector(const std::string &section, const std::string& tag) const = 0;
-      virtual std::shared_ptr<SparseMatrix> getSparseMatrix(const std::string &section, const std::string& tag) const = 0;
+      virtual void read(const std::string &section, const std::string& tag, Vector &) const = 0;
+      virtual void read(const std::string &section, const std::string& tag, Matrix &) const = 0;
+      virtual void read(const std::string &section, const std::string& tag, SparseMatrix &) const = 0;
+      virtual void read(const std::string &section, const std::string& tag, SparseTensor &) const = 0;
 
       virtual void put(const std::string &section, const std::string& tag, const int         &value) = 0;
       virtual void put(const std::string &section, const std::string& tag, const size_t      &value) = 0;
@@ -29,7 +30,9 @@ namespace smurff {
       virtual void put(const std::string &section, const std::string& tag, const bool        &value) = 0;
       virtual void put(const std::string &section, const std::string& tag, const std::string &value) = 0;
 
-      virtual void put(const std::string &section, const std::string& tag, const Matrix &) = 0;
-      virtual void put(const std::string &section, const std::string& tag, const SparseMatrix &) = 0;
+      virtual void write(const std::string &section, const std::string& tag, const Vector &) = 0;
+      virtual void write(const std::string &section, const std::string& tag, const Matrix &) = 0;
+      virtual void write(const std::string &section, const std::string& tag, const SparseMatrix &) = 0;
+      virtual void write(const std::string &section, const std::string& tag, const SparseTensor &) = 0;
    };
 }
