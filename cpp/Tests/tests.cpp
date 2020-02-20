@@ -78,7 +78,7 @@ TEST_CASE( "utils/eval_rmse", "Test if prediction variance is correctly calculat
   data->setNoiseModel(NoiseFactory::create_noise_model(fixed_ncfg));
 
   data->init();
-  model->init(2, PVec<>({1, 1}), ModelInitTypes::zero, false); //latent dimention has size 2
+  model->init(2, PVec<>({1, 1}), ModelInitTypes::zero, false); //latent dimension has size 2
 
   auto &t = p->m_predictions.at(0);
 

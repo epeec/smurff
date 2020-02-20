@@ -43,7 +43,7 @@ private:
    std::vector<std::shared_ptr<Matrix>> m_aggr_dot; //vector of aggr dot m_factors matrices
    std::vector<int> m_num_aggr; //number of aggregated samples in above vectors
 
-   int m_num_latent; //size of latent dimention for U matrices
+   int m_num_latent; //size of latent dimension for U matrices
    PVec<> m_dims; //dimensions of train data
 
    // to make predictions faster
@@ -93,14 +93,14 @@ public:
    //number of dimentions in train data
    std::uint64_t nmodes() const;
 
-   //size of latent dimention
+   //size of latent dimension
    int nlatent() const;
 
    //sum of number of columns in each U matrix in the model
    int nsamples() const;
 
 public:
-   //vector if dimention sizes of train data
+   //vector if dimension sizes of train data
    const PVec<>& getDims() const;
 
 public:
@@ -156,7 +156,7 @@ public:
       return m_model.predict(m_off + pos);
    }
 
-   //size of latent dimention
+   //size of latent dimension
    int nlatent() const
    {
       return m_model.nlatent();

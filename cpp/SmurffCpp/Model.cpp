@@ -32,7 +32,7 @@ Model::Model()
 {
 }
 
-//num_latent - size of latent dimention
+//num_latent - size of latent dimension
 //dims - dimentions of train data
 //init_model_type - samples initialization type
 void Model::init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_type, bool save_model, bool aggregate)

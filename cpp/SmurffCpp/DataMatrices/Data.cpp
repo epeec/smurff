@@ -25,7 +25,7 @@ void Data::update(const SubModel& model)
    noise().update(model);
 }
 
-//#### dimention functions ####
+//#### dimension functions ####
 
 std::uint64_t Data::size() const
 {

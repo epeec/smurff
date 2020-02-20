@@ -41,7 +41,7 @@ namespace smurff
    public:
       virtual double sum() const = 0;
 
-   //#### dimention functions ####
+   //#### dimension functions ####
    public:
       virtual std::uint64_t nmode() const = 0; // number of dimensions
       virtual std::uint64_t nnz() const = 0; // number of non zero elements

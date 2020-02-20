@@ -52,7 +52,7 @@ TEST_CASE("test sparse view new 1")
       std::cout << "ncoords: " << sview->getNCoords() << std::endl;
       std::cout << "mode: " << sview->getMode() << std::endl;
 
-      for(std::uint64_t n = 0; n < sview->getNPlanes(); n++) // go through each hyper plane in the dimention
+      for(std::uint64_t n = 0; n < sview->getNPlanes(); n++) // go through each hyper plane in the dimension
       {
          std::cout << "-----" << std::endl;
 

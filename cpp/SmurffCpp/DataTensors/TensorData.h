@@ -18,7 +18,7 @@ namespace smurff {
 class TensorData : public Data
 {
 private:
-   std::vector<std::uint64_t> m_dims; //vector of dimention sizes
+   std::vector<std::uint64_t> m_dims; //vector of dimension sizes
    std::uint64_t m_nnz;
    std::shared_ptr<std::vector<std::shared_ptr<SparseMode> > > m_Y; // this is a vector of tensor rotations
 
