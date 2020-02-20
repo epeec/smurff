@@ -13,7 +13,27 @@
 
 namespace smurff {
 
-static const std::string NONE_VALUE("none");
+static const std::string NONE_VALUE = "none";
+static const std::string POS_TAG = "pos";
+static const std::string FILE_TAG = "file";
+static const std::string SCARCE_TAG = "scarce";
+static const std::string TYPE_TAG = "type";
+
+TensorConfig::TensorConfig ( bool isDense
+                           , bool isBinary
+                           , bool isScarce
+                           , std::uint64_t nmodes
+                           , std::uint64_t nnz
+                           , const NoiseConfig& noiseConfig
+                           , PVec<> pos
+                           )
+   : DataConfig(isDense, isBinary, isScarce, std::vector<std::uint64_t>(nmodes), nnz, noiseConfig, pos)
+   , m_columns(nmodes)
+   , m_values()
+{
+  // check(); // can't check here -- because many things still empty
+}
+
 
 // Dense double tensor constructors
 TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
@@ -37,7 +57,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
                           , bool isScarce 
                           , PVec<> pos
                           )
-   : DataConfig(false, false, false, dims, nnz, noiseConfig, pos)
+   : DataConfig(false, false, isScarce, dims, nnz, noiseConfig, pos)
    , m_values(values, values + nnz)
 {
    for(auto col : columns)
@@ -74,7 +94,7 @@ TensorConfig::~TensorConfig()
 void TensorConfig::check() const
 {
    DataConfig::check();
-   THROWERROR_ASSERT(getNModes() > 2);
+   THROWERROR_ASSERT(getNModes() >= 2);
    THROWERROR_ASSERT(m_values.size() == m_nnz);
 
    if (isDense())
@@ -105,6 +125,44 @@ void TensorConfig::set(std::uint64_t pos, PVec<> coords, double value)
     m_values[pos] = value;
     for(unsigned j=0; j<getNModes(); ++j) m_columns[j][pos] = coords[j];
 }
+
+void TensorConfig::save_tensor_config(ConfigFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg)
+{
+   std::string sectionName = addIndex(sec_name, sec_idx);
+
+   if (cfg)
+   {
+      //save tensor config and noise config internally
+      cfg->save(writer, sectionName);
+   }
+   else
+   {
+      //save a placeholder since config can not serialize itself
+      writer.put(sectionName, FILE_TAG, NONE_VALUE);
+   }
+}
+
+
+
+std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const ConfigFile& cfg_file, const std::string& sec_name)
+{
+   //restore filename
+   std::string filename = cfg_file.get(sec_name, FILE_TAG, NONE_VALUE);
+   if (filename == NONE_VALUE)
+      return std::shared_ptr<TensorConfig>();
+
+   //restore type
+   bool is_scarce = cfg_file.get(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
+
+   //restore data
+   auto cfg = generic_io::read_data_config(filename, is_scarce);
+
+   //restore instance
+   cfg->restore(cfg_file, sec_name);
+
+   return cfg;
+}
+
 
 
 std::shared_ptr<Data> TensorConfig::create(std::shared_ptr<IDataCreator> creator) const

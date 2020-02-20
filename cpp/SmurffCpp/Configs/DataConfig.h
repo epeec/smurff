@@ -71,10 +71,6 @@ namespace smurff
       bool restore(const ConfigFile& reader, const std::string& sec_name);
 
    public:
-      static void save_tensor_config(ConfigFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<DataConfig> &cfg);
-      static std::shared_ptr<DataConfig> restore_tensor_config(const ConfigFile& reader, const std::string& sec_name);
-
-   public:
       virtual std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const = 0;
 
    public:

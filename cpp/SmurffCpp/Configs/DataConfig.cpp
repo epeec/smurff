@@ -54,7 +54,6 @@ DataConfig::~DataConfig()
 void DataConfig::check() const
 {
    THROWERROR_ASSERT(m_dims.size() > 0);
-   DataConfig::check();
 
    if (isDense())
    {
@@ -162,22 +161,6 @@ std::string DataConfig::info() const
     return ss.str();
 }
 
-void DataConfig::save_tensor_config(ConfigFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<DataConfig> &cfg)
-{
-   std::string sectionName = addIndex(sec_name, sec_idx);
-   
-   if (cfg)
-   {
-      //save tensor config and noise config internally
-      cfg->save(writer, sectionName);
-   }
-   else
-   {
-      //save a placeholder since config can not serialize itself
-      writer.put(sectionName, FILE_TAG, NONE_VALUE);
-   }
-}
-
 void DataConfig::save(ConfigFile& writer, const std::string& sectionName) const
 {
    //write tensor config position
@@ -206,25 +189,6 @@ void DataConfig::save(ConfigFile& writer, const std::string& sectionName) const
       writer.put(sectionName, NOISE_THRESHOLD_TAG, noise_config.getThreshold());
    }
 
-}
-
-std::shared_ptr<DataConfig> DataConfig::restore_tensor_config(const ConfigFile& cfg_file, const std::string& sec_name)
-{
-   //restore filename
-   std::string filename = cfg_file.get(sec_name, FILE_TAG, NONE_VALUE);
-   if (filename == NONE_VALUE)
-      return std::shared_ptr<DataConfig>();
-
-   //restore type
-   bool is_scarce = cfg_file.get(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
-
-   //restore data
-   auto cfg = generic_io::read_data_config(filename, is_scarce);
-
-   //restore instance
-   cfg->restore(cfg_file, sec_name);
-
-   return cfg;
 }
 
 bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name)

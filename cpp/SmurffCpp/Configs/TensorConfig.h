@@ -99,9 +99,6 @@ namespace smurff
          return m_columns[i];
       }
 
-   public:
-      void save(ConfigFile& writer, const std::string& section_name) const;
-      bool restore(const ConfigFile& reader, const std::string& sec_name);
 
    public:
       static void save_tensor_config(ConfigFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg);
