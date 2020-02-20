@@ -15,7 +15,7 @@ namespace smurff {
 struct StatusItem;
 
 
-extern const char* LAST_CHECKPOINT_TAG;
+extern const std::string LAST_CHECKPOINT_TAG;
 
 class OutputFile
 {

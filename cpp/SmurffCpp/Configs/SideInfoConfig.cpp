@@ -10,14 +10,14 @@
 #include "SideInfoConfig.h"
 #include "TensorConfig.h"
 
-
-#define SIDE_INFO_PREFIX "side_info"
-#define TOL_TAG "tol"
-#define DIRECT_TAG "direct"
-#define THROW_ON_CHOLESKY_ERROR_TAG "throw_on_cholesky_error"
-#define NUMBER_TAG "nr"
-
 namespace smurff {
+
+static const std::string SIDE_INFO_PREFIX = "side_info";
+static const std::string TOL_TAG = "tol";
+static const std::string DIRECT_TAG = "direct";
+static const std::string THROW_ON_CHOLESKY_ERROR_TAG = "throw_on_cholesky_error";
+static const std::string NUMBER_TAG = "nr";
+
 
 double SideInfoConfig::BETA_PRECISION_DEFAULT_VALUE = 10.0;
 double SideInfoConfig::TOL_DEFAULT_VALUE = 1e-6;

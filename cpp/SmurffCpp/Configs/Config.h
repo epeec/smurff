@@ -10,15 +10,7 @@
 #include "MatrixConfig.h"
 #include "SideInfoConfig.h"
 
-#define PRIOR_NAME_DEFAULT "default"
-#define PRIOR_NAME_MACAU "macau"
-#define PRIOR_NAME_MACAU_ONE "macauone"
-#define PRIOR_NAME_SPIKE_AND_SLAB "spikeandslab"
-#define PRIOR_NAME_NORMAL "normal"
-#define PRIOR_NAME_NORMALONE "normalone"
 
-#define MODEL_INIT_NAME_RANDOM "random"
-#define MODEL_INIT_NAME_ZERO "zero"
 
 namespace smurff {
 
@@ -66,14 +58,14 @@ public:
    static int NUM_THREADS_DEFAULT_VALUE;
    static bool POSTPROP_DEFAULT_VALUE;
    static ModelInitTypes INIT_MODEL_DEFAULT_VALUE;
-   static const char* SAVE_PREFIX_DEFAULT_VALUE;
-   static const char* SAVE_EXTENSION_DEFAULT_VALUE;
+   static const std::string SAVE_PREFIX_DEFAULT_VALUE;
+   static const std::string SAVE_EXTENSION_DEFAULT_VALUE;
    static int SAVE_FREQ_DEFAULT_VALUE;
    static bool SAVE_PRED_DEFAULT_VALUE;
    static bool SAVE_MODEL_DEFAULT_VALUE;
    static int CHECKPOINT_FREQ_DEFAULT_VALUE;
    static int VERBOSE_DEFAULT_VALUE;
-   static const char* STATUS_DEFAULT_VALUE;
+   static const std::string STATUS_DEFAULT_VALUE;
    static bool ENABLE_BETA_PRECISION_SAMPLING_DEFAULT_VALUE;
    static double THRESHOLD_DEFAULT_VALUE;
    static int RANDOM_SEED_DEFAULT_VALUE;

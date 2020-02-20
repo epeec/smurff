@@ -15,13 +15,13 @@ namespace h5 = HighFive;
 
 namespace smurff {
 
-const char* NONE_VALUE = "none";
-const char* OPTIONS_TAG = "options";
-const char* STEPS_TAG = "steps";
-const char* STATUS_TAG = "status";
-const char* LAST_CHECKPOINT_TAG = "last_checkpoint";
-const char* CHECKPOINT_PREFIX = "checkpoint_";
-const char* SAMPLE_PREFIX = "sample_";
+const std::string NONE_VALUE = "none";
+const std::string OPTIONS_TAG = "options";
+const std::string STEPS_TAG = "steps";
+const std::string STATUS_TAG = "status";
+const std::string LAST_CHECKPOINT_TAG = "last_checkpoint";
+const std::string CHECKPOINT_PREFIX = "checkpoint_";
+const std::string SAMPLE_PREFIX = "sample_";
 
 OutputFile::OutputFile(std::string path, bool create)
    : m_path(path)

@@ -24,38 +24,49 @@
 #include <SmurffCpp/IO/MatrixIO.h>
 #include <Utils/StringUtils.h>
 
-#define NONE_VALUE "none"
-
-#define GLOBAL_SECTION_TAG "global"
-#define TRAIN_SECTION_TAG "train"
-#define TEST_SECTION_TAG "test"
-
-#define NUM_PRIORS_TAG "num_priors"
-#define PRIOR_PREFIX "prior"
-#define NUM_AUX_DATA_TAG "num_aux_data"
-#define AUX_DATA_PREFIX "aux_data"
-#define SAVE_PREFIX_TAG "save_prefix"
-#define SAVE_EXTENSION_TAG "save_extension"
-#define SAVE_FREQ_TAG "save_freq"
-#define SAVE_PRED_TAG "save_pred"
-#define SAVE_MODEL_TAG "save_model"
-#define CHECKPOINT_FREQ_TAG "checkpoint_freq"
-#define VERBOSE_TAG "verbose"
-#define BURNING_TAG "burnin"
-#define NSAMPLES_TAG "nsamples"
-#define NUM_LATENT_TAG "num_latent"
-#define NUM_THREADS_TAG "num_threads"
-#define RANDOM_SEED_SET_TAG "random_seed_set"
-#define RANDOM_SEED_TAG "random_seed"
-#define INIT_MODEL_TAG "init_model"
-#define CLASSIFY_TAG "classify"
-#define THRESHOLD_TAG "threshold"
-
-#define POSTPROP_PREFIX "prop_posterior"
-#define LAMBDA_TAG "Lambda"
-#define MU_TAG "mu"
-
 namespace smurff {
+
+static const std::string NONE_VALUE = "none";
+
+static const std::string GLOBAL_SECTION_TAG = "global";
+static const std::string TRAIN_SECTION_TAG = "train";
+static const std::string TEST_SECTION_TAG = "test";
+
+static const std::string NUM_PRIORS_TAG = "num_priors";
+static const std::string PRIOR_PREFIX = "prior";
+static const std::string NUM_AUX_DATA_TAG = "num_aux_data";
+static const std::string AUX_DATA_PREFIX = "aux_data";
+static const std::string SAVE_PREFIX_TAG = "save_prefix";
+static const std::string SAVE_EXTENSION_TAG = "save_extension";
+static const std::string SAVE_FREQ_TAG = "save_freq";
+static const std::string SAVE_PRED_TAG = "save_pred";
+static const std::string SAVE_MODEL_TAG = "save_model";
+static const std::string CHECKPOINT_FREQ_TAG = "checkpoint_freq";
+static const std::string VERBOSE_TAG = "verbose";
+static const std::string BURNING_TAG = "burnin";
+static const std::string NSAMPLES_TAG = "nsamples";
+static const std::string NUM_LATENT_TAG = "num_latent";
+static const std::string NUM_THREADS_TAG = "num_threads";
+static const std::string RANDOM_SEED_SET_TAG = "random_seed_set";
+static const std::string RANDOM_SEED_TAG = "random_seed";
+static const std::string INIT_MODEL_TAG = "init_model";
+static const std::string CLASSIFY_TAG = "classify";
+static const std::string THRESHOLD_TAG = "threshold";
+
+static const std::string POSTPROP_PREFIX = "prop_posterior";
+static const std::string LAMBDA_TAG = "Lambda";
+static const std::string MU_TAG = "mu";
+
+static const std::string PRIOR_NAME_DEFAULT = "default";
+static const std::string PRIOR_NAME_MACAU = "macau";
+static const std::string PRIOR_NAME_MACAU_ONE = "macauone";
+static const std::string PRIOR_NAME_SPIKE_AND_SLAB = "spikeandslab";
+static const std::string PRIOR_NAME_NORMAL = "normal";
+static const std::string PRIOR_NAME_NORMALONE = "normalone";
+
+static const std::string MODEL_INIT_NAME_RANDOM = "random";
+static const std::string MODEL_INIT_NAME_ZERO = "zero";
+
 
 PriorTypes stringToPriorType(std::string name)
 {
@@ -134,14 +145,14 @@ int Config::NSAMPLES_DEFAULT_VALUE = 800;
 int Config::NUM_LATENT_DEFAULT_VALUE = 96;
 int Config::NUM_THREADS_DEFAULT_VALUE = 0; // as many as you want
 ModelInitTypes Config::INIT_MODEL_DEFAULT_VALUE = ModelInitTypes::zero;
-const char* Config::SAVE_PREFIX_DEFAULT_VALUE = "";
-const char* Config::SAVE_EXTENSION_DEFAULT_VALUE = ".ddm";
+const std::string Config::SAVE_PREFIX_DEFAULT_VALUE = "";
+const std::string Config::SAVE_EXTENSION_DEFAULT_VALUE = ".ddm";
 int Config::SAVE_FREQ_DEFAULT_VALUE = 0;
 bool Config::SAVE_PRED_DEFAULT_VALUE = true;
 bool Config::SAVE_MODEL_DEFAULT_VALUE = true;
 int Config::CHECKPOINT_FREQ_DEFAULT_VALUE = 0;
 int Config::VERBOSE_DEFAULT_VALUE = 0;
-const char* Config::STATUS_DEFAULT_VALUE = "";
+const std::string Config::STATUS_DEFAULT_VALUE = "";
 bool Config::ENABLE_BETA_PRECISION_SAMPLING_DEFAULT_VALUE = true;
 double Config::THRESHOLD_DEFAULT_VALUE = 0.0;
 int Config::RANDOM_SEED_DEFAULT_VALUE = 0;

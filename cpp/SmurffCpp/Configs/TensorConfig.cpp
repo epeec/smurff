@@ -11,22 +11,23 @@
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
 
-#define POS_TAG "pos"
-#define FILE_TAG "file"
-#define DENSE_TAG "dense"
-#define SCARCE_TAG "scarce"
-#define SPARSE_TAG "sparse"
-#define TYPE_TAG "type"
+namespace smurff {
+
+static const std::string POS_TAG = "pos";
+static const std::string FILE_TAG = "file";
+static const std::string DENSE_TAG = "dense";
+static const std::string SCARCE_TAG = "scarce";
+static const std::string SPARSE_TAG = "sparse";
+static const std::string TYPE_TAG = "type";
 
 static const std::string NONE_VALUE("none");
 
-#define NOISE_MODEL_TAG "noise_model"
-#define PRECISION_TAG "precision"
-#define SN_INIT_TAG "sn_init"
-#define SN_MAX_TAG "sn_max"
-#define NOISE_THRESHOLD_TAG "noise_threshold"
+static const std::string NOISE_MODEL_TAG = "noise_model";
+static const std::string PRECISION_TAG = "precision";
+static const std::string SN_INIT_TAG = "sn_init";
+static const std::string SN_MAX_TAG = "sn_max";
+static const std::string NOISE_THRESHOLD_TAG = "noise_threshold";
 
-namespace smurff {
 
 TensorConfig::TensorConfig ( bool isDense
                            , bool isBinary
