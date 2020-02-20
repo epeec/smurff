@@ -1,12 +1,13 @@
-// Read an INI file into easy-to-access name/value pairs.
-// this code is based on https://github.com/Blandinium/inih/blob/master/cpp/INIReader.cpp 61bf1b3  on Dec 18, 2014
-
 #include <fstream>
-#include <map>
+
+#include <Utils/Error.h>
 
 #include "INIFile.h"
 
 #include <boost/property_tree/ini_parser.hpp>
+
+namespace smurff
+{
 
 pt::ptree INIFile::makeUnique(const pt::ptree &pt)
 {
@@ -14,10 +15,12 @@ pt::ptree INIFile::makeUnique(const pt::ptree &pt)
       return pt;
 
    std::map<pt::ptree::key_type, size_t> counts;
-   for (const auto &el : pt) counts[el.first]++;
+   for (const auto &el : pt)
+      counts[el.first]++;
    // remove counts of 1 or less
-   for (auto &c : counts) if (c.second <= 1) c.second = 0;
-
+   for (auto &c : counts)
+      if (c.second <= 1)
+         c.second = 0;
 
    pt::ptree ret(pt.data());
    for (const auto &el : pt)
@@ -34,7 +37,7 @@ pt::ptree INIFile::makeUnique(const pt::ptree &pt)
    return ret;
 }
 
-void INIFile::read(const std::string& filename)
+void INIFile::read(const std::string &filename)
 {
    std::ifstream file;
    file.open(filename, std::ios::in);
@@ -52,3 +55,35 @@ bool INIFile::hasSection(const std::string &name) const
 {
    return m_tree.get_child_optional(name) != boost::none;
 }
+
+bool INIFile::hasDataSet(const std::string &name, const std::string &tag) const
+{
+   THROWERROR_NOTIMPL();
+}
+
+std::shared_ptr<Matrix> INIFile::getMatrix(const std::string& section, const std::string& tag) const
+{
+   THROWERROR_NOTIMPL();
+}
+
+std::shared_ptr<Vector> INIFile::getVector(const std::string& section, const std::string& tag) const
+{
+   THROWERROR_NOTIMPL();
+}
+
+std::shared_ptr<SparseMatrix> INIFile::getSparseMatrix(const std::string& section, const std::string& tag) const
+{
+   THROWERROR_NOTIMPL();
+}
+
+void INIFile::put(const std::string& section, const std::string& tag, const Matrix &M)
+{
+   THROWERROR_NOTIMPL();
+}
+
+void INIFile::put(const std::string& section, const std::string& tag, const SparseMatrix &X)
+{
+   THROWERROR_NOTIMPL();
+}
+
+} //end namespace smurff
