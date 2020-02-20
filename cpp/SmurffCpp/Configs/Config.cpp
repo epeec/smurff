@@ -431,10 +431,12 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
    cfg_file.put(GLOBAL_SECTION_TAG, THRESHOLD_TAG, m_threshold);
 
    //write train data section
-   TensorConfig::save_tensor_config(cfg_file, TRAIN_SECTION_TAG, -1, m_train);
+   if (m_train)
+      m_train->save(cfg_file, TRAIN_SECTION_TAG);
 
    //write test data section
-   TensorConfig::save_tensor_config(cfg_file, TEST_SECTION_TAG, -1, m_test);
+   if (m_test)
+      m_test->save(cfg_file, TEST_SECTION_TAG);
 
    //write macau prior configs section
    for (auto p : m_sideInfoConfigs)
@@ -446,9 +448,7 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
 
    //write aux data section
    for (std::size_t sIndex = 0; sIndex < m_auxData.size(); sIndex++)
-   {
-      TensorConfig::save_tensor_config(cfg_file, AUX_DATA_PREFIX, sIndex, m_auxData.at(sIndex));
-   }
+      m_auxData.at(sIndex)->save(cfg_file, addIndex(AUX_DATA_PREFIX, sIndex));
 
    //write posterior propagation
    for (std::size_t pIndex = 0; pIndex < m_prior_types.size(); pIndex++)

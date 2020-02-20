@@ -37,7 +37,7 @@ void SideInfoConfig::save(ConfigFile& cfg_file, std::size_t prior_index) const
    cfg_file.put(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, m_throw_on_cholesky_error);
 
    //TensorConfig data
-   TensorConfig::save_tensor_config(cfg_file, sectionName, -1, m_sideInfo);
+   m_sideInfo->save(cfg_file, sectionName);
 }
 
 bool SideInfoConfig::restore(const ConfigFile& cfg_file, std::size_t prior_index)

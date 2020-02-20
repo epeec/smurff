@@ -126,24 +126,6 @@ void TensorConfig::set(std::uint64_t pos, PVec<> coords, double value)
     for(unsigned j=0; j<getNModes(); ++j) m_columns[j][pos] = coords[j];
 }
 
-void TensorConfig::save_tensor_config(ConfigFile& writer, const std::string& sec_name, int sec_idx, const std::shared_ptr<TensorConfig> &cfg)
-{
-   std::string sectionName = addIndex(sec_name, sec_idx);
-
-   if (cfg)
-   {
-      //save tensor config and noise config internally
-      cfg->save(writer, sectionName);
-   }
-   else
-   {
-      //save a placeholder since config can not serialize itself
-      writer.put(sectionName, FILE_TAG, NONE_VALUE);
-   }
-}
-
-
-
 std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const ConfigFile& cfg_file, const std::string& sec_name)
 {
    //restore filename
