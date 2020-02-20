@@ -6,6 +6,7 @@
 #include <cctype>
 #include <algorithm>
 #include <array>
+#include <set>
 
 #include <highfive/H5Easy.hpp>
 
@@ -33,7 +34,7 @@ namespace smurff {
 #define MM_FLD_PATTERN  "PATTERN"
 #define MM_SYM_GENERAL  "GENERAL"
 
-bool matrix_io::isMatrixExtension(const std::string& fname);
+bool matrix_io::isMatrixExtension(const std::string& fname)
 {
    const std::set<std::string> extensions = {
        EXTENSION_SDM,

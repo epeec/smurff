@@ -3,8 +3,10 @@
 #include <fstream>
 #include <algorithm>
 #include <numeric>
+#include <set>
 
 #include <Utils/Error.h>
+#include <Utils/StringUtils.h> 
 
 #include <SmurffCpp/IO/GenericIO.h>
 
@@ -16,7 +18,7 @@ namespace smurff {
 #define EXTENSION_CSV ".csv" //dense tensor (txt file)
 #define EXTENSION_DDT ".ddt" //dense double tensor (binary file)
 
-bool tensor_io::isTensorExtension(const std::string& fname);
+bool tensor_io::isTensorExtension(const std::string& fname)
 {
    const std::set<std::string> extensions = {
        EXTENSION_SDT,
