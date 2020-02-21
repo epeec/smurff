@@ -86,6 +86,10 @@ namespace smurff
       const std::vector<std::uint32_t>& getRows() const { return getColumn(0); }
       const std::vector<std::uint32_t>& getCols() const { return getColumn(1); }
       const std::vector<double>& getValues() const { return m_values; }
+      const columns_type& getColumns() const { 
+         THROWERROR_ASSERT_MSG(!isDense(), "Cannot get index-vector for dense TensorConfig");
+         return m_columns;
+      }
       const std::vector<std::uint32_t>& getColumn(int i) const { 
          THROWERROR_ASSERT_MSG(!isDense(), "Cannot get index-vector for dense TensorConfig");
          return m_columns[i];
@@ -98,7 +102,11 @@ namespace smurff
          THROWERROR_ASSERT_MSG(!isDense(), "Cannot get index-vector for dense TensorConfig");
          return m_columns[i];
       }
-
+      columns_type& getColumns() { 
+         THROWERROR_ASSERT_MSG(!isDense(), "Cannot get index-vector for dense TensorConfig");
+         return m_columns;
+      }
+      
    public:
       static std::shared_ptr<TensorConfig> restore_tensor_config(const ConfigFile& reader, const std::string& sec_name);
 

@@ -20,4 +20,7 @@ Matrix slice(const TensorConfig& tensorConfig
    , const std::unordered_map<std::uint64_t, std::uint32_t>& dimCoords
     );
 
+   // Conversion of TensorConfig to SparseTensor
+   SparseTensor sparse_to_tensor(const smurff::TensorConfig& tensorConfig);
+
 }}

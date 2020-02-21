@@ -99,4 +99,11 @@ Matrix tensor_utils::slice( const TensorConfig& tensorConfig
    return sliceMatrix;
 }
 
+
+// Conversion of TensorConfig to SparseTensor
+SparseTensor tensor_utils::sparse_to_tensor(const smurff::TensorConfig& tensorConfig)
+{
+   return SparseTensor{tensorConfig.getDims(), tensorConfig.getColumns(), tensorConfig.getValues()};
+}
+
 } // end namespace smurff

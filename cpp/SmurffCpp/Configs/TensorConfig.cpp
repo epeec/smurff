@@ -10,6 +10,7 @@
 #include <SmurffCpp/Utils/HDF5.h>
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
+#include <SmurffCpp/Utils/TensorUtils.h>
 
 namespace smurff {
 
@@ -46,6 +47,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    , m_values(values, values + m_nnz)
 {
    check();
+
 }
 
 // Sparse double tensor constructors
@@ -66,6 +68,11 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    }
 
    check();
+
+   if (!isMatrix())
+   {
+      setData(tensor_utils::sparse_to_tensor(*this), isScarce);
+   }
 }
 
 // Sparse binary tensor constructors
@@ -85,6 +92,11 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    }
 
    check();
+   if (!isMatrix())
+   {
+      setData(tensor_utils::sparse_to_tensor(*this), isScarce);
+   }
+
 }
 
 TensorConfig::~TensorConfig()
