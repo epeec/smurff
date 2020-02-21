@@ -89,6 +89,16 @@ void DataConfig::setData(const SparseMatrix &m)
    m_nnz = m.nonZeros();
 }
 
+void DataConfig::setData(const Tensor &m)
+{
+   m_dense_tensor_data = m;
+   m_isDense = true;
+   m_isBinary = false;
+   m_isMatrix = false;
+   m_dims = m.m_dims;
+   m_nnz = m.m_values.size();
+}
+
 void DataConfig::setData(const SparseTensor &m)
 {
    m_sparse_tensor_data = m;

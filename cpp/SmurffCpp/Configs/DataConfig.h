@@ -37,6 +37,7 @@ namespace smurff
 
       Matrix       m_dense_matrix_data;
       SparseMatrix m_sparse_matrix_data;
+      Tensor       m_dense_tensor_data;
       SparseTensor m_sparse_tensor_data;
 
    public:
@@ -44,6 +45,7 @@ namespace smurff
 
       DataConfig() {}
 
+   protected:
       DataConfig(bool isDense, bool isBinary, bool isScarce,
                  std::vector<std::uint64_t> m_dims, std::uint64_t nnz, 
                  const NoiseConfig& noiseConfig, PVec<> pos = {});
