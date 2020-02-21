@@ -106,33 +106,12 @@ struct ConfigFiller
             (config.*Func)(vm[name].as<T>());
     }
 
-    template <void (Config::*Func)(std::shared_ptr<MatrixConfig>)>
-    void set_matrix(std::string name, bool set_noise)
-    {
-        if (vm.count(name) && !vm[name].defaulted())
-        {
-            auto matrix_config = matrix_io::read_matrix(vm[name].as<std::string>(), true);
-            matrix_config->setNoiseConfig(NoiseConfig(NoiseConfig::NOISE_TYPE_DEFAULT_VALUE));
-            (this->config.*Func)(matrix_config); 
-        }
-    }
-    template <void (Config::*Func)(std::shared_ptr<TensorConfig>)>
-    void set_tensor(std::string name, bool set_noise)
-    {
-        if (vm.count(name) && !vm[name].defaulted())
-        {
-            auto tensor_config = generic_io::read_data_config(vm[name].as<std::string>(), true);
-            tensor_config->setNoiseConfig(NoiseConfig(NoiseConfig::NOISE_TYPE_DEFAULT_VALUE));
-            (this->config.*Func)(tensor_config); 
-        }
-    }
     template <void (Config::*Func)(std::shared_ptr<DataConfig>)>
-    void set_data(std::string name, bool set_noise)
+    void set_data(std::string name)
     {
         if (vm.count(name) && !vm[name].defaulted())
         {
             auto tensor_config = generic_io::read_data_config(vm[name].as<std::string>(), true);
-            tensor_config->setNoiseConfig(NoiseConfig(NoiseConfig::NOISE_TYPE_DEFAULT_VALUE));
             (this->config.*Func)(tensor_config); 
         }
     }       
@@ -174,11 +153,11 @@ fill_config(const po::variables_map &vm)
         config.setIniName(ini_filename);
     }
 
-    filler.set_data<&Config::setPredict>(PREDICT_NAME, false);
-    filler.set_data<&Config::setRowFeatures>(ROW_FEAT_NAME, false);
-    filler.set_data<&Config::setColFeatures>(COL_FEAT_NAME, false);
-    filler.set_data<&Config::setTest>(TEST_NAME, false);
-    filler.set_data<&Config::setTrain>(TRAIN_NAME, true);
+    filler.set_data<&Config::setPredict>(PREDICT_NAME);
+    filler.set_data<&Config::setRowFeatures>(ROW_FEAT_NAME);
+    filler.set_data<&Config::setColFeatures>(COL_FEAT_NAME);
+    filler.set_data<&Config::setTest>(TEST_NAME);
+    filler.set_data<&Config::setTrain>(TRAIN_NAME);
 
     filler.set_priors(PRIOR_NAME);
 
