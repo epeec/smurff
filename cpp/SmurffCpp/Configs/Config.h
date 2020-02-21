@@ -74,13 +74,13 @@ private:
    ActionTypes m_action;
 
    //-- train and test
-   std::shared_ptr<TensorConfig> m_train;
+   std::shared_ptr<DataConfig> m_train;
    std::shared_ptr<DataConfig> m_test;
    std::shared_ptr<DataConfig> m_row_features;
    std::shared_ptr<DataConfig> m_col_features;
 
    //-- aux_data (contains pos)
-   std::vector<std::shared_ptr<TensorConfig> > m_auxData; //set of aux data matrices for normal and spikeandslab priors
+   std::vector<std::shared_ptr<DataConfig> > m_auxData; //set of aux data matrices for normal and spikeandslab priors
 
    //-- sideinfo per mode
    std::map<int, SideInfoConfig> m_sideInfoConfigs;
@@ -145,12 +145,12 @@ public:
        return m_action == ActionTypes::predict;
    }
 
-   std::shared_ptr<TensorConfig> getTrain() const
+   std::shared_ptr<DataConfig> getTrain() const
    {
       return m_train;
    }
 
-   void setTrain(std::shared_ptr<TensorConfig> value)
+   void setTrain(std::shared_ptr<DataConfig> value)
    {
       m_train = value;
       m_action = ActionTypes::train;
@@ -195,12 +195,12 @@ public:
       m_action = ActionTypes::predict;
    }
 
-   const std::vector< std::shared_ptr<TensorConfig> >& getAuxData() const
+   const std::vector< std::shared_ptr<DataConfig> >& getAuxData() const
    {
       return m_auxData;
    }
 
-   Config& addAuxData(std::shared_ptr<TensorConfig> c)
+   Config& addAuxData(std::shared_ptr<DataConfig> c)
    {
       m_auxData.push_back(c);
       return *this;
@@ -220,7 +220,7 @@ public:
        return m_sideInfoConfigs.find(mode) != m_sideInfoConfigs.end();
    }
 
-   std::vector< std::shared_ptr<TensorConfig> > getData() const
+   std::vector< std::shared_ptr<DataConfig> > getData() const
    {
        auto data = m_auxData;
        data.push_back(m_train);
