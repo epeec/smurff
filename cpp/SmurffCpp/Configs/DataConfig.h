@@ -48,7 +48,8 @@ namespace smurff
    public:
       const NoiseConfig& getNoiseConfig() const;
       void setNoiseConfig(const NoiseConfig& value);
-
+     
+      bool isMatrix() const;
       bool isDense() const;
       bool isBinary() const;
       bool isScarce() const;

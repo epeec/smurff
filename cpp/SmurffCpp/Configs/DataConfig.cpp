@@ -15,6 +15,7 @@ namespace smurff {
 
 static const std::string POS_TAG = "pos";
 static const std::string FILE_TAG = "file";
+static const std::string DATA_TAG = "data";
 static const std::string DENSE_TAG = "dense";
 static const std::string SCARCE_TAG = "scarce";
 static const std::string SPARSE_TAG = "sparse";
@@ -80,6 +81,11 @@ bool DataConfig::isBinary() const
 bool DataConfig::isScarce() const
 {
    return m_isScarce;
+}
+
+bool DataConfig::isMatrix() const
+{
+   return getNModes() == 2;
 }
 
 std::uint64_t DataConfig::getNNZ() const
@@ -173,6 +179,13 @@ void DataConfig::save(ConfigFile& writer, const std::string& sectionName) const
    }
 
    //write tensor config filename
+   if (isMatrix() && isDense()) 
+      writer.write(sectionName, DATA_TAG, m_dense_matrix_data);
+   else if (isMatrix() && !isDense()) 
+      writer.write(sectionName, DATA_TAG, m_sparse_matrix_data);
+   else 
+      writer.write(sectionName, DATA_TAG, m_sparse_tensor_data);
+
    writer.put(sectionName, FILE_TAG, this->getFilename());
 
    //write tensor config type

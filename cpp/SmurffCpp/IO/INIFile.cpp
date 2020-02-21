@@ -58,7 +58,7 @@ bool INIFile::hasSection(const std::string &name) const
 
 bool INIFile::hasDataSet(const std::string &name, const std::string &tag) const
 {
-   THROWERROR_NOTIMPL();
+   return false;
 }
 
 void INIFile::read(const std::string& section, const std::string& tag, Vector &) const
@@ -83,22 +83,18 @@ void INIFile::read(const std::string& section, const std::string& tag, SparseTen
 
 void INIFile::write(const std::string& section, const std::string& tag, const Vector &M)
 {
-   THROWERROR_NOTIMPL();
 }
 
 void INIFile::write(const std::string& section, const std::string& tag, const Matrix &M)
 {
-   THROWERROR_NOTIMPL();
 }
 
 void INIFile::write(const std::string& section, const std::string& tag, const SparseMatrix &X)
 {
-   THROWERROR_NOTIMPL();
 }
 
 void INIFile::write(const std::string& section, const std::string& tag, const SparseTensor &X)
 {
-   THROWERROR_NOTIMPL();
 }
 
 } //end namespace smurff
