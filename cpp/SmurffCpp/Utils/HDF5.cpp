@@ -38,16 +38,17 @@ void HDF5::read(const std::string& section, const std::string& tag, Matrix &X) c
    X.resize(dims[0], dims[1]);
    dataset.read(X.data());
 
-   // convert to ColMajor if needed (HDF5 always stores row-major)
    if (!X.IsRowMajor)
    {
-      X = Eigen::Map<Eigen::Matrix<
+      Matrix colMajor = Eigen::Map<Eigen::Matrix<
             typename Matrix::Scalar,
             Matrix::RowsAtCompileTime,
             Matrix::ColsAtCompileTime,
-               Eigen::RowMajor,
+            Matrix::ColsAtCompileTime==1?Eigen::ColMajor:Eigen::RowMajor,
             Matrix::MaxRowsAtCompileTime,
-               Matrix::MaxColsAtCompileTime>>(X.data(), dims[0], dims[1]);
+            Matrix::MaxColsAtCompileTime>>(X.data(), dims[0], dims[1]);
+
+      std::swap(colMajor, X);
    }
 }
 
