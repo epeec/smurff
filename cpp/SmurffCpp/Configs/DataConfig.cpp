@@ -308,4 +308,15 @@ bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name
    return true;
 }
 
+
+std::shared_ptr<Data> DataConfig::create(std::shared_ptr<IDataCreator> creator) const
+{
+   THROWERROR_NOTIMPL()
+}
+
+void DataConfig::write(std::shared_ptr<IDataWriter> writer) const
+{
+   THROWERROR_NOTIMPL()
+}
+
 } // end namespace smurff

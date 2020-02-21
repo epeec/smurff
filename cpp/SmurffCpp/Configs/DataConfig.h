@@ -88,10 +88,10 @@ namespace smurff
       bool restore(const ConfigFile& reader, const std::string& sec_name);
 
    public:
-      virtual std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const = 0;
+      virtual std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const;
 
    public:
-      virtual void write(std::shared_ptr<IDataWriter> writer) const = 0;
+      virtual void write(std::shared_ptr<IDataWriter> writer) const;
 
    public:
       void check() const;
