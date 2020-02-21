@@ -68,6 +68,36 @@ void DataConfig::check() const
 // other methods
 //
 
+void DataConfig::setData(const Matrix &m)
+{
+   m_dense_matrix_data = m;
+   m_isDense = true;
+   m_isBinary = false;
+   m_isScarce = false;
+   m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
+   m_nnz = m.nonZeros();
+}
+
+void DataConfig::setData(const SparseMatrix &m, bool isScarce)
+{
+   m_sparse_matrix_data = m;
+   m_isDense = false;
+   m_isBinary = false;
+   m_isScarce = isScarce;
+   m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
+   m_nnz = m.nonZeros();
+}
+
+void DataConfig::setData(const SparseTensor &m, bool isScarce)
+{
+   m_sparse_tensor_data = m;
+   m_isDense = false;
+   m_isBinary = false;
+   m_isScarce = isScarce;
+   m_dims = m.m_dims;
+   m_nnz = m.m_values.size();
+}
+
 bool DataConfig::isDense() const
 {
    return m_isDense;

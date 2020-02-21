@@ -41,11 +41,17 @@ namespace smurff
    public:
       virtual ~DataConfig();
 
+      DataConfig();
+
       DataConfig(bool isDense, bool isBinary, bool isScarce,
                  std::vector<std::uint64_t> m_dims, std::uint64_t nnz, 
                  const NoiseConfig& noiseConfig, PVec<> pos = {});
 
    public:
+      void setData(const       Matrix &m);
+      void setData(const SparseMatrix &m, bool isScarce);
+      void setData(const SparseTensor &m, bool isScarce);
+
       const NoiseConfig& getNoiseConfig() const;
       void setNoiseConfig(const NoiseConfig& value);
      
