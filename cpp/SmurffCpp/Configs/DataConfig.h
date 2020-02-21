@@ -42,7 +42,7 @@ namespace smurff
    public:
       virtual ~DataConfig();
 
-      DataConfig();
+      DataConfig() {}
 
       DataConfig(bool isDense, bool isBinary, bool isScarce,
                  std::vector<std::uint64_t> m_dims, std::uint64_t nnz, 
@@ -50,8 +50,8 @@ namespace smurff
 
    public:
       void setData(const       Matrix &m);
-      void setData(const SparseMatrix &m, bool isScarce);
-      void setData(const SparseTensor &m, bool isScarce);
+      void setData(const SparseMatrix &m);
+      void setData(const SparseTensor &m);
 
       const Matrix       &getDenseMatrixData()  const;
       const SparseMatrix &getSparseMatrixData() const;

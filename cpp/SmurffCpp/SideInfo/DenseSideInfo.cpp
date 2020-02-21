@@ -3,9 +3,9 @@
 
 namespace smurff {
 
-DenseSideInfo::DenseSideInfo(const std::shared_ptr<MatrixConfig> &side_info)
+DenseSideInfo::DenseSideInfo(const DataConfig &side_info)
 {
-   m_side_info = std::make_shared<Matrix>(matrix_utils::dense_to_eigen(*side_info));
+   m_side_info = std::make_shared<Matrix>(side_info.getDenseMatrixData());
 }
 
 int DenseSideInfo::cols() const

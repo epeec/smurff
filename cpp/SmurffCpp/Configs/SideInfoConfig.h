@@ -10,7 +10,7 @@ namespace smurff
 {
    class ConfigFile;
 
-   class SideInfoConfig
+   class SideInfoConfig : public DataConfig
    {
    public:
       static double BETA_PRECISION_DEFAULT_VALUE;
@@ -20,22 +20,10 @@ namespace smurff
       bool m_direct;
       bool m_throw_on_cholesky_error;
 
-      std::shared_ptr<MatrixConfig> m_sideInfo; //side info matrix for macau and macauone prior
-
    public:
       SideInfoConfig();
 
    public:
-      std::shared_ptr<MatrixConfig> getSideInfo() const
-      {
-         return m_sideInfo;
-      }
-
-      void setSideInfo(std::shared_ptr<MatrixConfig> value)
-      {
-         m_sideInfo = value;
-      }
-
       double getTol() const
       {
          return m_tol;
@@ -69,5 +57,11 @@ namespace smurff
    public:
       void save(ConfigFile& writer, std::size_t prior_index) const;
       bool restore(const ConfigFile& reader, std::size_t prior_index);
+
+   public:
+      std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const override;
+
+   public:
+      void write(std::shared_ptr<IDataWriter> writer) const override;
    };
 }

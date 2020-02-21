@@ -74,7 +74,9 @@ std::map<int, ExpectedResult> expectedResults = {
 
 SideInfoConfig makeSideInfoConfig(const MatrixConfig &mcfg, bool direct, double tol) {
   SideInfoConfig picfg;
-  picfg.setSideInfo(std::make_shared<MatrixConfig>(mcfg));
+  if (mcfg.isDense()) picfg.setData(matrix_utils::dense_to_eigen(mcfg));
+  else                picfg.setData(matrix_utils::sparse_to_eigen(mcfg));
+  picfg.setNoiseConfig(mcfg.getNoiseConfig());
   picfg.setDirect(direct);
   picfg.setTol(tol);
 

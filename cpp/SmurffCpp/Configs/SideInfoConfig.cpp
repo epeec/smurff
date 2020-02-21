@@ -31,13 +31,13 @@ void SideInfoConfig::save(ConfigFile& cfg_file, std::size_t prior_index) const
 {
    std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
 
-   //macau data
+   //macau config params
    cfg_file.put(sectionName, TOL_TAG, m_tol);
    cfg_file.put(sectionName, DIRECT_TAG, m_direct);
    cfg_file.put(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, m_throw_on_cholesky_error);
 
-   //TensorConfig data
-   m_sideInfo->save(cfg_file, sectionName);
+   //data
+   DataConfig::save(cfg_file, sectionName);
 }
 
 bool SideInfoConfig::restore(const ConfigFile& cfg_file, std::size_t prior_index)
@@ -54,10 +54,20 @@ bool SideInfoConfig::restore(const ConfigFile& cfg_file, std::size_t prior_index
    m_direct = cfg_file.get(sectionName, DIRECT_TAG, false);
    m_throw_on_cholesky_error = cfg_file.get(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, false);
 
-   auto tensor_cfg = TensorConfig::restore_tensor_config(cfg_file, sectionName);
-   m_sideInfo = std::dynamic_pointer_cast<MatrixConfig>(tensor_cfg);
+   DataConfig::restore(cfg_file, sectionName);
 
-   return (bool)m_sideInfo;
+   return true;
+}
+
+
+std::shared_ptr<Data> SideInfoConfig::create(std::shared_ptr<IDataCreator> creator) const
+{
+   THROWERROR_NOTIMPL();
+}
+
+void SideInfoConfig::write(std::shared_ptr<IDataWriter> writer) const
+{
+   THROWERROR_NOTIMPL();
 }
 
 } // end namespace smurff

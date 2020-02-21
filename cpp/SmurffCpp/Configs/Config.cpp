@@ -277,10 +277,8 @@ bool Config::validate() const
    {
       int mode = p.first;
       auto &configItem = p.second;
-      const auto &sideInfo = configItem.getSideInfo();
-      THROWERROR_ASSERT(sideInfo);
 
-      if (sideInfo->getDims()[0] != m_train->getDims()[mode])
+      if (configItem.getDims()[0] != m_train->getDims()[mode])
       {
          std::stringstream ss;
          ss << "Side info should have the same number of rows as size of dimension " << mode << " in train data";

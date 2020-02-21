@@ -40,9 +40,7 @@ std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(std::shared_ptr<S
                                                                const SideInfoConfig& config_item)
 {
    std::shared_ptr<MacauPrior> prior(new MacauPrior(session, -1));
-
-   const auto& side_info_config = config_item.getSideInfo();
-   const auto& noise_config = side_info_config->getNoiseConfig();
+   const auto& noise_config = config_item.getNoiseConfig();
 
    switch (noise_config.getNoiseType())
    {
@@ -74,10 +72,9 @@ std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(std::shared_ptr<S
 {
    Factory &subFactory = dynamic_cast<Factory &>(*this);
 
-   const auto &si = config_item.getSideInfo();
    std::shared_ptr<ISideInfo> side_info;
-   if (si->isDense()) side_info = std::make_shared<DenseSideInfo>(si);
-   else               side_info = std::make_shared<SparseSideInfo>(si);
+   if (config_item.isDense()) side_info = std::make_shared<DenseSideInfo>(config_item);
+   else                       side_info = std::make_shared<SparseSideInfo>(config_item);
 
    return subFactory.create_macau_prior(session, prior_type, side_info, config_item);
 }

@@ -15,7 +15,7 @@ public:
    SparseMatrix F;
    SparseMatrix Ft;
 
-   SparseSideInfo(const std::shared_ptr<MatrixConfig> &);
+   SparseSideInfo(const DataConfig &);
    ~SparseSideInfo() override;
 
 public:

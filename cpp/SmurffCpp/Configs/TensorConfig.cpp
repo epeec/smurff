@@ -71,7 +71,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
 
    if (!isMatrix())
    {
-      setData(tensor_utils::sparse_to_tensor(*this), isScarce);
+      setData(tensor_utils::sparse_to_tensor(*this));
    }
 }
 
@@ -94,7 +94,7 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
    check();
    if (!isMatrix())
    {
-      setData(tensor_utils::sparse_to_tensor(*this), isScarce);
+      setData(tensor_utils::sparse_to_tensor(*this));
    }
 
 }

@@ -7,8 +7,8 @@
 
 namespace smurff {
 
-SparseSideInfo::SparseSideInfo(const std::shared_ptr<MatrixConfig> &mc) {
-    F = matrix_utils::sparse_to_eigen(*mc);
+SparseSideInfo::SparseSideInfo(const DataConfig &mc) {
+    F = mc.getSparseMatrixData();
     Ft = F.transpose();
 }
 

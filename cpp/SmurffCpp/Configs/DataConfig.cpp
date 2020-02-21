@@ -79,23 +79,21 @@ void DataConfig::setData(const Matrix &m)
    m_nnz = m.nonZeros();
 }
 
-void DataConfig::setData(const SparseMatrix &m, bool isScarce)
+void DataConfig::setData(const SparseMatrix &m)
 {
    m_sparse_matrix_data = m;
    m_isDense = false;
    m_isBinary = false;
-   m_isScarce = isScarce;
    m_isMatrix = true;
    m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
    m_nnz = m.nonZeros();
 }
 
-void DataConfig::setData(const SparseTensor &m, bool isScarce)
+void DataConfig::setData(const SparseTensor &m)
 {
    m_sparse_tensor_data = m;
    m_isDense = false;
    m_isBinary = false;
-   m_isScarce = isScarce;
    m_isMatrix = false;
    m_dims = m.m_dims;
    m_nnz = m.m_values.size();
@@ -287,7 +285,7 @@ bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name
       }
       else
       {
-         /* .. */
+         THROWERROR_NOTIMPL();
       }
    }
       

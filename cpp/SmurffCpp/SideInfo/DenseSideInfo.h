@@ -17,7 +17,7 @@ namespace smurff {
       std::shared_ptr<Matrix> m_side_info;
 
    public:
-      DenseSideInfo(const std::shared_ptr<MatrixConfig> &);
+      DenseSideInfo(const DataConfig &);
 
    public:
       int cols() const override;

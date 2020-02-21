@@ -100,7 +100,7 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
 
   PredictSession predict_session(session->getOutputFile());
 
-  auto sideInfoMatrix = matrix_utils::dense_to_eigen(*rowSideInfoDenseMatrixConfig.getSideInfo());
+  auto sideInfoMatrix = rowSideInfoDenseMatrixConfig.getDenseMatrixData();
   auto trainMatrix = smurff::matrix_utils::dense_to_eigen(trainDenseMatrix);
 
 #if 0
@@ -166,11 +166,11 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
     std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigCols = {0, 0, 0, 0};
     std::vector<double> rowSideInfoSparseMatrixConfigVals = {2, 4, -2, -4};
 
-    auto mcfg =
-        std::make_shared<MatrixConfig>(4, 1, rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols,
-                                       rowSideInfoSparseMatrixConfigVals, nc, true);
+    auto mcfg = MatrixConfig(4, 1, rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols,
+                                   rowSideInfoSparseMatrixConfigVals, nc, true);
 
-    rowSideInfoConfig.setSideInfo(mcfg);
+    rowSideInfoConfig.setData(matrix_utils::sparse_to_eigen(mcfg));
+    rowSideInfoConfig.setNoiseConfig(nc);
     rowSideInfoConfig.setDirect(true);
   }
 
@@ -185,7 +185,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   auto in_matrix_predictions = predict_session_in.predict(config.getTest())->m_predictions;
 
   PredictSession predict_session_out(session->getOutputFile());
-  auto sideInfoMatrix = matrix_utils::sparse_to_eigen(*rowSideInfoConfig.getSideInfo());
+  auto sideInfoMatrix = rowSideInfoConfig.getSparseMatrixData();
   int d = config.getTrain()->getDims()[0];
   for (int r = 0; r < d; r++) {
     auto feat = sideInfoMatrix.row(r).transpose();

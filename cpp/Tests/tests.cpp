@@ -179,8 +179,9 @@ using namespace std;
 MacauPrior* make_dense_prior(int nlatent, const std::vector<double> & ptr, int nrows, int ncols, bool comp_FtF) 
 {
    auto ret = new MacauPrior(0, 0);
-   std::shared_ptr<MatrixConfig> Fmat_ptr = std::make_shared<MatrixConfig>(nrows, ncols, ptr, fixed_ncfg);
-   std::shared_ptr<DenseSideInfo> side_info = std::make_shared<DenseSideInfo>(Fmat_ptr);
+   std::shared_ptr<DenseSideInfo> side_info = std::make_shared<DenseSideInfo>(
+    MatrixConfig(nrows, ncols, ptr, fixed_ncfg)
+   );
    ret->addSideInfo(side_info, 10.0, 1e-6, comp_FtF, true, false);
    ret->FtF_plus_precision.resize(ncols, ncols);
    ret->Features->At_mul_A(ret->FtF_plus_precision);
