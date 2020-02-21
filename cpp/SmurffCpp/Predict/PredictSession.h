@@ -84,7 +84,7 @@ private:
     void predict(ResultItem &, const Step &sf);
 
     // predict all elements in Ytest
-    std::shared_ptr<Result> predict(std::shared_ptr<TensorConfig> Y);
+    std::shared_ptr<Result> predict(std::shared_ptr<DataConfig> Y);
     void predict(Result &, const Step &);
 
     // predict element or elements based on sideinfo

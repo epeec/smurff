@@ -126,7 +126,16 @@ struct ConfigFiller
             (this->config.*Func)(tensor_config); 
         }
     }
-        
+    template <void (Config::*Func)(std::shared_ptr<DataConfig>)>
+    void set_data(std::string name, bool set_noise)
+    {
+        if (vm.count(name) && !vm[name].defaulted())
+        {
+            auto tensor_config = generic_io::read_data_config(vm[name].as<std::string>(), true);
+            tensor_config->setNoiseConfig(NoiseConfig(NoiseConfig::NOISE_TYPE_DEFAULT_VALUE));
+            (this->config.*Func)(tensor_config); 
+        }
+    }       
     void set_priors(std::string name)
     {
         if (vm.count(name) && !vm[name].defaulted())
@@ -165,10 +174,10 @@ fill_config(const po::variables_map &vm)
         config.setIniName(ini_filename);
     }
 
-    filler.set_tensor<&Config::setPredict>(PREDICT_NAME, false);
+    filler.set_data<&Config::setPredict>(PREDICT_NAME, false);
     filler.set_matrix<&Config::setRowFeatures>(ROW_FEAT_NAME, false);
     filler.set_matrix<&Config::setColFeatures>(COL_FEAT_NAME, false);
-    filler.set_tensor<&Config::setTest>(TEST_NAME, false);
+    filler.set_data<&Config::setTest>(TEST_NAME, false);
     filler.set_tensor<&Config::setTrain>(TRAIN_NAME, true);
 
     filler.set_priors(PRIOR_NAME);

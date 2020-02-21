@@ -91,7 +91,7 @@ void PredictSession::init()
 {
     THROWERROR_ASSERT(m_has_config);
     THROWERROR_ASSERT(m_config.getTest());
-    m_result = std::make_shared<Result>(m_config.getTest(), m_config.getNSamples());
+    m_result = std::make_shared<Result>(*m_config.getTest(), m_config.getNSamples());
 
     m_pos = m_stepfiles.rbegin();
     m_iter = 0;
@@ -274,9 +274,9 @@ ResultItem PredictSession::predict(PVec<> pos)
 }
 
 // predict all elements in Ytest
-std::shared_ptr<Result> PredictSession::predict(std::shared_ptr<TensorConfig> Y)
+std::shared_ptr<Result> PredictSession::predict(std::shared_ptr<DataConfig> Y)
 {
-    auto res = std::make_shared<Result>(Y);
+    auto res = std::make_shared<Result>(*Y);
 
     for (const auto s : m_stepfiles)
     {

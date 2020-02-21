@@ -49,14 +49,21 @@ double calc_auc(const std::vector<Item> &predictions, double threshold)
 class Result
 {
 public:
-   //c'tor with sparse TensorConfig
-   Result(std::shared_ptr<TensorConfig> Y, int nsamples = 0);
+   //c'tor with sparse matrix or tensor
+   Result(const DataConfig   &Y, int nsamples = 0);
+   Result(const SparseMatrix &Y, int nsamples = 0);
+   Result(const SparseTensor &Y, int nsamples = 0);
 
    //fill with dense value
    Result(PVec<> lo, PVec<> hi, double value, int nsamples = 0);
 
    //empty c'tor
    Result();
+
+private:
+   //-- c'tor helpers
+   void set(const SparseMatrix &Y, int nsamples);
+   void set(const SparseTensor &Y, int nsamples);
 
 public:
    //sparse representation of test matrix

@@ -28,25 +28,32 @@ namespace smurff {
 
 Result::Result() {}
 
-//Y - test sparse matrix
-Result::Result(std::shared_ptr<TensorConfig> Y, int nsamples)
-    : m_dims(Y->getDims())
+Result::Result(const DataConfig &Y, int nsamples)
+    : m_dims(Y.getDims())
 {
-   if (!Y)
-   {
-      THROWERROR("test data is not initialized");
-   }
-
-   if(Y->isDense())
+   if(Y.isDense())
    {
       THROWERROR("test data should be sparse");
    }
 
-   for(std::uint64_t i = 0; i < Y->getNNZ(); i++)
-   {
-      const auto p = Y->get(i);
-      m_predictions.push_back(ResultItem(p.first, p.second, nsamples));
-   }
+   if (Y.isMatrix()) set(Y.getSparseMatrixData(), nsamples);
+   else set(Y.getSparseTensorData(), nsamples);
+}
+
+
+//Y - test sparse matrix
+Result::Result(const SparseMatrix &Y, int nsamples)
+    : m_dims({Y.rows(), Y.cols()})
+{
+    set(Y, nsamples);
+}
+
+
+//Y - test sparse tensor
+Result::Result(const SparseTensor &Y, int nsamples)
+    : m_dims(Y.m_dims)
+{
+    set(Y, nsamples);
 }
 
 Result::Result(PVec<> lo, PVec<> hi, double value, int nsamples)
@@ -59,16 +66,35 @@ Result::Result(PVec<> lo, PVec<> hi, double value, int nsamples)
    }
 }
 
+void Result::set(const SparseMatrix &Y, int nsamples)
+{
+   for (int k = 0; k < Y.outerSize(); ++k)
+      for (SparseMatrix::InnerIterator it(Y,k); it; ++it)
+      {
+         PVec<> pos = {it.row(), it.col()};
+         m_predictions.push_back(ResultItem(pos, it.value(), nsamples));
+      }
+}
+
+void Result::set(const SparseTensor &Y, int nsamples)
+{
+   for(std::uint64_t i = 0; i < Y.getNNZ(); i++)
+   {
+      const auto p = Y.get(i);
+      m_predictions.push_back(ResultItem(p.first, p.second, nsamples));
+   }
+}
+
 void Result::init()
 {
    total_pos = 0;
    if (classify)
    {
-         for (const auto &p : m_predictions)
-         {
-               int is_positive = p.val > threshold;
-               total_pos += is_positive;
-         }
+      for (const auto &p : m_predictions)
+      {
+         int is_positive = p.val > threshold;
+         total_pos += is_positive;
+      }
    }
 }
 

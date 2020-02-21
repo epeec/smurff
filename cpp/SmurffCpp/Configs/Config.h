@@ -75,7 +75,7 @@ private:
 
    //-- train and test
    std::shared_ptr<TensorConfig> m_train;
-   std::shared_ptr<TensorConfig> m_test;
+   std::shared_ptr<DataConfig> m_test;
    std::shared_ptr<MatrixConfig> m_row_features;
    std::shared_ptr<MatrixConfig> m_col_features;
 
@@ -156,12 +156,12 @@ public:
       m_action = ActionTypes::train;
    }
 
-   std::shared_ptr<TensorConfig> getTest() const
+   std::shared_ptr<DataConfig> getTest() const
    {
       return m_test;
    }
 
-   void setTest(std::shared_ptr<TensorConfig> value)
+   void setTest(std::shared_ptr<DataConfig> value)
    {
       m_test = value;
    }
@@ -189,7 +189,7 @@ public:
    }
 
 
-   void setPredict(std::shared_ptr<TensorConfig> value)
+   void setPredict(std::shared_ptr<DataConfig> value)
    {
       m_test = value;
       m_action = ActionTypes::predict;

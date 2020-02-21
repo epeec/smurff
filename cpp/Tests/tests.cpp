@@ -73,7 +73,7 @@ TEST_CASE( "utils/eval_rmse", "Test if prediction variance is correctly calculat
   
   std::shared_ptr<MatrixConfig> S(new MatrixConfig(1, 1, 1, rows.data(), cols.data(), vals.data(), fixed_ncfg, false));
   std::shared_ptr<Data> data(new ScarceMatrixData(matrix_utils::sparse_to_eigen(*S)));
-  std::shared_ptr<Result> p(new Result(S));
+  std::shared_ptr<Result> p(new Result(*S));
 
   data->setNoiseModel(NoiseFactory::create_noise_model(fixed_ncfg));
 
