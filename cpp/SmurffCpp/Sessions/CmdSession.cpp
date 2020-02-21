@@ -175,8 +175,8 @@ fill_config(const po::variables_map &vm)
     }
 
     filler.set_data<&Config::setPredict>(PREDICT_NAME, false);
-    filler.set_matrix<&Config::setRowFeatures>(ROW_FEAT_NAME, false);
-    filler.set_matrix<&Config::setColFeatures>(COL_FEAT_NAME, false);
+    filler.set_data<&Config::setRowFeatures>(ROW_FEAT_NAME, false);
+    filler.set_data<&Config::setColFeatures>(COL_FEAT_NAME, false);
     filler.set_data<&Config::setTest>(TEST_NAME, false);
     filler.set_tensor<&Config::setTrain>(TRAIN_NAME, true);
 

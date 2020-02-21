@@ -56,7 +56,7 @@ void PredictSession::run()
     }
     else
     {
-        std::shared_ptr<MatrixConfig> side_info;
+        std::shared_ptr<DataConfig> side_info;
         int mode;
 
         if (m_config.getRowFeatures())
@@ -76,12 +76,12 @@ void PredictSession::run()
 
         if (side_info->isDense())
         {
-            auto dense_matrix = matrix_utils::dense_to_eigen(*side_info);
+            const auto &dense_matrix = side_info->getDenseMatrixData();
             predict(mode, dense_matrix, m_config.getSaveFreq());
         }
         else
         {
-            auto sparse_matrix = matrix_utils::sparse_to_eigen(*side_info);
+            const auto &sparse_matrix = side_info->getSparseMatrixData();
             predict(mode, sparse_matrix, m_config.getSaveFreq());
         }
     }
