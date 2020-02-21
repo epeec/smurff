@@ -52,6 +52,10 @@ namespace smurff
       void setData(const SparseMatrix &m, bool isScarce);
       void setData(const SparseTensor &m, bool isScarce);
 
+      const Matrix       &getDenseMatrixData()  const;
+      const SparseMatrix &getSparseMatrixData() const;
+      const SparseTensor &getSparseTensorData() const;
+
       const NoiseConfig& getNoiseConfig() const;
       void setNoiseConfig(const NoiseConfig& value);
      

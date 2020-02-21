@@ -98,6 +98,24 @@ void DataConfig::setData(const SparseTensor &m, bool isScarce)
    m_nnz = m.m_values.size();
 }
 
+const Matrix &DataConfig::getDenseMatrixData() const
+{
+   THROWERROR_ASSERT(isDense() && isMatrix());
+   return m_dense_matrix_data;
+}
+
+const SparseMatrix &DataConfig::getSparseMatrixData() const
+{
+   THROWERROR_ASSERT(!isDense() && isMatrix());
+   return m_sparse_matrix_data;
+}
+
+const SparseTensor &DataConfig::getSparseTensorData() const
+{
+   THROWERROR_ASSERT(!isDense() && !isMatrix());
+   return m_sparse_tensor_data;
+}
+
 bool DataConfig::isDense() const
 {
    return m_isDense;
@@ -210,11 +228,11 @@ void DataConfig::save(ConfigFile& writer, const std::string& sectionName) const
 
    //write tensor config filename
    if (isMatrix() && isDense()) 
-      writer.write(sectionName, DATA_TAG, m_dense_matrix_data);
+      writer.write(sectionName, DATA_TAG, getDenseMatrixData());
    else if (isMatrix() && !isDense()) 
-      writer.write(sectionName, DATA_TAG, m_sparse_matrix_data);
+      writer.write(sectionName, DATA_TAG, getSparseMatrixData());
    else 
-      writer.write(sectionName, DATA_TAG, m_sparse_tensor_data);
+      writer.write(sectionName, DATA_TAG, getSparseTensorData());
 
    writer.put(sectionName, FILE_TAG, this->getFilename());
 
