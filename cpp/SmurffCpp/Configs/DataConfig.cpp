@@ -74,6 +74,7 @@ void DataConfig::setData(const Matrix &m)
    m_isDense = true;
    m_isBinary = false;
    m_isScarce = false;
+   m_isMatrix = true;
    m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
    m_nnz = m.nonZeros();
 }
@@ -84,6 +85,7 @@ void DataConfig::setData(const SparseMatrix &m, bool isScarce)
    m_isDense = false;
    m_isBinary = false;
    m_isScarce = isScarce;
+   m_isMatrix = true;
    m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
    m_nnz = m.nonZeros();
 }
@@ -94,6 +96,7 @@ void DataConfig::setData(const SparseTensor &m, bool isScarce)
    m_isDense = false;
    m_isBinary = false;
    m_isScarce = isScarce;
+   m_isMatrix = false;
    m_dims = m.m_dims;
    m_nnz = m.m_values.size();
 }
@@ -133,7 +136,7 @@ bool DataConfig::isScarce() const
 
 bool DataConfig::isMatrix() const
 {
-   return getNModes() == 2;
+   return m_isMatrix;
 }
 
 std::uint64_t DataConfig::getNNZ() const
@@ -274,8 +277,8 @@ bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name
    std::string filename = cfg_file.get(sec_name, FILE_TAG, NONE_VALUE);
    if (filename != NONE_VALUE)
    { 
-      bool isMatrix = matrix_io::isMatrixExtension(filename);
-      if (isMatrix)
+      m_isMatrix = matrix_io::isMatrixExtension(filename);
+      if (isMatrix())
       {
          if (isDense())
             matrix_io::eigen::read_matrix(filename, m_dense_matrix_data);

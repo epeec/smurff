@@ -26,6 +26,7 @@ namespace smurff
       bool m_isDense;
       bool m_isBinary;
       bool m_isScarce;
+      bool m_isMatrix;
 
       std::vector<std::uint64_t> m_dims;
       std::uint64_t m_nnz;
