@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <fstream>
+#include <algorithm>
 
 #include "catch.hpp"
 
@@ -45,6 +46,9 @@ void printActualResults(int nr, double actualRmseAvg, const std::vector<smurff::
      << "  { " << std::fixed << std::setprecision(16) << actualRmseAvg << "," << std::endl
      << "      {\n";
 
+  auto sortedResults = actualResults;
+  std::sort(sortedResults.begin(), sortedResults.end());
+
   for (const auto &actualResultItem : actualResults) {
     os << std::setprecision(16);
     os << "         { { " << actualResultItem.coords << " }, " << actualResultItem.val << ", " << std::fixed
@@ -83,14 +87,21 @@ void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem> &actualResultItems,
                           const std::vector<ResultItem> &expectedResultItems) {
   REQUIRE(actualResultItems.size() == expectedResultItems.size());
   double single_item_epsilon = APPROX_EPSILON * 10;
-  for (std::vector<ResultItem>::size_type i = 0; i < actualResultItems.size(); i++) {
-    const ResultItem &actualResultItem = actualResultItems[i];
-    const ResultItem &expectedResultItem = expectedResultItems[i];
-    REQUIRE(actualResultItem.coords == expectedResultItem.coords);
-    REQUIRE(actualResultItem.val == expectedResultItem.val);
-    REQUIRE(actualResultItem.pred_1sample == Approx(expectedResultItem.pred_1sample).epsilon(single_item_epsilon));
-    REQUIRE(actualResultItem.pred_avg == Approx(expectedResultItem.pred_avg).epsilon(single_item_epsilon));
-    REQUIRE(actualResultItem.var == Approx(expectedResultItem.var).epsilon(single_item_epsilon));
+
+  auto sortedActualResultItems = actualResultItems;
+  std::sort(sortedActualResultItems.begin(), sortedActualResultItems.end());
+  auto sortedExpectedResultItems = expectedResultItems;
+  std::sort(sortedExpectedResultItems.begin(), sortedExpectedResultItems.end());
+
+  for (std::vector<ResultItem>::size_type i = 0; i < sortedActualResultItems.size(); i++)
+  {
+          const ResultItem &actualResultItem = sortedActualResultItems[i];
+          const ResultItem &expectedResultItem = sortedExpectedResultItems[i];
+          REQUIRE(actualResultItem.coords == expectedResultItem.coords);
+          REQUIRE(actualResultItem.val == expectedResultItem.val);
+          REQUIRE(actualResultItem.pred_1sample == Approx(expectedResultItem.pred_1sample).epsilon(single_item_epsilon));
+          REQUIRE(actualResultItem.pred_avg == Approx(expectedResultItem.pred_avg).epsilon(single_item_epsilon));
+          REQUIRE(actualResultItem.var == Approx(expectedResultItem.var).epsilon(single_item_epsilon));
   }
 }
 

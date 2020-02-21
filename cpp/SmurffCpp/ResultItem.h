@@ -52,6 +52,12 @@ struct ResultItem
       }
       pred_1sample = pred;
    }
+
+   bool operator<(const ResultItem &other) const
+   {
+      return coords.as_vector() < other.coords.as_vector();
+   }
+
 };
 
 inline std::ostream &operator<<(std::ostream& os, const ResultItem& r)
