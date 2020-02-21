@@ -1,4 +1,4 @@
-#include "SparseTensor.h"
+#include "Tensor.h"
 
 #include <numeric>
 

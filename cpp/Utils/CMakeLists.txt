@@ -6,14 +6,14 @@ FILE (GLOB UTIL_FILES   "TruncNorm.h"
                         "Error.h"
                         "ThreadVector.hpp"
                         "StringUtils.h"
-                        "SparseTensor.h"
+                        "Tensor.h"
 
                         "TruncNorm.cpp"
                         "InvNormCdf.cpp"
                         "counters.cpp"
                         "omp_util.cpp"
                         "StringUtils.cpp"
-                        "SparseTensor.cpp"
+                        "Tensor.cpp"
                         )
 
 source_group ("Utils" FILES ${UTIL_FILES})

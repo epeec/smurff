@@ -51,6 +51,7 @@ namespace smurff
    public:
       void setData(const       Matrix &m);
       void setData(const SparseMatrix &m);
+      void setData(const       Tensor &m);
       void setData(const SparseTensor &m);
 
       const Matrix       &getDenseMatrixData()  const;
