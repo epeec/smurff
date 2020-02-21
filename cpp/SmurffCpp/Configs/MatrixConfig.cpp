@@ -23,7 +23,9 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , PVec<> pos
                           )
    : TensorConfig({nrow, ncol}, values, noiseConfig, pos)
-{}
+{
+   setData(matrix_utils::dense_to_eigen(*this));
+}
 
 // Sparse double matrix constructor
 MatrixConfig::MatrixConfig( std::uint64_t nrow
@@ -37,7 +39,9 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , PVec<> pos
                           )
    : TensorConfig({nrow, ncol}, nnz, {rows, cols}, values, noiseConfig, isScarce, pos)
-{}
+{
+   setData(matrix_utils::sparse_to_eigen(*this), isScarce);
+}
 
 // Sparse binary matrix constructors
 MatrixConfig::MatrixConfig( std::uint64_t nrow
@@ -50,7 +54,9 @@ MatrixConfig::MatrixConfig( std::uint64_t nrow
                           , PVec<> pos
                           )
    : TensorConfig({nrow, ncol}, nnz, {rows, cols}, noiseConfig, isScarce, pos)
-{}
+{
+   setData(matrix_utils::sparse_to_eigen(*this), isScarce);
+}
 
 //
 // other methods
