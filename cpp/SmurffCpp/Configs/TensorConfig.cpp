@@ -48,6 +48,10 @@ TensorConfig::TensorConfig( const std::vector<std::uint64_t>& dims
 {
    check();
 
+   if (!isMatrix())
+   {
+      setData(tensor_utils::dense_to_tensor(*this));
+   }
 }
 
 // Sparse double tensor constructors

@@ -4,7 +4,6 @@
 #include <unordered_map>
 
 #include <SmurffCpp/Types.h>
-#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Configs/TensorConfig.h>
 #include <SmurffCpp/Configs/MatrixConfig.h>
@@ -22,5 +21,6 @@ Matrix slice(const TensorConfig& tensorConfig
 
    // Conversion of TensorConfig to SparseTensor
    SparseTensor sparse_to_tensor(const smurff::TensorConfig& tensorConfig);
+         Tensor dense_to_tensor(const smurff::TensorConfig& tensorConfig);
 
 }}

@@ -12,6 +12,13 @@ namespace smurff
 {
    struct Tensor
    {
+      Tensor() {}
+
+      Tensor(
+          const std::vector<std::uint64_t> &dims,
+          const std::vector<double> &values)
+         : m_dims(dims), m_values(values) {}
+
       std::vector<std::uint64_t> m_dims;
       std::vector<double>        m_values;
 
@@ -33,7 +40,7 @@ namespace smurff
           const std::vector<std::uint64_t> &dims,
           const std::vector<double> &values,
           const columns_type &columns)
-      : Tensor{dims, values}, m_columns(columns) {}
+      : Tensor(dims, values), m_columns(columns) {}
 
       columns_type m_columns;
 
