@@ -36,7 +36,7 @@ static MatrixXui32 toMatrixNew(const TensorConfig &tc)
 }
 
 //convert array of coordinates to [nnz x nmodes] matrix
-static MatrixXui32 toMatrixNew(const Tensor &tc)
+static MatrixXui32 toMatrixNew(const DenseTensor &tc)
 {
    std::uint64_t nnz = tc.getNNZ();
    std::uint64_t nmodes = tc.getNModes();
@@ -82,7 +82,7 @@ TensorData::TensorData(const TensorConfig& tc)
    this->name = !tc.isScarce() ? "TensorData [fully known]" : "TensorData [with NAs]";
 }
 
-TensorData::TensorData(const Tensor& ts) 
+TensorData::TensorData(const DenseTensor& ts) 
    : m_dims(ts.getDims()),
      m_nnz(ts.getNNZ()),
      m_Y(std::make_shared<std::vector<std::shared_ptr<SparseMode> > >())
@@ -95,9 +95,7 @@ TensorData::TensorData(const Tensor& ts)
       m_Y->push_back(std::make_shared<SparseMode>(idx, ts.getValues(), mode, m_dims[mode]));
    }
 
-// FIXME
- //  this->name = !ts.isScarce() ? "TensorData [fully known]" : "TensorData [with NAs]";
-   this->name = "SparseTensorData [FIXME]";
+   this->name = "DenseTensorData";
 }
 
 
@@ -114,7 +112,7 @@ TensorData::TensorData(const SparseTensor& ts)
       m_Y->push_back(std::make_shared<SparseMode>(idx, ts.getValues(), mode, m_dims[mode]));
    }
 
-   this->name = "DenseTensorData";
+   this->name = "SparseTensorData";
 }
 
 

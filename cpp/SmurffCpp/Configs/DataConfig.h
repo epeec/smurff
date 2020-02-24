@@ -46,9 +46,9 @@ namespace smurff
       DataConfig() {}
 
       DataConfig(const Matrix &, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
-      DataConfig(const SparseMatrix &, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
+      DataConfig(const SparseMatrix &, bool isScarce = true, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
       DataConfig(const DenseTensor &, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
-      DataConfig(const SparseTensor &, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
+      DataConfig(const SparseTensor &, bool isScarce = true, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
 
    protected:
       DataConfig(bool isDense, bool isBinary, bool isScarce,
@@ -56,15 +56,15 @@ namespace smurff
                  const NoiseConfig& noiseConfig, PVec<> pos = {});
 
    public:
-      void setData(const       Matrix &m);
-      void setData(const SparseMatrix &m);
-      void setData(const       DenseTensor &m);
-      void setData(const SparseTensor &m);
+      void setData(const Matrix &m);
+      void setData(const SparseMatrix &m, bool isScarce = true);
+      void setData(const DenseTensor &m);
+      void setData(const SparseTensor &m, bool isScarce = true);
 
       const Matrix       &getDenseMatrixData()  const;
       const SparseMatrix &getSparseMatrixData() const;
       const SparseTensor &getSparseTensorData() const;
-      const DenseTensor       &getDenseTensorData() const;
+      const DenseTensor  &getDenseTensorData() const;
 
       const NoiseConfig& getNoiseConfig() const;
       void setNoiseConfig(const NoiseConfig& value);

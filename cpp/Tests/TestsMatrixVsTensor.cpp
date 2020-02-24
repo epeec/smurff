@@ -32,7 +32,6 @@ struct CompareTest {
       : matrixConfig(genConfig(matrix_train, matrix_test, priors)),
         tensorConfig(genConfig(tensor_train, tensor_test, priors)) {}
 
-
   CompareTest &addSideInfoConfig(int m, const MatrixConfig &c, bool direct = true, double tol = 1e-6) {
     matrixConfig.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));
     tensorConfig.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));

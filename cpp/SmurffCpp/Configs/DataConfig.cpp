@@ -40,13 +40,14 @@ DataConfig::DataConfig ( const Matrix &m
 }
 
 DataConfig::DataConfig ( const SparseMatrix &m
+                       , bool isScarce
                        , const NoiseConfig& noiseConfig
                        , PVec<> pos
                        )
    : m_noiseConfig(noiseConfig)
    , m_pos(pos)
 {
-   setData(m);
+   setData(m, isScarce);
 }
 
 DataConfig::DataConfig ( const DenseTensor &m
@@ -60,13 +61,14 @@ DataConfig::DataConfig ( const DenseTensor &m
 }
 
 DataConfig::DataConfig ( const SparseTensor &m
+                       , bool isScarce
                        , const NoiseConfig& noiseConfig
                        , PVec<> pos
                        )
    : m_noiseConfig(noiseConfig)
    , m_pos(pos)
 {
-   setData(m);
+   setData(m, isScarce);
 }
 
 DataConfig::DataConfig ( bool isDense
@@ -119,11 +121,12 @@ void DataConfig::setData(const Matrix &m)
    check();
 }
 
-void DataConfig::setData(const SparseMatrix &m)
+void DataConfig::setData(const SparseMatrix &m, bool isScarce)
 {
    m_sparse_matrix_data = m;
    m_isDense = false;
    m_isBinary = false;
+   m_isScarce = isScarce;
    m_isMatrix = true;
    m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
    m_nnz = m.nonZeros();
@@ -140,11 +143,12 @@ void DataConfig::setData(const DenseTensor &m)
    m_nnz = m.getNNZ();
 }
 
-void DataConfig::setData(const SparseTensor &m)
+void DataConfig::setData(const SparseTensor &m, bool isScarce)
 {
    m_sparse_tensor_data = m;
    m_isDense = false;
    m_isBinary = false;
+   m_isScarce = isScarce;
    m_isMatrix = false;
    m_dims = m.getDims();
    m_nnz = m.getNNZ();

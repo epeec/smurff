@@ -62,7 +62,7 @@ namespace smurff { namespace matrix_utils {
 
    // Conversion of dense data to/from dense eigen matrix
    Matrix dense_to_eigen(const smurff::TensorConfig& matrixConfig);
-   Matrix dense_to_eigen(const smurff::Tensor& );
+   Matrix dense_to_eigen(const smurff::DenseTensor& );
    std::shared_ptr<smurff::MatrixConfig> eigen_to_dense(const Matrix &, smurff::NoiseConfig n = smurff::NoiseConfig());
 
    std::ostream& operator << (std::ostream& os, const MatrixConfig& mc);

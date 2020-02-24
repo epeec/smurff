@@ -23,7 +23,7 @@ private:
    std::shared_ptr<std::vector<std::shared_ptr<SparseMode> > > m_Y; // this is a vector of tensor rotations
 
 public:
-   TensorData(const smurff::Tensor& ts);
+   TensorData(const smurff::DenseTensor& ts);
    TensorData(const smurff::SparseTensor& ts);
    TensorData(const smurff::TensorConfig& tc);
 

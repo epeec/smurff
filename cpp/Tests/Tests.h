@@ -51,7 +51,9 @@ template <class Train, class Test> Config genConfig(const Train &train, const Te
   config.setRandomSeed(1234);
   config.setNumThreads(1);
   config.setNumLatent(4);
-  config.setTrain(std::make_shared<DataConfig>(train, fixed_ncfg));
+  DataConfig train_data_config(train);
+  train_data_config.setNoiseConfig(fixed_ncfg);
+  config.setTrain(std::make_shared<DataConfig>(train_data_config));
   config.setTest(std::make_shared<DataConfig>(test));
   config.setPriorTypes(priors);
   return config;
