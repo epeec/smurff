@@ -20,10 +20,18 @@ namespace test {
 struct CompareTest {
   Config matrixConfig, tensorConfig;
 
-  CompareTest(const MatrixConfig &matrix_train, const MatrixConfig &matrix_test, const TensorConfig &tensor_train,
-              const TensorConfig &tensor_test, std::vector<PriorTypes> priors)
+  CompareTest(const Matrix &matrix_train, const SparseMatrix &matrix_test,
+              const DenseTensor &tensor_train, const SparseTensor &tensor_test,
+              std::vector<PriorTypes> priors)
       : matrixConfig(genConfig(matrix_train, matrix_test, priors)),
         tensorConfig(genConfig(tensor_train, tensor_test, priors)) {}
+
+  CompareTest(const SparseMatrix &matrix_train, const SparseMatrix &matrix_test,
+              const SparseTensor &tensor_train, const SparseTensor &tensor_test,
+              std::vector<PriorTypes> priors)
+      : matrixConfig(genConfig(matrix_train, matrix_test, priors)),
+        tensorConfig(genConfig(tensor_train, tensor_test, priors)) {}
+
 
   CompareTest &addSideInfoConfig(int m, const MatrixConfig &c, bool direct = true, double tol = 1e-6) {
     matrixConfig.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));

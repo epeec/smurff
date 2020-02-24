@@ -101,11 +101,9 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
   PredictSession predict_session(session->getOutputFile());
 
   auto sideInfoMatrix = rowSideInfoDenseMatrixConfig.getDenseMatrixData();
-  auto trainMatrix = smurff::matrix_utils::dense_to_eigen(trainDenseMatrix);
 
 #if 0
     std::cout << "sideInfo =\n" << sideInfoMatrix << std::endl;
-    std::cout << "train    =\n" << trainMatrix << std::endl;
 #endif
 
   for (int r = 0; r < sideInfoMatrix.rows(); r++) {
@@ -136,26 +134,16 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
      [-4, -4, -2, -4]])
   */
 
-  NoiseConfig noise_cfg(NoiseTypes::fixed);
-  noise_cfg.setPrecision(1.);
-  MatrixConfig trainMatrixConfig;
-  {
-    std::vector<std::uint32_t> trainMatrixConfigRows = {0, 0, 1, 1, 2, 2};
-    std::vector<std::uint32_t> trainMatrixConfigCols = {0, 1, 2, 3, 0, 1};
-    std::vector<double> trainMatrixConfigVals = {2, 2, 2, 4, -2, -2};
+  std::vector<std::uint32_t> trainMatrixConfigRows = {0, 0, 1, 1, 2, 2};
+  std::vector<std::uint32_t> trainMatrixConfigCols = {0, 1, 2, 3, 0, 1};
+  std::vector<double> trainMatrixConfigVals = {2, 2, 2, 4, -2, -2};
+  SparseMatrix trainMatrix = matrix_utils::sparse_to_eigen(SparseTensor(
+      { 4, 4 }, { trainMatrixConfigRows, trainMatrixConfigCols }, trainMatrixConfigVals));
 
-    trainMatrixConfig =
-        MatrixConfig(4, 4, trainMatrixConfigRows, trainMatrixConfigCols, trainMatrixConfigVals, noise_cfg, true);
-  }
-
-  MatrixConfig testMatrixConfig;
-  {
-    std::vector<std::uint32_t> testMatrixConfigRows = {0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3};
-    std::vector<std::uint32_t> testMatrixConfigCols = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
-    std::vector<double> testMatrixConfigVals = {2, 2, 1, 2, 4, 4, 2, 4, -2, -2, -1, -2, -4, -4, -2, -4};
-    testMatrixConfig =
-        MatrixConfig(4, 4, testMatrixConfigRows, testMatrixConfigCols, testMatrixConfigVals, noise_cfg, true);
-  }
+  std::vector<std::uint32_t> testMatrixConfigRows = {0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3};
+  std::vector<std::uint32_t> testMatrixConfigCols = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
+  std::vector<double> testMatrixConfigVals = {2, 2, 1, 2, 4, 4, 2, 4, -2, -2, -1, -2, -4, -4, -2, -4};
+  SparseMatrix testMatrix = matrix_utils::sparse_to_eigen(SparseTensor({ 4, 4 } , { testMatrixConfigRows, testMatrixConfigCols }, testMatrixConfigVals));
 
   SideInfoConfig rowSideInfoConfig;
   {
@@ -174,8 +162,11 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
     rowSideInfoConfig.setDirect(true);
   }
 
-  Config config = genConfig(trainMatrixConfig, testMatrixConfig, {PriorTypes::macau, PriorTypes::normal})
+  Config config = genConfig(trainMatrix, testMatrix, {PriorTypes::macau, PriorTypes::normal})
                       .addSideInfoConfig(0, rowSideInfoConfig);
+  NoiseConfig trainNoise(NoiseTypes::fixed);
+  trainNoise.setPrecision(1.);
+  config.getTrain()->setNoiseConfig(trainNoise);
   prepareResultDir(config, Catch::getResultCapture().getCurrentTestName());
 
   std::shared_ptr<ISession> session = SessionFactory::create_session(config);

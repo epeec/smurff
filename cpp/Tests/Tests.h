@@ -1,5 +1,7 @@
 #include <vector>
 
+#include <SmurffCpp/Types.h>
+
 namespace smurff {
 
 class MatrixConfig;
@@ -13,19 +15,18 @@ extern smurff::NoiseConfig fixed_ncfg;
 extern smurff::NoiseConfig sampled_ncfg;
 
 // dense train data
-extern smurff::DenseTensor trainDense;
-extern smurff::MatrixConfig trainDenseMatrix;
-extern smurff::TensorConfig trainDenseTensor2d;
-extern smurff::TensorConfig trainDenseTensor3d;
+extern smurff::Matrix trainDenseMatrix;
+extern smurff::DenseTensor trainDenseTensor2d;
+extern smurff::DenseTensor trainDenseTensor3d;
 
 // sparse train data
-extern smurff::MatrixConfig trainSparseMatrix;
-extern smurff::TensorConfig trainSparseTensor2d;
+extern smurff::SparseMatrix trainSparseMatrix;
+extern smurff::SparseTensor trainSparseTensor2d;
 
 // sparse test data
-extern smurff::MatrixConfig testSparseMatrix;
-extern smurff::TensorConfig testSparseTensor2d;
-extern smurff::TensorConfig testSparseTensor3d;
+extern smurff::SparseMatrix testSparseMatrix;
+extern smurff::SparseTensor testSparseTensor2d;
+extern smurff::SparseTensor testSparseTensor3d;
 
 // aux data
 extern smurff::MatrixConfig rowAuxDense;
@@ -50,8 +51,8 @@ template <class Train, class Test> Config genConfig(const Train &train, const Te
   config.setRandomSeed(1234);
   config.setNumThreads(1);
   config.setNumLatent(4);
-  config.setTrain(std::make_shared<Train>(train));
-  config.setTest(std::make_shared<Test>(test));
+  config.setTrain(std::make_shared<DataConfig>(train, fixed_ncfg));
+  config.setTest(std::make_shared<DataConfig>(test));
   config.setPriorTypes(priors);
   return config;
 }

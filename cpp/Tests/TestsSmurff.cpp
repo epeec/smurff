@@ -110,13 +110,17 @@ void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem> &actualResultItems,
 
 struct SmurffTest {
   Config config;
-  SmurffTest(const DenseTensor &train, const MatrixConfig &test, std::vector<PriorTypes> priors)
-      : config(genConfig(DataConfig(matrix_utils::dense_to_eigen(train), fixed_ncfg), test, priors)) {}
 
-  SmurffTest(const MatrixConfig &train, const MatrixConfig &test, std::vector<PriorTypes> priors)
+  SmurffTest(const Matrix &train, const SparseMatrix &test, std::vector<PriorTypes> priors)
       : config(genConfig(train, test, priors)) {}
 
-  SmurffTest(const TensorConfig &train, const TensorConfig &test, std::vector<PriorTypes> priors)
+  SmurffTest(const SparseMatrix &train, const SparseMatrix &test, std::vector<PriorTypes> priors)
+      : config(genConfig(train, test, priors)) {}
+
+  SmurffTest(const DenseTensor &train, const SparseTensor &test, std::vector<PriorTypes> priors)
+      : config(genConfig(train, test, priors)) {}
+
+  SmurffTest(const SparseTensor &train, const SparseTensor &test, std::vector<PriorTypes> priors)
       : config(genConfig(train, test, priors)) {}
 
   SmurffTest &addSideInfoConfig(int m, const MatrixConfig &c, bool direct = true, double tol = 1e-6) {
@@ -146,13 +150,6 @@ struct SmurffTest {
 };
 
 ///===========================================================================
-TEST_CASE("train_dense_dataconfig__test_sparse_matrix__"
-          "normal normal",
-          TAG_MATRIX_TESTS) {
-
-  SmurffTest(trainDense, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal}).runAndCheck(359);
-}
-
 TEST_CASE("train_dense_matrix__test_sparse_matrix__"
           "normal normal",
           TAG_MATRIX_TESTS) {
