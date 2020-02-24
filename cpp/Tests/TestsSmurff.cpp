@@ -72,18 +72,6 @@ std::map<int, ExpectedResult> expectedResults = {
 #include "TestsSmurff_ExpectedResults.h"
 };
 
-SideInfoConfig makeSideInfoConfig(const MatrixConfig &mcfg, bool direct, double tol) {
-  SideInfoConfig picfg;
-  if (mcfg.isDense())
-    picfg.setData(matrix_utils::dense_to_eigen(mcfg));
-  else
-    picfg.setData(matrix_utils::sparse_to_eigen(mcfg));
-  picfg.setNoiseConfig(mcfg.getNoiseConfig());
-  picfg.setDirect(direct);
-  picfg.setTol(tol);
-
-  return picfg;
-}
 
 // result comparison
 
@@ -123,8 +111,9 @@ struct SmurffTest {
   SmurffTest(const SparseTensor &train, const SparseTensor &test, std::vector<PriorTypes> priors)
       : config(genConfig(train, test, priors)) {}
 
-  SmurffTest &addSideInfoConfig(int m, const MatrixConfig &c, bool direct = true, double tol = 1e-6) {
-    config.addSideInfoConfig(m, makeSideInfoConfig(c, direct, tol));
+  template<class M>
+  SmurffTest &addSideInfoConfig(int m, const M &c) {
+    config.addSideInfoConfig(m, makeSideInfoConfig(c));
     return *this;
   }
 

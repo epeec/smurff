@@ -12,7 +12,6 @@ namespace test {
 
 // noise
 extern smurff::NoiseConfig fixed_ncfg;
-extern smurff::NoiseConfig sampled_ncfg;
 
 // dense train data
 extern smurff::Matrix trainDenseMatrix;
@@ -33,15 +32,26 @@ extern smurff::MatrixConfig rowAuxDense;
 extern smurff::MatrixConfig colAuxDense;
 
 // side info
-extern smurff::MatrixConfig rowSideDenseMatrix;
-extern smurff::MatrixConfig colSideDenseMatrix;
-extern smurff::MatrixConfig rowSideSparseMatrix;
-extern smurff::MatrixConfig colSideSparseMatrix;
-extern smurff::MatrixConfig rowSideDenseMatrix3d;
+extern smurff::Matrix rowSideDenseMatrix;
+extern smurff::Matrix colSideDenseMatrix;
+extern smurff::Matrix rowSideDenseMatrix3d;
+
+extern smurff::SparseMatrix rowSideSparseMatrix;
+extern smurff::SparseMatrix colSideSparseMatrix;
 
 void REQUIRE_RESULT_ITEMS(const std::vector<smurff::ResultItem> &actualResultItems,
                           const std::vector<smurff::ResultItem> &expectedResultItems);
-SideInfoConfig makeSideInfoConfig(const MatrixConfig &mcfg, bool direct = true, double tol = 1e-6);
+
+template<class M>
+SideInfoConfig makeSideInfoConfig(const M &data) {
+  SideInfoConfig picfg;
+  picfg.setData(data);
+  smurff::NoiseConfig sampled_ncfg(NoiseTypes::sampled);
+  sampled_ncfg.setPrecision(10.0);
+  picfg.setNoiseConfig(sampled_ncfg);
+  picfg.setDirect(true);
+  return picfg;
+}
 
 template <class Train, class Test> Config genConfig(const Train &train, const Test &test, std::vector<PriorTypes> priors) {
   Config config;

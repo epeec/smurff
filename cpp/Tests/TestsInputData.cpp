@@ -11,6 +11,7 @@ namespace test {
 
 // noise config for train and test
 smurff::NoiseConfig fixed_ncfg(NoiseTypes::fixed);
+smurff::NoiseConfig unused_ncfg(NoiseTypes::unused);
 
 // dense train data (matrix/tensor 2d/tensor 3d)
 smurff::DenseTensor trainDenseTensor2d({3, 4}, {1., 5., 9., 2., 6., 10., 3., 7., 11., 4., 8., 12.});
@@ -35,19 +36,12 @@ smurff::SparseMatrix testSparseMatrix(matrix_utils::sparse_to_eigen(testSparseTe
 smurff::MatrixConfig rowAuxDense(3, 1, {1., 2., 3.}, fixed_ncfg, {0, 1});
 smurff::MatrixConfig colAuxDense(1, 4, {1., 2., 3., 4.}, fixed_ncfg, {1, 0});
 
-// noise config for sideinfo
-smurff::NoiseConfig sampled_ncfg = []() {
-  smurff::NoiseConfig nc(NoiseTypes::sampled);
-  nc.setPrecision(10.0);
-  return nc;
-}();
-
 // side info
-smurff::MatrixConfig rowSideDenseMatrix(3, 1, {1., 2., 3.}, sampled_ncfg);
-smurff::MatrixConfig colSideDenseMatrix(4, 1, {1., 2., 3., 4.}, sampled_ncfg);
-smurff::MatrixConfig rowSideSparseMatrix(3, 1, {0, 1, 2}, {0, 0, 0}, {1., 2., 3.}, sampled_ncfg, false);
-smurff::MatrixConfig colSideSparseMatrix(4, 1, {0, 1, 2, 3}, {0, 0, 0, 0}, {1., 2., 3., 4.}, sampled_ncfg, false);
-smurff::MatrixConfig rowSideDenseMatrix3d(2, 3, {1., 2., 3., 4., 5., 6.}, sampled_ncfg);
+smurff::Matrix       rowSideDenseMatrix   = matrix_utils::dense_to_eigen(smurff::DenseTensor({ 3, 1 }, {1., 2., 3.}));
+smurff::Matrix       colSideDenseMatrix   = matrix_utils::dense_to_eigen(smurff::DenseTensor({ 4, 1 }, {1., 2., 3., 4.}));
+smurff::SparseMatrix rowSideSparseMatrix  = matrix_utils::sparse_to_eigen(smurff::SparseTensor({ 3, 1 }, { {0, 1, 2}, {0, 0, 0} }, {1., 2., 3.}));
+smurff::SparseMatrix colSideSparseMatrix  = matrix_utils::sparse_to_eigen(smurff::SparseTensor({ 4, 1 }, { {0, 1, 2, 3}, {0, 0, 0, 0} }, {1., 2., 3., 4.}));
+smurff::Matrix       rowSideDenseMatrix3d = matrix_utils::dense_to_eigen(smurff::DenseTensor({ 2, 3 }, {1., 2., 3., 4., 5., 6.}));
 
 } // namespace test
 } // namespace smurff
