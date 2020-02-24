@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "MatrixConfig.h"
+#include "DataConfig.h"
 
 namespace smurff
 {

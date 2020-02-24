@@ -6,7 +6,6 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Configs/TensorConfig.h>
-#include <SmurffCpp/Configs/MatrixConfig.h>
 
 namespace smurff { namespace tensor_utils {
 

@@ -16,7 +16,6 @@ namespace smurff {
    class Model;
    class Result;
    class ILatentPrior;
-   class MatrixConfig;
 
    class Step : public std::enable_shared_from_this<Step>, private HDF5
    {

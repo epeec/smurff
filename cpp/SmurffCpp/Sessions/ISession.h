@@ -5,7 +5,6 @@
 
 #include <SmurffCpp/StatusItem.h>
 #include <SmurffCpp/ResultItem.h>
-#include <SmurffCpp/Configs/MatrixConfig.h>
 
 namespace smurff {
    class OutputFile;

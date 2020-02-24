@@ -7,7 +7,7 @@
 
 #include <SmurffCpp/Utils/PVec.hpp>
 #include <Utils/Error.h>
-#include "MatrixConfig.h"
+#include "DataConfig.h"
 #include "SideInfoConfig.h"
 
 namespace smurff {

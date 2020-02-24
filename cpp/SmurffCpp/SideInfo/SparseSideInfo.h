@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <SmurffCpp/Types.h>
-#include <SmurffCpp/Configs/MatrixConfig.h>
+#include <SmurffCpp/Configs/DataConfig.h>
 
 #include "ISideInfo.h"
 namespace smurff {
