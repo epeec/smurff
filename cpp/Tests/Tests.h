@@ -28,8 +28,8 @@ extern smurff::SparseTensor testSparseTensor2d;
 extern smurff::SparseTensor testSparseTensor3d;
 
 // aux data
-extern smurff::MatrixConfig rowAuxDense;
-extern smurff::MatrixConfig colAuxDense;
+extern smurff::DataConfig rowAuxDense;
+extern smurff::DataConfig colAuxDense;
 
 // side info
 extern smurff::Matrix rowSideDenseMatrix;

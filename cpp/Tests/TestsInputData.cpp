@@ -33,8 +33,11 @@ smurff::SparseTensor testSparseTensor3d({2, 3, 4},
 smurff::SparseMatrix testSparseMatrix(matrix_utils::sparse_to_eigen(testSparseTensor2d));
 
 // aux data
-smurff::MatrixConfig rowAuxDense(3, 1, {1., 2., 3.}, fixed_ncfg, {0, 1});
-smurff::MatrixConfig colAuxDense(1, 4, {1., 2., 3., 4.}, fixed_ncfg, {1, 0});
+static smurff::Matrix rowAuxDenseMatrix = matrix_utils::dense_to_eigen(smurff::DenseTensor({3, 1}, {1., 2., 3.}));
+static smurff::Matrix colAuxDenseMatrix = matrix_utils::dense_to_eigen(smurff::DenseTensor({1, 4}, {1., 2., 3., 4.}));
+
+smurff::DataConfig rowAuxDense(rowAuxDenseMatrix, fixed_ncfg, {0, 1});
+smurff::DataConfig colAuxDense(colAuxDenseMatrix, fixed_ncfg, {1, 0});
 
 // side info
 smurff::Matrix       rowSideDenseMatrix   = matrix_utils::dense_to_eigen(smurff::DenseTensor({ 3, 1 }, {1., 2., 3.}));

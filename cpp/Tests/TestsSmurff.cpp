@@ -117,8 +117,8 @@ struct SmurffTest {
     return *this;
   }
 
-  SmurffTest &addAuxData(const TensorConfig &c) {
-    config.addAuxData(std::make_shared<TensorConfig>(c));
+  SmurffTest &addAuxData(const DataConfig &c) {
+    config.addAuxData(std::make_shared<DataConfig>(c));
     return *this;
   }
 
