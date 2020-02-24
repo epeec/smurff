@@ -154,10 +154,10 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
     std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigCols = {0, 0, 0, 0};
     std::vector<double> rowSideInfoSparseMatrixConfigVals = {2, 4, -2, -4};
 
-    auto mcfg = MatrixConfig(4, 1, rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols,
-                                   rowSideInfoSparseMatrixConfigVals, nc, true);
+    auto data = SparseTensor({ 4, 1 }, { rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols },
+                                   rowSideInfoSparseMatrixConfigVals);
 
-    rowSideInfoConfig.setData(matrix_utils::sparse_to_eigen(mcfg));
+    rowSideInfoConfig.setData(matrix_utils::sparse_to_eigen(data), false);
     rowSideInfoConfig.setNoiseConfig(nc);
     rowSideInfoConfig.setDirect(true);
   }

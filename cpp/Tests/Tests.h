@@ -4,9 +4,8 @@
 
 namespace smurff {
 
-class MatrixConfig;
-class TensorConfig;
 struct ResultItem;
+class DataConfig;
 
 namespace test {
 
