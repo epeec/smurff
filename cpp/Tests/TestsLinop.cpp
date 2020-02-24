@@ -7,13 +7,17 @@
 namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
+static SparseMatrix binarySideInfo = matrix_utils::sparse_to_eigen(
+    SparseTensor({6,4}, {
+         { 0, 3, 3, 2, 5, 4, 1, 2, 4 },
+         { 1, 0, 2, 1, 3, 0, 1, 3, 2 } },
+         { 1, 1, 1, 1, 1, 1, 1, 1, 1 })
+    );
 
 
 TEST_CASE( "SparseSideInfo/solve_blockcg", "BlockCG solver (1rhs)" ) 
 {
-   std::vector<uint32_t> rows = { 0, 3, 3, 2, 5, 4, 1, 2, 4 };
-   std::vector<uint32_t> cols = { 1, 0, 2, 1, 3, 0, 1, 3, 2 };
-   SparseSideInfo sf(MatrixConfig(6, 4, rows, cols, fixed_ncfg, false));
+   SparseSideInfo sf(DataConfig(binarySideInfo, false, fixed_ncfg));
    Matrix B(1, 4), X(1, 4), X_true(1, 4);
  
    B << 0.56,  0.55,  0.3 , -1.78;
@@ -29,9 +33,7 @@ TEST_CASE( "SparseSideInfo/solve_blockcg", "BlockCG solver (1rhs)" )
 
 TEST_CASE( "SparseSideInfo/solve_blockcg_1_0", "BlockCG solver (3rhs separately)" ) 
 {
-   std::vector<uint32_t> rows = { 0, 3, 3, 2, 5, 4, 1, 2, 4 };
-   std::vector<uint32_t> cols = { 1, 0, 2, 1, 3, 0, 1, 3, 2 };
-   SparseSideInfo sf(MatrixConfig(6, 4, rows, cols, fixed_ncfg, false));
+   SparseSideInfo sf(DataConfig(binarySideInfo, false, fixed_ncfg));
    Matrix B(3, 4), X(3, 4), X_true(3, 4);
  
    B << 0.56,  0.55,  0.3 , -1.78,
@@ -105,11 +107,7 @@ TEST_CASE( "linop/solve_blockcg_dense/ok", "BlockCG solver for dense (3rhs separ
 
 TEST_CASE( "Eigen::MatrixFree::1", "Test linop::AtA_mulB - 1" )
 {
-  std::vector<uint32_t> rows = {0, 3, 3, 2, 5, 4, 1, 2, 4};
-  std::vector<uint32_t> cols = {1, 0, 2, 1, 3, 0, 1, 3, 2};
-  SparseMatrix S = matrix_utils::sparse_to_eigen(MatrixConfig(6, 4, rows, cols, fixed_ncfg, false));
-
-  linop::AtA A(S, 0.5);
+  linop::AtA A(binarySideInfo, 0.5);
 
   Matrix B(3, 4), X(3, 4), X_true(3, 4);
 
