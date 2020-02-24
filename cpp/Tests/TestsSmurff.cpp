@@ -109,7 +109,7 @@ void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem> &actualResultItems,
 
 struct SmurffTest {
   Config config;
-  SmurffTest(const Tensor &train, const MatrixConfig &test, std::vector<PriorTypes> priors)
+  SmurffTest(const DenseTensor &train, const MatrixConfig &test, std::vector<PriorTypes> priors)
       : config(genConfig(DataConfig(matrix_utils::dense_to_eigen(train), fixed_ncfg), test, priors)) {}
 
   SmurffTest(const MatrixConfig &train, const MatrixConfig &test, std::vector<PriorTypes> priors)

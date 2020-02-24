@@ -267,7 +267,7 @@ bool Config::validate() const
          //it is advised to check macau and macauone priors implementation
          //as well as code in PriorFactory that creates macau priors
 
-         //this check does not directly check that input data is Tensor (it only checks number of dimensions)
+         //this check does not directly check that input data is DenseTensor (it only checks number of dimensions)
          //however TensorDataFactory will do an additional check throwing an exception
          THROWERROR("Aux data is not supported for TensorData");
       }

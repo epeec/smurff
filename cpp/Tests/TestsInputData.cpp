@@ -12,7 +12,7 @@ namespace test {
 smurff::NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
 // dense train data (matrix/tensor 2d/tensor 3d)
-smurff::Tensor trainDense({ 3, 4 }, {1., 5., 9., 2., 6., 10., 3., 7., 11., 4., 8., 12.});
+smurff::DenseTensor trainDense({ 3, 4 }, {1., 5., 9., 2., 6., 10., 3., 7., 11., 4., 8., 12.});
 smurff::MatrixConfig trainDenseMatrix(3, 4, {1., 5., 9., 2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
 smurff::TensorConfig trainDenseTensor2d({3, 4}, {1., 5., 9., 2., 6., 10., 3., 7., 11., 4., 8., 12.}, fixed_ncfg);
 smurff::TensorConfig trainDenseTensor3d({2, 3, 4}, {1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9.,  10., 11., 12.,

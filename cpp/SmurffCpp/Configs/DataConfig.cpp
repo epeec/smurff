@@ -49,7 +49,7 @@ DataConfig::DataConfig ( const SparseMatrix &m
    setData(m);
 }
 
-DataConfig::DataConfig ( const Tensor &m
+DataConfig::DataConfig ( const DenseTensor &m
                        , const NoiseConfig& noiseConfig
                        , PVec<> pos
                        )
@@ -130,14 +130,14 @@ void DataConfig::setData(const SparseMatrix &m)
    check();
 }
 
-void DataConfig::setData(const Tensor &m)
+void DataConfig::setData(const DenseTensor &m)
 {
    m_dense_tensor_data = m;
    m_isDense = true;
    m_isBinary = false;
    m_isMatrix = false;
-   m_dims = m.m_dims;
-   m_nnz = m.m_values.size();
+   m_dims = m.getDims();
+   m_nnz = m.getNNZ();
 }
 
 void DataConfig::setData(const SparseTensor &m)
@@ -146,8 +146,8 @@ void DataConfig::setData(const SparseTensor &m)
    m_isDense = false;
    m_isBinary = false;
    m_isMatrix = false;
-   m_dims = m.m_dims;
-   m_nnz = m.m_values.size();
+   m_dims = m.getDims();
+   m_nnz = m.getNNZ();
    check();
 }
 
@@ -169,7 +169,7 @@ const SparseTensor &DataConfig::getSparseTensorData() const
    return m_sparse_tensor_data;
 }
 
-const Tensor &DataConfig::getDenseTensorData() const
+const DenseTensor &DataConfig::getDenseTensorData() const
 {
    THROWERROR_ASSERT(isDense() && !isMatrix());
    return m_dense_tensor_data;

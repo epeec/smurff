@@ -12,16 +12,14 @@ namespace smurff
 {
    struct Tensor
    {
-      Tensor() {}
-
+   protected:
       Tensor(
           const std::vector<std::uint64_t> &dims,
           const std::vector<double> &values)
          : m_dims(dims), m_values(values) {}
 
-      std::vector<std::uint64_t> m_dims;
-      std::vector<double>        m_values;
 
+   public:
       int getNModes() const { return m_dims.size(); }
       const std::vector<std::uint64_t> & getDims() const { return m_dims; };
       const std::uint64_t & getNRow() const { return m_dims.at(0); };
@@ -30,13 +28,27 @@ namespace smurff
 
       const std::vector<double>& getValues() const { return m_values; }
       std::vector<double>& getValues() { return m_values; }
+
+   private:
+      std::vector<std::uint64_t> m_dims;
+      std::vector<double>        m_values;
+   };
+
+   struct DenseTensor : public Tensor
+   {
+      DenseTensor() : Tensor({}, {}) {}
+
+      DenseTensor(
+          const std::vector<std::uint64_t> &dims,
+          const std::vector<double> &values)
+         : Tensor(dims, values) {}
    };
 
    struct SparseTensor : public Tensor
    {
       typedef std::vector<std::vector<std::uint32_t>> columns_type;
 
-      SparseTensor() {}
+      SparseTensor() : Tensor({}, {}) {}
 
       SparseTensor(
           const std::vector<std::uint64_t> &dims,
@@ -44,7 +56,6 @@ namespace smurff
           const std::vector<double> &values)
       : Tensor(dims, values), m_columns(columns) {}
 
-      columns_type m_columns;
 
       const std::vector<std::uint32_t> &getRows() const { return m_columns.at(0); }
       std::vector<std::uint32_t> &getRows() { return m_columns.at(0); }
@@ -57,5 +68,8 @@ namespace smurff
 
       std::pair<PVec<>, double> get(std::uint64_t) const;
       void set(std::uint64_t, PVec<>, double);
+
+   private:
+      columns_type m_columns;
    };
 }

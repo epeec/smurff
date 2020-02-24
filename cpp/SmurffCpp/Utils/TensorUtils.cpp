@@ -106,10 +106,10 @@ SparseTensor tensor_utils::sparse_to_tensor(const smurff::TensorConfig& tensorCo
    return SparseTensor(tensorConfig.getDims(),  tensorConfig.getColumns(), tensorConfig.getValues());
 }
 
-// Conversion of TensorConfig to Tensor
-Tensor tensor_utils::dense_to_tensor(const smurff::TensorConfig& tensorConfig)
+// Conversion of TensorConfig to DenseTensor
+DenseTensor tensor_utils::dense_to_tensor(const smurff::TensorConfig& tensorConfig)
 {
-   return Tensor{tensorConfig.getDims(),  tensorConfig.getValues()};
+   return DenseTensor{tensorConfig.getDims(),  tensorConfig.getValues()};
 }
 
 } // end namespace smurff

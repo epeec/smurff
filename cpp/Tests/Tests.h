@@ -13,7 +13,7 @@ extern smurff::NoiseConfig fixed_ncfg;
 extern smurff::NoiseConfig sampled_ncfg;
 
 // dense train data
-extern smurff::Tensor trainDense;
+extern smurff::DenseTensor trainDense;
 extern smurff::MatrixConfig trainDenseMatrix;
 extern smurff::TensorConfig trainDenseTensor2d;
 extern smurff::TensorConfig trainDenseTensor3d;
