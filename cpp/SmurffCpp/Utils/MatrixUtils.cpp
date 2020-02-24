@@ -18,6 +18,14 @@ Matrix matrix_utils::dense_to_eigen(const TensorConfig& matrixConfig)
    return Eigen::Map<const Matrix>(float_values.data(), matrixConfig.getNRow(), matrixConfig.getNCol());
 }
 
+Matrix matrix_utils::dense_to_eigen(const Tensor& matrixAsTensor)
+{
+   THROWERROR_ASSERT_MSG(matrixAsTensor.getNModes() == 2, "Invalid number of dimensions. Tensor can not be converted to matrix.");
+
+   std::vector<float_type> float_values(matrixAsTensor.getValues().begin(), matrixAsTensor.getValues().end());
+   return Eigen::Map<const Matrix>(matrixAsTensor.getValues().data(), matrixAsTensor.getNRow(), matrixAsTensor.getNCol());
+}
+
 std::shared_ptr<MatrixConfig> matrix_utils::eigen_to_dense(const Matrix &eigenMatrix, NoiseConfig n)
 {
    std::vector<double> values(eigenMatrix.data(),  eigenMatrix.data() + eigenMatrix.size());
@@ -37,6 +45,20 @@ SparseMatrix matrix_utils::sparse_to_eigen(const TensorConfig& tensorConfig)
    out.setFromTriplets(begin, end);
 
    THROWERROR_ASSERT_MSG(out.nonZeros() == (int)tensorConfig.getNNZ(), "probable presence of duplicate records in " + tensorConfig.getFilename());
+
+   return out;
+}
+
+SparseMatrix matrix_utils::sparse_to_eigen(const SparseTensor& matrixAsTensor)
+{
+   THROWERROR_ASSERT_MSG(matrixAsTensor.getNModes() == 2, "Invalid number of dimensions. Tensor can not be converted to matrix.");
+
+   SparseMatrix out(matrixAsTensor.getNRow(), matrixAsTensor.getNCol());
+
+   sparse_vec_iterator begin(matrixAsTensor, 0);
+   sparse_vec_iterator end(matrixAsTensor, matrixAsTensor.getNNZ());
+
+   out.setFromTriplets(begin, end);
 
    return out;
 }

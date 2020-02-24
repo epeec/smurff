@@ -21,6 +21,11 @@ Matrix slice(const TensorConfig& tensorConfig
 
    // Conversion of TensorConfig to SparseTensor
    SparseTensor sparse_to_tensor(const smurff::TensorConfig& tensorConfig);
-         Tensor dense_to_tensor(const smurff::TensorConfig& tensorConfig);
+
+   // Conversion of TensorConfig to DenseTensor
+   Tensor dense_to_tensor(const smurff::TensorConfig& tensorConfig);
+
+   // Conversion of Tensor to Matrix
+   Tensor dense_to_tensor(const smurff::TensorConfig& tensorConfig);
 
 }}

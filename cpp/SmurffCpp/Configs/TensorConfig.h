@@ -16,7 +16,7 @@ namespace smurff
    class IDataCreator;
    class ConfigFile;
 
-   class TensorConfig : public DataConfig,  public std::enable_shared_from_this<TensorConfig>
+   class TensorConfig : public DataConfig
    {
    public:
       typedef std::vector<std::vector<std::uint32_t>> columns_type;

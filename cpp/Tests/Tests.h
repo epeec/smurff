@@ -8,7 +8,12 @@ struct ResultItem;
 
 namespace test {
 
+// noise
+extern smurff::NoiseConfig fixed_ncfg;
+extern smurff::NoiseConfig sampled_ncfg;
+
 // dense train data
+extern smurff::Tensor trainDense;
 extern smurff::MatrixConfig trainDenseMatrix;
 extern smurff::TensorConfig trainDenseTensor2d;
 extern smurff::TensorConfig trainDenseTensor3d;
@@ -37,7 +42,7 @@ void REQUIRE_RESULT_ITEMS(const std::vector<smurff::ResultItem> &actualResultIte
                           const std::vector<smurff::ResultItem> &expectedResultItems);
 SideInfoConfig makeSideInfoConfig(const MatrixConfig &mcfg, bool direct = true, double tol = 1e-6);
 
-template <class C> Config genConfig(const C &train, const C &test, std::vector<PriorTypes> priors) {
+template <class Train, class Test> Config genConfig(const Train &train, const Test &test, std::vector<PriorTypes> priors) {
   Config config;
   config.setBurnin(50);
   config.setNSamples(50);
@@ -45,8 +50,8 @@ template <class C> Config genConfig(const C &train, const C &test, std::vector<P
   config.setRandomSeed(1234);
   config.setNumThreads(1);
   config.setNumLatent(4);
-  config.setTrain(std::make_shared<C>(train));
-  config.setTest(std::make_shared<C>(test));
+  config.setTrain(std::make_shared<Train>(train));
+  config.setTest(std::make_shared<Test>(test));
   config.setPriorTypes(priors);
   return config;
 }

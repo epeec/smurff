@@ -29,6 +29,45 @@ static const std::string SN_INIT_TAG = "sn_init";
 static const std::string SN_MAX_TAG = "sn_max";
 static const std::string NOISE_THRESHOLD_TAG = "noise_threshold";
 
+DataConfig::DataConfig ( const Matrix &m
+                       , const NoiseConfig& noiseConfig
+                       , PVec<> pos
+                       )
+   : m_noiseConfig(noiseConfig)
+   , m_pos(pos)
+{
+   setData(m);
+}
+
+DataConfig::DataConfig ( const SparseMatrix &m
+                       , const NoiseConfig& noiseConfig
+                       , PVec<> pos
+                       )
+   : m_noiseConfig(noiseConfig)
+   , m_pos(pos)
+{
+   setData(m);
+}
+
+DataConfig::DataConfig ( const Tensor &m
+                       , const NoiseConfig& noiseConfig
+                       , PVec<> pos
+                       )
+   : m_noiseConfig(noiseConfig)
+   , m_pos(pos)
+{
+   setData(m);
+}
+
+DataConfig::DataConfig ( const SparseTensor &m
+                       , const NoiseConfig& noiseConfig
+                       , PVec<> pos
+                       )
+   : m_noiseConfig(noiseConfig)
+   , m_pos(pos)
+{
+   setData(m);
+}
 
 DataConfig::DataConfig ( bool isDense
                        , bool isBinary
@@ -46,7 +85,7 @@ DataConfig::DataConfig ( bool isDense
    , m_nnz(nnz)
    , m_pos(pos)
 {
-   check(); // can't check here -- because many things still empty
+   check();
 }
 
 DataConfig::~DataConfig()
@@ -77,6 +116,7 @@ void DataConfig::setData(const Matrix &m)
    m_isMatrix = true;
    m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
    m_nnz = m.nonZeros();
+   check();
 }
 
 void DataConfig::setData(const SparseMatrix &m)
@@ -87,6 +127,7 @@ void DataConfig::setData(const SparseMatrix &m)
    m_isMatrix = true;
    m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
    m_nnz = m.nonZeros();
+   check();
 }
 
 void DataConfig::setData(const Tensor &m)
@@ -107,6 +148,7 @@ void DataConfig::setData(const SparseTensor &m)
    m_isMatrix = false;
    m_dims = m.m_dims;
    m_nnz = m.m_values.size();
+   check();
 }
 
 const Matrix &DataConfig::getDenseMatrixData() const
@@ -125,6 +167,12 @@ const SparseTensor &DataConfig::getSparseTensorData() const
 {
    THROWERROR_ASSERT(!isDense() && !isMatrix());
    return m_sparse_tensor_data;
+}
+
+const Tensor &DataConfig::getDenseTensorData() const
+{
+   THROWERROR_ASSERT(isDense() && !isMatrix());
+   return m_dense_tensor_data;
 }
 
 bool DataConfig::isDense() const
@@ -321,7 +369,7 @@ bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name
 
 std::shared_ptr<Data> DataConfig::create(std::shared_ptr<IDataCreator> creator) const
 {
-   THROWERROR_NOTIMPL()
+   return creator->create(shared_from_this());
 }
 
 void DataConfig::write(std::shared_ptr<IDataWriter> writer) const

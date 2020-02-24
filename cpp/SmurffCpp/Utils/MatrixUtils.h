@@ -13,7 +13,8 @@
 namespace smurff { namespace matrix_utils {
    struct sparse_vec_iterator
    {
-   sparse_vec_iterator(const TensorConfig& matrixConfig, int pos)
+   template<typename T>
+   sparse_vec_iterator(const T& matrixConfig, int pos)
       : rows(matrixConfig.getRows()),
         cols(matrixConfig.getCols()),
         values(matrixConfig.getValues()),
@@ -56,10 +57,12 @@ namespace smurff { namespace matrix_utils {
 
    // Conversion of MatrixConfig to/from sparse eigen matrix
    SparseMatrix sparse_to_eigen(const smurff::TensorConfig& matrixConfig);
+   SparseMatrix sparse_to_eigen(const smurff::SparseTensor& );
    std::shared_ptr<smurff::MatrixConfig> eigen_to_sparse(const SparseMatrix &, smurff::NoiseConfig n = smurff::NoiseConfig(), bool isScarce = false);
 
    // Conversion of dense data to/from dense eigen matrix
    Matrix dense_to_eigen(const smurff::TensorConfig& matrixConfig);
+   Matrix dense_to_eigen(const smurff::Tensor& );
    std::shared_ptr<smurff::MatrixConfig> eigen_to_dense(const Matrix &, smurff::NoiseConfig n = smurff::NoiseConfig());
 
    std::ostream& operator << (std::ostream& os, const MatrixConfig& mc);

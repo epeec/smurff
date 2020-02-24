@@ -35,6 +35,37 @@ static MatrixXui32 toMatrixNew(const TensorConfig &tc)
    return idx;
 }
 
+//convert array of coordinates to [nnz x nmodes] matrix
+static MatrixXui32 toMatrixNew(const Tensor &tc)
+{
+   std::uint64_t nnz = tc.getNNZ();
+   std::uint64_t nmodes = tc.getNModes();
+   MatrixXui32 idx(nnz, nmodes);
+
+   std::uint64_t c = 0;
+   auto rev_dims = std::vector<std::uint64_t>(tc.getDims().rbegin(), tc.getDims().rend());
+   for (auto it = PVecIterator(rev_dims); !it.done(); ++it, c++)
+      for (int d = 0; d < tc.getNModes(); ++d)
+            idx(c, d) = (*it).at(nmodes-1-d);
+
+   return idx;
+}
+
+//convert array of coordinates to [nnz x nmodes] matrix
+static MatrixXui32 toMatrixNew(const SparseTensor &tc)
+{
+   std::uint64_t nnz = tc.getNNZ();
+   std::uint64_t nmodes = tc.getNModes();
+   MatrixXui32 idx(nnz, nmodes);
+
+   std::vector<std::vector<std::uint32_t>> columns(nmodes);
+   for (std::uint64_t col = 0; col < nmodes; col++)
+      for (std::uint64_t row = 0; row < nnz; row++)
+         idx(row, col) = tc.getColumn(col)[row];
+
+   return idx;
+}
+
 TensorData::TensorData(const TensorConfig& tc) 
    : m_dims(tc.getDims()),
      m_nnz(tc.getNNZ()),
@@ -50,6 +81,42 @@ TensorData::TensorData(const TensorConfig& tc)
 
    this->name = !tc.isScarce() ? "TensorData [fully known]" : "TensorData [with NAs]";
 }
+
+TensorData::TensorData(const Tensor& ts) 
+   : m_dims(ts.getDims()),
+     m_nnz(ts.getNNZ()),
+     m_Y(std::make_shared<std::vector<std::shared_ptr<SparseMode> > >())
+{
+   //combine coordinates into [nnz x nmodes] matrix
+   MatrixXui32 idx = toMatrixNew(ts);
+
+   for (std::uint64_t mode = 0; mode < ts.getNModes(); mode++) 
+   {
+      m_Y->push_back(std::make_shared<SparseMode>(idx, ts.getValues(), mode, m_dims[mode]));
+   }
+
+// FIXME
+ //  this->name = !ts.isScarce() ? "TensorData [fully known]" : "TensorData [with NAs]";
+   this->name = "SparseTensorData [FIXME]";
+}
+
+
+TensorData::TensorData(const SparseTensor& ts) 
+   : m_dims(ts.getDims()),
+     m_nnz(ts.getNNZ()),
+     m_Y(std::make_shared<std::vector<std::shared_ptr<SparseMode> > >())
+{
+   //combine coordinates into [nnz x nmodes] matrix
+   MatrixXui32 idx = toMatrixNew(ts);
+
+   for (std::uint64_t mode = 0; mode < ts.getNModes(); mode++) 
+   {
+      m_Y->push_back(std::make_shared<SparseMode>(idx, ts.getValues(), mode, m_dims[mode]));
+   }
+
+   this->name = "DenseTensorData";
+}
+
 
 std::shared_ptr<SparseMode> TensorData::Y(std::uint64_t mode) const
 {

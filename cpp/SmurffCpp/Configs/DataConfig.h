@@ -17,7 +17,7 @@ namespace smurff
    class IDataCreator;
    class ConfigFile;
 
-   class DataConfig
+   class DataConfig : public std::enable_shared_from_this<DataConfig>
    {
    private:
       NoiseConfig m_noiseConfig;
@@ -45,6 +45,11 @@ namespace smurff
 
       DataConfig() {}
 
+      DataConfig(const Matrix &, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
+      DataConfig(const SparseMatrix &, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
+      DataConfig(const Tensor &, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
+      DataConfig(const SparseTensor &, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
+
    protected:
       DataConfig(bool isDense, bool isBinary, bool isScarce,
                  std::vector<std::uint64_t> m_dims, std::uint64_t nnz, 
@@ -59,6 +64,7 @@ namespace smurff
       const Matrix       &getDenseMatrixData()  const;
       const SparseMatrix &getSparseMatrixData() const;
       const SparseTensor &getSparseTensorData() const;
+      const Tensor       &getDenseTensorData() const;
 
       const NoiseConfig& getNoiseConfig() const;
       void setNoiseConfig(const NoiseConfig& value);

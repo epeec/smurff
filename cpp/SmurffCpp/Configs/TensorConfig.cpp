@@ -163,12 +163,12 @@ std::shared_ptr<TensorConfig> TensorConfig::restore_tensor_config(const ConfigFi
 
 std::shared_ptr<Data> TensorConfig::create(std::shared_ptr<IDataCreator> creator) const
 {
-   return creator->create(shared_from_this());
+   return creator->create(std::dynamic_pointer_cast<const TensorConfig>(shared_from_this()));
 }
 
 void TensorConfig::write(std::shared_ptr<IDataWriter> writer) const
 {
-   writer->write(shared_from_this());
+   writer->write(std::dynamic_pointer_cast<const TensorConfig>(shared_from_this()));
 }
 
 } // end namespace smurff

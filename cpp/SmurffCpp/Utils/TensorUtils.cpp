@@ -103,7 +103,7 @@ Matrix tensor_utils::slice( const TensorConfig& tensorConfig
 // Conversion of TensorConfig to SparseTensor
 SparseTensor tensor_utils::sparse_to_tensor(const smurff::TensorConfig& tensorConfig)
 {
-   return SparseTensor(tensorConfig.getDims(),  tensorConfig.getValues(), tensorConfig.getColumns());
+   return SparseTensor(tensorConfig.getDims(),  tensorConfig.getColumns(), tensorConfig.getValues());
 }
 
 // Conversion of TensorConfig to Tensor

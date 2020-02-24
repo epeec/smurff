@@ -23,7 +23,9 @@ namespace smurff
       std::vector<double>        m_values;
 
       int getNModes() const { return m_dims.size(); }
-      const std::vector<std::uint64_t> & getDims() { return m_dims; };
+      const std::vector<std::uint64_t> & getDims() const { return m_dims; };
+      const std::uint64_t & getNRow() const { return m_dims.at(0); };
+      const std::uint64_t & getNCol() const { return m_dims.at(1); };
       std::uint64_t getNNZ() const { return m_values.size(); }
 
       const std::vector<double>& getValues() const { return m_values; }
@@ -38,11 +40,17 @@ namespace smurff
 
       SparseTensor(
           const std::vector<std::uint64_t> &dims,
-          const std::vector<double> &values,
-          const columns_type &columns)
+          const columns_type &columns,
+          const std::vector<double> &values)
       : Tensor(dims, values), m_columns(columns) {}
 
       columns_type m_columns;
+
+      const std::vector<std::uint32_t> &getRows() const { return m_columns.at(0); }
+      std::vector<std::uint32_t> &getRows() { return m_columns.at(0); }
+
+      const std::vector<std::uint32_t> &getCols() const { return m_columns.at(1); }
+      std::vector<std::uint32_t> &getCols() { return m_columns.at(1); }
 
       const std::vector<std::uint32_t> &getColumn(int i) const { return m_columns.at(i); }
       std::vector<std::uint32_t> &getColumn(int i) { return m_columns.at(i); }
