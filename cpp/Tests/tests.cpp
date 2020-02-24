@@ -19,7 +19,7 @@
 #include <Utils/counters.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 
-#include <SmurffCpp/Configs/MatrixConfig.h>
+#include <SmurffCpp/Configs/DataConfig.h>
 
 #include <SmurffCpp/Priors/ILatentPrior.h>
 #include <SmurffCpp/Priors/MacauPrior.h>
@@ -71,9 +71,9 @@ TEST_CASE( "utils/eval_rmse", "Test if prediction variance is correctly calculat
 
   std::shared_ptr<Model> model(new Model());
   
-  std::shared_ptr<MatrixConfig> S(new MatrixConfig(1, 1, 1, rows.data(), cols.data(), vals.data(), fixed_ncfg, false));
-  std::shared_ptr<Data> data(new ScarceMatrixData(matrix_utils::sparse_to_eigen(*S)));
-  std::shared_ptr<Result> p(new Result(*S));
+  SparseMatrix S = matrix_utils::sparse_to_eigen(SparseTensor( { 1, 1 }, { rows, cols }, vals));
+  std::shared_ptr<Data> data(new ScarceMatrixData(S));
+  std::shared_ptr<Result> p(new Result(S));
 
   data->setNoiseModel(NoiseFactory::create_noise_model(fixed_ncfg));
 
@@ -152,8 +152,8 @@ TEST_CASE( "ScarceMatrixData/var_total", "Test if variance of Scarce Matrix is c
   std::vector<std::uint32_t> cols = {0, 0};
   std::vector<double>        vals = {1., 2.};
 
-  const MatrixConfig S(2, 2, rows, cols, vals, fixed_ncfg, false);
-  std::shared_ptr<Data> data(new ScarceMatrixData(matrix_utils::sparse_to_eigen(S)));
+  const SparseMatrix S = matrix_utils::sparse_to_eigen(SparseTensor( {2, 2}, { rows, cols }, vals));
+  std::shared_ptr<Data> data(new ScarceMatrixData(S));
 
   data->setNoiseModel(NoiseFactory::create_noise_model(fixed_ncfg));
 
@@ -180,7 +180,7 @@ MacauPrior* make_dense_prior(int nlatent, const std::vector<double> & ptr, int n
 {
    auto ret = new MacauPrior(0, 0);
    std::shared_ptr<DenseSideInfo> side_info = std::make_shared<DenseSideInfo>(
-    MatrixConfig(nrows, ncols, ptr, fixed_ncfg)
+    DataConfig(matrix_utils::dense_to_eigen(DenseTensor({(std::uint64_t)nrows, (std::uint64_t)ncols}, ptr)), fixed_ncfg)
    );
    ret->addSideInfo(side_info, 10.0, 1e-6, comp_FtF, true, false);
    ret->FtF_plus_precision.resize(ncols, ncols);
@@ -188,7 +188,7 @@ MacauPrior* make_dense_prior(int nlatent, const std::vector<double> & ptr, int n
    return ret;
 }
 
-TEST_CASE("macauprior/make_dense_prior", "Making MacauPrior with MatrixConfig") {
+TEST_CASE("macauprior/make_dense_prior", "Making MacauPrior with DataConfgi") {
     std::vector<double> x = {0.1, 0.4, -0.7, 0.3, 0.11, 0.23};
 
     // ColMajor case
