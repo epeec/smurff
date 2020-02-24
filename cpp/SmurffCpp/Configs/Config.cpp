@@ -52,9 +52,8 @@ static const std::string INIT_MODEL_TAG = "init_model";
 static const std::string CLASSIFY_TAG = "classify";
 static const std::string THRESHOLD_TAG = "threshold";
 
-static const std::string POSTPROP_PREFIX = "prop_posterior";
-static const std::string LAMBDA_TAG = "Lambda";
-static const std::string MU_TAG = "mu";
+static const std::string LAMBDA_TAG = "prop_Lambda";
+static const std::string MU_TAG = "prop_mu";
 
 static const std::string PRIOR_NAME_DEFAULT = "default";
 static const std::string PRIOR_NAME_MACAU = "macau";
@@ -453,9 +452,8 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
    {
        if (hasPropagatedPosterior(pIndex))
        {
-           auto section = addIndex(POSTPROP_PREFIX, pIndex);
-           cfg_file.put(section, MU_TAG, getMuPropagatedPosterior(pIndex)->getFilename());
-           cfg_file.put(section, LAMBDA_TAG, getLambdaPropagatedPosterior(pIndex)->getFilename());
+           getMuPropagatedPosterior(pIndex)->save(cfg_file, addIndex(MU_TAG, pIndex));
+           getLambdaPropagatedPosterior(pIndex)->save(cfg_file, addIndex(LAMBDA_TAG, pIndex));
        }
    }
 
@@ -492,32 +490,14 @@ bool Config::restore(const ConfigFile &cfg_file)
    std::size_t num_aux_data = cfg_file.get(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, 0);
    for(std::size_t pIndex = 0; pIndex < num_aux_data; pIndex++)
    {
-      m_auxData.push_back(TensorConfig::restore_tensor_config(cfg_file, addIndex(AUX_DATA_PREFIX, pIndex)));
+      m_auxData.push_back(DataConfig::restore_data_config(cfg_file, addIndex(AUX_DATA_PREFIX, pIndex)));
    }
 
    // restore posterior propagated data
    for(std::size_t pIndex = 0; pIndex < num_priors; pIndex++)
    {
-       auto mu = std::shared_ptr<MatrixConfig>();
-       auto lambda = std::shared_ptr<MatrixConfig>();
-
-       {
-           std::string filename = cfg_file.get(addIndex(POSTPROP_PREFIX, pIndex), MU_TAG, NONE_VALUE);
-           if (filename != NONE_VALUE)
-           {
-               mu = matrix_io::read_matrix(filename, false);
-               mu->setFilename(filename);
-           }
-       }
-
-       {
-           std::string filename = cfg_file.get(addIndex(POSTPROP_PREFIX, pIndex), LAMBDA_TAG, NONE_VALUE);
-           if (filename != NONE_VALUE)
-           {
-               lambda = matrix_io::read_matrix(filename, false);
-               lambda->setFilename(filename);
-           }
-       }
+       auto mu = DataConfig::restore_data_config(cfg_file, addIndex(MU_TAG, pIndex));
+       auto lambda = DataConfig::restore_data_config(cfg_file, addIndex(LAMBDA_TAG, pIndex));
 
        if (mu && lambda)
        {
