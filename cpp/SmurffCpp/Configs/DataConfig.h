@@ -103,6 +103,9 @@ namespace smurff
       virtual void write(std::shared_ptr<IDataWriter> writer) const;
 
    public:
+      static std::shared_ptr<DataConfig> restore_data_config(const ConfigFile& reader, const std::string& sec_name);
+
+   public:
       void check() const;
    };
 }

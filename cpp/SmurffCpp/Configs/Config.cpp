@@ -466,10 +466,10 @@ bool Config::restore(const ConfigFile &cfg_file)
 {
 
    //restore train data
-   setTest(TensorConfig::restore_tensor_config(cfg_file, TEST_SECTION_TAG));
+   setTest(DataConfig::restore_data_config(cfg_file, TEST_SECTION_TAG));
 
    //restore test data
-   setTrain(TensorConfig::restore_tensor_config(cfg_file, TRAIN_SECTION_TAG));
+   setTrain(DataConfig::restore_data_config(cfg_file, TRAIN_SECTION_TAG));
 
    //restore priors
    std::size_t num_priors = cfg_file.get(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, 0);

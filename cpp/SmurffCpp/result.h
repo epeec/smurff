@@ -3,10 +3,11 @@
 #include <memory>
 
 #include <SmurffCpp/ResultItem.h>
-#include <SmurffCpp/Configs/MatrixConfig.h>
-#include <SmurffCpp/DataTensors/SparseMode.h>
+#include <SmurffCpp/Types.h>
 
 namespace smurff {
+
+class DataConfig;
 
 class Step;
 class OutputFile;
