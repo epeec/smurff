@@ -1,6 +1,5 @@
 #include <SmurffCpp/Configs/Config.h>
 #include <SmurffCpp/Configs/NoiseConfig.h>
-#include <SmurffCpp/Configs/TensorConfig.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 
 #include "Tests.h"
