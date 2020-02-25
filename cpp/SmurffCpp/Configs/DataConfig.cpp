@@ -68,24 +68,6 @@ DataConfig::DataConfig ( const SparseTensor &m
    setData(m, isScarce);
 }
 
-DataConfig::DataConfig ( bool isDense
-                       , bool isBinary
-                       , bool isScarce
-                       , std::vector<std::uint64_t> dims
-                       , std::uint64_t nnz
-                       , const NoiseConfig& noiseConfig
-                       , PVec<> pos
-                       )
-   : m_noiseConfig(noiseConfig)
-   , m_isDense(isDense)
-   , m_isBinary(isBinary)
-   , m_isScarce(isScarce)
-   , m_dims(dims)
-   , m_nnz(nnz)
-   , m_pos(pos)
-{
-   check();
-}
 
 DataConfig::~DataConfig()
 {
