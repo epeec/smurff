@@ -145,22 +145,18 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   std::vector<double> testMatrixConfigVals = {2, 2, 1, 2, 4, 4, 2, 4, -2, -2, -1, -2, -4, -4, -2, -4};
   SparseMatrix testMatrix = matrix_utils::sparse_to_eigen(SparseTensor({ 4, 4 } , { testMatrixConfigRows, testMatrixConfigCols }, testMatrixConfigVals));
 
-  SideInfoConfig rowSideInfoConfig;
-  {
-    NoiseConfig nc(NoiseTypes::sampled);
-    nc.setPrecision(10.0);
+  NoiseConfig nc(NoiseTypes::sampled);
+  nc.setPrecision(10.0);
 
-    std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigRows = {0, 1, 2, 3};
-    std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigCols = {0, 0, 0, 0};
-    std::vector<double> rowSideInfoSparseMatrixConfigVals = {2, 4, -2, -4};
+  std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigRows = {0, 1, 2, 3};
+  std::vector<std::uint32_t> rowSideInfoSparseMatrixConfigCols = {0, 0, 0, 0};
+  std::vector<double> rowSideInfoSparseMatrixConfigVals = {2, 4, -2, -4};
 
-    auto data = SparseTensor({ 4, 1 }, { rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols },
-                                   rowSideInfoSparseMatrixConfigVals);
+  auto data = SparseTensor({4, 1}, {rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols},
+                           rowSideInfoSparseMatrixConfigVals);
 
-    rowSideInfoConfig.setData(matrix_utils::sparse_to_eigen(data), false);
-    rowSideInfoConfig.setNoiseConfig(nc);
-    rowSideInfoConfig.setDirect(true);
-  }
+  SideInfoConfig rowSideInfoConfig(matrix_utils::sparse_to_eigen(data), nc);
+  rowSideInfoConfig.setDirect(true);
 
   Config config = genConfig(trainMatrix, testMatrix, {PriorTypes::macau, PriorTypes::normal})
                       .addSideInfoConfig(0, rowSideInfoConfig);

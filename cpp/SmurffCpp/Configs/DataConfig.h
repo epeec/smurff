@@ -50,11 +50,6 @@ namespace smurff
       DataConfig(const SparseTensor &, bool isScarce = true, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
 
    public:
-      void setData(const Matrix &m);
-      void setData(const SparseMatrix &m, bool isScarce = true);
-      void setData(const DenseTensor &m);
-      void setData(const SparseTensor &m, bool isScarce = true);
-
       const Matrix       &getDenseMatrixData()  const;
       const SparseMatrix &getSparseMatrixData() const;
       const SparseTensor &getSparseTensorData() const;
