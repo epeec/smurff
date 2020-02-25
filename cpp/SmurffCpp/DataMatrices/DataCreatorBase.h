@@ -13,6 +13,6 @@ namespace smurff {
       }
 
    public:
-      std::shared_ptr<Data> create(std::shared_ptr<const DataConfig> dc) const override;
+      std::shared_ptr<Data> create(const DataConfig &dc) const override;
    };
 }

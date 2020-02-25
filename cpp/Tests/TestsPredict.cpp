@@ -162,7 +162,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
                       .addSideInfoConfig(0, rowSideInfoConfig);
   NoiseConfig trainNoise(NoiseTypes::fixed);
   trainNoise.setPrecision(1.);
-  config.getTrain()->setNoiseConfig(trainNoise);
+  config.getTrain().setNoiseConfig(trainNoise);
   prepareResultDir(config, Catch::getResultCapture().getCurrentTestName());
 
   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
@@ -173,7 +173,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
 
   PredictSession predict_session_out(session->getOutputFile());
   auto sideInfoMatrix = rowSideInfoConfig.getSparseMatrixData();
-  int d = config.getTrain()->getDims()[0];
+  int d = config.getTrain().getDims()[0];
   for (int r = 0; r < d; r++) {
     auto feat = sideInfoMatrix.row(r).transpose();
     auto out_of_matrix_predictions = predict_session_out.predict(0, feat);

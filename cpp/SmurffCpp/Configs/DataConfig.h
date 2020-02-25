@@ -17,7 +17,7 @@ namespace smurff
    class IDataCreator;
    class ConfigFile;
 
-   class DataConfig : public std::enable_shared_from_this<DataConfig>
+   class DataConfig 
    {
    private:
       NoiseConfig m_noiseConfig;
@@ -58,6 +58,7 @@ namespace smurff
       const NoiseConfig& getNoiseConfig() const;
       void setNoiseConfig(const NoiseConfig& value);
      
+      bool isEmpty() const { return getDims().empty(); }
       bool isMatrix() const;
       bool isDense() const;
       bool isScarce() const;

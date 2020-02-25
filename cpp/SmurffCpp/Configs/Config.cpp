@@ -134,7 +134,6 @@ std::string modelInitTypeToString(ModelInitTypes type)
 }
 
 //config
-ActionTypes Config::ACTION_DEFAULT_VALUE = ActionTypes::none;
 int Config::BURNIN_DEFAULT_VALUE = 200;
 int Config::NSAMPLES_DEFAULT_VALUE = 800;
 int Config::NUM_LATENT_DEFAULT_VALUE = 96;
@@ -154,7 +153,6 @@ int Config::RANDOM_SEED_DEFAULT_VALUE = 0;
 
 Config::Config()
 {
-   m_action = Config::ACTION_DEFAULT_VALUE;
    m_model_init_type = Config::INIT_MODEL_DEFAULT_VALUE;
 
    m_save_prefix = Config::SAVE_PREFIX_DEFAULT_VALUE;
@@ -225,17 +223,17 @@ Config& Config::addSideInfoConfig(int mode, SideInfoConfig c)
 
 bool Config::validate() const
 {
-   if (!m_train || !m_train->getNNZ())
+   if (getTrain().isEmpty() || getTrain().getNNZ() == 0)
    {
       THROWERROR("Missing train data");
    }
 
-   auto train_pos = PVec<>(m_train->getNModes());
-   if (!m_train->hasPos())
+   auto train_pos = PVec<>(getTrain().getNModes());
+   if (!getTrain().hasPos())
    {
-       m_train->setPos(train_pos);
+       // FIXME getTrain().setPos(train_pos);
    }
-   else if (m_train->getPos() != train_pos)
+   else if (getTrain().getPos() != train_pos)
    {
        THROWERROR("Train should be at upper position (all zeros)");
    }
@@ -245,17 +243,17 @@ bool Config::validate() const
       THROWERROR("Missing test data");
    }
 
-   if (m_test && m_test->getDims() != m_train->getDims())
+   if (m_test && m_test->getDims() != getTrain().getDims())
    {
       THROWERROR("Train and test data should have the same dimensions");
    }
 
-   if(getPriorTypes().size() != m_train->getNModes())
+   if(getPriorTypes().size() != getTrain().getNModes())
    {
       THROWERROR("Number of priors should equal to number of dimensions in train data");
    }
 
-   if (m_train->getNModes() > 2)
+   if (getTrain().getNModes() > 2)
    {
 
       if (!m_auxData.empty())
@@ -274,7 +272,7 @@ bool Config::validate() const
       int mode = p.first;
       auto &configItem = p.second;
 
-      if (configItem.getDims()[0] != m_train->getDims()[mode])
+      if (configItem.getDims()[0] != getTrain().getDims()[mode])
       {
          std::stringstream ss;
          ss << "Side info should have the same number of rows as size of dimension " << mode << " in train data";
@@ -358,20 +356,20 @@ bool Config::validate() const
       THROWERROR("Unknown output extension: " + m_save_extension + " (expected \".csv\" or \".ddm\")");
    }
 
-   m_train->getNoiseConfig().validate();
+   getTrain().getNoiseConfig().validate();
 
    // validate propagated posterior
-   for(uint64_t i=0; i<getTrain()->getNModes(); ++i)
+   for(uint64_t i=0; i<getTrain().getNModes(); ++i)
    {
        if (hasPropagatedPosterior(i))
        {
            THROWERROR_ASSERT_MSG(
-               getMuPropagatedPosterior(i)->getNCol() == getTrain()->getDims().at(i),
+               getMuPropagatedPosterior(i)->getNCol() == getTrain().getDims().at(i),
                "mu of propagated posterior in mode " + std::to_string(i) + 
                " should have same number of columns as train in mode"
            );
            THROWERROR_ASSERT_MSG(
-               getLambdaPropagatedPosterior(i)->getNCol() == getTrain()->getDims().at(i),
+               getLambdaPropagatedPosterior(i)->getNCol() == getTrain().getDims().at(i),
                "Lambda of propagated posterior in mode " + std::to_string(i) + 
                " should have same number of columns as train in mode"
            );
@@ -425,8 +423,7 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
    cfg_file.put(GLOBAL_SECTION_TAG, THRESHOLD_TAG, m_threshold);
 
    //write train data section
-   if (m_train)
-      m_train->save(cfg_file, TRAIN_SECTION_TAG);
+   getTrain().save(cfg_file, TRAIN_SECTION_TAG);
 
    //write test data section
    if (m_test)
@@ -464,7 +461,7 @@ bool Config::restore(const ConfigFile &cfg_file)
    setTest(DataConfig::restore_data_config(cfg_file, TEST_SECTION_TAG));
 
    //restore test data
-   setTrain(DataConfig::restore_data_config(cfg_file, TRAIN_SECTION_TAG));
+   getTrain().restore(cfg_file, TRAIN_SECTION_TAG);
 
    //restore priors
    std::size_t num_priors = cfg_file.get(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, 0);

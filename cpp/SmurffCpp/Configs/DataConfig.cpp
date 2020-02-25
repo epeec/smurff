@@ -196,7 +196,8 @@ bool DataConfig::hasPos() const
 
 const PVec<>& DataConfig::getPos() const
 {
-    return m_pos;
+   THROWERROR_ASSERT(hasPos());
+   return m_pos;
 }
 
 std::ostream& DataConfig::info(std::ostream& os) const
@@ -326,7 +327,7 @@ bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name
 
 std::shared_ptr<Data> DataConfig::create(std::shared_ptr<IDataCreator> creator) const
 {
-   return creator->create(shared_from_this());
+   return creator->create(*this);
 }
 
 void DataConfig::write(std::shared_ptr<IDataWriter> writer) const

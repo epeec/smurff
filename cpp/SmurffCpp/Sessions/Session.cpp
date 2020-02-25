@@ -85,7 +85,7 @@ void Session::setFromBase()
 
     // initialize data
 
-    data_ptr = m_config.getTrain()->create(std::make_shared<DataCreator>(this_session));
+    data_ptr = m_config.getTrain().create(std::make_shared<DataCreator>(this_session));
 
     // initialize priors
 

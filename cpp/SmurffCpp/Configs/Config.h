@@ -31,12 +31,6 @@ enum class ModelInitTypes
    zero
 };
 
-enum class ActionTypes
-{
-   train,
-   predict,
-   none
-};
 
 PriorTypes stringToPriorType(std::string name);
 
@@ -51,7 +45,6 @@ struct Config
 public:
 
    //config
-   static ActionTypes ACTION_DEFAULT_VALUE;
    static int BURNIN_DEFAULT_VALUE;
    static int NSAMPLES_DEFAULT_VALUE;
    static int NUM_LATENT_DEFAULT_VALUE;
@@ -71,10 +64,8 @@ public:
    static int RANDOM_SEED_DEFAULT_VALUE;
 
 private:
-   ActionTypes m_action;
-
    //-- train and test
-   std::shared_ptr<DataConfig> m_train;
+   DataConfig m_train;
    std::shared_ptr<DataConfig> m_test;
    std::shared_ptr<DataConfig> m_row_features;
    std::shared_ptr<DataConfig> m_col_features;
@@ -137,25 +128,24 @@ public:
 public:
    bool isActionTrain()
    {
-       return m_action == ActionTypes::train;
+       return !getTrain().isEmpty();
    }
 
    bool isActionPredict()
    {
-       return m_action == ActionTypes::predict;
+       return getTrain().isEmpty();
    }
 
-   std::shared_ptr<DataConfig> getTrain() const
+   const DataConfig& getTrain() const
    {
       return m_train;
    }
 
-   void setTrain(std::shared_ptr<DataConfig> value)
+   DataConfig& getTrain()
    {
-      m_train = value;
-      m_action = ActionTypes::train;
+      return m_train;
    }
-
+   
    std::shared_ptr<DataConfig> getTest() const
    {
       return m_test;
@@ -174,7 +164,6 @@ public:
    void setRowFeatures(std::shared_ptr<DataConfig> value)
    {
       m_row_features = value;
-      m_action = ActionTypes::predict;
    }
 
    std::shared_ptr<DataConfig> getColFeatures() const
@@ -185,14 +174,12 @@ public:
    void setColFeatures(std::shared_ptr<DataConfig> value)
    {
       m_col_features = value;
-      m_action = ActionTypes::predict;
    }
 
 
    void setPredict(std::shared_ptr<DataConfig> value)
    {
       m_test = value;
-      m_action = ActionTypes::predict;
    }
 
    const std::vector< std::shared_ptr<DataConfig> >& getAuxData() const
@@ -223,7 +210,7 @@ public:
    std::vector< std::shared_ptr<DataConfig> > getData() const
    {
        auto data = m_auxData;
-       data.push_back(m_train);
+       // FIXME data.push_back(m_train);
        return data;
    }
 
@@ -231,8 +218,8 @@ public:
    {
       if (m_prior_types.empty())
       {
-          THROWERROR_ASSERT(getTrain())
-          return std::vector<PriorTypes>(getTrain()->getNModes(), PriorTypes::default_prior);
+          THROWERROR_ASSERT(!getTrain().isEmpty())
+          return std::vector<PriorTypes>(getTrain().getNModes(), PriorTypes::default_prior);
       }
       return m_prior_types;
    }
