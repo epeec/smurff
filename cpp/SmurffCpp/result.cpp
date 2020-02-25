@@ -109,7 +109,7 @@ std::shared_ptr<const SparseMatrix> Result::toMatrix(const Accessor &acc) const
    return ret;
 }
 
-void Result::save(std::shared_ptr<Step> sf) const
+void Result::save(Step &sf) const
 {
    if (isEmpty())
       return;
@@ -120,10 +120,10 @@ void Result::save(std::shared_ptr<Step> sf) const
       auto pred_var = toMatrix([](const ResultItem &p) { return p.var; });
       auto pred_1sample = toMatrix([](const ResultItem &p) { return p.pred_1sample; });
 
-      sf->putPredAvgVar(*pred_avg, *pred_var, *pred_1sample);
+      sf.putPredAvgVar(*pred_avg, *pred_var, *pred_1sample);
    }
 
-   sf->putPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
+   sf.putPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
 }
 
 void Result::toCsv(std::string filename) const
@@ -150,9 +150,9 @@ void Result::toCsv(std::string filename) const
    predFile.close();
 }
 
-void Result::restore(std::shared_ptr<const Step> sf)
+void Result::restore(const Step &sf)
 {
-   sf->getPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
+   sf.getPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
 }
 
 //--- update RMSE and AUC

@@ -143,19 +143,19 @@ void MacauOnePrior::sample_beta_precision()
    }
 }
 
-bool MacauOnePrior::save(std::shared_ptr<Step> sf) const
+bool MacauOnePrior::save(Step &sf) const
 {
    NormalOnePrior::save(sf);
-   sf->putLinkMatrix(getMode(), beta);
-   sf->putMu(getMode(), hyperMu());
+   sf.putLinkMatrix(getMode(), beta);
+   sf.putMu(getMode(), hyperMu());
    return true;
 }
 
-void MacauOnePrior::restore(std::shared_ptr<const Step> sf)
+void MacauOnePrior::restore(const Step &sf)
 {
    NormalOnePrior::restore(sf);
-   beta = *sf->getLinkMatrix(getMode());
-   hyperMu() = *sf->getMu(getMode());
+   beta = *sf.getLinkMatrix(getMode());
+   hyperMu() = *sf.getMu(getMode());
 }
 
 std::ostream& MacauOnePrior::status(std::ostream &os, std::string indent) const

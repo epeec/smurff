@@ -61,9 +61,9 @@ public:
 
 public:
 
-   bool save(std::shared_ptr<Step> sf) const override;
+   bool save(Step &sf) const override;
 
-   void restore(std::shared_ptr<const Step> sf) override;
+   void restore(const Step &sf) override;
 
    std::ostream& status(std::ostream &os, std::string indent) const override;
 };

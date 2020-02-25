@@ -113,10 +113,10 @@ public:
 
 public:
    // output to file
-   void save(std::shared_ptr<Step> sf) const;
+   void save(Step &sf) const;
    bool m_save_model = true;
    bool m_save_aggr = false;
-   void restore(std::shared_ptr<const Step> sf, int skip_mode = -1);
+   void restore(const Step &sf, int skip_mode = -1);
 
    std::ostream& info(std::ostream &os, std::string indent) const;
    std::ostream& status(std::ostream &os, std::string indent) const;

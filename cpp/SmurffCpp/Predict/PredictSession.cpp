@@ -134,7 +134,7 @@ bool PredictSession::step()
 void PredictSession::save()
 {
     //save this iteration
-    std::shared_ptr<Step> stepFile = getOutputFile()->createSampleStep(m_iter);
+    Step stepFile = getOutputFile()->createSampleStep(m_iter);
 
     if (m_config.getVerbose())
     {
@@ -150,7 +150,7 @@ std::shared_ptr<StatusItem> PredictSession::getStatus() const
 {
     std::shared_ptr<StatusItem> ret = std::make_shared<StatusItem>();
     ret->phase = "Predict";
-    ret->iter = (*m_pos)->getIsample();
+    ret->iter = m_pos->getIsample();
     ret->phase_iter = m_stepfiles.size();
 
     ret->train_rmse = NAN;
@@ -204,9 +204,9 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
     return os;
 }
 
-std::shared_ptr<Model> PredictSession::restoreModel(const std::shared_ptr<Step> &sf, int skip_mode)
+std::shared_ptr<Model> PredictSession::restoreModel(const Step &sf, int skip_mode)
 {
-    auto model = sf->restoreModel(skip_mode);
+    auto model = sf.restoreModel(skip_mode);
 
     if (m_num_latent <= 0)
     {
@@ -251,7 +251,7 @@ void PredictSession::predict(ResultItem &res)
     auto stepfiles = getModelRoot()->openSampleSteps();
 
     for (const auto &sf : stepfiles)
-        predict(res, *sf);
+        predict(res, sf);
 }
 
 ResultItem PredictSession::predict(PVec<> pos)

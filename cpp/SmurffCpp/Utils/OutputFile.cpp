@@ -66,19 +66,19 @@ void OutputFile::restoreConfig(Config& config)
    config.restore(h5_cfg);
 }
 
-std::shared_ptr<Step> OutputFile::createSampleStep(std::int32_t isample)
+Step OutputFile::createSampleStep(std::int32_t isample)
 {
    return createStep(isample, false);
 }
 
-std::shared_ptr<Step> OutputFile::createCheckpointStep(std::int32_t isample)
+Step OutputFile::createCheckpointStep(std::int32_t isample)
 {
    return createStep(isample, true);
 }
 
-std::shared_ptr<Step> OutputFile::createStep(std::int32_t isample, bool checkpoint)
+Step OutputFile::createStep(std::int32_t isample, bool checkpoint)
 {
-   return std::make_shared<Step>(m_h5, isample, checkpoint);
+   return Step(m_h5, isample, checkpoint);
 }
 
 void OutputFile::removeOldCheckpoints()
@@ -98,30 +98,30 @@ void OutputFile::removeOldCheckpoints()
    }
 }
 
-std::shared_ptr<Step> OutputFile::openLastCheckpoint() const
+boost::optional<Step> OutputFile::openLastCheckpoint() const
 {
    std::string lastCheckpointItem;
    m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
    if (lastCheckpointItem != NONE_VALUE)
    {
       h5::Group group = m_h5.getGroup(lastCheckpointItem);
-      return std::make_shared<Step>(m_h5, group);
+      return Step(m_h5, group);
    }
 
-   return std::shared_ptr<Step>();
+   return boost::optional<Step>();
 }
 
-std::vector<std::shared_ptr<Step>> OutputFile::openSampleSteps() const
+std::vector<Step> OutputFile::openSampleSteps() const
 {
    std::vector<std::string> h5_objects = m_h5.listObjectNames();
-   std::vector<std::shared_ptr<Step>> samples;
+   std::vector<Step> samples;
 
    for (auto &name : h5_objects)
    {
       if (startsWith(name, SAMPLE_PREFIX))
       {
          h5::Group group = m_h5.getGroup(name);
-         samples.push_back(std::make_shared<Step>(m_h5, group));
+         samples.push_back(Step(m_h5, group));
       }
    }
 

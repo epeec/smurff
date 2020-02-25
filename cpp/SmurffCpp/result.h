@@ -87,8 +87,8 @@ public:
    // general
 
 public:
-   void save(std::shared_ptr<Step> sf) const;
-   void restore(std::shared_ptr<const Step> sf);
+   void save(Step &sf) const;
+   void restore(const Step &sf);
 
 private:
    template<typename Accessor>

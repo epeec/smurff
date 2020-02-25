@@ -193,9 +193,9 @@ void Step::save(
    const std::vector<std::shared_ptr<ILatentPrior> >& priors
    )
 {
-   model->save(shared_from_this());
-   pred->save(shared_from_this());
-   for (auto &p : priors) p->save(shared_from_this());
+   model->save(*this);
+   pred->save(*this);
+   for (auto &p : priors) p->save(*this);
 }
 
 //restore methods
@@ -204,15 +204,15 @@ void Step::save(
 std::shared_ptr<Model> Step::restoreModel(int skip_mode) const
 {
     auto model = std::make_shared<Model>();
-    model->restore(shared_from_this(), skip_mode);
+    model->restore(*this, skip_mode);
     return model;
 }
 
 void Step::restore(std::shared_ptr<Model> model, std::shared_ptr<Result> pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const
 {
-   model->restore(shared_from_this());
-   pred->restore(shared_from_this());
-   for (auto &p : priors) p->restore(shared_from_this());
+   model->restore(*this);
+   pred->restore(*this);
+   for (auto &p : priors) p->restore(*this);
 }
 
 //getters

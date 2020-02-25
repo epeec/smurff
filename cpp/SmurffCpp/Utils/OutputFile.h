@@ -3,6 +3,8 @@
 #include <string>
 #include <unordered_map>
 
+#include <boost/optional.hpp>
+
 #include <highfive/H5File.hpp>
 
 namespace h5 = HighFive;
@@ -36,17 +38,17 @@ public:
    void restoreConfig(Config& config);
 
 public:
-   std::shared_ptr<Step> createSampleStep(std::int32_t isample);
-   std::shared_ptr<Step> createCheckpointStep(std::int32_t isample);
-   std::shared_ptr<Step> createStep(std::int32_t isample, bool checkpoint);
+   Step createSampleStep(std::int32_t isample);
+   Step createCheckpointStep(std::int32_t isample);
+   Step createStep(std::int32_t isample, bool checkpoint);
 
 public:
    void removeOldCheckpoints();
 
 public:
-   std::shared_ptr<Step> openLastCheckpoint() const;
-   std::shared_ptr<Step> openSampleStep(int isample) const;
-   std::vector<std::shared_ptr<Step>> openSampleSteps() const;
+   boost::optional<Step> openLastCheckpoint() const;
+   Step openSampleStep(int isample) const;
+   std::vector<Step> openSampleSteps() const;
 };
 
 }

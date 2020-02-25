@@ -176,9 +176,9 @@ void Model::updateAggr(int m)
    m_num_aggr.at(m)++;
 }
 
-void Model::save(std::shared_ptr<Step> sf) const
+void Model::save(Step &sf) const
 {
-   sf->putModel(m_factors);
+   sf.putModel(m_factors);
    for (std::uint64_t m = 0; m < nmodes(); ++m)
    {
       if (m_collect_aggr && m_save_aggr)
@@ -203,14 +203,14 @@ void Model::save(std::shared_ptr<Step> sf) const
             mu.col(i) = sum / n;
          }
 
-         sf->putPostMuLambda(m, mu, prec);
+         sf.putPostMuLambda(m, mu, prec);
       }
    }
 }
 
-void Model::restore(std::shared_ptr<const Step> sf, int skip_mode)
+void Model::restore(const Step &sf, int skip_mode)
 {
-   unsigned nmodes = sf->getNModes();
+   unsigned nmodes = sf.getNModes();
    m_factors.clear();
    m_dims = PVec<>(nmodes);
 
@@ -219,7 +219,7 @@ void Model::restore(std::shared_ptr<const Step> sf, int skip_mode)
       std::shared_ptr<Matrix> U;
       if ((int)i != skip_mode)
       {
-         U = sf->getModel(i);
+         U = sf.getModel(i);
          m_dims.at(i) = U->cols();
          m_num_latent = U->rows();
       }
@@ -235,8 +235,8 @@ void Model::restore(std::shared_ptr<const Step> sf, int skip_mode)
 
    for(int i=0; i<nmodes; ++i)
    {
-       std::shared_ptr<Vector> mu = sf->getMu(i);
-       std::shared_ptr<Matrix> beta = sf->getLinkMatrix(i);
+       std::shared_ptr<Vector> mu = sf.getMu(i);
+       std::shared_ptr<Matrix> beta = sf.getLinkMatrix(i);
        setLinkMatrix(i, beta, mu);
    }
 

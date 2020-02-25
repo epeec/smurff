@@ -25,20 +25,20 @@ private:
     bool m_has_config;
 
     std::shared_ptr<Result> m_result;
-    std::vector<std::shared_ptr<Step>>::reverse_iterator m_pos;
+    std::vector<Step>::reverse_iterator m_pos;
 
     double m_secs_per_iter;
     double m_secs_total;
     int m_iter;
 
-    std::vector<std::shared_ptr<Step>> m_stepfiles;
+    std::vector<Step> m_stepfiles;
 
     int m_num_latent;
     PVec<> m_dims;
     bool m_is_init;
 
 private:
-    std::shared_ptr<Model> restoreModel(const std::shared_ptr<Step> &, int skip_mode = -1);
+    std::shared_ptr<Model> restoreModel(const Step &, int skip_mode = -1);
     std::shared_ptr<Model> restoreModel(int i, int skip_mode = -1);
 
 public:

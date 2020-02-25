@@ -17,7 +17,7 @@ namespace smurff {
    class Result;
    class ILatentPrior;
 
-   class Step : public std::enable_shared_from_this<Step>, private HDF5
+   class Step : private HDF5
    {
    private:
       mutable h5::File m_file;
