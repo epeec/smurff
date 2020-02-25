@@ -39,8 +39,8 @@ private:
    std::vector<std::shared_ptr<Vector>> m_mus; //vector of mu vectors
 
    bool m_collect_aggr;
-   std::vector<std::shared_ptr<Matrix>> m_aggr_sum; //vector of aggr summed m_factors matrices
-   std::vector<std::shared_ptr<Matrix>> m_aggr_dot; //vector of aggr dot m_factors matrices
+   std::vector<Matrix> m_aggr_sum; //vector of aggr summed m_factors matrices
+   std::vector<Matrix> m_aggr_dot; //vector of aggr dot m_factors matrices
    std::vector<int> m_num_aggr; //number of aggregated samples in above vectors
 
    int m_num_latent; //size of latent dimension for U matrices

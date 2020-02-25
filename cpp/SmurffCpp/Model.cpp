@@ -62,12 +62,8 @@ void Model::init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_t
 
       if (aggregate)
       {
-         std::shared_ptr<Matrix> aggr_sum(new Matrix(m_num_latent, dims[i]));
-         aggr_sum->setZero();
-         m_aggr_sum.push_back(aggr_sum);
-         std::shared_ptr<Matrix> aggr_dot(new Matrix(m_num_latent * m_num_latent, dims[i]));
-         aggr_dot->setZero();
-         m_aggr_dot.push_back(aggr_dot);
+         m_aggr_sum.push_back(Matrix::Zero(m_num_latent, dims[i]));
+         m_aggr_dot.push_back(Matrix::Zero(m_num_latent * m_num_latent, dims[i]));
       }
    }
 
@@ -167,8 +163,8 @@ void Model::updateAggr(int m, int i)
 
    const auto &r = col(m, i);
    Matrix cov = (r * r.transpose());
-   m_aggr_sum.at(m)->col(i) += r;
-   m_aggr_dot.at(m)->col(i) += Eigen::Map<Vector>(cov.data(), nlatent() * nlatent());
+   m_aggr_sum.at(m).col(i) += r;
+   m_aggr_dot.at(m).col(i) += Eigen::Map<Vector>(cov.data(), nlatent() * nlatent());
 }
 
 void Model::updateAggr(int m)
@@ -185,8 +181,8 @@ void Model::save(Step &sf) const
       {
          double n = m_num_aggr.at(m);
 
-         Matrix &Usum = *m_aggr_sum.at(m);
-         Matrix &Uprod = *m_aggr_dot.at(m);
+         const Matrix &Usum = m_aggr_sum.at(m);
+         const Matrix &Uprod = m_aggr_dot.at(m);
 
          Matrix mu = Matrix::Zero(Usum.rows(), Usum.cols());
          // inverse of the covariance
@@ -196,7 +192,7 @@ void Model::save(Step &sf) const
          for (int i = 0; i < U(m).cols(); i++)
          {
             Vector sum = Usum.col(i);
-            Matrix prod = Eigen::Map<Matrix>(Uprod.col(i).data(), nlatent(), nlatent());
+            Matrix prod = Eigen::Map<const Matrix>(Uprod.col(i).data(), nlatent(), nlatent());
             Matrix prec_i = ((prod - (sum * sum.transpose() / n)) / (n - 1)).inverse();
 
             prec.col(i) = Eigen::Map<Vector>(prec_i.data(), nlatent() * nlatent());
