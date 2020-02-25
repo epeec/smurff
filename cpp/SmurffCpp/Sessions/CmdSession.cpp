@@ -164,8 +164,8 @@ fill_config(const po::variables_map &vm)
     }
 
     filler.set_data<&Config::setPredict>(PREDICT_NAME);
-    filler.set_data<&Config::setRowFeatures>(ROW_FEAT_NAME);
-    filler.set_data<&Config::setColFeatures>(COL_FEAT_NAME);
+    filler.fill_data<&Config::getRowFeatures>(ROW_FEAT_NAME);
+    filler.fill_data<&Config::getColFeatures>(COL_FEAT_NAME);
     filler.set_data<&Config::setTest>(TEST_NAME);
     filler.fill_data<&Config::getTrain>(TRAIN_NAME);
 

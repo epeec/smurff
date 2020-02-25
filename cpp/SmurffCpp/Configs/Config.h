@@ -67,8 +67,8 @@ private:
    //-- train and test
    DataConfig m_train;
    std::shared_ptr<DataConfig> m_test;
-   std::shared_ptr<DataConfig> m_row_features;
-   std::shared_ptr<DataConfig> m_col_features;
+   DataConfig m_row_features;
+   DataConfig m_col_features;
 
    //-- aux_data (contains pos)
    std::vector<std::shared_ptr<DataConfig> > m_auxData; //set of aux data matrices for normal and spikeandslab priors
@@ -156,26 +156,26 @@ public:
       m_test = value;
    }
 
-   std::shared_ptr<DataConfig> getRowFeatures() const
+   const DataConfig &getRowFeatures() const
    {
       return m_row_features;
    }
 
-   void setRowFeatures(std::shared_ptr<DataConfig> value)
-   {
-      m_row_features = value;
-   }
 
-   std::shared_ptr<DataConfig> getColFeatures() const
+   const DataConfig &getColFeatures() const
    {
       return m_col_features;
    }
 
-   void setColFeatures(std::shared_ptr<DataConfig> value)
+   DataConfig &getRowFeatures()
    {
-      m_col_features = value;
+      return m_row_features;
    }
 
+   DataConfig &getColFeatures() 
+   {
+      return m_col_features;
+   }
 
    void setPredict(std::shared_ptr<DataConfig> value)
    {

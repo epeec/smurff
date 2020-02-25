@@ -55,33 +55,22 @@ void PredictSession::run()
     }
     else
     {
-        std::shared_ptr<DataConfig> side_info;
-        int mode;
+        std::pair<int, const DataConfig &> side_info =
+            (!m_config.getRowFeatures().isEmpty()) ?
+            std::make_pair(0, m_config.getRowFeatures()) :
+            std::make_pair(1, m_config.getColFeatures()) ;
 
-        if (m_config.getRowFeatures())
+        THROWERROR_ASSERT_MSG(!side_info.second.isEmpty(), "Need either test, row features or col features");
+
+        if (side_info.second.isDense())
         {
-            side_info = m_config.getRowFeatures();
-            mode = 0;
-        }
-        else if (m_config.getColFeatures())
-        {
-            side_info = m_config.getColFeatures();
-            mode = 1;
+            const auto &dense_matrix = side_info.second.getDenseMatrixData();
+            predict(side_info.first, dense_matrix, m_config.getSaveFreq());
         }
         else
         {
-            THROWERROR("Need either test, row features or col features")
-        }
-
-        if (side_info->isDense())
-        {
-            const auto &dense_matrix = side_info->getDenseMatrixData();
-            predict(mode, dense_matrix, m_config.getSaveFreq());
-        }
-        else
-        {
-            const auto &sparse_matrix = side_info->getSparseMatrixData();
-            predict(mode, sparse_matrix, m_config.getSaveFreq());
+            const auto &sparse_matrix = side_info.second.getSparseMatrixData();
+            predict(side_info.first, sparse_matrix, m_config.getSaveFreq());
         }
     }
 }
