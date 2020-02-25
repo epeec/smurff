@@ -18,13 +18,13 @@ namespace smurff {
 
 std::shared_ptr<Data> DataCreator::create(const DataConfig& dc) const
 {
-   auto& aux_matrices = getSession().getConfig().getAuxData();
+   auto& matrices = getSession().getConfig().getData();
 
    //create creator
    std::shared_ptr<DataCreatorBase> creatorBase = std::make_shared<DataCreatorBase>();
 
    //create single matrix
-   if (aux_matrices.empty())
+   if (matrices.size() == 1)
       return dc.create(creatorBase);
 
    if (dc.isMatrix())
@@ -33,11 +33,10 @@ std::shared_ptr<Data> DataCreator::create(const DataConfig& dc) const
       NoiseConfig ncfg(NoiseTypes::unused);
       std::shared_ptr<MatricesData> local_data_ptr(new MatricesData());
       local_data_ptr->setNoiseModel(NoiseFactory::create_noise_model(ncfg));
-      local_data_ptr->add(PVec<>({0,0}), dc.create(creatorBase));
 
-      for(auto &m : aux_matrices)
+      for(auto &m : matrices)
       {
-         local_data_ptr->add(m->getPos(), m->create(creatorBase));
+         local_data_ptr->add(m.getPos(), m.create(creatorBase));
       }
 
       return local_data_ptr;

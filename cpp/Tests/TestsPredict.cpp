@@ -91,8 +91,8 @@ TEST_CASE("PredictSession/BPMF")
 TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
   SideInfoConfig rowSideInfoDenseMatrixConfig = makeSideInfoConfig(rowSideDenseMatrix);
 
-  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal})
-                      .addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
+  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal});
+  config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
   prepareResultDir(config, Catch::getResultCapture().getCurrentTestName());
 
   std::shared_ptr<ISession> session = SessionFactory::create_session(config);
@@ -158,8 +158,8 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   SideInfoConfig rowSideInfoConfig(matrix_utils::sparse_to_eigen(data), nc);
   rowSideInfoConfig.setDirect(true);
 
-  Config config = genConfig(trainMatrix, testMatrix, {PriorTypes::macau, PriorTypes::normal})
-                      .addSideInfoConfig(0, rowSideInfoConfig);
+  Config config = genConfig(trainMatrix, testMatrix, {PriorTypes::macau, PriorTypes::normal});
+  config.addSideInfoConfig(0, rowSideInfoConfig);
   NoiseConfig trainNoise(NoiseTypes::fixed);
   trainNoise.setPrecision(1.);
   config.getTrain().setNoiseConfig(trainNoise);

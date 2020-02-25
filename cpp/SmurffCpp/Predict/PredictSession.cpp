@@ -45,7 +45,7 @@ void PredictSession::run()
     THROWERROR_ASSERT(m_has_config);
 
 
-    if (m_config.getTest())
+    if (!m_config.getTest().hasData())
     {
         init();
         while (step())
@@ -56,11 +56,11 @@ void PredictSession::run()
     else
     {
         std::pair<int, const DataConfig &> side_info =
-            (!m_config.getRowFeatures().isEmpty()) ?
+            (!m_config.getRowFeatures().hasData()) ?
             std::make_pair(0, m_config.getRowFeatures()) :
             std::make_pair(1, m_config.getColFeatures()) ;
 
-        THROWERROR_ASSERT_MSG(!side_info.second.isEmpty(), "Need either test, row features or col features");
+        THROWERROR_ASSERT_MSG(!side_info.second.hasData(), "Need either test, row features or col features");
 
         if (side_info.second.isDense())
         {
@@ -78,8 +78,8 @@ void PredictSession::run()
 void PredictSession::init()
 {
     THROWERROR_ASSERT(m_has_config);
-    THROWERROR_ASSERT(m_config.getTest());
-    m_result = std::make_shared<Result>(*m_config.getTest(), m_config.getNSamples());
+    THROWERROR_ASSERT(!m_config.getTest().hasData());
+    m_result = std::make_shared<Result>(m_config.getTest(), m_config.getNSamples());
 
     m_pos = m_stepfiles.rbegin();
     m_iter = 0;
@@ -262,9 +262,9 @@ ResultItem PredictSession::predict(PVec<> pos)
 }
 
 // predict all elements in Ytest
-std::shared_ptr<Result> PredictSession::predict(std::shared_ptr<DataConfig> Y)
+std::shared_ptr<Result> PredictSession::predict(const DataConfig &Y)
 {
-    auto res = std::make_shared<Result>(*Y);
+    auto res = std::make_shared<Result>(Y);
 
     for (const auto s : m_stepfiles)
     {

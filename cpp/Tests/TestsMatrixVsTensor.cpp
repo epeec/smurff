@@ -34,8 +34,8 @@ struct CompareTest {
  
   template<class M>
   CompareTest &addSideInfoConfig(int m, const M &c) {
-    matrixConfig.addSideInfoConfig(m, makeSideInfoConfig(c));
-    tensorConfig.addSideInfoConfig(m, makeSideInfoConfig(c));
+    matrixConfig.addSideInfoConfig(m) = makeSideInfoConfig(c);
+    tensorConfig.addSideInfoConfig(m) = makeSideInfoConfig(c);
     return *this;
   }
 

@@ -118,7 +118,7 @@ struct SmurffTest {
   }
 
   SmurffTest &addAuxData(const DataConfig &c) {
-    config.addAuxData(std::make_shared<DataConfig>(c));
+    config.addData() = c;
     return *this;
   }
 
@@ -316,8 +316,8 @@ TEST_CASE("train_dense_matrix__test_sparse_matrix__"
           "macau normal__direct",
           TAG_MATRIX_TESTS) {
 
-  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal})
-                      .addSideInfoConfig(1, makeSideInfoConfig(rowSideDenseMatrix));
+  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal});
+  config.addSideInfoConfig(1, makeSideInfoConfig(rowSideDenseMatrix));
 
   REQUIRE_THROWS(SessionFactory::create_session(config));
 }
@@ -328,8 +328,8 @@ TEST_CASE("train_dense_matrix__test_sparse_matrix__"
           "macau normal__col_side_info_dense_matrix_none__direct",
           TAG_MATRIX_TESTS) {
 
-  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal})
-                      .addSideInfoConfig(1, makeSideInfoConfig(colSideDenseMatrix));
+  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal});
+  config.addSideInfoConfig(1, makeSideInfoConfig(colSideDenseMatrix));
 
   REQUIRE_THROWS(SessionFactory::create_session(config));
 }

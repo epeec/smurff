@@ -163,10 +163,10 @@ fill_config(const po::variables_map &vm)
         config.setIniName(ini_filename);
     }
 
-    filler.set_data<&Config::setPredict>(PREDICT_NAME);
+    filler.fill_data<&Config::getPredict>(PREDICT_NAME);
     filler.fill_data<&Config::getRowFeatures>(ROW_FEAT_NAME);
     filler.fill_data<&Config::getColFeatures>(COL_FEAT_NAME);
-    filler.set_data<&Config::setTest>(TEST_NAME);
+    filler.fill_data<&Config::getTest>(TEST_NAME);
     filler.fill_data<&Config::getTrain>(TRAIN_NAME);
 
     filler.set_priors(PRIOR_NAME);

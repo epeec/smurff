@@ -58,7 +58,7 @@ namespace smurff
       const NoiseConfig& getNoiseConfig() const;
       void setNoiseConfig(const NoiseConfig& value);
      
-      bool isEmpty() const { return getDims().empty(); }
+      bool hasData() const { return getDims().empty(); }
       bool isMatrix() const;
       bool isDense() const;
       bool isScarce() const;

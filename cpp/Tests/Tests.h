@@ -60,8 +60,8 @@ template <class Train, class Test> Config genConfig(const Train &train, const Te
   config.setNumLatent(4);
   DataConfig train_data_config(train);
   train_data_config.setNoiseConfig(fixed_ncfg);
-  config.getTrain() = train_data_config;
-  config.setTest(std::make_shared<DataConfig>(test));
+  config.setTrain(train_data_config);
+  config.setTest(DataConfig(test));
   config.setPriorTypes(priors);
   return config;
 }

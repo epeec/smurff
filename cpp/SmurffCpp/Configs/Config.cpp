@@ -62,7 +62,6 @@ static const std::string PRIOR_NAME_NORMALONE = "normalone";
 static const std::string MODEL_INIT_NAME_RANDOM = "random";
 static const std::string MODEL_INIT_NAME_ZERO = "zero";
 
-
 PriorTypes stringToPriorType(std::string name)
 {
    if(name == PRIOR_NAME_DEFAULT)
@@ -153,6 +152,8 @@ int Config::RANDOM_SEED_DEFAULT_VALUE = 0;
 
 Config::Config()
 {
+   m_data.resize(1); // place for train data
+
    m_model_init_type = Config::INIT_MODEL_DEFAULT_VALUE;
 
    m_save_prefix = Config::SAVE_PREFIX_DEFAULT_VALUE;
@@ -205,37 +206,42 @@ const SideInfoConfig& Config::getSideInfoConfig(int mode) const
   return iter->second;
 }
 
-Config& Config::addSideInfoConfig(int mode, SideInfoConfig c)
+SideInfoConfig& Config::addSideInfoConfig(int mode, const SideInfoConfig &c)
 {
-    m_sideInfoConfigs[mode] = c;
+   THROWERROR_ASSERT(!hasSideInfo(mode));
 
-    // automagically update prior type 
-    // normal(one) prior -> macau(one) prior
-    if ((int)m_prior_types.size() > mode)
-    {
+   // automagically update prior type
+   // normal(one) prior -> macau(one) prior
+   if ((int)m_prior_types.size() > mode)
+   {
       PriorTypes &pt = m_prior_types[mode];
-           if (pt == PriorTypes::normal) pt = PriorTypes::macau;
-      else if (pt == PriorTypes::normalone) pt = PriorTypes::macauone;
-    }
+      if (pt == PriorTypes::normal)
+         pt = PriorTypes::macau;
+      else if (pt == PriorTypes::normalone)
+         pt = PriorTypes::macauone;
+   }
 
-    return *this;
+   auto p = m_sideInfoConfigs.insert(std::make_pair(mode, c));
+   THROWERROR_ASSERT(p.second);
+
+   return p.first->second;
 }
 
 bool Config::validate() const
 {
-   if (getTrain().isEmpty() || getTrain().getNNZ() == 0)
+   if (getTrain().hasData() || getTrain().getNNZ() == 0)
    {
       THROWERROR("Missing train data");
    }
 
-   THROWERROR_ASSERT(!getTrain().hasPos());
+   THROWERROR_ASSERT(getTrain().hasPos());
 
-   if (m_test && !m_test->getNNZ())
+   if (!getTest().hasData() && !m_test.getNNZ())
    {
       THROWERROR("Missing test data");
    }
 
-   if (m_test && m_test->getDims() != getTrain().getDims())
+   if (!getTest().hasData() && getTest().getDims() != getTrain().getDims())
    {
       THROWERROR("Train and test data should have the same dimensions");
    }
@@ -245,18 +251,14 @@ bool Config::validate() const
       THROWERROR("Number of priors should equal to number of dimensions in train data");
    }
 
-   if (getTrain().getNModes() > 2)
+   if ((getTrain().getNModes() > 2) && (getData().size() > 1))
    {
+      //it is advised to check macau and macauone priors implementation
+      //as well as code in PriorFactory that creates macau priors
 
-      if (!m_auxData.empty())
-      {
-         //it is advised to check macau and macauone priors implementation
-         //as well as code in PriorFactory that creates macau priors
-
-         //this check does not directly check that input data is DenseTensor (it only checks number of dimensions)
-         //however TensorDataFactory will do an additional check throwing an exception
-         THROWERROR("Aux data is not supported for TensorData");
-      }
+      //this check does not directly check that input data is DenseTensor (it only checks number of dimensions)
+      //however TensorDataFactory will do an additional check throwing an exception
+      THROWERROR("Aux data is not supported for TensorData");
    }
 
    for (auto p : m_sideInfoConfigs)
@@ -272,7 +274,7 @@ bool Config::validate() const
       }
    }
 
-   for(auto& ad1 : getData())
+   for(auto ad1 = m_data.begin(); ad1 != m_data.end(); ad1++)
    {
       if (!ad1->hasPos())
       {
@@ -284,18 +286,9 @@ bool Config::validate() const
       const auto& dim1 = ad1->getDims();
       const auto& pos1 = ad1->getPos();
 
-      for(auto& ad2 : getData())
+      auto ad2 = ad1;
+      for(ad2++; ad2 != m_data.end(); ad2++)
       {
-         if (ad1 == ad2)
-            continue;
-
-         if (!ad2->hasPos())
-         {
-            std::stringstream ss;
-            ss << "Data \"" << ad2->info() << "\" is missing position info";
-            THROWERROR(ss.str());
-         }
-
          const auto& dim2 = ad2->getDims();
          const auto& pos2 = ad2->getPos();
 
@@ -385,7 +378,7 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
 {
    //count data
    cfg_file.put(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, m_prior_types.size());
-   cfg_file.put(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, m_auxData.size());
+   cfg_file.put(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, getData().size() - 1);
 
    //priors data
    int prior_idx = 0;
@@ -418,8 +411,7 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
    getTrain().save(cfg_file, TRAIN_SECTION_TAG);
 
    //write test data section
-   if (m_test)
-      m_test->save(cfg_file, TEST_SECTION_TAG);
+   getTest().save(cfg_file, TEST_SECTION_TAG);
 
    //write macau prior configs section
    for (auto p : m_sideInfoConfigs)
@@ -429,9 +421,9 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
        configItem.save(cfg_file, mode);
    }
 
-   //write aux data section
-   for (std::size_t sIndex = 0; sIndex < m_auxData.size(); sIndex++)
-      m_auxData.at(sIndex)->save(cfg_file, addIndex(AUX_DATA_PREFIX, sIndex));
+   //write data section -- excluding train
+   for (std::size_t sIndex = 1; sIndex < m_data.size(); sIndex++)
+      m_data.at(sIndex).save(cfg_file, addIndex(AUX_DATA_PREFIX, sIndex-1));
 
    //write posterior propagation
    for (std::size_t pIndex = 0; pIndex < m_prior_types.size(); pIndex++)
@@ -450,7 +442,7 @@ bool Config::restore(const ConfigFile &cfg_file)
 {
 
    //restore train data
-   setTest(DataConfig::restore_data_config(cfg_file, TEST_SECTION_TAG));
+   getTest().restore(cfg_file, TEST_SECTION_TAG);
 
    //restore test data
    getTrain().restore(cfg_file, TRAIN_SECTION_TAG);
@@ -476,7 +468,7 @@ bool Config::restore(const ConfigFile &cfg_file)
    std::size_t num_aux_data = cfg_file.get(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, 0);
    for(std::size_t pIndex = 0; pIndex < num_aux_data; pIndex++)
    {
-      m_auxData.push_back(DataConfig::restore_data_config(cfg_file, addIndex(AUX_DATA_PREFIX, pIndex)));
+      addData().restore(cfg_file, addIndex(AUX_DATA_PREFIX, pIndex));
    }
 
    // restore posterior propagated data

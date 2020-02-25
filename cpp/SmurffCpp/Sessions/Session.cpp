@@ -71,9 +71,9 @@ void Session::setFromBase()
     std::shared_ptr<Session> this_session = shared_from_this();
 
     // initialize pred
-    if (m_config.getTest())
+    if (!m_config.getTest().hasData())
     {
-        m_pred = std::make_shared<Result>(*m_config.getTest());
+        m_pred = std::make_shared<Result>(m_config.getTest());
         m_pred->setSavePred(m_config.getSavePred());
         if (m_config.getClassify())
             m_pred->setThreshold(m_config.getThreshold());

@@ -65,13 +65,12 @@ public:
 
 private:
    //-- train and test
-   DataConfig m_train;
-   std::shared_ptr<DataConfig> m_test;
+   DataConfig m_test;
    DataConfig m_row_features;
    DataConfig m_col_features;
 
-   //-- aux_data (contains pos)
-   std::vector<std::shared_ptr<DataConfig> > m_auxData; //set of aux data matrices for normal and spikeandslab priors
+   //-- all train data (including train and aux)
+   std::vector<DataConfig> m_data;
 
    //-- sideinfo per mode
    std::map<int, SideInfoConfig> m_sideInfoConfigs;
@@ -111,6 +110,11 @@ private:
    std::string m_root_name;
    std::string m_ini_name;
 
+   const PVec<> getTrainPos() const
+   {
+      return PVec<>(getNModes());
+   }
+
  public:
    Config();
 
@@ -128,34 +132,47 @@ public:
 public:
    bool isActionTrain()
    {
-       return !getTrain().isEmpty();
+       return !getTrain().hasData();
    }
 
    bool isActionPredict()
    {
-       return getTrain().isEmpty();
+       return getTrain().hasData();
    }
 
    const DataConfig& getTrain() const
    {
-      return m_train;
+      return m_data.at(0);
    }
 
-   DataConfig& getTrain()
+   DataConfig& getTrain() 
    {
-      return m_train;
+      return m_data.at(0);
    }
    
-   std::shared_ptr<DataConfig> getTest() const
+   DataConfig& setTrain(const DataConfig &c)
+   {
+      getTrain() = c;
+      if (!getTrain().hasPos()) getTrain().setPos(PVec<>{0,0});
+      return getTrain();
+   }
+   
+   const DataConfig &getTest() const
    {
       return m_test;
    }
 
-   void setTest(std::shared_ptr<DataConfig> value)
+   DataConfig &getTest() 
    {
-      m_test = value;
+      return m_test;
    }
 
+   DataConfig &setTest(const DataConfig &c) 
+   {
+      m_test = c;
+      return m_test;
+   }
+   
    const DataConfig &getRowFeatures() const
    {
       return m_row_features;
@@ -177,50 +194,44 @@ public:
       return m_col_features;
    }
 
-   void setPredict(std::shared_ptr<DataConfig> value)
+   DataConfig &getPredict()
    {
-      m_test = value;
+      return m_test;
    }
 
-   const std::vector< std::shared_ptr<DataConfig> >& getAuxData() const
-   {
-      return m_auxData;
-   }
-
-   Config& addAuxData(std::shared_ptr<DataConfig> c)
-   {
-      m_auxData.push_back(c);
-      return *this;
-   }
-
-   const std::map<int, SideInfoConfig >& getSideInfoConfigs() const
+   const std::map<int, SideInfoConfig>& getSideInfoConfigs() const
    {
       return m_sideInfoConfigs;
    }
 
    const SideInfoConfig& getSideInfoConfig(int mode) const;
 
-   Config& addSideInfoConfig(int mode, SideInfoConfig c);
+   SideInfoConfig& addSideInfoConfig(int mode, const SideInfoConfig & = SideInfoConfig());
 
    bool hasSideInfo(int mode) const
    {
        return m_sideInfoConfigs.find(mode) != m_sideInfoConfigs.end();
    }
 
-   std::vector< std::shared_ptr<DataConfig> > getData() const
+   const std::vector<DataConfig> &getData() const
    {
-       auto data = m_auxData;
-       // FIXME data.push_back(m_train);
-       return data;
+      return m_data;
+   }
+   
+   DataConfig &addData(const DataConfig & = DataConfig())
+   {
+      m_data.push_back(DataConfig());
+      return m_data.back();
+   }
+
+   int getNModes() const
+   {
+      THROWERROR_ASSERT(!m_prior_types.empty());
+      return m_prior_types.size();
    }
 
    const std::vector<PriorTypes> getPriorTypes() const
    {
-      if (m_prior_types.empty())
-      {
-          THROWERROR_ASSERT(!getTrain().isEmpty())
-          return std::vector<PriorTypes>(getTrain().getNModes(), PriorTypes::default_prior);
-      }
       return m_prior_types;
    }
 
@@ -242,7 +253,7 @@ public:
 
    bool hasPropagatedPosterior(int mode) const
    {
-       return m_mu_postprop.find(mode) != m_mu_postprop.end() && !getMuPropagatedPosterior(mode).isEmpty();
+       return m_mu_postprop.find(mode) != m_mu_postprop.end() && !getMuPropagatedPosterior(mode).hasData();
    }
 
    const DataConfig& getMuPropagatedPosterior(int mode) const
