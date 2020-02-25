@@ -1,7 +1,6 @@
 FILE (GLOB UTIL_FILES   
                         "Utils/Distribution.h"
                         "Utils/MatrixUtils.h"
-                        "Utils/TensorUtils.h"
                         "Utils/PVec.hpp"
                         "Utils/OutputFile.h"
                         "Utils/Step.h"
@@ -9,7 +8,6 @@ FILE (GLOB UTIL_FILES
 
                         "Utils/Distribution.cpp"
                         "Utils/MatrixUtils.cpp"
-                        "Utils/TensorUtils.cpp"
                         "Utils/OutputFile.cpp"
                         "Utils/Step.cpp"
                         "Utils/HDF5.cpp"
@@ -19,32 +17,18 @@ source_group ("Utils" FILES ${UTIL_FILES})
 
 FILE (GLOB IO_FILES     
                         "IO/INIFile.h"
-                        "IO/GenericIO.h"
-                        "IO/MatrixIO.h"
-                        "IO/TensorIO.h"
-                        "IO/IDataWriter.h"
-                        "IO/DataWriter.h"
-
                         "IO/INIFile.cpp"
-                        "IO/GenericIO.cpp"
-                        "IO/MatrixIO.cpp"
-                        "IO/TensorIO.cpp"
-                        "IO/DataWriter.cpp"
                         )
 
 source_group ("IO" FILES ${IO_FILES})
 
 FILE (GLOB CONFIG_FILES "Configs/Config.h"
                         "Configs/DataConfig.h"
-                        "Configs/MatrixConfig.h"
-                        "Configs/TensorConfig.h"
                         "Configs/NoiseConfig.h"
                         "Configs/SideInfoConfig.h"
 
                         "Configs/Config.cpp"
                         "Configs/DataConfig.cpp"
-                        "Configs/MatrixConfig.cpp"
-                        "Configs/TensorConfig.cpp"
                         "Configs/NoiseConfig.cpp"
                         "Configs/SideInfoConfig.cpp"
                         )

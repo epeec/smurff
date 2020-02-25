@@ -111,7 +111,8 @@ struct ConfigFiller
     {
         if (vm.count(name) && !vm[name].defaulted())
         {
-            auto tensor_config = generic_io::read_data_config(vm[name].as<std::string>(), true);
+            //auto tensor_config = generic_io::read_data_config(vm[name].as<std::string>(), true);
+            auto tensor_config = std::make_shared<DataConfig>();
             (this->config.*Func)(tensor_config); 
         }
     }       

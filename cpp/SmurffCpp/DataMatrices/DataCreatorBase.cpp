@@ -16,50 +16,6 @@
 
 namespace smurff {
 
-std::shared_ptr<Data> DataCreatorBase::create(std::shared_ptr<const MatrixConfig> mc) const
-{
-   std::shared_ptr<INoiseModel> noise = NoiseFactory::create_noise_model(mc->getNoiseConfig());
-
-   if (mc->isDense())
-   {
-      Matrix Ytrain = matrix_utils::dense_to_eigen(*mc);
-      std::shared_ptr<MatrixData> local_data_ptr(new DenseMatrixData(Ytrain));
-      local_data_ptr->setNoiseModel(noise);
-      return local_data_ptr;
-   }
-   else
-   {
-      SparseMatrix Ytrain = matrix_utils::sparse_to_eigen(*mc);
-      if (!mc->isScarce())
-      {
-         std::shared_ptr<MatrixData> local_data_ptr(new SparseMatrixData(Ytrain));
-         local_data_ptr->setNoiseModel(noise);
-         return local_data_ptr;
-      }
-      else
-      {
-         std::shared_ptr<MatrixData> local_data_ptr(new ScarceMatrixData(Ytrain));
-         local_data_ptr->setNoiseModel(noise);
-         return local_data_ptr;
-      }
-   }
-}
-
-std::shared_ptr<Data> DataCreatorBase::create(std::shared_ptr<const TensorConfig> tc) const
-{
-   // Checking whether dense tensor is scarse makes no sense
-   if(!tc->isDense() && !tc->isScarce())
-   {
-      THROWERROR("Tensor config should be scarse");
-   }
-
-   std::shared_ptr<TensorData> tensorData = std::make_shared<TensorData>(*tc);
-   std::shared_ptr<INoiseModel> noise = NoiseFactory::create_noise_model(tc->getNoiseConfig());
-   tensorData->setNoiseModel(noise);
-   return tensorData;
-}
-
-
 std::shared_ptr<Data> DataCreatorBase::create(std::shared_ptr<const DataConfig> dc) const
 {
    std::shared_ptr<INoiseModel> noise = NoiseFactory::create_noise_model(dc->getNoiseConfig());

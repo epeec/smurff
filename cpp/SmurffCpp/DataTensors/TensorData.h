@@ -9,7 +9,6 @@
 #include <SmurffCpp/Types.h>
 
 #include "SparseMode.h"
-#include <SmurffCpp/Configs/TensorConfig.h>
 #include <SmurffCpp/DataMatrices/Data.h>
 #include <SmurffCpp/Utils/PVec.hpp>
 
@@ -25,7 +24,6 @@ private:
 public:
    TensorData(const smurff::DenseTensor& ts);
    TensorData(const smurff::SparseTensor& ts);
-   TensorData(const smurff::TensorConfig& tc);
 
    std::shared_ptr<SparseMode> Y(std::uint64_t mode) const;
 

@@ -119,7 +119,8 @@ std::shared_ptr<Matrix> PredictSession::predict(int mode, const Feat &f, int sav
             {
                 std::cout << "-- Saving sample " << step << " to " << filename << "." << std::endl;
             }
-            matrix_io::eigen::write_matrix(filename, predictions);
+            //matrix_io::eigen::write_matrix(filename, predictions);
+            // FIXME 
         }
     }
 
@@ -132,7 +133,7 @@ std::shared_ptr<Matrix> PredictSession::predict(int mode, const Feat &f, int sav
         {
             std::cout << "-- Saving average predictions to " << filename << "." << std::endl;
         }
-        matrix_io::eigen::write_matrix(filename, *average);
+        //matrix_io::eigen::write_matrix(filename, *average);
     }
 
     return average;

@@ -338,7 +338,9 @@ bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name
    std::string filename = cfg_file.get(sec_name, FILE_TAG, NONE_VALUE);
    if (filename != NONE_VALUE)
    { 
-      m_isMatrix = matrix_io::isMatrixExtension(filename);
+      THROWERROR_NOTIMPL();
+      /*
+      m_isMatrix = true; // FIXME matrix_io::isMatrixExtension(filename);
       if (isMatrix())
       {
          if (isDense())
@@ -350,6 +352,7 @@ bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name
       {
          THROWERROR_NOTIMPL();
       }
+*/
    }
       
    //restore noise model
@@ -394,7 +397,8 @@ std::shared_ptr<DataConfig> DataConfig::restore_data_config(const ConfigFile& cf
    bool is_scarce = cfg_file.get(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
 
    //restore data
-   auto cfg = generic_io::read_data_config(filename, is_scarce);
+   //auto cfg = generic_io::read_data_config(filename, is_scarce);
+   auto cfg = std::make_shared<DataConfig>();
 
    //restore instance
    cfg->restore(cfg_file, sec_name);
