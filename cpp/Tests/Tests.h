@@ -43,11 +43,9 @@ void REQUIRE_RESULT_ITEMS(const std::vector<smurff::ResultItem> &actualResultIte
 
 template<class M>
 SideInfoConfig makeSideInfoConfig(const M &data) {
-  SideInfoConfig picfg;
-  picfg.setData(data);
   smurff::NoiseConfig sampled_ncfg(NoiseTypes::sampled);
   sampled_ncfg.setPrecision(10.0);
-  picfg.setNoiseConfig(sampled_ncfg);
+  SideInfoConfig picfg(data, sampled_ncfg);
   picfg.setDirect(true);
   return picfg;
 }

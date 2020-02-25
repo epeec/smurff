@@ -21,7 +21,9 @@ namespace smurff
       bool m_throw_on_cholesky_error;
 
    public:
-      SideInfoConfig();
+      SideInfoConfig() {}; //empty
+      SideInfoConfig(const Matrix &, const NoiseConfig &);
+      SideInfoConfig(const SparseMatrix &, const NoiseConfig &);
 
    public:
       double getTol() const

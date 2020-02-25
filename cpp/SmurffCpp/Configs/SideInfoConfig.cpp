@@ -15,11 +15,19 @@ static const std::string DIRECT_TAG = "direct";
 static const std::string THROW_ON_CHOLESKY_ERROR_TAG = "throw_on_cholesky_error";
 static const std::string NUMBER_TAG = "nr";
 
-
 double SideInfoConfig::BETA_PRECISION_DEFAULT_VALUE = 10.0;
 double SideInfoConfig::TOL_DEFAULT_VALUE = 1e-6;
 
-SideInfoConfig::SideInfoConfig()
+SideInfoConfig::SideInfoConfig(const Matrix &data, const NoiseConfig &ncfg)
+   : DataConfig(data, ncfg)
+{
+   m_tol = SideInfoConfig::TOL_DEFAULT_VALUE;
+   m_direct = false;
+   m_throw_on_cholesky_error = false;
+}
+
+SideInfoConfig::SideInfoConfig(const SparseMatrix &data, const NoiseConfig &ncfg)
+   : DataConfig(data, false, ncfg)
 {
    m_tol = SideInfoConfig::TOL_DEFAULT_VALUE;
    m_direct = false;
