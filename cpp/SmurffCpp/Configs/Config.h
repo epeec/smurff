@@ -80,8 +80,8 @@ private:
    std::vector<PriorTypes> m_prior_types;
 
    // -- posterior propagation
-   std::map<int, std::shared_ptr<DataConfig> > m_mu_postprop;
-   std::map<int, std::shared_ptr<DataConfig> > m_lambda_postprop;
+   std::map<int, DataConfig> m_mu_postprop;
+   std::map<int, DataConfig> m_lambda_postprop;
 
    //-- init model
    ModelInitTypes m_model_init_type;
@@ -242,29 +242,28 @@ public:
 
    bool hasPropagatedPosterior(int mode) const
    {
-       return m_mu_postprop.find(mode) != m_mu_postprop.end();
+       return m_mu_postprop.find(mode) != m_mu_postprop.end() && !getMuPropagatedPosterior(mode).isEmpty();
    }
 
-   void addPropagatedPosterior(int mode,
-                         std::shared_ptr<DataConfig> mu,
-                         std::shared_ptr<DataConfig> lambda)
-   {
-       m_mu_postprop[mode] = mu;
-       m_lambda_postprop[mode] = lambda;
-   }
-
-   std::shared_ptr<DataConfig> getMuPropagatedPosterior(int mode) const
+   const DataConfig& getMuPropagatedPosterior(int mode) const
    {
        return m_mu_postprop.find(mode)->second;
    }
 
-
-   std::shared_ptr<DataConfig> getLambdaPropagatedPosterior(int mode) const
+   const DataConfig& getLambdaPropagatedPosterior(int mode) const
    {
        return m_lambda_postprop.find(mode)->second;
    }
 
+   DataConfig& getMuPropagatedPosterior(int mode) 
+   {
+       return m_mu_postprop[mode];
+   }
 
+   DataConfig& getLambdaPropagatedPosterior(int mode) 
+   {
+       return m_lambda_postprop[mode];
+   }
 
    ModelInitTypes getModelInitType() const
    {

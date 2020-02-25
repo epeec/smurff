@@ -228,15 +228,7 @@ bool Config::validate() const
       THROWERROR("Missing train data");
    }
 
-   auto train_pos = PVec<>(getTrain().getNModes());
-   if (!getTrain().hasPos())
-   {
-       // FIXME getTrain().setPos(train_pos);
-   }
-   else if (getTrain().getPos() != train_pos)
-   {
-       THROWERROR("Train should be at upper position (all zeros)");
-   }
+   THROWERROR_ASSERT(!getTrain().hasPos());
 
    if (m_test && !m_test->getNNZ())
    {
@@ -364,22 +356,22 @@ bool Config::validate() const
        if (hasPropagatedPosterior(i))
        {
            THROWERROR_ASSERT_MSG(
-               getMuPropagatedPosterior(i)->getNCol() == getTrain().getDims().at(i),
+               getMuPropagatedPosterior(i).getNCol() == getTrain().getDims().at(i),
                "mu of propagated posterior in mode " + std::to_string(i) + 
                " should have same number of columns as train in mode"
            );
            THROWERROR_ASSERT_MSG(
-               getLambdaPropagatedPosterior(i)->getNCol() == getTrain().getDims().at(i),
+               getLambdaPropagatedPosterior(i).getNCol() == getTrain().getDims().at(i),
                "Lambda of propagated posterior in mode " + std::to_string(i) + 
                " should have same number of columns as train in mode"
            );
            THROWERROR_ASSERT_MSG(
-               (int)getMuPropagatedPosterior(i)->getNRow() == getNumLatent(),
+               (int)getMuPropagatedPosterior(i).getNRow() == getNumLatent(),
                "mu of propagated posterior in mode " + std::to_string(i) + 
                " should have num-latent rows"
            );
            THROWERROR_ASSERT_MSG(
-               (int)getLambdaPropagatedPosterior(i)->getNRow() == getNumLatent() * getNumLatent(),
+               (int)getLambdaPropagatedPosterior(i).getNRow() == getNumLatent() * getNumLatent(),
                "mu of propagated posterior in mode " + std::to_string(i) +
                    " should have num-latent^2 rows"
            );
@@ -446,8 +438,8 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
    {
        if (hasPropagatedPosterior(pIndex))
        {
-           getMuPropagatedPosterior(pIndex)->save(cfg_file, addIndex(MU_TAG, pIndex));
-           getLambdaPropagatedPosterior(pIndex)->save(cfg_file, addIndex(LAMBDA_TAG, pIndex));
+           getMuPropagatedPosterior(pIndex).save(cfg_file, addIndex(MU_TAG, pIndex));
+           getLambdaPropagatedPosterior(pIndex).save(cfg_file, addIndex(LAMBDA_TAG, pIndex));
        }
    }
 
@@ -490,13 +482,8 @@ bool Config::restore(const ConfigFile &cfg_file)
    // restore posterior propagated data
    for(std::size_t pIndex = 0; pIndex < num_priors; pIndex++)
    {
-       auto mu = DataConfig::restore_data_config(cfg_file, addIndex(MU_TAG, pIndex));
-       auto lambda = DataConfig::restore_data_config(cfg_file, addIndex(LAMBDA_TAG, pIndex));
-
-       if (mu && lambda)
-       {
-           addPropagatedPosterior(pIndex, mu, lambda);
-       }
+      getMuPropagatedPosterior(pIndex).restore(cfg_file, addIndex(MU_TAG, pIndex));
+      getLambdaPropagatedPosterior(pIndex).restore(cfg_file, addIndex(LAMBDA_TAG, pIndex));
    }
 
 

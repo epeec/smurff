@@ -44,8 +44,8 @@ void NormalPrior::init()
    const auto &config = getSession().getConfig();
    if (config.hasPropagatedPosterior(getMode()))
    {
-      mu_pp = std::make_shared<Matrix>(config.getMuPropagatedPosterior(getMode())->getDenseMatrixData());
-      Lambda_pp = std::make_shared<Matrix>(config.getLambdaPropagatedPosterior(getMode())->getDenseMatrixData());
+      mu_pp = std::make_shared<Matrix>(config.getMuPropagatedPosterior(getMode()).getDenseMatrixData());
+      Lambda_pp = std::make_shared<Matrix>(config.getLambdaPropagatedPosterior(getMode()).getDenseMatrixData());
       m_name += " with posterior propagation";
    }
 }
