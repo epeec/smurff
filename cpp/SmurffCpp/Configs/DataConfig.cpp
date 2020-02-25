@@ -79,7 +79,6 @@ void DataConfig::check() const
 
    if (isDense())
    {
-       THROWERROR_ASSERT(!isBinary());
        THROWERROR_ASSERT(m_nnz == std::accumulate(m_dims.begin(), m_dims.end(), 1ULL, std::multiplies<std::uint64_t>()));
    }
 }
@@ -92,7 +91,6 @@ void DataConfig::setData(const Matrix &m)
 {
    m_dense_matrix_data = m;
    m_isDense = true;
-   m_isBinary = false;
    m_isScarce = false;
    m_isMatrix = true;
    m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
@@ -104,7 +102,6 @@ void DataConfig::setData(const SparseMatrix &m, bool isScarce)
 {
    m_sparse_matrix_data = m;
    m_isDense = false;
-   m_isBinary = false;
    m_isScarce = isScarce;
    m_isMatrix = true;
    m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
@@ -116,7 +113,6 @@ void DataConfig::setData(const DenseTensor &m)
 {
    m_dense_tensor_data = m;
    m_isDense = true;
-   m_isBinary = false;
    m_isMatrix = false;
    m_dims = m.getDims();
    m_nnz = m.getNNZ();
@@ -126,7 +122,6 @@ void DataConfig::setData(const SparseTensor &m, bool isScarce)
 {
    m_sparse_tensor_data = m;
    m_isDense = false;
-   m_isBinary = false;
    m_isScarce = isScarce;
    m_isMatrix = false;
    m_dims = m.getDims();
@@ -161,11 +156,6 @@ const DenseTensor &DataConfig::getDenseTensorData() const
 bool DataConfig::isDense() const
 {
    return m_isDense;
-}
-
-bool DataConfig::isBinary() const
-{
-   return m_isBinary;
 }
 
 bool DataConfig::isScarce() const

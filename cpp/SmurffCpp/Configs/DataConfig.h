@@ -24,7 +24,6 @@ namespace smurff
 
    protected:
       bool m_isDense;
-      bool m_isBinary;
       bool m_isScarce;
       bool m_isMatrix;
 
@@ -66,7 +65,6 @@ namespace smurff
      
       bool isMatrix() const;
       bool isDense() const;
-      bool isBinary() const;
       bool isScarce() const;
 
       std::uint64_t getNModes() const;
