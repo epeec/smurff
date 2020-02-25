@@ -3,10 +3,8 @@
 #include <iomanip>
 
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <SmurffCpp/IO/MatrixIO.h>
 #include <Utils/counters.h>
 
-#include <SmurffCpp/Types.h>
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/Distribution.h>

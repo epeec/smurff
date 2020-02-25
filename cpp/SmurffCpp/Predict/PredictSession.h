@@ -6,7 +6,6 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/PVec.hpp>
-#include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/Sessions/ISession.h>
 #include <SmurffCpp/Model.h>
 

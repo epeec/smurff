@@ -1,8 +1,5 @@
 #include "MacauPrior.h"
 
-#include <SmurffCpp/IO/MatrixIO.h>
-#include <SmurffCpp/IO/GenericIO.h>
-
 #include <SmurffCpp/Utils/Distribution.h>
 #include <Utils/Error.h>
 #include <Utils/counters.h>

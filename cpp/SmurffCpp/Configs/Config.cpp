@@ -16,11 +16,8 @@
 #include <memory>
 
 #include <Utils/Error.h>
-#include <SmurffCpp/Utils/TensorUtils.h>
 #include <SmurffCpp/Utils/ConfigFile.h>
 #include <SmurffCpp/DataMatrices/Data.h>
-#include <SmurffCpp/IO/GenericIO.h>
-#include <SmurffCpp/IO/MatrixIO.h>
 #include <Utils/StringUtils.h>
 
 namespace smurff {

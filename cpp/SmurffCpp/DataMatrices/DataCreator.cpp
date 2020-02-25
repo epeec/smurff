@@ -8,8 +8,6 @@
 #include <SmurffCpp/Configs/NoiseConfig.h>
 #include <SmurffCpp/Noises/NoiseFactory.h>
 
-#include <SmurffCpp/Configs/MatrixConfig.h>
-#include <SmurffCpp/Configs/TensorConfig.h>
 #include <SmurffCpp/Configs/DataConfig.h>
 
 

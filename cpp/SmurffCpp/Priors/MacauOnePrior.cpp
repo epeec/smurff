@@ -1,8 +1,5 @@
 #include "MacauOnePrior.h"
 
-#include <SmurffCpp/IO/MatrixIO.h>
-#include <SmurffCpp/IO/GenericIO.h>
-
 namespace smurff {
 
 MacauOnePrior::MacauOnePrior(std::shared_ptr<Session> session, uint32_t mode)

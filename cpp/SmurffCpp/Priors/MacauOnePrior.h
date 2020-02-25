@@ -3,7 +3,6 @@
 #include <memory>
 
 #include <SmurffCpp/Types.h>
-#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Priors/NormalOnePrior.h>
 

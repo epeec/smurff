@@ -6,7 +6,6 @@
 #include <Utils/StringUtils.h>
 
 #include "SideInfoConfig.h"
-#include "TensorConfig.h"
 
 namespace smurff {
 

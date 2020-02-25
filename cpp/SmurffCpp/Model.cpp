@@ -10,7 +10,6 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/DataMatrices/Data.h>
-#include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/Utils/Distribution.h>
 
 #include <SmurffCpp/Model.h>
@@ -22,8 +21,6 @@
 
 #include <Utils/Error.h>
 #include <SmurffCpp/Utils/Step.h>
-
-#include <SmurffCpp/IO/GenericIO.h>
 
 namespace smurff {
 

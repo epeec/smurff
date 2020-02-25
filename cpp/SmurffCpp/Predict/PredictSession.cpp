@@ -6,7 +6,6 @@
 #include <Utils/counters.h>
 #include <SmurffCpp/Utils/OutputFile.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/result.h>
 #include <SmurffCpp/ResultItem.h>
 

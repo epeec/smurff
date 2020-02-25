@@ -1,5 +1,4 @@
 #include "NormalOnePrior.h"
-#include <SmurffCpp/IO/MatrixIO.h>
 
 namespace smurff {
 

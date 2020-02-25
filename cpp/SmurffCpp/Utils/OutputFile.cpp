@@ -8,7 +8,6 @@
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
 #include <SmurffCpp/IO/INIFile.h>
-#include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/StatusItem.h>
 
 namespace h5 = HighFive;

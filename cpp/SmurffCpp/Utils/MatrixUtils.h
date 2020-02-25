@@ -5,9 +5,6 @@
 #include <SmurffCpp/Types.h>
 #include <SmurffCpp/Types.h>
 
-#include <SmurffCpp/Configs/MatrixConfig.h>
-#include <SmurffCpp/Configs/NoiseConfig.h>
-
 #include <Utils/Error.h>
 
 namespace smurff { namespace matrix_utils {

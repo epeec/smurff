@@ -1,5 +1,4 @@
 #include "Data.h"
-#include <SmurffCpp/IO/MatrixIO.h>
 #include <Utils/Error.h>
 
 namespace smurff {

@@ -8,8 +8,6 @@
 
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
-#include <SmurffCpp/IO/GenericIO.h>
-#include <SmurffCpp/IO/MatrixIO.h>
 
 
 #define LATENTS_SEC_TAG "latents"

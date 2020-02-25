@@ -13,8 +13,6 @@
 #include <SmurffCpp/Configs/Config.h>
 #include <Utils/Error.h>
 #include <SmurffCpp/IO/INIFile.h>
-#include <SmurffCpp/IO/GenericIO.h>
-#include <SmurffCpp/IO/MatrixIO.h>
 
 #include <SmurffCpp/Utils/OutputFile.h>
 #include <Utils/StringUtils.h>

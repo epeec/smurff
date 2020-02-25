@@ -11,7 +11,6 @@
 #include <SmurffCpp/ConstVMatrixIterator.hpp>
 
 #include <SmurffCpp/Types.h>
-#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Model.h>
 #include <SmurffCpp/result.h>
@@ -19,10 +18,6 @@
 #include <Utils/Error.h>
 #include <SmurffCpp/Utils/Step.h>
 #include <Utils/StringUtils.h>
-
-#include <SmurffCpp/IO/GenericIO.h>
-#include <SmurffCpp/IO/MatrixIO.h>
-
 
 namespace smurff {
 

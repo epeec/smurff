@@ -3,11 +3,7 @@
 #include <numeric>
 
 #include <SmurffCpp/Utils/PVec.hpp>
-#include <SmurffCpp/IO/IDataWriter.h>
 #include <SmurffCpp/DataMatrices/IDataCreator.h>
-#include <SmurffCpp/IO/MatrixIO.h>
-#include <SmurffCpp/IO/TensorIO.h>
-#include <SmurffCpp/IO/GenericIO.h>
 #include <SmurffCpp/Utils/ConfigFile.h>
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
