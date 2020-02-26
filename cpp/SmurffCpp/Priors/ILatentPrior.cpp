@@ -3,7 +3,7 @@
 
 namespace smurff {
 
-ILatentPrior::ILatentPrior(std::shared_ptr<Session> session, uint32_t mode, std::string name)
+ILatentPrior::ILatentPrior(Session &session, uint32_t mode, std::string name)
    : m_session(session), m_mode(mode), m_name(name)
 {
 
@@ -18,14 +18,19 @@ void ILatentPrior::init()
    init_Usum();
 }
 
+const Config &ILatentPrior::getConfig() const
+{
+   return m_session.getConfig();
+}
+
 const Model& ILatentPrior::model() const
 {
-   return getSession().model();
+   return m_session.model();
 }
 
 Model& ILatentPrior::model()
 {
-   return getSession().model();
+   return m_session.model();
 }
 
 double ILatentPrior::predict(const PVec<> &pos) const
@@ -35,7 +40,7 @@ double ILatentPrior::predict(const PVec<> &pos) const
 
 Data& ILatentPrior::data() const
 {
-   return getSession().data();
+   return m_session.data();
 }
 
 INoiseModel& ILatentPrior::noise()
@@ -114,11 +119,11 @@ void ILatentPrior::sample_latents()
       Ucol.local().noalias() += col;
       UUcol.local().noalias() += col * col.transpose();
 
-      if (getSession().inSamplingPhase())
+      if (m_session.inSamplingPhase())
          model().updateAggr(m_mode, n);
    }
 
-   if (getSession().inSamplingPhase())
+   if (m_session.inSamplingPhase())
       model().updateAggr(m_mode);
 
    Usum  = Ucol.combine();

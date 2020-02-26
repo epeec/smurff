@@ -19,7 +19,7 @@ namespace smurff {
 
 //-------
 
-std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(std::shared_ptr<Session> session, PriorTypes prior_type,
+std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(Session &session, PriorTypes prior_type,
    const std::shared_ptr<ISideInfo>& side_info,
    const SideInfoConfig& config_item)
 {
@@ -37,9 +37,9 @@ std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(std::shared_ptr<S
    }
 }
 
-std::shared_ptr<ILatentPrior> PriorFactory::create_prior(std::shared_ptr<Session> session, int mode)
+std::shared_ptr<ILatentPrior> PriorFactory::create_prior(Session &session, int mode)
 {
-   PriorTypes priorType = session->getConfig().getPriorTypes().at(mode);
+   PriorTypes priorType = session.getConfig().getPriorTypes().at(mode);
 
    switch(priorType)
    {
@@ -52,7 +52,7 @@ std::shared_ptr<ILatentPrior> PriorFactory::create_prior(std::shared_ptr<Session
       return std::shared_ptr<NormalOnePrior>(new NormalOnePrior(session, -1));
    case PriorTypes::macau:
    case PriorTypes::macauone:
-      return create_macau_prior<PriorFactory>(session, mode, priorType, session->getConfig().getSideInfoConfig(mode));
+      return create_macau_prior<PriorFactory>(session, mode, priorType, session.getConfig().getSideInfoConfig(mode));
    default:
       {
          THROWERROR("Unknown prior: " + priorTypeToString(priorType));

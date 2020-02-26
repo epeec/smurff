@@ -16,7 +16,7 @@ namespace smurff {
 
 class SessionFactory;
 
-class Session : public ISession, public std::enable_shared_from_this<Session>
+class Session : public ISession
 {
    //only session factory should call setFromConfig
    friend class SessionFactory;

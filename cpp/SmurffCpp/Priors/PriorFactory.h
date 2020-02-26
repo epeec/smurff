@@ -17,25 +17,25 @@ class PriorFactory : public IPriorFactory
 {
 public:
     template<class MacauPrior>
-    std::shared_ptr<ILatentPrior> create_macau_prior(std::shared_ptr<Session> session,
+    std::shared_ptr<ILatentPrior> create_macau_prior(Session &session,
                                                      const std::shared_ptr<ISideInfo>& side_infos,
                                                      const SideInfoConfig& config_items);
 
-    std::shared_ptr<ILatentPrior> create_macau_prior(std::shared_ptr<Session> session, PriorTypes prior_type, 
+    std::shared_ptr<ILatentPrior> create_macau_prior(Session &session, PriorTypes prior_type, 
                                                      const std::shared_ptr<ISideInfo>& side_infos,
                                                      const SideInfoConfig& config_items);
 
     template<class Factory>
-    std::shared_ptr<ILatentPrior> create_macau_prior(std::shared_ptr<Session> session, int mode, PriorTypes prior_type,
+    std::shared_ptr<ILatentPrior> create_macau_prior(Session &session, int mode, PriorTypes prior_type,
             const SideInfoConfig& config_items);
 
-    std::shared_ptr<ILatentPrior> create_prior(std::shared_ptr<Session> session, int mode) override;
+    std::shared_ptr<ILatentPrior> create_prior(Session &session, int mode) override;
 };
 
 //-------
 
 template<class MacauPrior>
-std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(std::shared_ptr<Session> session,
+std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(Session &session,
                                                                const std::shared_ptr<ISideInfo>& side_info,
                                                                const SideInfoConfig& config_item)
 {
@@ -67,7 +67,7 @@ std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(std::shared_ptr<S
 //mode - 0 (row), 1 (col)
 //vsideinfo - vector of side feature configs (row or col)
 template<class Factory>
-std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(std::shared_ptr<Session> session, int mode, PriorTypes prior_type,
+std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(Session &session, int mode, PriorTypes prior_type,
         const SideInfoConfig& config_item)
 {
    Factory &subFactory = dynamic_cast<Factory &>(*this);

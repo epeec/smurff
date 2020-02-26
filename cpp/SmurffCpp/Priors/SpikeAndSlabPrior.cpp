@@ -4,7 +4,7 @@
 
 namespace smurff {
 
-SpikeAndSlabPrior::SpikeAndSlabPrior(std::shared_ptr<Session> session, uint32_t mode)
+SpikeAndSlabPrior::SpikeAndSlabPrior(Session &session, uint32_t mode)
    : NormalOnePrior(session, mode, "SpikeAndSlabPrior")
 {
 

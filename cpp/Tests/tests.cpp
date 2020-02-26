@@ -25,6 +25,7 @@
 #include <SmurffCpp/Priors/MacauOnePrior.h>
 
 #include <SmurffCpp/Noises/NoiseFactory.h>
+#include <SmurffCpp/Sessions/SessionFactory.h>
 
 #include <SmurffCpp/DataMatrices/Data.h>
 #include <SmurffCpp/DataMatrices/ScarceMatrixData.h>
@@ -174,36 +175,6 @@ TEST_CASE( "DenseMatrixData/var_total", "Test if variance of Dense Matrix is cor
 
 using namespace Eigen;
 using namespace std;
-
-MacauPrior* make_dense_prior(int nlatent, const std::vector<double> & ptr, int nrows, int ncols, bool comp_FtF) 
-{
-   auto ret = new MacauPrior(0, 0);
-   std::shared_ptr<DenseSideInfo> side_info = std::make_shared<DenseSideInfo>(
-    DataConfig(matrix_utils::dense_to_eigen(DenseTensor({(std::uint64_t)nrows, (std::uint64_t)ncols}, ptr)), fixed_ncfg)
-   );
-   ret->addSideInfo(side_info, 10.0, 1e-6, comp_FtF, true, false);
-   ret->FtF_plus_precision.resize(ncols, ncols);
-   ret->Features->At_mul_A(ret->FtF_plus_precision);
-   return ret;
-}
-
-TEST_CASE("macauprior/make_dense_prior", "Making MacauPrior with DataConfgi") {
-    std::vector<double> x = {0.1, 0.4, -0.7, 0.3, 0.11, 0.23};
-
-    // ColMajor case
-    auto prior = make_dense_prior(3, x, 3, 2, true);
-
-    Matrix Ftrue(3, 2);
-    Ftrue <<  0.1, 0.3, 0.4, 0.11, -0.7, 0.23;
-    auto features_downcast1 = std::dynamic_pointer_cast<DenseSideInfo>(prior->Features); //for the purpose of the test
-    REQUIRE( (features_downcast1->get_features() - Ftrue).norm() == Approx(0) );
-    Matrix tmp = Matrix::Zero(2, 2);
-    tmp.triangularView<Eigen::Lower>()  = prior->FtF_plus_precision;
-    tmp.triangularView<Eigen::Lower>() -= Ftrue.transpose() * Ftrue;
-    REQUIRE( tmp.norm() == Approx(0) );
-
-    delete prior;
-}
 
 TEST_CASE("inv_norm_cdf/inv_norm_cdf", "Inverse normal CDF") {
 	REQUIRE( inv_norm_cdf(0.0)  == -std::numeric_limits<double>::infinity());

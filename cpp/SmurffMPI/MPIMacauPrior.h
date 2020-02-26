@@ -29,7 +29,7 @@ private:
    Matrix Ft_y;
 
 public:
-   MPIMacauPrior(std::shared_ptr<Session> session, int mode);
+   MPIMacauPrior(Session &session, int mode);
 
    virtual ~MPIMacauPrior();
 

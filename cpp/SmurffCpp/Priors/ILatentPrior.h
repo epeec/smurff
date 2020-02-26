@@ -22,27 +22,22 @@ class Step;
 
 class ILatentPrior
 {
-   
-private:
-   std::weak_ptr<Session> m_session;
-
 public:
-   Session &getSession() const { return *m_session.lock(); }
+   Session &m_session;
    std::uint32_t m_mode;
    std::string m_name = "xxxx";
 
    thread_vector<Vector> rrs;
    thread_vector<Matrix> MMs;
 
-protected:
-   ILatentPrior(){}
-
 public:
-   ILatentPrior(std::shared_ptr<Session> session, uint32_t mode, std::string name = "xxxx");
+   ILatentPrior(Session &session, uint32_t mode, std::string name = "xxxx");
    virtual ~ILatentPrior() {}
    virtual void init();
 
    // utility
+   const Config &getConfig() const;
+
    const Model& model() const;
    Model& model();
 

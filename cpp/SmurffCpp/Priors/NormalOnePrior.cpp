@@ -2,7 +2,7 @@
 
 namespace smurff {
 
-NormalOnePrior::NormalOnePrior(std::shared_ptr<Session> session, uint32_t mode, std::string name)
+NormalOnePrior::NormalOnePrior(Session &session, uint32_t mode, std::string name)
    : ILatentPrior(session, mode, name)
 {
 }

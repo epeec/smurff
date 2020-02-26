@@ -14,7 +14,7 @@ namespace smurff {
 
 //  base class NormalPrior
 
-NormalPrior::NormalPrior(std::shared_ptr<Session> session, uint32_t mode, std::string name)
+NormalPrior::NormalPrior(Session &session, uint32_t mode, std::string name)
    : ILatentPrior(session, mode, name)
 {}
 
@@ -39,7 +39,7 @@ void NormalPrior::init()
    b0 = 2;
    df = K;
 
-   const auto &config = getSession().getConfig();
+   const auto &config = getConfig();
    if (config.hasPropagatedPosterior(getMode()))
    {
       m_name += " with posterior propagation";
@@ -48,9 +48,9 @@ void NormalPrior::init()
 
 const Vector NormalPrior::fullMu(int n) const
 {
-   if (getSession().getConfig().hasPropagatedPosterior(getMode()))
+   if (getConfig().hasPropagatedPosterior(getMode()))
    {
-      return getSession().getConfig().getMuPropagatedPosterior(getMode()).getDenseMatrixData().col(n);
+      return getConfig().getMuPropagatedPosterior(getMode()).getDenseMatrixData().col(n);
    }
    //else
    return mu();
@@ -58,9 +58,9 @@ const Vector NormalPrior::fullMu(int n) const
 
 const Matrix NormalPrior::getLambda(int n) const
 {
-   if (getSession().getConfig().hasPropagatedPosterior(getMode()))
+   if (getConfig().hasPropagatedPosterior(getMode()))
    {
-      const auto &Lambda_pp = getSession().getConfig().getLambdaPropagatedPosterior(getMode()).getDenseMatrixData();
+      const auto &Lambda_pp = getConfig().getLambdaPropagatedPosterior(getMode()).getDenseMatrixData();
       return Eigen::Map<const Matrix>(Lambda_pp.col(n).data(), num_latent(), num_latent());
    }
    //else

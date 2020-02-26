@@ -19,7 +19,8 @@ namespace smurff {
 class MacauPrior : public NormalPrior
 {
 public:
-   Matrix &beta() const { return getSession().model().getLinkMatrix(getMode()); }
+   Matrix &beta() { return model().getLinkMatrix(getMode()); }
+   const Matrix &beta() const { return model().getLinkMatrix(getMode()); }
                             // num_latent x num_feat -- link matrix
    Matrix Uhat;             // num_latent x num_items
    Matrix Udelta;           // num_latent x num_items
@@ -41,11 +42,8 @@ public:
    bool enable_beta_precision_sampling;
    bool throw_on_cholesky_error;
 
-private:
-   MacauPrior();
-
 public:
-   MacauPrior(std::shared_ptr<Session> session, uint32_t mode);
+   MacauPrior(Session &session, uint32_t mode);
 
    virtual ~MacauPrior();
 

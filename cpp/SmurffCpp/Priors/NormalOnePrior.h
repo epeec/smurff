@@ -15,7 +15,9 @@ class NormalOnePrior : public ILatentPrior
 {
 public:
   // hyperparams
-  Vector &mu() const { return getSession().model().getMu(getMode()); } 
+  Vector &mu() { return model().getMu(getMode()); } 
+  const Vector &mu() const { return model().getMu(getMode()); } 
+
   Matrix Lambda;
   Matrix WI;
   Vector mu0;
@@ -25,7 +27,7 @@ public:
   int df;
 
 public:
-   NormalOnePrior(std::shared_ptr<Session> session, uint32_t mode, std::string name = "NormalOnePrior");
+   NormalOnePrior(Session &session, uint32_t mode, std::string name = "NormalOnePrior");
    virtual ~NormalOnePrior() {}
    void init() override;
 

@@ -20,7 +20,8 @@ public:
 
    Vector F_colsq;   // sum-of-squares for every feature (column)
 
-   Matrix &beta() const { return getSession().model().getLinkMatrix(getMode()); }
+   Matrix &beta() { return model().getLinkMatrix(getMode()); }
+   const Matrix &beta() const { return model().getLinkMatrix(getMode()); }
    
    double beta_precision_a0; // Hyper-prior for beta_precision
    double beta_precision_b0; // Hyper-prior for beta_precision
@@ -31,7 +32,7 @@ public:
    bool enable_beta_precision_sampling;
 
 public:
-   MacauOnePrior(std::shared_ptr<Session> session, uint32_t mode);
+   MacauOnePrior(Session &session, uint32_t mode);
 
    void init() override;
 

@@ -60,6 +60,9 @@ public:
    Matrix &getLinkMatrix(int mode);
    Vector &getMu(int mode);
 
+   const Matrix &getLinkMatrix(int mode) const;
+   const Vector &getMu(int mode) const;
+
 public:
    //dot product of i'th columns in each U matrix
    //pos - vector of column indices

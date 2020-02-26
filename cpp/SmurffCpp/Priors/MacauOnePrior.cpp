@@ -2,7 +2,7 @@
 
 namespace smurff {
 
-MacauOnePrior::MacauOnePrior(std::shared_ptr<Session> session, uint32_t mode)
+MacauOnePrior::MacauOnePrior(Session &session, uint32_t mode)
    : NormalOnePrior(session, mode, "MacauOnePrior")
 {
    bp0 = SideInfoConfig::BETA_PRECISION_DEFAULT_VALUE;

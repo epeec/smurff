@@ -85,6 +85,15 @@ Vector &Model::getMu(int mode)
    return m_mus.at(mode);
 }
 
+const Matrix &Model::getLinkMatrix(int mode) const
+{
+   return m_link_matrices.at(mode);
+}
+
+const Vector &Model::getMu(int mode) const
+{
+   return m_mus.at(mode);
+}
 
 double Model::predict(const PVec<> &pos) const
 {

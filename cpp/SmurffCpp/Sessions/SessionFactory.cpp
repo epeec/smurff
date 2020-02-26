@@ -27,7 +27,7 @@ std::shared_ptr<ISession> SessionFactory::create_py_session(const std::string& r
 //for testing only
 std::shared_ptr<ISession> SessionFactory::create_session(Config& cfg)
 {
-   std::shared_ptr<Session> session(new Session());
+   auto session = std::shared_ptr<Session>(new Session());
    session->fromConfig(cfg);
    return session;
 }
