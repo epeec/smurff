@@ -10,6 +10,7 @@
 #include <SmurffCpp/StatusItem.h>
 #include <SmurffCpp/Sessions/ISession.h>
 #include <SmurffCpp/Model.h>
+#include <SmurffCpp/result.h>
 
 namespace smurff {
 
@@ -22,7 +23,7 @@ class Session : public ISession, public std::enable_shared_from_this<Session>
 
 protected:
    Model m_model;
-   std::shared_ptr<Result> m_pred;
+   Result m_pred;
 
 protected:
    std::vector<std::shared_ptr<ILatentPrior> > m_priors;
@@ -59,7 +60,7 @@ public:
    void addPrior(std::shared_ptr<ILatentPrior> prior);
 
 public:
-   std::shared_ptr<Result> getResult() const override;
+   const Result &getResult() const override;
 public:
    void fromRootPath(std::string rootPath);
    void fromConfig(const Config& cfg);

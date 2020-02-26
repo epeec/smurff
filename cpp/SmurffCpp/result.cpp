@@ -217,7 +217,7 @@ void Result::update(const Model &model, bool burnin)
    }
 }
 
-std::ostream &Result::info(std::ostream &os, std::string indent)
+std::ostream &Result::info(std::ostream &os, std::string indent) const
 {
    if (!m_predictions.empty())
    {

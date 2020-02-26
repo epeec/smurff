@@ -25,7 +25,7 @@ namespace smurff {
       virtual void init() = 0;
 
       virtual std::shared_ptr<StatusItem> getStatus() const = 0;
-      virtual std::shared_ptr<Result> getResult() const = 0;
+      virtual const Result &getResult() const = 0;
       virtual std::shared_ptr<OutputFile> getOutputFile() const = 0;
 
       double getRmseAvg() { return getStatus()->rmse_avg; }

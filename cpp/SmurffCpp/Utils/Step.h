@@ -58,10 +58,10 @@ namespace smurff {
       void putPredAvgVar(const SparseMatrix &, const SparseMatrix &, const SparseMatrix &);
 
    public:
-      void save(const Model &model, std::shared_ptr<const Result> pred, const std::vector<std::shared_ptr<ILatentPrior> >& priors);
+      void save(const Model &model, const Result &pred, const std::vector<std::shared_ptr<ILatentPrior> >& priors);
 
    public:
-      void restore(Model &model, std::shared_ptr<Result> pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const;
+      void restore(Model &model, Result &pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const;
 
    public:
       void remove(bool model, bool pred, bool priors);

@@ -71,14 +71,10 @@ void Session::setFromBase()
     // initialize pred
     if (!m_config.getTest().hasData())
     {
-        m_pred = std::make_shared<Result>(m_config.getTest());
-        m_pred->setSavePred(m_config.getSavePred());
+        m_pred = Result(m_config.getTest());
+        m_pred.setSavePred(m_config.getSavePred());
         if (m_config.getClassify())
-            m_pred->setThreshold(m_config.getThreshold());
-    }
-    else
-    {
-        m_pred = std::make_shared<Result>();
+            m_pred.setThreshold(m_config.getThreshold());
     }
 
     // init data
@@ -108,7 +104,7 @@ void Session::init()
     perf_data_init();
 
     //initialize test set
-    if (m_pred) m_pred->init();
+    m_pred.init();
 
     //initialize train matrix (centring and noise model)
     data().init();
@@ -168,7 +164,7 @@ bool Session::step()
         auto endi = tick();
 
         //WARNING: update is an expensive operation because of sort (when calculating AUC)
-        m_pred->update(m_model, m_iter < m_config.getBurnin());
+        m_pred.update(m_model, m_iter < m_config.getBurnin());
 
         m_secs_per_iter = endi - starti;
         m_secs_total += m_secs_per_iter;
@@ -195,7 +191,7 @@ std::ostream &Session::info(std::ostream &os, std::string indent) const
         p->info(os, indent + "    ");
     os << indent << "  }" << std::endl;
     os << indent << "  Result: {" << std::endl;
-    m_pred->info(os, indent + "    ");
+    m_pred.info(os, indent + "    ");
     os << indent << "  }" << std::endl;
     os << indent << "  Config: {" << std::endl;
     m_config.info(os, indent + "    ");
@@ -324,7 +320,7 @@ bool Session::restore(int &iteration)
     }
 }
 
-std::shared_ptr<Result> Session::getResult() const
+const Result &Session::getResult() const
 {
    return m_pred;
 }
@@ -359,11 +355,11 @@ std::shared_ptr<StatusItem> Session::getStatus() const
 
     ret->train_rmse = data().train_rmse(model());
 
-    ret->rmse_avg = m_pred->rmse_avg;
-    ret->rmse_1sample = m_pred->rmse_1sample;
+    ret->rmse_avg = m_pred.rmse_avg;
+    ret->rmse_1sample = m_pred.rmse_1sample;
 
-    ret->auc_avg = m_pred->auc_avg;
-    ret->auc_1sample = m_pred->auc_1sample;
+    ret->auc_avg = m_pred.auc_avg;
+    ret->auc_1sample = m_pred.auc_1sample;
 
     ret->elapsed_iter = m_secs_per_iter;
     ret->elapsed_total = m_secs_total;

@@ -99,7 +99,7 @@ public:
 
 public:
    void toCsv(std::string filename) const;
-   std::ostream &info(std::ostream &os, std::string indent);
+   std::ostream &info(std::ostream &os, std::string indent) const;
 
    //-- for binary classification
    int total_pos = -1;

@@ -79,7 +79,7 @@ void PredictSession::init()
 {
     THROWERROR_ASSERT(m_has_config);
     THROWERROR_ASSERT(!m_config.getTest().hasData());
-    m_result = std::make_shared<Result>(m_config.getTest(), m_config.getNSamples());
+    m_result = Result(m_config.getTest(), m_config.getNSamples());
 
     m_pos = m_stepfiles.rbegin();
     m_iter = 0;
@@ -108,7 +108,7 @@ bool PredictSession::step()
     double start = tick();
     Model model;
     restoreModel(model, *m_pos);
-    m_result->update(model, false);
+    m_result.update(model, false);
     double stop = tick();
     m_iter++;
     m_secs_per_iter = stop - start;
@@ -142,7 +142,7 @@ void PredictSession::save()
         std::cout << "-- Saving predictions into '" << m_pred_rootfile->getFullPath() << "'." << std::endl;
     }
 
-    m_result->save(stepFile);
+    m_result.save(stepFile);
 
     //m_pred_rootfile->addCsvStatusLine(*getStatus());
 }
@@ -156,11 +156,11 @@ std::shared_ptr<StatusItem> PredictSession::getStatus() const
 
     ret->train_rmse = NAN;
 
-    ret->rmse_avg = m_result->rmse_avg;
-    ret->rmse_1sample = m_result->rmse_1sample;
+    ret->rmse_avg = m_result.rmse_avg;
+    ret->rmse_1sample = m_result.rmse_1sample;
 
-    ret->auc_avg = m_result->auc_avg;
-    ret->auc_1sample = m_result->auc_1sample;
+    ret->auc_avg = m_result.auc_avg;
+    ret->auc_1sample = m_result.auc_1sample;
 
     ret->elapsed_iter = m_secs_per_iter;
     ret->elapsed_total = m_secs_total;
@@ -168,7 +168,7 @@ std::shared_ptr<StatusItem> PredictSession::getStatus() const
     return ret;
 }
 
-std::shared_ptr<Result> PredictSession::getResult() const
+const Result &PredictSession::getResult() const
 {
     return m_result;
 }
@@ -183,7 +183,7 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
     os << indent << "    dimensions: " << getModelDims() << "\n";
     os << indent << "  }\n";
     os << indent << "  Predictions {\n";
-    m_result->info(os, indent + "    ");
+    m_result.info(os, indent + "    ");
     if (m_config.getSaveFreq() > 0)
     {
         os << indent << "    Save predictions: every " << m_config.getSaveFreq() << " iteration\n";

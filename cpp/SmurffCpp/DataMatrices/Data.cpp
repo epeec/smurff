@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "Data.h"
 #include <Utils/Error.h>
 
@@ -77,9 +79,9 @@ INoiseModel &Data::noise() const
    return *noise_ptr;
 }
 
-void Data::setNoiseModel(std::shared_ptr<INoiseModel> nm)
+void Data::setNoiseModel(std::unique_ptr<INoiseModel> &&nm)
 {
-   noise_ptr = nm;
+   noise_ptr = std::move(nm);
 }
 
 //#### info functions ####
@@ -122,7 +124,6 @@ std::shared_ptr<Data> Data::create(const std::vector<DataConfig> &dcs)
 
 std::shared_ptr<Data> Data::create(const DataConfig& dc) 
 {
-   std::shared_ptr<INoiseModel> noise = NoiseFactory::create_noise_model(dc.getNoiseConfig());
    std::shared_ptr<Data> ret;
 
    if (dc.isMatrix())
@@ -144,7 +145,7 @@ std::shared_ptr<Data> Data::create(const DataConfig& dc)
         ret = std::make_shared<TensorData>(dc.getSparseTensorData()); // FIXME
    }
 
-   ret->setNoiseModel(noise);
+   ret->setNoiseModel(NoiseFactory::create_noise_model(dc.getNoiseConfig()));
    return ret;
 }
 

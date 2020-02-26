@@ -8,6 +8,7 @@
 #include <SmurffCpp/Utils/PVec.hpp>
 #include <SmurffCpp/Sessions/ISession.h>
 #include <SmurffCpp/Model.h>
+#include <SmurffCpp/result.h>
 
 
 namespace smurff {
@@ -24,7 +25,7 @@ private:
     Config m_config;
     bool m_has_config;
 
-    std::shared_ptr<Result> m_result;
+    Result m_result;
     std::vector<Step>::reverse_iterator m_pos;
 
     double m_secs_per_iter;
@@ -53,7 +54,7 @@ public:
     void init() override;
 
     std::shared_ptr<StatusItem> getStatus() const override;
-    std::shared_ptr<Result>     getResult() const override;
+    const Result &getResult() const override;
 
     std::shared_ptr<OutputFile> getOutputFile() const override {
         return m_pred_rootfile;
