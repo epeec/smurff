@@ -53,7 +53,7 @@ public:
     bool step() override;
     void init() override;
 
-    std::shared_ptr<StatusItem> getStatus() const override;
+    StatusItem getStatus() const override;
     const Result &getResult() const override;
 
     std::shared_ptr<OutputFile> getOutputFile() const override {

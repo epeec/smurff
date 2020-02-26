@@ -94,7 +94,7 @@ private:
    void printStatus(std::ostream& output, bool resume = false);
 
 public:
-   std::shared_ptr<StatusItem> getStatus() const override;
+   StatusItem getStatus() const override;
 
 private:
    void initRng();

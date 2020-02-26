@@ -325,47 +325,47 @@ const Result &Session::getResult() const
    return m_pred;
 }
 
-std::shared_ptr<StatusItem> Session::getStatus() const
+StatusItem Session::getStatus() const
 {
-    std::shared_ptr<StatusItem> ret = std::make_shared<StatusItem>();
+    StatusItem ret;
 
     if (m_iter < 0)
     {
-        ret->phase = "Initial";
-        ret->iter = m_iter + 1;
-        ret->phase_iter = 0;
+        ret.phase = "Initial";
+        ret.iter = m_iter + 1;
+        ret.phase_iter = 0;
     }
     else if (m_iter < m_config.getBurnin())
     {
-        ret->phase = "Burnin";
-        ret->iter = m_iter + 1;
-        ret->phase_iter = m_config.getBurnin();
+        ret.phase = "Burnin";
+        ret.iter = m_iter + 1;
+        ret.phase_iter = m_config.getBurnin();
     }
     else
     {
-        ret->phase = "Sample";
-        ret->iter = m_iter - m_config.getBurnin() + 1;
-        ret->phase_iter = m_config.getNSamples();
+        ret.phase = "Sample";
+        ret.iter = m_iter - m_config.getBurnin() + 1;
+        ret.phase_iter = m_config.getNSamples();
     }
 
     for (int i = 0; i < (int)model().nmodes(); ++i)
     {
-        ret->model_norms.push_back(model().U(i).norm());
+        ret.model_norms.push_back(model().U(i).norm());
     }
 
-    ret->train_rmse = data().train_rmse(model());
+    ret.train_rmse = data().train_rmse(model());
 
-    ret->rmse_avg = m_pred.rmse_avg;
-    ret->rmse_1sample = m_pred.rmse_1sample;
+    ret.rmse_avg = m_pred.rmse_avg;
+    ret.rmse_1sample = m_pred.rmse_1sample;
 
-    ret->auc_avg = m_pred.auc_avg;
-    ret->auc_1sample = m_pred.auc_1sample;
+    ret.auc_avg = m_pred.auc_avg;
+    ret.auc_1sample = m_pred.auc_1sample;
 
-    ret->elapsed_iter = m_secs_per_iter;
-    ret->elapsed_total = m_secs_total;
+    ret.elapsed_iter = m_secs_per_iter;
+    ret.elapsed_total = m_secs_total;
 
-    ret->nnz_per_sec = (double)(data().nnz()) / m_secs_per_iter;
-    ret->samples_per_sec = (double)(model().nsamples()) / m_secs_per_iter;
+    ret.nnz_per_sec = (double)(data().nnz()) / m_secs_per_iter;
+    ret.samples_per_sec = (double)(model().nsamples()) / m_secs_per_iter;
 
     return ret;
 }
@@ -394,11 +394,11 @@ void Session::printStatus(std::ostream &output, bool resume)
             output << " ====== Burn-in complete, averaging samples ====== " << std::endl;
         }
 
-        output << resumeString << status_item->asString() << std::endl;
+        output << resumeString << status_item.asString() << std::endl;
 
         if (m_config.getVerbose() > 1)
         {
-            output << std::fixed << std::setprecision(4) << "  RMSE train: " << status_item->train_rmse << std::endl;
+            output << std::fixed << std::setprecision(4) << "  RMSE train: " << status_item.train_rmse << std::endl;
             output << "  Priors:" << std::endl;
 
             for (const auto &p : m_priors)
@@ -412,7 +412,7 @@ void Session::printStatus(std::ostream &output, bool resume)
 
         if (m_config.getVerbose() > 2)
         {
-            output << "  Compute Performance: " << status_item->samples_per_sec << " samples/sec, " << status_item->nnz_per_sec << " nnz/sec" << std::endl;
+            output << "  Compute Performance: " << status_item.samples_per_sec << " samples/sec, " << status_item.nnz_per_sec << " nnz/sec" << std::endl;
         }
     }
 }

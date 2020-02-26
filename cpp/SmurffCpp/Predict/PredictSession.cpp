@@ -115,7 +115,7 @@ bool PredictSession::step()
     m_secs_total += m_secs_per_iter;
 
     if (m_config.getVerbose())
-        std::cout << getStatus()->asString() << std::endl;
+        std::cout << getStatus().asString() << std::endl;
 
     if (m_config.getSaveFreq() > 0 && (m_iter % m_config.getSaveFreq()) == 0)
         save();
@@ -147,23 +147,23 @@ void PredictSession::save()
     //m_pred_rootfile->addCsvStatusLine(*getStatus());
 }
 
-std::shared_ptr<StatusItem> PredictSession::getStatus() const
+StatusItem PredictSession::getStatus() const
 {
-    std::shared_ptr<StatusItem> ret = std::make_shared<StatusItem>();
-    ret->phase = "Predict";
-    ret->iter = m_pos->getIsample();
-    ret->phase_iter = m_stepfiles.size();
+    StatusItem ret;
+    ret.phase = "Predict";
+    ret.iter = m_pos->getIsample();
+    ret.phase_iter = m_stepfiles.size();
 
-    ret->train_rmse = NAN;
+    ret.train_rmse = NAN;
 
-    ret->rmse_avg = m_result.rmse_avg;
-    ret->rmse_1sample = m_result.rmse_1sample;
+    ret.rmse_avg = m_result.rmse_avg;
+    ret.rmse_1sample = m_result.rmse_1sample;
 
-    ret->auc_avg = m_result.auc_avg;
-    ret->auc_1sample = m_result.auc_1sample;
+    ret.auc_avg = m_result.auc_avg;
+    ret.auc_1sample = m_result.auc_1sample;
 
-    ret->elapsed_iter = m_secs_per_iter;
-    ret->elapsed_total = m_secs_total;
+    ret.elapsed_iter = m_secs_per_iter;
+    ret.elapsed_total = m_secs_total;
 
     return ret;
 }

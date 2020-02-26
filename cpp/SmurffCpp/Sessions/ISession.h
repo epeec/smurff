@@ -24,11 +24,11 @@ namespace smurff {
       virtual bool interrupted() { return false; }
       virtual void init() = 0;
 
-      virtual std::shared_ptr<StatusItem> getStatus() const = 0;
+      virtual StatusItem getStatus() const = 0;
       virtual const Result &getResult() const = 0;
       virtual std::shared_ptr<OutputFile> getOutputFile() const = 0;
 
-      double getRmseAvg() { return getStatus()->rmse_avg; }
+      double getRmseAvg() { return getStatus().rmse_avg; }
       const std::vector<ResultItem> & getResultItems() const;
 
     public:
