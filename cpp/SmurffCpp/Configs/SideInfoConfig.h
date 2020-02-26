@@ -60,10 +60,5 @@ namespace smurff
       void save(ConfigFile& writer, std::size_t prior_index) const;
       bool restore(const ConfigFile& reader, std::size_t prior_index);
 
-   public:
-      std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const override;
-
-   public:
-      void write(std::shared_ptr<IDataWriter> writer) const override;
    };
 }

@@ -81,5 +81,11 @@ namespace smurff
    public:
       virtual std::ostream& info(std::ostream& os, std::string indent);
       virtual std::ostream& status(std::ostream& os, std::string indent) const;
+
+   /// ### create
+   public:
+      static std::shared_ptr<Data> create(const std::vector<DataConfig> &dc); // multiple
+   private:
+      static std::shared_ptr<Data> create(const DataConfig &dc); // single matrix/tensor
    };
 }

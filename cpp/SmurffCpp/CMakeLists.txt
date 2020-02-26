@@ -84,9 +84,6 @@ FILE (GLOB MATRIX_FILES "DataMatrices/Data.h"
                         "DataMatrices/MatrixDataTempl.hpp"
                         "DataMatrices/ScarceMatrixData.h"
                         "DataMatrices/SparseMatrixData.h"
-                        "DataMatrices/IDataCreator.h"
-                        "DataMatrices/DataCreator.h"
-                        "DataMatrices/DataCreatorBase.h"
 
                         "DataMatrices/Data.cpp"
                         "DataMatrices/DenseMatrixData.cpp"
@@ -94,8 +91,6 @@ FILE (GLOB MATRIX_FILES "DataMatrices/Data.h"
                         "DataMatrices/MatrixData.cpp"
                         "DataMatrices/ScarceMatrixData.cpp"
                         "DataMatrices/SparseMatrixData.cpp"
-                        "DataMatrices/DataCreator.cpp"
-                        "DataMatrices/DataCreatorBase.cpp"
                         )
 
 source_group ("DataMatrices" FILES ${MATRIX_FILES})

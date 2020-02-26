@@ -3,7 +3,6 @@
 #include <numeric>
 
 #include <SmurffCpp/Utils/PVec.hpp>
-#include <SmurffCpp/DataMatrices/IDataCreator.h>
 #include <SmurffCpp/Utils/ConfigFile.h>
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
@@ -322,17 +321,6 @@ bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sec_name
    this->setNoiseConfig(noise);
 
    return true;
-}
-
-
-std::shared_ptr<Data> DataConfig::create(std::shared_ptr<IDataCreator> creator) const
-{
-   return creator->create(*this);
-}
-
-void DataConfig::write(std::shared_ptr<IDataWriter> writer) const
-{
-   THROWERROR_NOTIMPL()
 }
 
 } // end namespace smurff

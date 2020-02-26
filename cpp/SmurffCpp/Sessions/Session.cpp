@@ -13,7 +13,6 @@
 #include <Utils/StringUtils.h>
 #include <SmurffCpp/Configs/Config.h>
 
-#include <SmurffCpp/DataMatrices/DataCreator.h>
 #include <SmurffCpp/Priors/PriorFactory.h>
 
 #include <SmurffCpp/result.h>
@@ -78,14 +77,14 @@ void Session::setFromBase()
         if (m_config.getClassify())
             m_pred->setThreshold(m_config.getThreshold());
     }
-    else 
+    else
     {
         m_pred = std::make_shared<Result>();
     }
 
-    // initialize data
-    data_ptr = m_config.getTrain().create(std::make_shared<DataCreator>(this_session));
-
+    // init data
+    data_ptr = Data::create(m_config.getData());
+   
     // initialize priors
     std::shared_ptr<IPriorFactory> priorFactory = this->create_prior_factory();
     for (std::size_t i = 0; i < m_config.getPriorTypes().size(); i++)

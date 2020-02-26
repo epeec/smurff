@@ -66,15 +66,4 @@ bool SideInfoConfig::restore(const ConfigFile& cfg_file, std::size_t prior_index
    return true;
 }
 
-
-std::shared_ptr<Data> SideInfoConfig::create(std::shared_ptr<IDataCreator> creator) const
-{
-   THROWERROR_NOTIMPL();
-}
-
-void SideInfoConfig::write(std::shared_ptr<IDataWriter> writer) const
-{
-   THROWERROR_NOTIMPL();
-}
-
 } // end namespace smurff

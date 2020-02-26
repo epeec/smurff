@@ -13,8 +13,6 @@
 namespace smurff
 {
    class Data;
-   class IDataWriter;
-   class IDataCreator;
    class ConfigFile;
 
    class DataConfig 
@@ -84,15 +82,6 @@ namespace smurff
 
       void save(ConfigFile& writer, const std::string& section_name) const;
       bool restore(const ConfigFile& reader, const std::string& sec_name);
-
-   public:
-      virtual std::shared_ptr<Data> create(std::shared_ptr<IDataCreator> creator) const;
-
-   public:
-      virtual void write(std::shared_ptr<IDataWriter> writer) const;
-
-   public:
-      static std::shared_ptr<DataConfig> restore_data_config(const ConfigFile& reader, const std::string& sec_name);
 
    public:
       void check() const;
