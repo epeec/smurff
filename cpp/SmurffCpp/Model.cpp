@@ -34,31 +34,36 @@ Model::Model()
 //init_model_type - samples initialization type
 void Model::init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_type, bool save_model, bool aggregate)
 {
+   size_t nmodes = dims.size();
+
    m_num_latent = num_latent;
    m_dims = dims;
    m_collect_aggr = aggregate;
    m_save_model = save_model;
    m_num_aggr = std::vector<int>(dims.size(), 0);
 
-   for(size_t i = 0; i < dims.size(); ++i)
+   m_factors.resize(nmodes);
+   m_link_matrices.resize(nmodes);
+   m_mus.resize(nmodes);
+
+   for(size_t i = 0; i < nmodes; ++i)
    {
-      std::shared_ptr<Matrix> mat(new Matrix(m_num_latent, dims[i]));
+      Matrix& mat = m_factors.at(i);
+      mat.resize(m_num_latent, dims[i]);
 
       switch(model_init_type)
       {
       case ModelInitTypes::random:
-         bmrandn(*mat);
+         bmrandn(mat);
          break;
       case ModelInitTypes::zero:
-         mat->setZero();
+         mat.setZero();
          break;
       default:
          {
             THROWERROR("Invalid model init type");
          }
       }
-
-      m_factors.push_back(mat);
 
       if (aggregate)
       {
@@ -67,20 +72,19 @@ void Model::init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_t
       }
    }
 
-   m_link_matrices.resize(nmodes());
-   m_mus.resize(nmodes());
-
    Pcache.init(Array1D::Ones(m_num_latent));
 }
 
-void Model::setLinkMatrix(int mode, 
-   std::shared_ptr<Matrix> link_matrix,
-   std::shared_ptr<Vector> mu
-   )
+Matrix &Model::getLinkMatrix(int mode)
 {
-   m_link_matrices.at(mode) = link_matrix;
-   m_mus.at(mode) = mu;
+   return m_link_matrices.at(mode);
 }
+
+Vector &Model::getMu(int mode)
+{
+   return m_mus.at(mode);
+}
+
 
 double Model::predict(const PVec<> &pos) const
 {
@@ -98,12 +102,12 @@ double Model::predict(const PVec<> &pos) const
 
 const Matrix &Model::U(uint32_t f) const
 {
-   return *m_factors.at(f);
+   return m_factors.at(f);
 }
 
 Matrix &Model::U(uint32_t f)
 {
-   return *m_factors[f];
+   return m_factors[f];
 }
 
 VMatrixIterator<Matrix> Model::Vbegin(std::uint32_t mode)
@@ -144,7 +148,7 @@ int Model::nlatent() const
 int Model::nsamples() const
 {
    return std::accumulate(m_factors.begin(), m_factors.end(), 0,
-      [](const int &a, const std::shared_ptr<Matrix> &b) { return a + b->cols(); });
+      [](const int &a, const Matrix &b) { return a + b.cols(); });
 }
 
 const PVec<>& Model::getDims() const
@@ -177,6 +181,9 @@ void Model::save(Step &sf) const
    sf.putModel(m_factors);
    for (std::uint64_t m = 0; m < nmodes(); ++m)
    {
+      sf.putLinkMatrix(m, m_link_matrices.at(m));
+      sf.putMu(m, m_mus.at(m));
+
       if (m_collect_aggr && m_save_aggr)
       {
          double n = m_num_aggr.at(m);
@@ -209,21 +216,21 @@ void Model::restore(const Step &sf, int skip_mode)
    unsigned nmodes = sf.getNModes();
    m_factors.clear();
    m_dims = PVec<>(nmodes);
+   m_factors.resize(nmodes);
 
    for (std::uint64_t i = 0; i < nmodes; ++i)
    {
-      std::shared_ptr<Matrix> U;
       if ((int)i != skip_mode)
       {
-         U = sf.getModel(i);
-         m_dims.at(i) = U->cols();
-         m_num_latent = U->rows();
+         auto &U = m_factors.at(i);
+         sf.readModel(i, U);
+         m_dims.at(i) = U.cols();
+         m_num_latent = U.rows();
       }
       else
       {
          m_dims.at(i) = -1;
       }
-      m_factors.push_back(U);
    }
 
    m_link_matrices.resize(nmodes);
@@ -231,9 +238,8 @@ void Model::restore(const Step &sf, int skip_mode)
 
    for(int i=0; i<nmodes; ++i)
    {
-       std::shared_ptr<Vector> mu = sf.getMu(i);
-       std::shared_ptr<Matrix> beta = sf.getLinkMatrix(i);
-       setLinkMatrix(i, beta, mu);
+      sf.readLinkMatrix(i, m_link_matrices.at(i));
+      sf.readMu(i, m_mus.at(i));
    }
 
    Pcache.init(Array1D::Ones(m_num_latent));

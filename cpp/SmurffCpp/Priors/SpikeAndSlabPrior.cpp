@@ -66,7 +66,7 @@ void SpikeAndSlabPrior::restore(const Step &sf)
   const int K = num_latent();
   const int nview = data().nview(m_mode);
 
-  NormalOnePrior::restore(sf);
+  ILatentPrior::restore(sf);
 
   //compute Zcol
   int d = 0;

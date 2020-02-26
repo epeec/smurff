@@ -16,9 +16,7 @@ namespace smurff {
 
 NormalPrior::NormalPrior(std::shared_ptr<Session> session, uint32_t mode, std::string name)
    : ILatentPrior(session, mode, name)
-{
-
-}
+{}
 
 void NormalPrior::init()
 {
@@ -26,8 +24,8 @@ void NormalPrior::init()
    ILatentPrior::init();
 
    const int K = num_latent();
-   m_mu = std::make_shared<Vector>(K);
-   hyperMu().setZero();
+   mu().resize(K);
+   mu().setZero();
 
    Lambda.resize(K, K);
    Lambda.setIdentity();
@@ -44,8 +42,6 @@ void NormalPrior::init()
    const auto &config = getSession().getConfig();
    if (config.hasPropagatedPosterior(getMode()))
    {
-      mu_pp = std::make_shared<Matrix>(config.getMuPropagatedPosterior(getMode()).getDenseMatrixData());
-      Lambda_pp = std::make_shared<Matrix>(config.getLambdaPropagatedPosterior(getMode()).getDenseMatrixData());
       m_name += " with posterior propagation";
    }
 }
@@ -54,24 +50,25 @@ const Vector NormalPrior::fullMu(int n) const
 {
    if (getSession().getConfig().hasPropagatedPosterior(getMode()))
    {
-      return mu_pp->col(n);
+      return getSession().getConfig().getMuPropagatedPosterior(getMode()).getDenseMatrixData().col(n);
    }
    //else
-   return hyperMu();
+   return mu();
 }
 
 const Matrix NormalPrior::getLambda(int n) const
 {
    if (getSession().getConfig().hasPropagatedPosterior(getMode()))
    {
-      return Eigen::Map<Matrix>(Lambda_pp->col(n).data(), num_latent(), num_latent());
+      const auto &Lambda_pp = getSession().getConfig().getLambdaPropagatedPosterior(getMode()).getDenseMatrixData();
+      return Eigen::Map<const Matrix>(Lambda_pp.col(n).data(), num_latent(), num_latent());
    }
    //else
    return Lambda;
 }
 void NormalPrior::update_prior()
 {
-   std::tie(hyperMu(), Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
+   std::tie(mu(), Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
 }
 
 //n is an index of column in U matrix
@@ -115,7 +112,7 @@ void  NormalPrior::sample_latent(int n)
 std::ostream &NormalPrior::status(std::ostream &os, std::string indent) const
 {
    os << indent << m_name << std::endl;
-   os << indent << "  mu: " <<  hyperMu().transpose() << std::endl;
+   os << indent << "  mu: " <<  mu().transpose() << std::endl;
    return os;
 }
 } // end namespace smurff

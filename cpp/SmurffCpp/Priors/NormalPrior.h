@@ -17,9 +17,7 @@ class NormalPrior : public ILatentPrior
 {
 public:
   // hyperparams
-  std::shared_ptr<Vector> m_mu; 
-  Vector &hyperMu() const { return *m_mu; }
-
+  Vector &mu() const { return getSession().model().getMu(getMode()); } 
   Matrix Lambda;
 
   // PP hyperparams
@@ -32,10 +30,6 @@ public:
   // constants
   int b0;
   int df;
-
-protected:
-   NormalPrior()
-      : ILatentPrior(){}
 
 public:
   NormalPrior(std::shared_ptr<Session> session, uint32_t mode, std::string name = "NormalPrior");

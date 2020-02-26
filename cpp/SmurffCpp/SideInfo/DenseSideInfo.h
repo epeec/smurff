@@ -14,7 +14,7 @@ namespace smurff {
    class DenseSideInfo : public ISideInfo
    {
    private:
-      std::shared_ptr<Matrix> m_side_info;
+      Matrix m_side_info;
 
    public:
       DenseSideInfo(const DataConfig &);
@@ -48,7 +48,7 @@ namespace smurff {
 
       //only for tests
    public:
-      std::shared_ptr<Matrix> get_features();
+      const Matrix &get_features();
    };
 
 }

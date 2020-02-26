@@ -197,7 +197,7 @@ TEST_CASE("macauprior/make_dense_prior", "Making MacauPrior with DataConfgi") {
     Matrix Ftrue(3, 2);
     Ftrue <<  0.1, 0.3, 0.4, 0.11, -0.7, 0.23;
     auto features_downcast1 = std::dynamic_pointer_cast<DenseSideInfo>(prior->Features); //for the purpose of the test
-    REQUIRE( (*(features_downcast1->get_features()) - Ftrue).norm() == Approx(0) );
+    REQUIRE( (features_downcast1->get_features() - Ftrue).norm() == Approx(0) );
     Matrix tmp = Matrix::Zero(2, 2);
     tmp.triangularView<Eigen::Lower>()  = prior->FtF_plus_precision;
     tmp.triangularView<Eigen::Lower>() -= Ftrue.transpose() * Ftrue;

@@ -20,7 +20,7 @@ public:
 
    Vector F_colsq;   // sum-of-squares for every feature (column)
 
-   Matrix beta;      // link matrix
+   Matrix &beta() const { return getSession().model().getLinkMatrix(getMode()); }
    
    double beta_precision_a0; // Hyper-prior for beta_precision
    double beta_precision_b0; // Hyper-prior for beta_precision
@@ -60,11 +60,6 @@ public:
    void sample_beta_precision();
 
 public:
-
-   bool save(Step &sf) const override;
-
-   void restore(const Step &sf) override;
-
    std::ostream& status(std::ostream &os, std::string indent) const override;
 };
 

@@ -81,9 +81,9 @@ bool Step::hasModel(std::uint64_t index) const
    return hasDataSet(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
 }
 
-std::shared_ptr<Matrix> Step::getModel(std::uint64_t index) const
+void Step::readModel(std::uint64_t index, Matrix &m) const
 {
-   return getMatrix(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
+   read(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index), m);
 }
 
 std::string Step::getName() const
@@ -91,34 +91,23 @@ std::string Step::getName() const
    return std::string(isCheckpoint() ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(getIsample());
 }
 
-void Step::putModel(const std::vector<std::shared_ptr<Matrix>> &F)
+void Step::putModel(const std::vector<Matrix> &F)
 {
    m_group.createAttribute(NUM_MODES_TAG, F.size());
    for (std::uint64_t m = 0; m < F.size(); ++m)
    {
-      write(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(m), *F[m]);
+      write(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(m), F[m]);
    }
 }
 
-bool Step::hasLinkMatrix(std::uint32_t mode) const
+void Step::readLinkMatrix(std::uint32_t mode, Matrix &m) const
 {
-   return hasDataSet(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode));
+      read(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode), m);
 }
 
-std::shared_ptr<Matrix> Step::getLinkMatrix(std::uint32_t mode) const
+void Step::readMu(std::uint64_t index, Vector &v) const
 {
-   if (hasDataSet(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode)))
-      return getMatrix(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode));
-
-   return std::shared_ptr<Matrix>();
-}
-
-std::shared_ptr<Vector> Step::getMu(std::uint64_t index) const
-{
-   if (hasDataSet(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index)))
-      return getVector(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index));
-
-   return std::shared_ptr<Vector>();
+   read(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), v);
 }
 
 void Step::putLinkMatrix(std::uint64_t index, const Matrix &M)
@@ -175,14 +164,14 @@ void Step::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const
 }
 
 
-std::shared_ptr<Matrix> Step::getPredAvg() const
+void Step::readPredAvg(Matrix &m) const
 {
-   return getMatrix(PRED_SEC_TAG, PRED_AVG_TAG);
+   read(PRED_SEC_TAG, PRED_AVG_TAG, m);
 }
 
-std::shared_ptr<Matrix> Step::getPredVar() const
+void Step::readPredVar(Matrix &m) const
 {
-   return getMatrix(PRED_SEC_TAG, PRED_VAR_TAG);
+   read(PRED_SEC_TAG, PRED_VAR_TAG, m);
 }
 
 //save methods
@@ -225,27 +214,6 @@ std::int32_t Step::getIsample() const
 bool Step::isCheckpoint() const
 {
    return m_checkpoint;
-}
-
-std::shared_ptr<Matrix> Step::getMatrix(const std::string &section, const std::string &tag) const
-{
-   auto ret = std::make_shared<Matrix>();
-   read(section, tag, *ret);
-   return ret;
-}
-
-std::shared_ptr<Vector> Step::getVector(const std::string &section, const std::string &tag) const
-{
-   auto ret = std::make_shared<Vector>();
-   read(section, tag, *ret);
-   return ret;
-}
-
-std::shared_ptr<SparseMatrix> Step::getSparseMatrix(const std::string &section, const std::string &tag) const
-{
-   auto ret = std::make_shared<SparseMatrix>(); 
-   read(section, tag, *ret);
-   return ret;
 }
 
 } // end namespace

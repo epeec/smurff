@@ -19,12 +19,11 @@ namespace smurff {
 class MacauPrior : public NormalPrior
 {
 public:
-   std::shared_ptr<Matrix> 
-                   m_beta;            // num_latent x num_feat -- link matrix
-
+   Matrix &beta() const { return getSession().model().getLinkMatrix(getMode()); }
+                            // num_latent x num_feat -- link matrix
    Matrix Uhat;             // num_latent x num_items
    Matrix Udelta;           // num_latent x num_items
-   Matrix FtF_plus_precision;    // num_feat   x num feat
+   Matrix FtF_plus_precision;// num_feat   x num feat
    Matrix HyperU;           // num_latent x num_items
    Matrix HyperU2;          // num_latent x num_feat
    Matrix Ft_y;             // num_latent x num_feat -- RHS
@@ -56,20 +55,13 @@ public:
 
    const Vector fullMu(int n) const override;
 
-   Matrix &beta() const { return *m_beta; }
- 
    int num_feat() const { return Features->cols(); }
 
    void compute_Ft_y(Matrix& Ft_y);
    virtual void sample_beta();
 
 public:
-
    void addSideInfo(const std::shared_ptr<ISideInfo>& side_info_a, double beta_precision_a, double tolerance_a, bool direct_a, bool enable_beta_precision_sampling_a, bool throw_on_cholesky_error_a);
-
-public:
-   bool save(Step &sf) const override;
-   void restore(const Step &sf) override;
 
 public:
    std::ostream& info(std::ostream &os, std::string indent) override;

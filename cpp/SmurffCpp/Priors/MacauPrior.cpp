@@ -8,11 +8,6 @@
 
 namespace smurff {
 
-MacauPrior::MacauPrior()
-    : NormalPrior()
-{
-}
-
 MacauPrior::MacauPrior(std::shared_ptr<Session> session, uint32_t mode)
     : NormalPrior(session, mode, "MacauPrior")
 {
@@ -43,12 +38,10 @@ void MacauPrior::init()
    Uhat.resize(num_latent(), Features->rows());
    Uhat.setZero();
 
-   m_beta = std::make_shared<Matrix>(num_latent(), num_feat());
+   beta().resize(num_latent(), num_feat());
    beta().setZero();
 
    BBt = beta() * beta().transpose();
-
-   getSession().model().setLinkMatrix(m_mode, m_beta, m_mu);
 }
 
 void MacauPrior::update_prior()
@@ -79,7 +72,7 @@ void MacauPrior::update_prior()
         Udelta = U() - Uhat;
         // uses: Udelta
         // complexity: num_latent x num_items
-        std::tie(hyperMu(), Lambda) = CondNormalWishart(Udelta, mu0, b0, WI + beta_precision * BBt, df + num_feat());
+        std::tie(mu(), Lambda) = CondNormalWishart(Udelta, mu0, b0, WI + beta_precision * BBt, df + num_feat());
     }
 
     // uses: U, F
@@ -117,7 +110,7 @@ void MacauPrior::sample_beta()
     if (use_FtF)
     {
         // uses: FtF, Ft_y, 
-        // writes: m_beta
+        // writes: beta()
         // complexity: num_feat^3
         beta() = FtF_plus_precision.llt().solve(Ft_y.transpose()).transpose();
     } 
@@ -134,7 +127,7 @@ void MacauPrior::sample_beta()
 
 const Vector MacauPrior::fullMu(int n) const
 {
-   return hyperMu() + Uhat.col(n);
+   return mu() + Uhat.col(n);
 }
 
 void MacauPrior::compute_Ft_y(Matrix& Ft_y)
@@ -144,7 +137,7 @@ void MacauPrior::compute_Ft_y(Matrix& Ft_y)
    // Ft_y is [ num_latent x num_feat ] matrix
 
    //HyperU: num_latent x num_item
-   HyperU = (U() + MvNormal_prec(Lambda, num_item())).colwise() - hyperMu();
+   HyperU = (U() + MvNormal_prec(Lambda, num_item())).colwise() - mu();
    Ft_y = Features->A_mul_B(HyperU); // num_latent x num_feat
 
    //--  add beta_precision 
@@ -164,21 +157,6 @@ void MacauPrior::addSideInfo(const std::shared_ptr<ISideInfo>& side, double bp, 
     // Hyper-prior for beta_precision (mean 1.0, var of 1e+3):
     beta_precision_mu0 = 1.0;
     beta_precision_nu0 = 1e-3;
-}
-
-bool MacauPrior::save(Step &sf) const
-{
-    NormalPrior::save(sf);
-    sf.putLinkMatrix(getMode(), beta());
-    sf.putMu(getMode(), hyperMu());
-    return true;
-}
-
-void MacauPrior::restore(const Step &sf)
-{
-    NormalPrior::restore(sf);
-    m_beta = sf.getLinkMatrix(getMode());
-    hyperMu() = *sf.getMu(getMode());
 }
 
 std::ostream& MacauPrior::info(std::ostream &os, std::string indent)
@@ -213,7 +191,7 @@ std::ostream &MacauPrior::status(std::ostream &os, std::string indent) const
 {
    os << indent << m_name << ": " << std::endl;
    indent += "  ";
-   os << indent << "mu           = " <<  hyperMu().transpose() << std::endl;
+   os << indent << "mu           = " <<  mu().transpose() << std::endl;
    os << indent << "Uhat mean    = " <<  Uhat.rowwise().mean().transpose() << std::endl;
    os << indent << "blockcg iter = " << blockcg_iter << std::endl;
    os << indent << "FtF_plus_prec= " << FtF_plus_precision.norm() << std::endl;

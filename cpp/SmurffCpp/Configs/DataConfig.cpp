@@ -335,25 +335,4 @@ void DataConfig::write(std::shared_ptr<IDataWriter> writer) const
    THROWERROR_NOTIMPL()
 }
 
-
-std::shared_ptr<DataConfig> DataConfig::restore_data_config(const ConfigFile& cfg_file, const std::string& sec_name)
-{
-   //restore filename
-   std::string filename = cfg_file.get(sec_name, FILE_TAG, NONE_VALUE);
-   if (filename == NONE_VALUE)
-      return std::shared_ptr<DataConfig>();
-
-   //restore type
-   bool is_scarce = cfg_file.get(sec_name, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
-
-   //restore data
-   //auto cfg = generic_io::read_data_config(filename, is_scarce);
-   auto cfg = std::make_shared<DataConfig>();
-
-   //restore instance
-   cfg->restore(cfg_file, sec_name);
-
-   return cfg;
-}
-
 } // end namespace smurff

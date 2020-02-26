@@ -34,9 +34,9 @@ class ConstVMatrixIterator;
 class Model : public std::enable_shared_from_this<Model>
 {
 private:
-   std::vector<std::shared_ptr<Matrix>> m_factors; //vector of U matrices
-   std::vector<std::shared_ptr<Matrix>> m_link_matrices; //vector of U matrices
-   std::vector<std::shared_ptr<Vector>> m_mus; //vector of mu vectors
+   std::vector<Matrix> m_factors; //vector of U matrices
+   std::vector<Matrix> m_link_matrices; //vector of ß matrices
+   std::vector<Vector> m_mus; //vector of mu vectors
 
    bool m_collect_aggr;
    std::vector<Matrix> m_aggr_sum; //vector of aggr summed m_factors matrices
@@ -56,7 +56,9 @@ public:
    //initialize U matrices in the model (random/zero)
    void init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_type, bool save_model, bool collect_aggr = true);
 
-   void setLinkMatrix(int mode, std::shared_ptr<Matrix>, std::shared_ptr<Vector>);
+public:
+   Matrix &getLinkMatrix(int mode);
+   Vector &getMu(int mode);
 
 public:
    //dot product of i'th columns in each U matrix
@@ -173,11 +175,11 @@ public:
 template<typename FeatMatrix>
 std::shared_ptr<Matrix> Model::predict_latent(int mode, const FeatMatrix& f)
 {
-   THROWERROR_ASSERT_MSG(m_link_matrices.at(mode),
+   THROWERROR_ASSERT_MSG(m_link_matrices.at(mode).nonZeros(),
       "No link matrix available in mode " + std::to_string(mode));
 
-   const auto &beta = *m_link_matrices.at(mode);
-   const auto &mu = *m_mus.at(mode);
+   const auto &beta = m_link_matrices.at(mode);
+   const auto &mu = m_mus.at(mode);
 
    auto ret = std::make_shared<Matrix>(nlatent(), f.rows());
    *ret = beta * f.transpose();

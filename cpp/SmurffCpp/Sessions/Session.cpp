@@ -84,11 +84,9 @@ void Session::setFromBase()
     }
 
     // initialize data
-
     data_ptr = m_config.getTrain().create(std::make_shared<DataCreator>(this_session));
 
     // initialize priors
-
     std::shared_ptr<IPriorFactory> priorFactory = this->create_prior_factory();
     for (std::size_t i = 0; i < m_config.getPriorTypes().size(); i++)
         this->addPrior(priorFactory->create_prior(this_session, i));

@@ -36,20 +36,19 @@ namespace smurff {
 
    public:
       bool hasModel(std::uint64_t index) const;
-      bool hasMu(std::uint64_t index) const;
-      bool hasLinkMatrix(std::uint32_t mode) const;
       bool hasPred() const;
 
-      std::shared_ptr<Matrix> getModel(std::uint64_t index) const;
-      std::shared_ptr<Vector> getMu(std::uint64_t index) const;
-      std::shared_ptr<Matrix> getLinkMatrix(std::uint32_t index) const;
+      void readModel(std::uint64_t index, Matrix &) const;
+      void readMu(std::uint64_t index, Vector &) const;
+      void readLinkMatrix(std::uint32_t index, Matrix &) const;
 
-      std::shared_ptr<Matrix> getPred() const;
       void getPredState(double &rmse_avg, double &rmse_1sample, double &auc_avg, double &auc_1sample, int &sample_iter, int &burnin_iter) const;
-      std::shared_ptr<Matrix> getPredAvg() const;
-      std::shared_ptr<Matrix> getPredVar() const;
 
-      void putModel(const std::vector<std::shared_ptr<Matrix>> &);
+      void readPred(Matrix &) const;
+      void readPredAvg(Matrix &) const;
+      void readPredVar(Matrix &) const;
+
+      void putModel(const std::vector<Matrix> &);
       void putPostMuLambda(std::uint64_t index, const Matrix &, const Matrix &);
 
       void putMu(std::uint64_t index, const Matrix &);
@@ -77,8 +76,8 @@ namespace smurff {
       std::string getName() const;
 
    private:
-      std::shared_ptr<Matrix> getMatrix(const std::string &section, const std::string &tag) const;
-      std::shared_ptr<Vector> getVector(const std::string &section, const std::string &tag) const;
+      void readMatrix(const std::string &section, const std::string &tag, Matrix &) const;
+      void readVector(const std::string &section, const std::string &tag, Vector &) const;
       std::shared_ptr<SparseMatrix> getSparseMatrix(const std::string &section, const std::string &tag) const;
    };
 }

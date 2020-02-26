@@ -5,7 +5,6 @@ namespace smurff {
 NormalOnePrior::NormalOnePrior(std::shared_ptr<Session> session, uint32_t mode, std::string name)
    : ILatentPrior(session, mode, name)
 {
-
 }
 
 void NormalOnePrior::init()
@@ -15,8 +14,8 @@ void NormalOnePrior::init()
 
    const int K = num_latent();
 
-   m_mu = std::make_shared<Vector>(K);
-   hyperMu().setZero(); 
+   mu().resize(K);
+   mu().setZero(); 
 
    Lambda.resize(K, K);
    Lambda.setIdentity();
@@ -33,12 +32,12 @@ void NormalOnePrior::init()
 
 const Vector NormalOnePrior::fullMu(int n) const
 {
-   return hyperMu();
+   return mu();
 }
 
 void NormalOnePrior::update_prior()
 {
-    std::tie(hyperMu(), Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
+    std::tie(mu(), Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
 }
 
 void NormalOnePrior::sample_latent(int d)
@@ -51,7 +50,7 @@ void NormalOnePrior::sample_latent(int d)
    data().getMuLambda(model(), m_mode, d, yX, XX);
 
    // add hyperparams
-   yX.noalias() += Lambda * hyperMu();
+   yX.noalias() += Lambda * mu();
    XX.noalias() += Lambda;
 
    for(int k=0;k<K;++k) sample_latent(d, k, XX, yX);

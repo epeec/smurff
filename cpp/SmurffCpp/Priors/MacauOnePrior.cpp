@@ -15,7 +15,7 @@ void MacauOnePrior::init()
 
    // init SideInfo related
    Uhat = Matrix::Constant(num_latent(), Features->rows(), 0.0);
-   beta = Matrix::Constant(num_latent(), Features->cols(), 0.0);
+   beta() = Matrix::Constant(num_latent(), Features->cols(), 0.0);
 
    // initial value (should be determined automatically)
    // Hyper-prior for beta_precision (mean 1.0):
@@ -28,7 +28,7 @@ void MacauOnePrior::update_prior()
 {
    sample_mu_lambda(U());
    sample_beta(U());
-   Features->compute_uhat(Uhat, beta);
+   Features->compute_uhat(Uhat, beta());
 
    if (enable_beta_precision_sampling)
       sample_beta_precision();
@@ -36,7 +36,7 @@ void MacauOnePrior::update_prior()
 
 const Vector MacauOnePrior::fullMu(int n) const
 {
-   return this->hyperMu() + Uhat.col(n);
+   return mu() + Uhat.col(n);
 }
 
 void MacauOnePrior::addSideInfo(const std::shared_ptr<ISideInfo>& si, double bp, double tol, bool, bool ebps, bool toce)
@@ -49,8 +49,8 @@ void MacauOnePrior::addSideInfo(const std::shared_ptr<ISideInfo>& si, double bp,
 
 void MacauOnePrior::sample_beta(const Matrix &U)
 {
-   // updating beta and beta_var
-   const int nfeat = beta.cols();
+   // updating beta() and beta_var
+   const int nfeat = beta().cols();
    const int N = U.cols();
    const int blocksize = 4;
 
@@ -67,7 +67,7 @@ void MacauOnePrior::sample_beta(const Matrix &U)
          for (int d = 0; d < dcount; d++)
          {
             int dx = d + dstart;
-            Z(d, i) = U(dx, i) - hyperMu()(dx) - Uhat(dx, i);
+            Z(d, i) = U(dx, i) - mu()(dx) - Uhat(dx, i);
          }
       }
 
@@ -83,12 +83,12 @@ void MacauOnePrior::sample_beta(const Matrix &U)
          {
             int dx = d + dstart;
             double A_df = beta_precision(dx) + Lambda(dx, dx) * F_colsq(f);
-            double B_df = Lambda(dx, dx) * (zx(d) + beta(dx, f) * F_colsq(f));
+            double B_df = Lambda(dx, dx) * (zx(d) + beta()(dx, f) * F_colsq(f));
             double A_inv = 1.0 / A_df;
             double beta_new = B_df * A_inv + std::sqrt(A_inv) * randvals(d);
-            delta_beta(d) = beta(dx, f) - beta_new;
+            delta_beta(d) = beta()(dx, f) - beta_new;
 
-            beta(dx, f) = beta_new;
+            beta()(dx, f) = beta_new;
          }
          // Z[dstart : dstart + dcount, :] += F[:, f] * delta_beta'
          Features->add_Acol_mul_bt(Z, f, delta_beta);
@@ -111,15 +111,15 @@ void MacauOnePrior::sample_mu_lambda(const Matrix &U)
          Udelta(d, i) = U(d, i) - Uhat(d, i);
       }
    }
-   std::tie(hyperMu(), Lambda) = CondNormalWishart(Udelta, Vector::Constant(num_latent(), 0.0), 2.0, WI, num_latent());
+   std::tie(mu(), Lambda) = CondNormalWishart(Udelta, Vector::Constant(num_latent(), 0.0), 2.0, WI, num_latent());
 }
 
 void MacauOnePrior::sample_beta_precision()
 {
-   double beta_precision_a = beta_precision_a0 + beta.cols() / 2.0;
-   Vector beta_precision_b = Vector::Constant(beta.rows(), beta_precision_b0);
-   const int D = beta.rows();
-   const int F = beta.cols();
+   double beta_precision_a = beta_precision_a0 + beta().cols() / 2.0;
+   Vector beta_precision_b = Vector::Constant(beta().rows(), beta_precision_b0);
+   const int D = beta().rows();
+   const int F = beta().cols();
    #pragma omp parallel
    {
       Vector tmp(D);
@@ -129,7 +129,7 @@ void MacauOnePrior::sample_beta_precision()
       {
          for (int d = 0; d < D; d++)
          {
-            tmp(d) += std::pow(beta(d, f), 2);
+            tmp(d) += std::pow(beta()(d, f), 2);
          }
       }
       #pragma omp critical
@@ -143,24 +143,9 @@ void MacauOnePrior::sample_beta_precision()
    }
 }
 
-bool MacauOnePrior::save(Step &sf) const
-{
-   NormalOnePrior::save(sf);
-   sf.putLinkMatrix(getMode(), beta);
-   sf.putMu(getMode(), hyperMu());
-   return true;
-}
-
-void MacauOnePrior::restore(const Step &sf)
-{
-   NormalOnePrior::restore(sf);
-   beta = *sf.getLinkMatrix(getMode());
-   hyperMu() = *sf.getMu(getMode());
-}
-
 std::ostream& MacauOnePrior::status(std::ostream &os, std::string indent) const
 {
-   os << indent << "  " << m_name << ": Beta = " << beta.norm() << std::endl;
+   os << indent << "  " << m_name << ": Beta = " << beta().norm() << std::endl;
    return os;
 }
 } // end namespace smurff
