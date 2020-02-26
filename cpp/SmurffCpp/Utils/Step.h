@@ -71,10 +71,5 @@ namespace smurff {
       std::int32_t getIsample() const;
       bool isCheckpoint() const;
       std::string getName() const;
-
-   private:
-      void readMatrix(const std::string &section, const std::string &tag, Matrix &) const;
-      void readVector(const std::string &section, const std::string &tag, Vector &) const;
-      std::shared_ptr<SparseMatrix> getSparseMatrix(const std::string &section, const std::string &tag) const;
    };
 }
