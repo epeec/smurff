@@ -21,10 +21,6 @@ public:
   const Vector &mu() const { return model().getMu(getMode()); } 
   Matrix Lambda;
 
-  // PP hyperparams
-  std::shared_ptr<Matrix> mu_pp; // array of size N to vector of size K 
-  std::shared_ptr<Matrix> Lambda_pp; // array of size N  to matrix of size K x K
-
   Matrix WI;
   Vector mu0;
 
