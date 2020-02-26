@@ -106,7 +106,8 @@ bool PredictSession::step()
     THROWERROR_ASSERT(m_pos != m_stepfiles.rend());
 
     double start = tick();
-    auto model = restoreModel(*m_pos);
+    Model model;
+    restoreModel(model, *m_pos);
     m_result->update(model, false);
     double stop = tick();
     m_iter++;
@@ -204,29 +205,27 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
     return os;
 }
 
-std::shared_ptr<Model> PredictSession::restoreModel(const Step &sf, int skip_mode)
+void PredictSession::restoreModel(Model &model, const Step &sf, int skip_mode)
 {
-    auto model = sf.restoreModel(skip_mode);
+    model.restore(sf, skip_mode);
 
     if (m_num_latent <= 0)
     {
-        m_num_latent = model->nlatent();
-        m_dims = model->getDims();
+        m_num_latent = model.nlatent();
+        m_dims = model.getDims();
     }
     else
     {
-        THROWERROR_ASSERT(m_num_latent == model->nlatent());
-        THROWERROR_ASSERT(m_dims == model->getDims());
+        THROWERROR_ASSERT(m_num_latent == model.nlatent());
+        THROWERROR_ASSERT(m_dims == model.getDims());
     }
 
     THROWERROR_ASSERT(m_num_latent > 0);
-
-    return model;
 }
 
-std::shared_ptr<Model> PredictSession::restoreModel(int i, int skip_mode)
+void PredictSession::restoreModel(Model &model, int i, int skip_mode)
 {
-    return restoreModel(m_stepfiles.at(i), skip_mode);
+    restoreModel(model, m_stepfiles.at(i), skip_mode);
 }
 
 // predict one element
@@ -240,8 +239,9 @@ ResultItem PredictSession::predict(PVec<> pos, const Step &sf)
 // predict one element
 void PredictSession::predict(ResultItem &res, const Step &sf)
 {
-    auto model = sf.restoreModel();
-    auto pred = model->predict(res.coords);
+    Model model;
+    model.restore(sf);
+    auto pred = model.predict(res.coords);
     res.update(pred);
 }
 
@@ -268,7 +268,8 @@ std::shared_ptr<Result> PredictSession::predict(const DataConfig &Y)
 
     for (const auto s : m_stepfiles)
     {
-        auto model = restoreModel(s);
+        Model model;
+        restoreModel(model, s);
         res->update(model, false);
     }
 

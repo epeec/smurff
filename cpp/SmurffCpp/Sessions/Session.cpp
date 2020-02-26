@@ -20,7 +20,6 @@
 
 namespace smurff {
 Session::Session()
-    : m_model(std::make_shared<Model>()), m_pred()
 {
     name = "Session";
 }

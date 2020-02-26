@@ -31,7 +31,7 @@ class VMatrixIterator;
 template<class T>
 class ConstVMatrixIterator;
 
-class Model : public std::enable_shared_from_this<Model>
+class Model
 {
 private:
    std::vector<Matrix> m_factors; //vector of U matrices

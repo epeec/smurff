@@ -9,6 +9,7 @@
 #include <SmurffCpp/Utils/OutputFile.h>
 #include <SmurffCpp/StatusItem.h>
 #include <SmurffCpp/Sessions/ISession.h>
+#include <SmurffCpp/Model.h>
 
 namespace smurff {
 
@@ -20,7 +21,7 @@ class Session : public ISession, public std::enable_shared_from_this<Session>
    friend class SessionFactory;
 
 protected:
-   std::shared_ptr<Model> m_model;
+   Model m_model;
    std::shared_ptr<Result> m_pred;
 
 protected:
@@ -120,12 +121,12 @@ public:
 
    const Model& model() const
    {
-      return *m_model;
+      return m_model;
    }
 
    Model& model()
    {
-      return *m_model;
+      return m_model;
    }
 
 

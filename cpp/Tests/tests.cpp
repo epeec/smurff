@@ -10,7 +10,6 @@
 
 #include <boost/version.hpp>
 
-#include <SmurffCpp/Model.h>
 #include <SmurffCpp/result.h>
 
 #include <Utils/TruncNorm.h>
@@ -69,7 +68,7 @@ TEST_CASE( "utils/eval_rmse", "Test if prediction variance is correctly calculat
   std::vector<std::uint32_t> cols = {0};
   std::vector<double>        vals = {4.5};
 
-  std::shared_ptr<Model> model(new Model());
+  Model model;
   
   SparseMatrix S = matrix_utils::sparse_to_eigen(SparseTensor( { 1, 1 }, { rows, cols }, vals));
   std::shared_ptr<Data> data(new ScarceMatrixData(S));
@@ -78,13 +77,13 @@ TEST_CASE( "utils/eval_rmse", "Test if prediction variance is correctly calculat
   data->setNoiseModel(NoiseFactory::create_noise_model(fixed_ncfg));
 
   data->init();
-  model->init(2, PVec<>({1, 1}), ModelInitTypes::zero, false); //latent dimension has size 2
+  model.init(2, PVec<>({1, 1}), ModelInitTypes::zero, false); //latent dimension has size 2
 
   auto &t = p->m_predictions.at(0);
 
   // first iteration
-  model->U(0) << 1.0, 0.0;
-  model->U(1) << 1.0, 0.0;
+  model.U(0) << 1.0, 0.0;
+  model.U(1) << 1.0, 0.0;
 
   p->update(model, false);
 
@@ -94,8 +93,8 @@ TEST_CASE( "utils/eval_rmse", "Test if prediction variance is correctly calculat
   REQUIRE(p->rmse_avg ==     Approx(std::sqrt(std::pow(4.5 - (1.0 * 1.0 + 0.0 * 0.0) / 1, 2) / 1 )));
 
   //// second iteration
-  model->U(0) << 2.0, 0.0;
-  model->U(1) << 1.0, 0.0;
+  model.U(0) << 2.0, 0.0;
+  model.U(1) << 1.0, 0.0;
 
   p->update(model, false);
 
@@ -106,8 +105,8 @@ TEST_CASE( "utils/eval_rmse", "Test if prediction variance is correctly calculat
 
   //// third iteration
 
-  model->U(0) << 2.0, 0.0;
-  model->U(1) << 3.0, 0.0;
+  model.U(0) << 2.0, 0.0;
+  model.U(1) << 3.0, 0.0;
 
   p->update(model, false);
 

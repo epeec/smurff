@@ -74,7 +74,7 @@ public:
    PVec<> m_dims;
 
    //-- prediction metrics
-   void update(std::shared_ptr<const Model> model, bool burnin);
+   void update(const Model &model, bool burnin);
 
 public:
    double rmse_avg = NAN;

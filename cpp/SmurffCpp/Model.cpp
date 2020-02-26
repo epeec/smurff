@@ -112,7 +112,7 @@ Matrix &Model::U(uint32_t f)
 
 VMatrixIterator<Matrix> Model::Vbegin(std::uint32_t mode)
 {
-   return VMatrixIterator<Matrix>(shared_from_this(), mode, 0);
+   return VMatrixIterator<Matrix>(this, mode, 0);
 }
 
 VMatrixIterator<Matrix> Model::Vend()

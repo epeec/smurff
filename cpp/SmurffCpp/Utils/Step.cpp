@@ -177,12 +177,12 @@ void Step::readPredVar(Matrix &m) const
 //save methods
 
 void Step::save(
-         std::shared_ptr<const Model> model,
+         const Model &model,
          std::shared_ptr<const Result> pred,
    const std::vector<std::shared_ptr<ILatentPrior> >& priors
    )
 {
-   model->save(*this);
+   model.save(*this);
    pred->save(*this);
    for (auto &p : priors) p->save(*this);
 }
@@ -190,16 +190,9 @@ void Step::save(
 //restore methods
 
 //-- used in PredictSession
-std::shared_ptr<Model> Step::restoreModel(int skip_mode) const
+void Step::restore(Model &model, std::shared_ptr<Result> pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const
 {
-    auto model = std::make_shared<Model>();
-    model->restore(*this, skip_mode);
-    return model;
-}
-
-void Step::restore(std::shared_ptr<Model> model, std::shared_ptr<Result> pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const
-{
-   model->restore(*this);
+   model.restore(*this);
    pred->restore(*this);
    for (auto &p : priors) p->restore(*this);
 }

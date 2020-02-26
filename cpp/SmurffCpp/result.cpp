@@ -158,7 +158,7 @@ void Result::restore(const Step &sf)
 //--- update RMSE and AUC
 
 //model - holds samples (U matrices)
-void Result::update(std::shared_ptr<const Model> model, bool burnin)
+void Result::update(const Model &model, bool burnin)
 {
    if (m_predictions.empty())
       return;
@@ -173,7 +173,7 @@ void Result::update(std::shared_ptr<const Model> model, bool burnin)
       for(size_t k = 0; k < m_predictions.size(); ++k)
       {
          auto &t = m_predictions.operator[](k);
-         t.pred_1sample = model->predict(t.coords); //dot product of i'th columns in each U matrix
+         t.pred_1sample = model.predict(t.coords); //dot product of i'th columns in each U matrix
          se_1sample += std::pow(t.val - t.pred_1sample, 2);
       }
 
@@ -195,7 +195,7 @@ void Result::update(std::shared_ptr<const Model> model, bool burnin)
       for(size_t k = 0; k < m_predictions.size(); ++k)
       {
          auto &t = m_predictions.operator[](k);
-         const double pred = model->predict(t.coords); //dot product of i'th columns in each U matrix
+         const double pred = model.predict(t.coords); //dot product of i'th columns in each U matrix
          t.update(pred);
 
          se_1sample += std::pow(t.val - pred, 2);
