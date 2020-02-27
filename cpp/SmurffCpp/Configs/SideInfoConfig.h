@@ -13,8 +13,10 @@ namespace smurff
    class SideInfoConfig : public DataConfig
    {
    public:
-      static double BETA_PRECISION_DEFAULT_VALUE;
-      static double TOL_DEFAULT_VALUE;
+      static const bool DIRECT_DEFAULT_VALUE;
+      static const double BETA_PRECISION_DEFAULT_VALUE;
+      static const double TOL_DEFAULT_VALUE;
+
    private:
       double m_tol;
       bool m_direct;
