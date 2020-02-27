@@ -89,7 +89,7 @@ TEST_CASE("PredictSession/BPMF")
 //=================================================================
 
 TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
-  SideInfoConfig rowSideInfoDenseMatrixConfig = makeSideInfoConfig(rowSideDenseMatrix);
+  const SideInfoConfig rowSideInfoDenseMatrixConfig = makeSideInfoConfig(rowSideDenseMatrix);
 
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal});
   config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
@@ -100,7 +100,7 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
 
   PredictSession predict_session(session->getOutputFile());
 
-  auto sideInfoMatrix = rowSideInfoDenseMatrixConfig.getDenseMatrixData();
+  const auto &sideInfoMatrix = rowSideInfoDenseMatrixConfig.getDenseMatrixData();
 
 #if 0
     std::cout << "sideInfo =\n" << sideInfoMatrix << std::endl;
@@ -155,8 +155,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   auto data = SparseTensor({4, 1}, {rowSideInfoSparseMatrixConfigRows, rowSideInfoSparseMatrixConfigCols},
                            rowSideInfoSparseMatrixConfigVals);
 
-  SideInfoConfig rowSideInfoConfig(matrix_utils::sparse_to_eigen(data), nc);
-  rowSideInfoConfig.setDirect(true);
+  const SideInfoConfig rowSideInfoConfig(matrix_utils::sparse_to_eigen(data), nc);
 
   Config config = genConfig(trainMatrix, testMatrix, {PriorTypes::macau, PriorTypes::normal});
   config.addSideInfoConfig(0, rowSideInfoConfig);
@@ -172,7 +171,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   auto in_matrix_predictions = predict_session_in.predict(config.getTest())->m_predictions;
 
   PredictSession predict_session_out(session->getOutputFile());
-  auto sideInfoMatrix = rowSideInfoConfig.getSparseMatrixData();
+  const auto &sideInfoMatrix = rowSideInfoConfig.getSparseMatrixData();
   int d = config.getTrain().getDims()[0];
   for (int r = 0; r < d; r++) {
     auto feat = sideInfoMatrix.row(r).transpose();

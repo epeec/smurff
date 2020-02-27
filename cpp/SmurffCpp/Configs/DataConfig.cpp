@@ -133,6 +133,30 @@ const DenseTensor &DataConfig::getDenseTensorData() const
    return m_dense_tensor_data;
 }
 
+Matrix &DataConfig::getDenseMatrixData()
+{
+   THROWERROR_ASSERT(!hasData());
+   return m_dense_matrix_data;
+}
+
+SparseMatrix &DataConfig::getSparseMatrixData()
+{
+   THROWERROR_ASSERT(!hasData());
+   return m_sparse_matrix_data;
+}
+
+SparseTensor &DataConfig::getSparseTensorData() 
+{
+   THROWERROR_ASSERT(!hasData());
+   return m_sparse_tensor_data;
+}
+
+DenseTensor &DataConfig::getDenseTensorData() 
+{
+   THROWERROR_ASSERT(!hasData());
+   return m_dense_tensor_data;
+}
+
 bool DataConfig::isDense() const
 {
    return m_isDense;
