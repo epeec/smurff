@@ -89,6 +89,11 @@ void HDF5::read(const std::string& section, const std::string& tag, SparseMatrix
    indices.read(X.innerIndexPtr());
 }
 
+void HDF5::read(const std::string& section, const std::string& tag, DenseTensor &) const
+{
+   THROWERROR_NOTIMPL();
+}
+
 void HDF5::read(const std::string& section, const std::string& tag, SparseTensor &) const
 {
    THROWERROR_NOTIMPL();
@@ -142,9 +147,15 @@ void HDF5::write(const std::string& section, const std::string& tag, const Spars
    indices.write(X.innerIndexPtr());
 }
 
+void HDF5::write(const std::string& section, const std::string& tag, const DenseTensor &X)
+{
+   THROWERROR_NOTIMPL();
+}
+
 void HDF5::write(const std::string& section, const std::string& tag, const SparseTensor &X)
 {
    THROWERROR_NOTIMPL();
 }
+
 
 } // end namespace smurff

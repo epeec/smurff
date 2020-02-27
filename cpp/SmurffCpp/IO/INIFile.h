@@ -67,6 +67,7 @@ public:
    void read(const std::string &section, const std::string &tag, Vector &) const override;
    void read(const std::string &section, const std::string &tag, Matrix &) const override;
    void read(const std::string &section, const std::string &tag, SparseMatrix &) const override;
+   void read(const std::string &section, const std::string &tag, DenseTensor &) const override;
    void read(const std::string &section, const std::string &tag, SparseTensor &) const override;
 
    void put(const std::string &section, const std::string &tag, const int &value) override
@@ -97,6 +98,7 @@ public:
    void write(const std::string &section, const std::string &tag, const Vector &) override;
    void write(const std::string &section, const std::string &tag, const Matrix &) override;
    void write(const std::string &section, const std::string &tag, const SparseMatrix &) override;
+   void write(const std::string &section, const std::string &tag, const DenseTensor &) override;
    void write(const std::string &section, const std::string &tag, const SparseTensor &) override;
 };
 

@@ -76,6 +76,11 @@ void INIFile::read(const std::string& section, const std::string& tag, SparseMat
    THROWERROR_NOTIMPL();
 }
 
+void INIFile::read(const std::string& section, const std::string& tag, DenseTensor &) const
+{
+   THROWERROR_NOTIMPL();
+}
+
 void INIFile::read(const std::string& section, const std::string& tag, SparseTensor &) const
 {
    THROWERROR_NOTIMPL();
@@ -90,6 +95,10 @@ void INIFile::write(const std::string& section, const std::string& tag, const Ma
 }
 
 void INIFile::write(const std::string& section, const std::string& tag, const SparseMatrix &X)
+{
+}
+
+void INIFile::write(const std::string& section, const std::string& tag, const DenseTensor &X)
 {
 }
 
