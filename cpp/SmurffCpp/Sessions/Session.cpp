@@ -251,7 +251,7 @@ void Session::save()
 
 void Session::saveInternal(int iteration, bool checkpoint)
 {
-    SaveState stepFile = m_rootFile->createStep(iteration, checkpoint);
+    SaveState saveState = m_rootFile->createStep(iteration, checkpoint);
 
     if (m_config.getVerbose())
     {
@@ -259,9 +259,9 @@ void Session::saveInternal(int iteration, bool checkpoint)
     }
     double start = tick();
 
-    m_model.save(stepFile);
-    m_pred.save(stepFile);
-    for (auto &p : m_priors) p->save(stepFile);
+    m_model.save(saveState);
+    m_pred.save(saveState);
+    for (auto &p : m_priors) p->save(saveState);
 
     double stop = tick();
     if (m_config.getVerbose())
@@ -290,20 +290,20 @@ bool Session::restore(int &iteration)
     }
     else
     {
-        SaveState &stepFile = *optionalStepFile;
+        SaveState &saveState = *optionalStepFile;
         if (m_config.getVerbose())
         {
             std::cout << "-- Restoring model, predictions,... from '" << m_rootFile->getFullPath() << "'." << std::endl;
         }
 
-        m_model.restore(stepFile);
-        m_pred.restore(stepFile);
-        for (auto &p : m_priors) p->restore(stepFile);
+        m_model.restore(saveState);
+        m_pred.restore(saveState);
+        for (auto &p : m_priors) p->restore(saveState);
 
         //restore last iteration index
-        if (stepFile.isCheckpoint())
+        if (saveState.isCheckpoint())
         {
-            iteration = stepFile.getIsample() - 1; //restore original state
+            iteration = saveState.getIsample() - 1; //restore original state
 
             //to keep track at what time we last checkpointed
             m_lastCheckpointTime = tick();
@@ -311,7 +311,7 @@ bool Session::restore(int &iteration)
         }
         else
         {
-            iteration = stepFile.getIsample() + m_config.getBurnin() - 1; //restore original state
+            iteration = saveState.getIsample() + m_config.getBurnin() - 1; //restore original state
 
             //to keep track at what time we last checkpointed
             m_lastCheckpointTime = tick();

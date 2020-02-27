@@ -135,14 +135,14 @@ bool PredictSession::step()
 void PredictSession::save()
 {
     //save this iteration
-    SaveState stepFile = getOutputFile()->createSampleStep(m_iter);
+    SaveState saveState = getOutputFile()->createSampleStep(m_iter);
 
     if (m_config.getVerbose())
     {
         std::cout << "-- Saving predictions into '" << m_pred_rootfile->getFullPath() << "'." << std::endl;
     }
 
-    m_result.save(stepFile);
+    m_result.save(saveState);
 
     //m_pred_rootfile->addCsvStatusLine(*getStatus());
 }
