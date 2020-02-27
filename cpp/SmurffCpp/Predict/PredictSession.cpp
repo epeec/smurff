@@ -45,7 +45,7 @@ void PredictSession::run()
     THROWERROR_ASSERT(m_has_config);
 
 
-    if (!m_config.getTest().hasData())
+    if (m_config.getTest().hasData())
     {
         init();
         while (step())
@@ -56,7 +56,7 @@ void PredictSession::run()
     else
     {
         std::pair<int, const DataConfig &> side_info =
-            (!m_config.getRowFeatures().hasData()) ?
+            (m_config.getRowFeatures().hasData()) ?
             std::make_pair(0, m_config.getRowFeatures()) :
             std::make_pair(1, m_config.getColFeatures()) ;
 
@@ -78,7 +78,7 @@ void PredictSession::run()
 void PredictSession::init()
 {
     THROWERROR_ASSERT(m_has_config);
-    THROWERROR_ASSERT(!m_config.getTest().hasData());
+    THROWERROR_ASSERT(m_config.getTest().hasData());
     m_result = Result(m_config.getTest(), m_config.getNSamples());
 
     m_pos = m_stepfiles.rbegin();

@@ -132,12 +132,12 @@ public:
 public:
    bool isActionTrain()
    {
-       return !getTrain().hasData();
+       return getTrain().hasData();
    }
 
    bool isActionPredict()
    {
-       return getTrain().hasData();
+       return !getTrain().hasData();
    }
 
    const DataConfig& getTrain() const

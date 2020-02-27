@@ -67,7 +67,7 @@ void Session::fromConfig(const Config &cfg)
 void Session::setFromBase()
 {
     // initialize pred
-    if (!m_config.getTest().hasData())
+    if (m_config.getTest().hasData())
     {
         m_pred = Result(m_config.getTest());
         m_pred.setSavePred(m_config.getSavePred());

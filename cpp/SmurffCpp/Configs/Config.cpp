@@ -229,16 +229,16 @@ SideInfoConfig& Config::addSideInfoConfig(int mode, const SideInfoConfig &c)
 
 bool Config::validate() const
 {
-   if (getTrain().hasData() || getTrain().getNNZ() == 0)
+   if (!getTrain().hasData() || getTrain().getNNZ() == 0)
    {
       THROWERROR("Missing train data");
    }
 
    THROWERROR_ASSERT(getTrain().hasPos());
 
-   if (!getTest().hasData() && !m_test.getNNZ())
+   if (getTest().hasData() && m_test.getNNZ() == 0)
    {
-      THROWERROR("Missing test data");
+      THROWERROR("Empty test data matrix/tensor");
    }
 
    if (!getTest().hasData() && getTest().getDims() != getTrain().getDims())
