@@ -259,7 +259,9 @@ void Session::saveInternal(int iteration, bool checkpoint)
     }
     double start = tick();
 
-    stepFile.save(m_model, m_pred, m_priors);
+    m_model.save(stepFile);
+    m_pred.save(stepFile);
+    for (auto &p : m_priors) p->save(stepFile);
 
     double stop = tick();
     if (m_config.getVerbose())
@@ -294,7 +296,9 @@ bool Session::restore(int &iteration)
             std::cout << "-- Restoring model, predictions,... from '" << m_rootFile->getFullPath() << "'." << std::endl;
         }
 
-        stepFile.restore(m_model, m_pred, m_priors);
+        m_model.restore(stepFile);
+        m_pred.restore(stepFile);
+        for (auto &p : m_priors) p->restore(stepFile);
 
         //restore last iteration index
         if (stepFile.isCheckpoint())

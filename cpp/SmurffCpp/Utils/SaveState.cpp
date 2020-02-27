@@ -174,29 +174,6 @@ void SaveState::readPredVar(Matrix &m) const
    read(PRED_SEC_TAG, PRED_VAR_TAG, m);
 }
 
-//save methods
-
-void SaveState::save(
-         const Model &model,
-         const Result &pred,
-   const std::vector<std::shared_ptr<ILatentPrior> >& priors
-   )
-{
-   model.save(*this);
-   pred.save(*this);
-   for (auto &p : priors) p->save(*this);
-}
-
-//restore methods
-
-//-- used in PredictSession
-void SaveState::restore(Model &model, Result &pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const
-{
-   model.restore(*this);
-   pred.restore(*this);
-   for (auto &p : priors) p->restore(*this);
-}
-
 //getters
 
 std::int32_t SaveState::getIsample() const

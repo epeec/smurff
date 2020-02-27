@@ -20,7 +20,7 @@ namespace smurff {
    class SaveState : private HDF5
    {
    private:
-      mutable h5::File m_file;
+      h5::File m_file;
       std::int32_t m_isample;
       bool m_checkpoint;
       bool m_final;
@@ -56,15 +56,6 @@ namespace smurff {
 
       void putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample, int sample_iter, int burnin_iter);
       void putPredAvgVar(const SparseMatrix &, const SparseMatrix &, const SparseMatrix &);
-
-   public:
-      void save(const Model &model, const Result &pred, const std::vector<std::shared_ptr<ILatentPrior> >& priors);
-
-   public:
-      void restore(Model &model, Result &pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const;
-
-   public:
-      void remove(bool model, bool pred, bool priors);
 
    public:
       unsigned getNModes() const;
