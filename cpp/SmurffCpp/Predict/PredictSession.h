@@ -26,20 +26,20 @@ private:
     bool m_has_config;
 
     Result m_result;
-    std::vector<Step>::reverse_iterator m_pos;
+    std::vector<SaveState>::reverse_iterator m_pos;
 
     double m_secs_per_iter;
     double m_secs_total;
     int m_iter;
 
-    std::vector<Step> m_stepfiles;
+    std::vector<SaveState> m_stepfiles;
 
     int m_num_latent;
     PVec<> m_dims;
     bool m_is_init;
 
 private:
-    void restoreModel(Model &, const Step &, int skip_mode = -1);
+    void restoreModel(Model &, const SaveState &, int skip_mode = -1);
     void restoreModel(Model &, int i, int skip_mode = -1);
 
 public:
@@ -77,15 +77,15 @@ private:
     // predict one element - based on position only
     ResultItem predict(PVec<> Ytest);
     
-    ResultItem predict(PVec<> Ytest, const Step &sf);
+    ResultItem predict(PVec<> Ytest, const SaveState &sf);
 
     // predict one element - based on ResultItem
     void predict(ResultItem &);
-    void predict(ResultItem &, const Step &sf);
+    void predict(ResultItem &, const SaveState &sf);
 
     // predict all elements in Ytest
     std::shared_ptr<Result> predict(const DataConfig &Y);
-    void predict(Result &, const Step &);
+    void predict(Result &, const SaveState &);
 
     // predict element or elements based on sideinfo
     template <class Feat>

@@ -10,7 +10,7 @@
 namespace h5 = HighFive;
 
 #include <SmurffCpp/Configs/Config.h>
-#include <SmurffCpp/Utils/Step.h>
+#include <SmurffCpp/Utils/SaveState.h>
 
 namespace smurff {
 
@@ -38,17 +38,17 @@ public:
    void restoreConfig(Config& config);
 
 public:
-   Step createSampleStep(std::int32_t isample);
-   Step createCheckpointStep(std::int32_t isample);
-   Step createStep(std::int32_t isample, bool checkpoint);
+   SaveState createSampleStep(std::int32_t isample);
+   SaveState createCheckpointStep(std::int32_t isample);
+   SaveState createStep(std::int32_t isample, bool checkpoint);
 
 public:
    void removeOldCheckpoints();
 
 public:
-   boost::optional<Step> openLastCheckpoint() const;
-   Step openSampleStep(int isample) const;
-   std::vector<Step> openSampleSteps() const;
+   boost::optional<SaveState> openLastCheckpoint() const;
+   SaveState openSampleStep(int isample) const;
+   std::vector<SaveState> openSampleSteps() const;
 };
 
 }

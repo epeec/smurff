@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <SmurffCpp/Utils/Step.h>
+#include <SmurffCpp/Utils/SaveState.h>
 
 #include <SmurffCpp/Model.h>
 #include <SmurffCpp/result.h>
@@ -41,7 +41,7 @@
 
 namespace smurff {
 
-Step::Step(h5::File file, std::int32_t isample, bool checkpoint)
+SaveState::SaveState(h5::File file, std::int32_t isample, bool checkpoint)
    : HDF5(file.createGroup(std::string(checkpoint ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(isample)))
    , m_file(file) 
    , m_isample(isample)
@@ -51,14 +51,14 @@ Step::Step(h5::File file, std::int32_t isample, bool checkpoint)
    m_group.createAttribute<int>(NUMBER_TAG, m_isample);
 }
 
-Step::Step(h5::File file, h5::Group group)
+SaveState::SaveState(h5::File file, h5::Group group)
    : HDF5(group), m_file(file)
 {
    group.getAttribute(NUMBER_TAG).read(m_isample);
    group.getAttribute(IS_CHECKPOINT_TAG).read(m_checkpoint);
 }
 
-Step::~Step()
+SaveState::~SaveState()
 {
    if (isCheckpoint())
    {
@@ -69,29 +69,29 @@ Step::~Step()
 }
 
 //name methods
-unsigned Step::getNModes() const
+unsigned SaveState::getNModes() const
 {
    unsigned nmodes;
    m_group.getAttribute(NUM_MODES_TAG).read(nmodes);
    return nmodes;
 }
 
-bool Step::hasModel(std::uint64_t index) const
+bool SaveState::hasModel(std::uint64_t index) const
 {
    return hasDataSet(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index));
 }
 
-void Step::readModel(std::uint64_t index, Matrix &m) const
+void SaveState::readModel(std::uint64_t index, Matrix &m) const
 {
    read(LATENTS_SEC_TAG, LATENTS_PREFIX + std::to_string(index), m);
 }
 
-std::string Step::getName() const
+std::string SaveState::getName() const
 {
    return std::string(isCheckpoint() ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(getIsample());
 }
 
-void Step::putModel(const std::vector<Matrix> &F)
+void SaveState::putModel(const std::vector<Matrix> &F)
 {
    m_group.createAttribute(NUM_MODES_TAG, F.size());
    for (std::uint64_t m = 0; m < F.size(); ++m)
@@ -100,38 +100,38 @@ void Step::putModel(const std::vector<Matrix> &F)
    }
 }
 
-void Step::readLinkMatrix(std::uint32_t mode, Matrix &m) const
+void SaveState::readLinkMatrix(std::uint32_t mode, Matrix &m) const
 {
       read(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(mode), m);
 }
 
-void Step::readMu(std::uint64_t index, Vector &v) const
+void SaveState::readMu(std::uint64_t index, Vector &v) const
 {
    read(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), v);
 }
 
-void Step::putLinkMatrix(std::uint64_t index, const Matrix &M)
+void SaveState::putLinkMatrix(std::uint64_t index, const Matrix &M)
 {
    write(LINK_MATRICES_SEC_TAG, LINK_MATRIX_PREFIX + std::to_string(index), M);
 }
 
-void Step::putMu(std::uint64_t index, const Matrix &M) 
+void SaveState::putMu(std::uint64_t index, const Matrix &M) 
 {
    write(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), M);
 }
 
-void Step::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda)
+void SaveState::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda)
 {
    write(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
    write(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
 }
 
-bool Step::hasPred() const
+bool SaveState::hasPred() const
 {
    return hasDataSet(PRED_SEC_TAG, PRED_AVG_TAG);
 }
 
-void Step::putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample,
+void SaveState::putPredState(double rmse_avg, double rmse_1sample, double auc_avg, double auc_1sample,
                             int sample_iter, int burnin_iter)
 {
    auto pred_group = m_group.getGroup(PRED_SEC_TAG);
@@ -143,7 +143,7 @@ void Step::putPredState(double rmse_avg, double rmse_1sample, double auc_avg, do
    pred_group.createAttribute<int>(BURNIN_ITER_TAG, burnin_iter);
 }
 
-void Step::getPredState(
+void SaveState::getPredState(
    double &rmse_avg, double &rmse_1sample, double &auc_avg, double &auc_1sample, int &sample_iter, int &burnin_iter) const
 {
    auto pred_group = m_group.getGroup(PRED_SEC_TAG);
@@ -156,7 +156,7 @@ void Step::getPredState(
 
 }
 
-void Step::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const SparseMatrix &one_sample)
+void SaveState::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const SparseMatrix &one_sample)
 {
    write(PRED_SEC_TAG, PRED_AVG_TAG, avg);
    write(PRED_SEC_TAG, PRED_VAR_TAG, var);
@@ -164,19 +164,19 @@ void Step::putPredAvgVar(const SparseMatrix &avg, const SparseMatrix &var, const
 }
 
 
-void Step::readPredAvg(Matrix &m) const
+void SaveState::readPredAvg(Matrix &m) const
 {
    read(PRED_SEC_TAG, PRED_AVG_TAG, m);
 }
 
-void Step::readPredVar(Matrix &m) const
+void SaveState::readPredVar(Matrix &m) const
 {
    read(PRED_SEC_TAG, PRED_VAR_TAG, m);
 }
 
 //save methods
 
-void Step::save(
+void SaveState::save(
          const Model &model,
          const Result &pred,
    const std::vector<std::shared_ptr<ILatentPrior> >& priors
@@ -190,7 +190,7 @@ void Step::save(
 //restore methods
 
 //-- used in PredictSession
-void Step::restore(Model &model, Result &pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const
+void SaveState::restore(Model &model, Result &pred, std::vector<std::shared_ptr<ILatentPrior> >& priors) const
 {
    model.restore(*this);
    pred.restore(*this);
@@ -199,12 +199,12 @@ void Step::restore(Model &model, Result &pred, std::vector<std::shared_ptr<ILate
 
 //getters
 
-std::int32_t Step::getIsample() const
+std::int32_t SaveState::getIsample() const
 {
    return m_isample;
 }
 
-bool Step::isCheckpoint() const
+bool SaveState::isCheckpoint() const
 {
    return m_checkpoint;
 }

@@ -20,7 +20,7 @@
 #include <SmurffCpp/ConstVMatrixExprIterator.hpp>
 
 #include <Utils/Error.h>
-#include <SmurffCpp/Utils/Step.h>
+#include <SmurffCpp/Utils/SaveState.h>
 
 namespace smurff {
 
@@ -185,7 +185,7 @@ void Model::updateAggr(int m)
    m_num_aggr.at(m)++;
 }
 
-void Model::save(Step &sf) const
+void Model::save(SaveState &sf) const
 {
    sf.putModel(m_factors);
    for (std::uint64_t m = 0; m < nmodes(); ++m)
@@ -220,7 +220,7 @@ void Model::save(Step &sf) const
    }
 }
 
-void Model::restore(const Step &sf, int skip_mode)
+void Model::restore(const SaveState &sf, int skip_mode)
 {
    unsigned nmodes = sf.getNModes();
    m_factors.clear();

@@ -135,7 +135,7 @@ bool PredictSession::step()
 void PredictSession::save()
 {
     //save this iteration
-    Step stepFile = getOutputFile()->createSampleStep(m_iter);
+    SaveState stepFile = getOutputFile()->createSampleStep(m_iter);
 
     if (m_config.getVerbose())
     {
@@ -205,7 +205,7 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
     return os;
 }
 
-void PredictSession::restoreModel(Model &model, const Step &sf, int skip_mode)
+void PredictSession::restoreModel(Model &model, const SaveState &sf, int skip_mode)
 {
     model.restore(sf, skip_mode);
 
@@ -229,7 +229,7 @@ void PredictSession::restoreModel(Model &model, int i, int skip_mode)
 }
 
 // predict one element
-ResultItem PredictSession::predict(PVec<> pos, const Step &sf)
+ResultItem PredictSession::predict(PVec<> pos, const SaveState &sf)
 {
     ResultItem ret{pos};
     predict(ret, sf);
@@ -237,7 +237,7 @@ ResultItem PredictSession::predict(PVec<> pos, const Step &sf)
 }
 
 // predict one element
-void PredictSession::predict(ResultItem &res, const Step &sf)
+void PredictSession::predict(ResultItem &res, const SaveState &sf)
 {
     Model model;
     model.restore(sf);

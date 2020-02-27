@@ -3,13 +3,13 @@ FILE (GLOB UTIL_FILES
                         "Utils/MatrixUtils.h"
                         "Utils/PVec.hpp"
                         "Utils/OutputFile.h"
-                        "Utils/Step.h"
+                        "Utils/SaveState.h"
                         "Utils/HDF5.h"
 
                         "Utils/Distribution.cpp"
                         "Utils/MatrixUtils.cpp"
                         "Utils/OutputFile.cpp"
-                        "Utils/Step.cpp"
+                        "Utils/SaveState.cpp"
                         "Utils/HDF5.cpp"
                         )
 

@@ -16,7 +16,7 @@
 #include <SmurffCpp/result.h>
 
 #include <Utils/Error.h>
-#include <SmurffCpp/Utils/Step.h>
+#include <SmurffCpp/Utils/SaveState.h>
 #include <Utils/StringUtils.h>
 
 namespace smurff {
@@ -109,7 +109,7 @@ std::shared_ptr<const SparseMatrix> Result::toMatrix(const Accessor &acc) const
    return ret;
 }
 
-void Result::save(Step &sf) const
+void Result::save(SaveState &sf) const
 {
    if (isEmpty())
       return;
@@ -150,7 +150,7 @@ void Result::toCsv(std::string filename) const
    predFile.close();
 }
 
-void Result::restore(const Step &sf)
+void Result::restore(const SaveState &sf)
 {
    sf.getPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
 }

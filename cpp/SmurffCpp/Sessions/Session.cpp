@@ -251,7 +251,7 @@ void Session::save()
 
 void Session::saveInternal(int iteration, bool checkpoint)
 {
-    Step stepFile = m_rootFile->createStep(iteration, checkpoint);
+    SaveState stepFile = m_rootFile->createStep(iteration, checkpoint);
 
     if (m_config.getVerbose())
     {
@@ -270,7 +270,7 @@ void Session::saveInternal(int iteration, bool checkpoint)
 
 bool Session::restore(int &iteration)
 {
-    boost::optional<Step> optionalStepFile;
+    boost::optional<SaveState> optionalStepFile;
     if (m_rootFile)
     {
         optionalStepFile = m_rootFile->openLastCheckpoint();
@@ -288,7 +288,7 @@ bool Session::restore(int &iteration)
     }
     else
     {
-        Step &stepFile = *optionalStepFile;
+        SaveState &stepFile = *optionalStepFile;
         if (m_config.getVerbose())
         {
             std::cout << "-- Restoring model, predictions,... from '" << m_rootFile->getFullPath() << "'." << std::endl;

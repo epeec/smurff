@@ -61,7 +61,7 @@ void SpikeAndSlabPrior::update_prior()
    log_r = - r.log() + (Array2D::Ones(K, nview) - r).log();
 }
 
-void SpikeAndSlabPrior::restore(const Step &sf)
+void SpikeAndSlabPrior::restore(const SaveState &sf)
 {
   const int K = num_latent();
   const int nview = data().nview(m_mode);

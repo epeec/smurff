@@ -66,19 +66,19 @@ void OutputFile::restoreConfig(Config& config)
    config.restore(h5_cfg);
 }
 
-Step OutputFile::createSampleStep(std::int32_t isample)
+SaveState OutputFile::createSampleStep(std::int32_t isample)
 {
    return createStep(isample, false);
 }
 
-Step OutputFile::createCheckpointStep(std::int32_t isample)
+SaveState OutputFile::createCheckpointStep(std::int32_t isample)
 {
    return createStep(isample, true);
 }
 
-Step OutputFile::createStep(std::int32_t isample, bool checkpoint)
+SaveState OutputFile::createStep(std::int32_t isample, bool checkpoint)
 {
-   return Step(m_h5, isample, checkpoint);
+   return SaveState(m_h5, isample, checkpoint);
 }
 
 void OutputFile::removeOldCheckpoints()
@@ -98,30 +98,30 @@ void OutputFile::removeOldCheckpoints()
    }
 }
 
-boost::optional<Step> OutputFile::openLastCheckpoint() const
+boost::optional<SaveState> OutputFile::openLastCheckpoint() const
 {
    std::string lastCheckpointItem;
    m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
    if (lastCheckpointItem != NONE_VALUE)
    {
       h5::Group group = m_h5.getGroup(lastCheckpointItem);
-      return Step(m_h5, group);
+      return SaveState(m_h5, group);
    }
 
-   return boost::optional<Step>();
+   return boost::optional<SaveState>();
 }
 
-std::vector<Step> OutputFile::openSampleSteps() const
+std::vector<SaveState> OutputFile::openSampleSteps() const
 {
    std::vector<std::string> h5_objects = m_h5.listObjectNames();
-   std::vector<Step> samples;
+   std::vector<SaveState> samples;
 
    for (auto &name : h5_objects)
    {
       if (startsWith(name, SAMPLE_PREFIX))
       {
          h5::Group group = m_h5.getGroup(name);
-         samples.push_back(Step(m_h5, group));
+         samples.push_back(SaveState(m_h5, group));
       }
    }
 

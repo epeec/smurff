@@ -17,7 +17,7 @@ namespace smurff {
    class Result;
    class ILatentPrior;
 
-   class Step : private HDF5
+   class SaveState : private HDF5
    {
    private:
       mutable h5::File m_file;
@@ -27,12 +27,12 @@ namespace smurff {
 
    public:
       //this constructor should be used to create a step file on a first run of session
-      Step(h5::File file, std::int32_t isample, bool checkpoint);
+      SaveState(h5::File file, std::int32_t isample, bool checkpoint);
 
       //this constructor should be used to  open existing step file when previous session is continued
-      Step(h5::File file, h5::Group group);
+      SaveState(h5::File file, h5::Group group);
 
-      ~Step();
+      ~SaveState();
 
    public:
       bool hasModel(std::uint64_t index) const;

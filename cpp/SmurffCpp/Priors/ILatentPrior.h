@@ -18,7 +18,7 @@
 
 namespace smurff {
 
-class Step;
+class SaveState;
 
 class ILatentPrior
 {
@@ -64,8 +64,8 @@ public:
    const Vector& getUsum() { return Usum; } 
    const Matrix& getUUsum()  { return UUsum; }
 
-   virtual bool save(Step &sf) const;
-   virtual void restore(const Step &sf);
+   virtual bool save(SaveState &sf) const;
+   virtual void restore(const SaveState &sf);
    virtual std::ostream &info(std::ostream &os, std::string indent);
    virtual std::ostream &status(std::ostream &os, std::string indent) const = 0;
 

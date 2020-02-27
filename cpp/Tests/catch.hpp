@@ -4619,8 +4619,8 @@ public:
         m_positive(m_step > T(0))
     {
         assert(m_current != m_end && "Range start and end cannot be equal");
-        assert(m_step != T(0) && "Step size cannot be zero");
-        assert(((m_positive && m_current <= m_end) || (!m_positive && m_current >= m_end)) && "Step moves away from end");
+        assert(m_step != T(0) && "SaveState size cannot be zero");
+        assert(((m_positive && m_current <= m_end) || (!m_positive && m_current >= m_end)) && "SaveState moves away from end");
     }
 
     RangeGenerator(T const& start, T const& end):

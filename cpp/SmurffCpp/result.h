@@ -9,7 +9,7 @@ namespace smurff {
 
 class DataConfig;
 
-class Step;
+class SaveState;
 class OutputFile;
 
 class Model;
@@ -87,8 +87,8 @@ public:
    // general
 
 public:
-   void save(Step &sf) const;
-   void restore(const Step &sf);
+   void save(SaveState &sf) const;
+   void restore(const SaveState &sf);
 
 private:
    template<typename Accessor>
