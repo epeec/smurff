@@ -66,7 +66,7 @@ class ProbitNoise(PyNoiseConfig):
     def __init__(self, threshold = 0.): 
         PyNoiseConfig.__init__(self, "probit", threshold = threshold)
 
-class StatusItem:
+class PyStatusItem:
     """Short set of parameters indicative for the training progress.
     
     Attributes

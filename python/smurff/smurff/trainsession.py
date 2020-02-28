@@ -1,5 +1,5 @@
-import wrapper
 from .helper import PyNoiseConfig, PyStatusItem, SparseTensor
+from .wrapper import Config
 
 class TrainSession:
     """Class for doing a training run in smurff
@@ -66,14 +66,14 @@ class TrainSession:
         nsamples         = None,
         seed             = None,
         threshold        = None,
-        verbose          = 1,
+        verbose          = None,
         save_prefix      = None,
         save_extension   = None,
         save_freq        = None,
         checkpoint_freq  = None,
-        csv_status       = None):
+        ):
 
-        self.config = wrapper.Config()
+        self.config = Config()
         self.config.setVerbose(verbose)
 
         if priors:         self.config.setPriorTypes(priors)

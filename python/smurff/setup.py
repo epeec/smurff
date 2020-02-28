@@ -48,15 +48,20 @@ class CMakeBuild(build_ext):
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
         cfg = 'Debug' if self.debug else 'Release'
-        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
-                      '-DPYTHON_EXECUTABLE=' + sys.executable,
-                      '-DCMAKE_BUILD_TYPE=' + cfg] + ext.extra_cmake_args
-        build_args = ['--config', cfg] + ext.extra_build_args
 
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
 
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp)
+        if ext.extra_cmake_args:
+            cmake_args = [
+                           '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
+                           '-DPYTHON_EXECUTABLE=' + sys.executable,
+                           '-DCMAKE_BUILD_TYPE=' + cfg
+                         ] + ext.extra_cmake_args
+
+            subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp)
+
+        build_args = ['--config', cfg] + ext.extra_build_args
         subprocess.check_call(['cmake', '--build', '.' ] + build_args, cwd=self.build_temp)
 
 

@@ -235,20 +235,16 @@ public:
       return m_prior_types;
    }
 
-   const std::vector<PriorTypes>& setPriorTypes(std::vector<PriorTypes> values)
+   void setPriorTypes(std::vector<PriorTypes> values)
    {
       m_prior_types = values;
-      return m_prior_types;
    }
 
-   const std::vector<PriorTypes>& setPriorTypes(std::vector<std::string> values)
+   void setPriorTypes(std::vector<std::string> values)
    {
       m_prior_types.clear();
       for(auto &value : values)
-      {
           m_prior_types.push_back(stringToPriorType(value));
-      }
-      return m_prior_types;
    }
 
    bool hasPropagatedPosterior(int mode) const

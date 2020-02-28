@@ -1,6 +1,11 @@
-from smurff.wrapper import Config
+import smurff
 
-c = Config()
+c = smurff.Config()
 print(c)
 
 c.setPriorTypes([ "normal", "normal" ])
+
+session = smurff.TrainSession()
+
+session.run()
+
