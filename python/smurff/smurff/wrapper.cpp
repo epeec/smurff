@@ -4,6 +4,7 @@
 
 #include "SmurffCpp/Configs/Config.h"
 #include "SmurffCpp/Configs/NoiseConfig.h"
+#include "SmurffCpp/Configs/DataConfig.h"
 
 // ----------------
 // Python interface
@@ -44,4 +45,12 @@ PYBIND11_MODULE(wrapper, m)
         .def("setThreshold", &smurff::NoiseConfig::setThreshold)
         ;
 
+    py::class_<smurff::DataConfig>(m, "DataConfig")
+        .def(py::init<>())
+        .def("setDenseMatrix", py::overload_cast<const smurff::Matrix &>(&smurff::DataConfig::setData))
+        .def("setSparseMatrix", py::overload_cast<const smurff::SparseMatrix &, bool>(&smurff::DataConfig::setData))
+        .def("setDenseTensor", py::overload_cast<const smurff::DenseTensor &>(&smurff::DataConfig::setData))
+        .def("setSparseTensor", py::overload_cast<const smurff::SparseTensor &, bool>(&smurff::DataConfig::setData))
+        .def("setNoiseConfig", &smurff::DataConfig::setNoiseConfig)
+        ;
 }
