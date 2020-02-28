@@ -65,6 +65,10 @@ endif()
 
 set(CMAKE_CXX_STANDARD 14)
 
+# needed for PyBIND11
+# https://pybind11.readthedocs.io/en/stable/faq.html#someclass-declared-with-greater-visibility-than-the-type-of-its-field-someclass-member-wattributes
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+
 if (MSVC OR MSVC_IDE OR MSVC_VERSION OR MSVC60 OR MSVC70 OR MSVC71 OR MSVC80 OR MSVC90 OR MSVC10 OR MSVC11 OR MSVC12)
    message( STATUS "Compiler is a Microsoft variant")
    message( STATUS "MSVC: " ${MSVC} )
