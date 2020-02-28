@@ -1,11 +1,11 @@
 #include <fstream>
 
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
+
 #include <Utils/Error.h>
 
 #include "INIFile.h"
-
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/ini_parser.hpp>
 
 namespace smurff
 {
