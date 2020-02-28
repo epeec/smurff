@@ -1,4 +1,4 @@
-import .wrapper
+import wrapper
 from .helper import PyNoiseConfig, PyStatusItem, SparseTensor
 
 class TrainSession:
