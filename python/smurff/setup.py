@@ -9,24 +9,19 @@ import subprocess
 from subprocess import Popen, PIPE
 
 def git_describe_version():
-    try:
-        p = Popen(['git', 'describe', '--long'],
-                  stdout=PIPE, stderr=PIPE)
-        p.stderr.close()
-        line = p.stdout.readlines()[0].strip()
-        version, post, hash = line.split('-')
-        if version[0] == 'v':
-            version = version[1:]
+    p = Popen(['git', 'describe', '--long'],
+                stdout=PIPE, stderr=PIPE)
+    p.stderr.close()
+    line = p.stdout.readlines()[0].strip().decode()
+    version, post, hash = line.split('-')
+    if version[0] == 'v':
+        version = version[1:]
 
-        if (int(post)) != 0:
-            # v0.15.0-411-gd585b05e -> 0.15.0.post411
-            return version + ".post" + post # v0.15.0-411-gd585b05e -> 
-        else:
-            # v0.15.0-0-g05fc3249 -> 0.15.0
-            return version
+    if (int(post)) != 0:
+        # v0.15.0-411-gd585b05e -> 0.15.0.post411
+        version = version + ".post" + post # v0.15.0-411-gd585b05e -> 
 
-    except:
-        return '0.99.0'
+    return version
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
@@ -63,7 +58,7 @@ class CMakeBuild(build_ext):
             os.makedirs(self.build_temp)
 
         subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp)
-        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
+        subprocess.check_call(['cmake', '--build', '.' ] + build_args, cwd=self.build_temp)
 
 
 extra_cmake_args = ''
