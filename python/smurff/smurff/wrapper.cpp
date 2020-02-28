@@ -2,9 +2,11 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-#include "SmurffCpp/Configs/Config.h"
-#include "SmurffCpp/Configs/NoiseConfig.h"
-#include "SmurffCpp/Configs/DataConfig.h"
+#include <SmurffCpp/Configs/Config.h>
+#include <SmurffCpp/Configs/NoiseConfig.h>
+#include <SmurffCpp/Configs/DataConfig.h>
+
+#include <SmurffCpp/Sessions/PythonSession.h>
 
 // ----------------
 // Python interface
@@ -52,5 +54,12 @@ PYBIND11_MODULE(wrapper, m)
         .def("setDenseTensor", py::overload_cast<const smurff::DenseTensor &>(&smurff::DataConfig::setData))
         .def("setSparseTensor", py::overload_cast<const smurff::SparseTensor &, bool>(&smurff::DataConfig::setData))
         .def("setNoiseConfig", &smurff::DataConfig::setNoiseConfig)
+        ;
+
+    py::class_<smurff::PythonSession>(m, "PythonSession")
+        .def(py::init<>())
+        .def("fromConfig", &smurff::TrainSession::fromConfig)
+        .def("init", &smurff::TrainSession::init)
+        .def("step", &smurff::PythonSession::step)
         ;
 }

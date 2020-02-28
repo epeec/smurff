@@ -14,14 +14,14 @@ private:
    static bool keepRunning;
    static bool keepRunningVerbose;
 
-protected:
+public:
    PythonSession()
    {
       name = "PythonSession";
       keepRunning = true;
    }
 
-protected:
+public:
    bool interrupted() override
    {
        return !keepRunning;

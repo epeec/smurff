@@ -1,5 +1,5 @@
 from .helper import PyNoiseConfig, PyStatusItem, SparseTensor
-from .wrapper import Config
+from .wrapper import Config, PythonSession
 
 class TrainSession:
     """Class for doing a training run in smurff
@@ -209,8 +209,9 @@ class TrainSession:
 
         """
 
-        self.ptr = SessionFactory.create_py_session_from_config(self.config)
-        self.ptr_get().init()
+        self.pySession = PythonSession()
+        self.pySession.fromConfig(self.config)
+        self.pySession.init()
         logging.info(self)
         return self.getStatus()
 

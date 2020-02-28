@@ -61,6 +61,7 @@ public:
 
 public:
    const Result &getResult() const override;
+
 public:
    void fromRootPath(std::string rootPath);
    void fromConfig(const Config& cfg);
@@ -71,11 +72,7 @@ protected:
    // execution of the sampler
 public:
    void run() override;
-
-protected:
    void init() override;
-
-public:
    bool step() override;
 
 public:
