@@ -18,7 +18,7 @@ static MatrixXui32 toMatrixNew(const DenseTensor &tc)
    std::uint64_t c = 0;
    auto rev_dims = std::vector<std::uint64_t>(tc.getDims().rbegin(), tc.getDims().rend());
    for (auto it = PVecIterator(rev_dims); !it.done(); ++it, c++)
-      for (int d = 0; d < tc.getNModes(); ++d)
+      for (unsigned d = 0; d < tc.getNModes(); ++d)
             idx(c, d) = (*it).at(nmodes-1-d);
 
    return idx;

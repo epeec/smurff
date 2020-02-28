@@ -20,7 +20,7 @@ namespace smurff
 
 
    public:
-      int getNModes() const { return m_dims.size(); }
+      size_t getNModes() const { return m_dims.size(); }
       const std::vector<std::uint64_t> & getDims() const { return m_dims; };
       const std::uint64_t & getNRow() const { return m_dims.at(0); };
       const std::uint64_t & getNCol() const { return m_dims.at(1); };

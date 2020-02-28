@@ -224,7 +224,7 @@ public:
       return m_data.back();
    }
 
-   int getNModes() const
+   unsigned getNModes() const
    {
       THROWERROR_ASSERT(!m_prior_types.empty());
       return m_prior_types.size();
