@@ -3,6 +3,7 @@
 #include <pybind11/numpy.h>
 
 #include "SmurffCpp/Configs/Config.h"
+#include "SmurffCpp/Configs/NoiseConfig.h"
 
 // ----------------
 // Python interface
@@ -33,4 +34,14 @@ PYBIND11_MODULE(wrapper, m)
         .def("setNumThreads", &smurff::Config::setNumThreads)
         .def("setThreshold", &smurff::Config::setThreshold)
         ;
+
+    py::class_<smurff::NoiseConfig>(m, "NoiseConfig")
+        .def(py::init<>())
+        .def("setNoiseType", py::overload_cast<std::string>(&smurff::NoiseConfig::setNoiseType))
+        .def("setPrecision", &smurff::NoiseConfig::setPrecision)
+        .def("setSnInit", &smurff::NoiseConfig::setSnInit)
+        .def("setSnMax", &smurff::NoiseConfig::setSnMax)
+        .def("setThreshold", &smurff::NoiseConfig::setThreshold)
+        ;
+
 }

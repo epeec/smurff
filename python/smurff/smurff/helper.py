@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import math
 
+from .wrapper import NoiseConfig
+
 class SparseTensor:
     """Wrapper around a pandas DataFrame to represent a sparse tensor
 
@@ -49,6 +51,18 @@ class PyNoiseConfig:
         self.sn_init = sn_init
         self.sn_max = sn_max
         self.threshold = threshold
+
+    def toNoiseConfig(self):
+        """
+            Converts a PyNoiseConfig object to a C++ NoiseConfig object
+        """
+        n = NoiseConfig()
+        n.setNoiseType(self.noise_type.encode('UTF-8'))
+        n.setPrecision(self.precision)
+        n.setSnInit(self.sn_init)
+        n.setSnMax(self.sn_max)
+        n.setThreshold(self.threshold)
+        return n
 
 class FixedNoise(PyNoiseConfig):
     def __init__(self, precision = 5.0): 

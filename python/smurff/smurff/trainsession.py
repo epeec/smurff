@@ -74,20 +74,19 @@ class TrainSession:
         ):
 
         self.config = Config()
-        self.config.setVerbose(verbose)
 
-        if priors:         self.config.setPriorTypes(priors)
-        if num_latent:     self.config.setNumLatent(num_latent)
-        if num_threads:    self.config.setNumThreads(num_threads)
-        if burnin:         self.config.setBurnin(burnin)
-        if nsamples:       self.config.setNSamples(nsamples)
-        if seed:           self.config.setRandomSeed(seed)
-        if threshold is not None:
-                           self.config.setThreshold(threshold)
-        if save_prefix:    self.config.setSavePrefix(save_prefix.encode('UTF-8'))
-        if save_extension: self.config.setSaveExtension(save_extension.encode('UTF-8'))
-        if save_freq:      self.config.setSaveFreq(save_freq)
-        if checkpoint_freq:self.config.setCheckpointFreq(checkpoint_freq)
+        if priors is not None:         self.config.setPriorTypes(priors)
+        if num_latent is not None:     self.config.setNumLatent(num_latent)
+        if num_threads is not None:    self.config.setNumThreads(num_threads)
+        if burnin is not None:         self.config.setBurnin(burnin)
+        if nsamples is not None:       self.config.setNSamples(nsamples)
+        if seed is not None:           self.config.setRandomSeed(seed)
+        if threshold is not None:      self.config.setThreshold(threshold)
+        if verbose is not None:        self.config.setVerbose(verbose)
+        if save_prefix is not None:    self.config.setSavePrefix(save_prefix.encode('UTF-8'))
+        if save_extension is not None: self.config.setSaveExtension(save_extension.encode('UTF-8'))
+        if save_freq is not None:      self.config.setSaveFreq(save_freq)
+        if checkpoint_freq is not None:self.config.setCheckpointFreq(checkpoint_freq)
 
     def addTrainAndTest(self, Y, Ytest = None, noise = PyNoiseConfig(), is_scarce = True):
         """Adds a train and optionally a test matrix as input data to this TrainSession
@@ -110,7 +109,7 @@ class TrainSession:
             When `Y` is dense, this parameter is ignored.
 
         """
-        self.noise_config = prepare_noise_config(noise)
+        self.noise_config = noise.toNoiseConfig()
         train, test = prepare_train_and_test(Y, Ytest, self.noise_config, is_scarce)
         self.config.setTrain(train)
 
