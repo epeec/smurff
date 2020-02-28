@@ -98,17 +98,20 @@ void OutputFile::removeOldCheckpoints()
    }
 }
 
-boost::optional<SaveState> OutputFile::openLastCheckpoint() const
+bool OutputFile::hasCheckpoint() const
 {
    std::string lastCheckpointItem;
    m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
-   if (lastCheckpointItem != NONE_VALUE)
-   {
-      h5::Group group = m_h5.getGroup(lastCheckpointItem);
-      return SaveState(m_h5, group);
-   }
+   return (lastCheckpointItem != NONE_VALUE);
+}
 
-   return boost::optional<SaveState>();
+SaveState OutputFile::openCheckpoint() const
+{
+   THROWERROR_ASSERT(hasCheckpoint());
+   std::string lastCheckpointItem;
+   m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
+   h5::Group group = m_h5.getGroup(lastCheckpointItem);
+   return SaveState(m_h5, group);
 }
 
 std::vector<SaveState> OutputFile::openSampleSteps() const

@@ -3,8 +3,6 @@
 #include <string>
 #include <unordered_map>
 
-#include <boost/optional.hpp>
-
 #include <highfive/H5File.hpp>
 
 namespace h5 = HighFive;
@@ -15,7 +13,6 @@ namespace h5 = HighFive;
 namespace smurff {
 
 struct StatusItem;
-
 
 extern const std::string LAST_CHECKPOINT_TAG;
 
@@ -46,7 +43,8 @@ public:
    void removeOldCheckpoints();
 
 public:
-   boost::optional<SaveState> openLastCheckpoint() const;
+   bool hasCheckpoint() const;
+   SaveState openCheckpoint() const;
    SaveState openSampleStep(int isample) const;
    std::vector<SaveState> openSampleSteps() const;
 };

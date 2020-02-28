@@ -272,13 +272,7 @@ void TrainSession::saveInternal(int iteration, bool checkpoint)
 
 bool TrainSession::restore(int &iteration)
 {
-    boost::optional<SaveState> optionalStepFile;
-    if (m_rootFile)
-    {
-        optionalStepFile = m_rootFile->openLastCheckpoint();
-    }
-
-    if (!optionalStepFile)
+    if (!m_rootFile || !m_rootFile->hasCheckpoint())
     {
         //if there is nothing to restore - start from initial iteration
         iteration = -1;
@@ -290,7 +284,7 @@ bool TrainSession::restore(int &iteration)
     }
     else
     {
-        SaveState &saveState = *optionalStepFile;
+        SaveState saveState = m_rootFile->openCheckpoint();
         if (m_config.getVerbose())
         {
             std::cout << "-- Restoring model, predictions,... from '" << m_rootFile->getFullPath() << "'." << std::endl;
