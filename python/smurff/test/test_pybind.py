@@ -5,7 +5,7 @@ print(c)
 
 c.setPriorTypes([ "normal", "normal" ])
 
-session = smurff.TrainSession()
+trainSession = smurff.TrainSession()
 
-session.run()
+trainSession.run()
 

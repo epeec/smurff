@@ -32,9 +32,9 @@ class TestPP(unittest.TestCase):
     def test_bmf_pp(self):
         Y = scipy.sparse.rand(30, 20, 0.2)
         Y, Ytest = smurff.make_train_test(Y, 0.5)
-        session = smurff.BPMFSession(Y, Ytest=Ytest, num_latent=4, verbose=verbose, burnin=5, nsamples=20, save_freq=1)
-        session.run()
-        predict_session = session.makePredictSession()
+        trainSession = smurff.BPMFSession(Y, Ytest=Ytest, num_latent=4, verbose=verbose, burnin=5, nsamples=20, save_freq=1)
+        trainSession.run()
+        predict_session = trainSession.makePredictSession()
 
         sess_rmse = float(predict_session.statsYTest()["rmse_avg"])
         Ypred, Yvar = predict_session.predictionsYTest()
@@ -50,10 +50,10 @@ class TestPP(unittest.TestCase):
             np.testing.assert_almost_equal(calc_Lambda, sess_Lambda)
 
             # print("calculated mu: ", calc_mu[0:2,0])
-            # print("   session mu: ", sess_mu[0:2,0])
+            # print("   trainSession mu: ", sess_mu[0:2,0])
 
             # print("calculated Lambda ", calc_Lambda.shape, ": ", calc_Lambda[0:2,0:2,1] )
-            # print("   session Lambda ", sess_Lambda.shape, ": ", sess_Lambda[0:2,0:2,1] )
+            # print("   trainSession Lambda ", sess_Lambda.shape, ": ", sess_Lambda[0:2,0:2,1] )
 
 if __name__ == '__main__':
     unittest.main()

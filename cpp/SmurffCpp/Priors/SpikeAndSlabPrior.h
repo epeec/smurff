@@ -30,7 +30,7 @@ public:
    const double prior_beta_0 = 1.; //for alpha
 
 public:
-   SpikeAndSlabPrior(Session &session, uint32_t mode);
+   SpikeAndSlabPrior(TrainSession &trainSession, uint32_t mode);
    virtual ~SpikeAndSlabPrior() {}
    void init() override;
 

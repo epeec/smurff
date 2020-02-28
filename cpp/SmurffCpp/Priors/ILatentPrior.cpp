@@ -3,8 +3,8 @@
 
 namespace smurff {
 
-ILatentPrior::ILatentPrior(Session &session, uint32_t mode, std::string name)
-   : m_session(session), m_mode(mode), m_name(name)
+ILatentPrior::ILatentPrior(TrainSession &trainSession, uint32_t mode, std::string name)
+   : m_session(trainSession), m_mode(mode), m_name(name)
 {
 
 }

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <SmurffCpp/Sessions/Session.h>
+#include <SmurffCpp/Sessions/TrainSession.h>
 
 namespace smurff {
 
 class SessionFactory;
 
-class PythonSession : public Session
+class PythonSession : public TrainSession
 {
    friend class SessionFactory;
 

@@ -16,17 +16,17 @@ class TestPredictSession(unittest.TestCase):
         nmodes = len(self.Ytrain.shape)
         priors = ['normal'] * nmodes
 
-        session = smurff.TrainSession(priors = priors, num_latent=4,
+        trainSession = smurff.TrainSession(priors = priors, num_latent=4,
                 burnin=10, nsamples=15, verbose=verbose,
                 save_freq = 1)
 
-        session.addTrainAndTest(self.Ytrain, self.Ytest)
+        trainSession.addTrainAndTest(self.Ytrain, self.Ytest)
 
-        session.init()
-        while session.step():
+        trainSession.init()
+        while trainSession.step():
             pass
 
-        return session
+        return trainSession
 
     def test_simple(self):
         train_session = self.run_train_session()

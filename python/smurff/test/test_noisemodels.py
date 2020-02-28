@@ -21,26 +21,26 @@ class TestNoiseModels():
         if si is not None:
             priors[0] = 'macau'
 
-        session = smurff.TrainSession(priors = priors, num_latent=10, burnin=10, nsamples=15, verbose=verbose)
+        trainSession = smurff.TrainSession(priors = priors, num_latent=10, burnin=10, nsamples=15, verbose=verbose)
 
         if si is None:
-            session.addTrainAndTest(Ytrain, Ytest, noise_model)
+            trainSession.addTrainAndTest(Ytrain, Ytest, noise_model)
         elif (isinstance(noise_model, smurff.ProbitNoise) or 
              isinstance(noise_model, smurff.AdaptiveNoise)) and \
              not isinstance(noise_model, smurff.SampledNoise) :
-            session.addSideInfo(0, si, direct=True)
-            session.addTrainAndTest(Ytrain, Ytest, noise_model)
+            trainSession.addSideInfo(0, si, direct=True)
+            trainSession.addTrainAndTest(Ytrain, Ytest, noise_model)
         else:
-            session.addSideInfo(0, si, noise_model, direct=True)
-            session.addTrainAndTest(Ytrain, Ytest)
+            trainSession.addSideInfo(0, si, noise_model, direct=True)
+            trainSession.addTrainAndTest(Ytrain, Ytest)
 
-        session.init()
-        while session.step():
+        trainSession.init()
+        while trainSession.step():
             pass
 
-        predictions = session.getTestPredictions()
+        predictions = trainSession.getTestPredictions()
         self.assertEqual(Ytest.nnz, len(predictions))
-        self.assertLess(session.getRmseAvg(), 10.)
+        self.assertLess(trainSession.getRmseAvg(), 10.)
         return predictions
 
     # 5 different noise configs

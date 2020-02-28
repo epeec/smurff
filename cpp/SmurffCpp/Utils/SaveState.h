@@ -26,10 +26,10 @@ namespace smurff {
       bool m_final;
 
    public:
-      //this constructor should be used to create a step file on a first run of session
+      //this constructor should be used to create a step file on a first run of trainSession
       SaveState(h5::File file, std::int32_t isample, bool checkpoint);
 
-      //this constructor should be used to  open existing step file when previous session is continued
+      //this constructor should be used to  open existing step file when previous trainSession is continued
       SaveState(h5::File file, h5::Group group);
 
       ~SaveState();

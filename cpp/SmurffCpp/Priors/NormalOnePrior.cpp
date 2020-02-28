@@ -2,8 +2,8 @@
 
 namespace smurff {
 
-NormalOnePrior::NormalOnePrior(Session &session, uint32_t mode, std::string name)
-   : ILatentPrior(session, mode, name)
+NormalOnePrior::NormalOnePrior(TrainSession &trainSession, uint32_t mode, std::string name)
+   : ILatentPrior(trainSession, mode, name)
 {
 }
 

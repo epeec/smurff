@@ -27,7 +27,7 @@ public:
   int df;
 
 public:
-   NormalOnePrior(Session &session, uint32_t mode, std::string name = "NormalOnePrior");
+   NormalOnePrior(TrainSession &trainSession, uint32_t mode, std::string name = "NormalOnePrior");
    virtual ~NormalOnePrior() {}
    void init() override;
 

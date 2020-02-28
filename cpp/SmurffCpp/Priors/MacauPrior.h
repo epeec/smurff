@@ -43,7 +43,7 @@ public:
    bool throw_on_cholesky_error;
 
 public:
-   MacauPrior(Session &session, uint32_t mode);
+   MacauPrior(TrainSession &trainSession, uint32_t mode);
 
    virtual ~MacauPrior();
 

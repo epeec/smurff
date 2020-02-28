@@ -1,4 +1,4 @@
-#include "Session.h"
+#include "TrainSession.h"
 
 
 #include <fstream>
@@ -19,12 +19,12 @@
 #include <SmurffCpp/StatusItem.h>
 
 namespace smurff {
-Session::Session()
+TrainSession::TrainSession()
 {
-    name = "Session";
+    name = "TrainSession";
 }
 
-void Session::fromRootPath(std::string rootPath)
+void TrainSession::fromRootPath(std::string rootPath)
 {
     // open root file
     m_rootFile = std::make_shared<OutputFile>(rootPath);
@@ -38,7 +38,7 @@ void Session::fromRootPath(std::string rootPath)
     setFromBase();
 }
 
-void Session::fromConfig(const Config &cfg)
+void TrainSession::fromConfig(const Config &cfg)
 {
     cfg.validate();
 
@@ -64,7 +64,7 @@ void Session::fromConfig(const Config &cfg)
     setFromBase();
 }
 
-void Session::setFromBase()
+void TrainSession::setFromBase()
 {
     // initialize pred
     if (m_config.getTest().hasData())
@@ -84,13 +84,13 @@ void Session::setFromBase()
         this->addPrior(priorFactory->create_prior(*this, i));
 }
 
-void Session::addPrior(std::shared_ptr<ILatentPrior> prior)
+void TrainSession::addPrior(std::shared_ptr<ILatentPrior> prior)
 {
    prior->setMode(m_priors.size());
    m_priors.push_back(prior);
 }
 
-void Session::init()
+void TrainSession::init()
 {
     //init omp
     threads::init(m_config.getVerbose(), m_config.getNumThreads());
@@ -118,10 +118,10 @@ void Session::init()
     if (m_config.getVerbose())
         info(std::cout, "");
 
-    //restore session (model, priors)
+    //restore trainSession (model, priors)
     bool resume = restore(m_iter);
 
-    //print session status to console
+    //print trainSession status to console
     if (m_config.getVerbose())
     {
         printStatus(std::cout, resume);
@@ -130,17 +130,17 @@ void Session::init()
     is_init = true;
 }
 
-void Session::run()
+void TrainSession::run()
 {
     init();
     while (step())
         ;
 }
 
-bool Session::step()
+bool TrainSession::step()
 {
     COUNTER("step");
-    THROWERROR_ASSERT_MSG(is_init, "Session::init() needs to be called before ::step()")
+    THROWERROR_ASSERT_MSG(is_init, "TrainSession::init() needs to be called before ::step()")
 
     // go to the next iteration
     m_iter++;
@@ -175,7 +175,7 @@ bool Session::step()
     return isStep;
 }
 
-std::ostream &Session::info(std::ostream &os, std::string indent) const
+std::ostream &TrainSession::info(std::ostream &os, std::string indent) const
 {
     os << indent << name << " {\n";
     os << indent << "  Data: {" << std::endl;
@@ -198,7 +198,7 @@ std::ostream &Session::info(std::ostream &os, std::string indent) const
     return os;
 }
 
-void Session::save()
+void TrainSession::save()
 {
     //do not save if 'never save' mode is selected
     if (!m_config.getSaveFreq() &&
@@ -249,7 +249,7 @@ void Session::save()
     }
 }
 
-void Session::saveInternal(int iteration, bool checkpoint)
+void TrainSession::saveInternal(int iteration, bool checkpoint)
 {
     SaveState saveState = m_rootFile->createStep(iteration, checkpoint);
 
@@ -270,7 +270,7 @@ void Session::saveInternal(int iteration, bool checkpoint)
     }
 }
 
-bool Session::restore(int &iteration)
+bool TrainSession::restore(int &iteration)
 {
     boost::optional<SaveState> optionalStepFile;
     if (m_rootFile)
@@ -322,12 +322,12 @@ bool Session::restore(int &iteration)
     }
 }
 
-const Result &Session::getResult() const
+const Result &TrainSession::getResult() const
 {
    return m_pred;
 }
 
-StatusItem Session::getStatus() const
+StatusItem TrainSession::getStatus() const
 {
     StatusItem ret;
 
@@ -372,7 +372,7 @@ StatusItem Session::getStatus() const
     return ret;
 }
 
-void Session::printStatus(std::ostream &output, bool resume)
+void TrainSession::printStatus(std::ostream &output, bool resume)
 {
     if (!m_config.getVerbose())
         return;
@@ -434,7 +434,7 @@ std::string StatusItem::asCsvString() const
     return ret;
 }
 
-void Session::initRng()
+void TrainSession::initRng()
 {
     //init random generator
     if (m_config.getRandomSeedSet())
@@ -443,7 +443,7 @@ void Session::initRng()
         init_bmrng();
 }
 
-std::shared_ptr<IPriorFactory> Session::create_prior_factory() const
+std::shared_ptr<IPriorFactory> TrainSession::create_prior_factory() const
 {
     return std::make_shared<PriorFactory>();
 }

@@ -32,7 +32,7 @@ public:
    bool enable_beta_precision_sampling;
 
 public:
-   MacauOnePrior(Session &session, uint32_t mode);
+   MacauOnePrior(TrainSession &trainSession, uint32_t mode);
 
    void init() override;
 

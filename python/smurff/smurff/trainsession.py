@@ -6,9 +6,9 @@ class TrainSession:
 
     A simple use case could be:
 
-    >>> session = smurff.TrainSession(burnin = 5, nsamples = 5)
-    >>> session.addTrainAndTest(Ydense)
-    >>> session.run()
+    >>> trainSession = smurff.TrainSession(burnin = 5, nsamples = 5)
+    >>> trainSession.addTrainAndTest(Ydense)
+    >>> trainSession.run()
 
         
     Attributes
@@ -49,7 +49,7 @@ class TrainSession:
         - .ddm: save in binary file format
 
     checkpoint_freq: int
-        Save the state of the session every N seconds.
+        Save the state of the trainSession every N seconds.
 
     csv_status: filepath
         Stores limited set of parameters, indicative for training progress in this file. See :class:`StatusItem`
@@ -206,7 +206,7 @@ class TrainSession:
 
         Returns
         -------
-        :class:`StatusItem` of the session.
+        :class:`StatusItem` of the trainSession.
 
         """
 
@@ -224,7 +224,7 @@ class TrainSession:
 
         Returns
         -------
-        - When a step was executed: :class:`StatusItem` of the session.
+        - When a step was executed: :class:`StatusItem` of the trainSession.
         - After the last iteration, when no step was executed: `None`.
 
         """
@@ -261,11 +261,11 @@ class TrainSession:
         try:
             return self.ptr_get().infoAsString().decode('UTF-8')
         except ValueError:
-            return "Uninitialized SMURFF Train Session (call .init())"
+            return "Uninitialized SMURFF Train TrainSession (call .init())"
 
 
     def getStatus(self):
-        """ Returns :class:`StatusItem` with current state of the session
+        """ Returns :class:`StatusItem` with current state of the trainSession
 
         """
         if self.ptr_get().getStatus():

@@ -14,8 +14,8 @@ namespace smurff {
 
 //  base class NormalPrior
 
-NormalPrior::NormalPrior(Session &session, uint32_t mode, std::string name)
-   : ILatentPrior(session, mode, name)
+NormalPrior::NormalPrior(TrainSession &trainSession, uint32_t mode, std::string name)
+   : ILatentPrior(trainSession, mode, name)
 {}
 
 void NormalPrior::init()

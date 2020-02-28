@@ -2,8 +2,8 @@
 
 namespace smurff {
 
-MacauOnePrior::MacauOnePrior(Session &session, uint32_t mode)
-   : NormalOnePrior(session, mode, "MacauOnePrior")
+MacauOnePrior::MacauOnePrior(TrainSession &trainSession, uint32_t mode)
+   : NormalOnePrior(trainSession, mode, "MacauOnePrior")
 {
    bp0 = SideInfoConfig::BETA_PRECISION_DEFAULT_VALUE;
    enable_beta_precision_sampling = Config::ENABLE_BETA_PRECISION_SAMPLING_DEFAULT_VALUE;

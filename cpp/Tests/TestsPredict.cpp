@@ -54,13 +54,13 @@ TEST_CASE("PredictSession/BPMF")
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
   prepareResultDir(config, Catch::getResultCapture().getCurrentTestName() + "_train");
 
-  std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-  session->run();
+  std::shared_ptr<ISession> trainSession = SessionFactory::create_session(config);
+  trainSession->run();
 
-  // std::cout << "Prediction from Session RMSE: " << session->getRmseAvg() <<
+  // std::cout << "Prediction from TrainSession RMSE: " << trainSession->getRmseAvg() <<
   // std::endl;
 
-  std::string root_fname = session->getOutputFile()->getFullPath();
+  std::string root_fname = trainSession->getOutputFile()->getFullPath();
   auto rf = std::make_shared<OutputFile>(root_fname);
 
   {
@@ -72,7 +72,7 @@ TEST_CASE("PredictSession/BPMF")
 
     // std::cout << "Prediction from OutputFile RMSE: " << result->rmse_avg <<
     // std::endl;
-    REQUIRE(session->getRmseAvg() == Approx(result->rmse_avg).epsilon(APPROX_EPSILON));
+    REQUIRE(trainSession->getRmseAvg() == Approx(result->rmse_avg).epsilon(APPROX_EPSILON));
   }
 
   {
@@ -82,7 +82,7 @@ TEST_CASE("PredictSession/BPMF")
 
     // std::cout << "Prediction from OutputFile+Config RMSE: " << result->rmse_avg
     // << std::endl;
-    REQUIRE(session->getRmseAvg() == Approx(result.rmse_avg).epsilon(APPROX_EPSILON));
+    REQUIRE(trainSession->getRmseAvg() == Approx(result.rmse_avg).epsilon(APPROX_EPSILON));
   }
 }
 
@@ -95,10 +95,10 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
   config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
   prepareResultDir(config, Catch::getResultCapture().getCurrentTestName());
 
-  std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-  session->run();
+  std::shared_ptr<ISession> trainSession = SessionFactory::create_session(config);
+  trainSession->run();
 
-  PredictSession predict_session(session->getOutputFile());
+  PredictSession predict_session(trainSession->getOutputFile());
 
   const auto &sideInfoMatrix = rowSideInfoDenseMatrixConfig.getDenseMatrixData();
 
@@ -164,13 +164,13 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   config.getTrain().setNoiseConfig(trainNoise);
   prepareResultDir(config, Catch::getResultCapture().getCurrentTestName());
 
-  std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-  session->run();
+  std::shared_ptr<ISession> trainSession = SessionFactory::create_session(config);
+  trainSession->run();
 
-  PredictSession predict_session_in(session->getOutputFile());
+  PredictSession predict_session_in(trainSession->getOutputFile());
   auto in_matrix_predictions = predict_session_in.predict(config.getTest())->m_predictions;
 
-  PredictSession predict_session_out(session->getOutputFile());
+  PredictSession predict_session_out(trainSession->getOutputFile());
   const auto &sideInfoMatrix = rowSideInfoConfig.getSparseMatrixData();
   int d = config.getTrain().getDims()[0];
   for (int r = 0; r < d; r++) {

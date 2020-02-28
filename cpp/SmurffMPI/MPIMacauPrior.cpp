@@ -4,8 +4,8 @@
 
 namespace smurff {
 
-MPIMacauPrior::MPIMacauPrior(Session &session, int mode)
-   : MacauPrior(session, mode)
+MPIMacauPrior::MPIMacauPrior(TrainSession &trainSession, int mode)
+   : MacauPrior(trainSession, mode)
 {
    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);

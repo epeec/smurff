@@ -76,7 +76,7 @@ po::options_description get_desc()
 
     po::options_description save_desc("Storing models and predictions");
     save_desc.add_options()
-	(ROOT_NAME, po::value<std::string>(), "restore session from root .ini file")
+	(ROOT_NAME, po::value<std::string>(), "restore trainSession from root .ini file")
 	(SAVE_PREFIX_NAME, po::value<std::string>()->default_value(Config::SAVE_PREFIX_DEFAULT_VALUE), "prefix for result files")
 	(SAVE_EXTENSION_NAME, po::value<std::string>()->default_value(Config::SAVE_EXTENSION_DEFAULT_VALUE), "extension for result files (.csv or .ddm)")
 	(SAVE_FREQ_NAME, po::value<int>()->default_value(Config::SAVE_FREQ_DEFAULT_VALUE), "save every n iterations (0 == never, -1 == final model)")
@@ -140,14 +140,14 @@ fill_config(const po::variables_map &vm)
     ConfigFiller filler = {vm, config};
 
 
-    //restore session from root file (command line arguments are already stored in file)
+    //restore trainSession from root file (command line arguments are already stored in file)
     if (vm.count(ROOT_NAME))
     {
         //restore config from root file
         std::string root_name = vm[ROOT_NAME].as<std::string>();
         config.setRootName(root_name);
 
-        //  skip if predict-session
+        //  skip if predict-trainSession
         if (!vm.count(PREDICT_NAME) && !vm.count(ROW_FEAT_NAME) && !vm.count(COL_FEAT_NAME))
             OutputFile(root_name).restoreConfig(config);
     }
@@ -269,7 +269,7 @@ Config parse_options(int argc, char *argv[])
 
     Config config;
 
-    //restore session from root file (command line arguments are already stored in file)
+    //restore trainSession from root file (command line arguments are already stored in file)
     if (std::string(argv[1]) == "--" + std::string(ROOT_NAME))
     {
         std::string root_name(argv[2]);
@@ -277,7 +277,7 @@ Config parse_options(int argc, char *argv[])
         config.setRootName(root_name);
      }
 
-    //create new session from config (passing command line arguments)
+    //create new trainSession from config (passing command line arguments)
     else if (std::string(argv[1]) == "--" + std::string(INI_NAME))
     {
         std::string ini_file(argv[2]);
@@ -294,20 +294,20 @@ Config parse_options(int argc, char *argv[])
 }
 #endif
 
-//create cmd session
+//create cmd trainSession
 //parses args with setFromArgs, then internally calls setFromConfig (to validate, save, set config)
 std::shared_ptr<ISession> create_cmd_session(int argc, char **argv)
 {
-    std::shared_ptr<ISession> session;
+    std::shared_ptr<ISession> trainSession;
 
     auto config = parse_options(argc, argv);
     if (config.isActionTrain())
-        session = SessionFactory::create_session(config);
+        trainSession = SessionFactory::create_session(config);
     else if (config.isActionPredict())
-        session = std::make_shared<PredictSession>(config);
+        trainSession = std::make_shared<PredictSession>(config);
     else
         exit(0);
 
-    return session;
+    return trainSession;
 }
 } // end namespace smurff

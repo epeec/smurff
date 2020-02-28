@@ -47,20 +47,20 @@ class TestExCAPE_py(unittest.TestCase):
             if side_info[d] != None:
                 args["priors"][d] = 'macau'
 
-        session = smurff.TrainSession(**args)
+        trainSession = smurff.TrainSession(**args)
         Ytrain = TestExCAPE_py.data["train.sdm"]
         Ytest = TestExCAPE_py.data["test.sdm"]
-        session.addTrainAndTest(Ytrain, Ytest, self.get_train_noise())
+        trainSession.addTrainAndTest(Ytrain, Ytest, self.get_train_noise())
 
         for d in range(2):
             if side_info[d] != None:
-                session.addSideInfo(d, TestExCAPE_py.data[side_info[d]], self.get_side_noise(), direct = direct)
+                trainSession.addSideInfo(d, TestExCAPE_py.data[side_info[d]], self.get_side_noise(), direct = direct)
 
-        session.init()
+        trainSession.init()
 
         start = time()
-        while session.step(): pass
-        rmse = session.getRmseAvg()
+        while trainSession.step(): pass
+        rmse = trainSession.getRmseAvg()
         stop = time()
         elapsed = stop - start
 

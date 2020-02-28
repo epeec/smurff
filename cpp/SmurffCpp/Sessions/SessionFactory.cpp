@@ -7,28 +7,28 @@
 
 namespace smurff {
 
-//create python session
+//create python trainSession
 //parses args outside of c++ code (in python code)
 //this is why config is passed directly from python to setFromConfig (to validate, save, set config)
 std::shared_ptr<ISession> SessionFactory::create_py_session(Config& cfg)
 {
-   std::shared_ptr<PythonSession> session(new PythonSession());
-   session->fromConfig(cfg);
-   return session;
+   std::shared_ptr<PythonSession> trainSession(new PythonSession());
+   trainSession->fromConfig(cfg);
+   return trainSession;
 }
 
 std::shared_ptr<ISession> SessionFactory::create_py_session(const std::string& rootPath)
 {
-   std::shared_ptr<PythonSession> session(new PythonSession());
-   session->fromRootPath(rootPath);
-   return session;
+   std::shared_ptr<PythonSession> trainSession(new PythonSession());
+   trainSession->fromRootPath(rootPath);
+   return trainSession;
 }
 
 //for testing only
 std::shared_ptr<ISession> SessionFactory::create_session(Config& cfg)
 {
-   auto session = std::shared_ptr<Session>(new Session());
-   session->fromConfig(cfg);
-   return session;
+   auto trainSession = std::shared_ptr<TrainSession>(new TrainSession());
+   trainSession->fromConfig(cfg);
+   return trainSession;
 }
 } // end namespace smurff

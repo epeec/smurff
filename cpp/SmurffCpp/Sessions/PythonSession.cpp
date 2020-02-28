@@ -28,7 +28,7 @@ bool PythonSession::step()
 #endif
 
     // run step
-    bool not_done = Session::step();
+    bool not_done = TrainSession::step();
 
 #ifdef _WINDOWS
     // can't do this on windows

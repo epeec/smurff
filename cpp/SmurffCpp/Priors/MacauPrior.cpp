@@ -8,8 +8,8 @@
 
 namespace smurff {
 
-MacauPrior::MacauPrior(Session &session, uint32_t mode)
-    : NormalPrior(session, mode, "MacauPrior")
+MacauPrior::MacauPrior(TrainSession &trainSession, uint32_t mode)
+    : NormalPrior(trainSession, mode, "MacauPrior")
 {
     beta_precision = SideInfoConfig::BETA_PRECISION_DEFAULT_VALUE;
     tol = SideInfoConfig::TOL_DEFAULT_VALUE;

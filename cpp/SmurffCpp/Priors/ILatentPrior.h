@@ -5,7 +5,7 @@
 #include <SmurffCpp/Types.h>
 #include <SmurffCpp/Types.h>
 
-#include <SmurffCpp/Sessions/Session.h>
+#include <SmurffCpp/Sessions/TrainSession.h>
 #include <SmurffCpp/Noises/INoiseModel.h>
 #include <SmurffCpp/DataMatrices/Data.h>
 #include <SmurffCpp/Utils/Distribution.h>
@@ -23,7 +23,7 @@ class SaveState;
 class ILatentPrior
 {
 public:
-   Session &m_session;
+   TrainSession &m_session;
    std::uint32_t m_mode;
    std::string m_name = "xxxx";
 
@@ -31,7 +31,7 @@ public:
    thread_vector<Matrix> MMs;
 
 public:
-   ILatentPrior(Session &session, uint32_t mode, std::string name = "xxxx");
+   ILatentPrior(TrainSession &trainSession, uint32_t mode, std::string name = "xxxx");
    virtual ~ILatentPrior() {}
    virtual void init();
 

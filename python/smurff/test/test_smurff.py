@@ -96,17 +96,17 @@ class TestSmurff(unittest.TestCase):
 
         threshold = 0.5  # since we sample from mu(0,1)
         
-        session = smurff.TrainSession(priors=['macau', 'normal'],
+        trainSession = smurff.TrainSession(priors=['macau', 'normal'],
                                 num_latent=4,
                                 threshold=threshold,
                                 burnin=20,
                                 nsamples=20,
                                 verbose=False)
 
-        session.addTrainAndTest(Ytrain, Ytest, smurff.ProbitNoise(threshold))
-        session.addSideInfo(0, A, direct=True)
+        trainSession.addTrainAndTest(Ytrain, Ytest, smurff.ProbitNoise(threshold))
+        trainSession.addSideInfo(0, A, direct=True)
 
-        predictions = session.run()
+        predictions = trainSession.run()
 
         rmse = smurff.calc_rmse(predictions)
         self.assertTrue(rmse > 0.55,

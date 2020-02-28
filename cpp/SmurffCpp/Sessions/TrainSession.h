@@ -16,9 +16,9 @@ namespace smurff {
 
 class SessionFactory;
 
-class Session : public ISession
+class TrainSession : public ISession
 {
-   //only session factory should call setFromConfig
+   //only trainSession factory should call setFromConfig
    friend class SessionFactory;
 
 protected:
@@ -54,7 +54,7 @@ public:
    bool finalSample() const { return m_iter == (m_config.getNSamples() + m_config.getBurnin()); }
 
 protected:
-   Session();
+   TrainSession();
 
 public:
    void addPrior(std::shared_ptr<ILatentPrior> prior);

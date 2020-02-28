@@ -4,8 +4,8 @@
 
 namespace smurff {
 
-SpikeAndSlabPrior::SpikeAndSlabPrior(Session &session, uint32_t mode)
-   : NormalOnePrior(session, mode, "SpikeAndSlabPrior")
+SpikeAndSlabPrior::SpikeAndSlabPrior(TrainSession &trainSession, uint32_t mode)
+   : NormalOnePrior(trainSession, mode, "SpikeAndSlabPrior")
 {
 
 }

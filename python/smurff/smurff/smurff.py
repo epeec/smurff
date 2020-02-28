@@ -15,7 +15,7 @@ class SmurffSession(TrainSession):
 
 
 class MacauSession(SmurffSession):
-    """A train session specialized for use with the Macau algorithm
+    """A train trainSession specialized for use with the Macau algorithm
    
     Attributes
     ----------
@@ -57,7 +57,7 @@ class MacauSession(SmurffSession):
 
 
 class BPMFSession(MacauSession):
-    """A train session specialized for use with the BPMF algorithm
+    """A train trainSession specialized for use with the BPMF algorithm
 
     Attributes
     ----------

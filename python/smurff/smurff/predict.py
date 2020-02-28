@@ -153,7 +153,7 @@ class Sample:
 
 
 class PredictSession:
-    """Session for making predictions using a model generated using a :class:`TrainSession`.
+    """TrainSession for making predictions using a model generated using a :class:`TrainSession`.
 
     A :class:`PredictSession` can be made directly from a :class:`TrainSession`
 

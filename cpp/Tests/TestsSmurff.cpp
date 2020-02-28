@@ -123,11 +123,11 @@ struct SmurffTest {
   }
 
   void runAndCheck(int nr) {
-    std::shared_ptr<ISession> session = SessionFactory::create_session(config);
-    session->run();
+    std::shared_ptr<ISession> trainSession = SessionFactory::create_session(config);
+    trainSession->run();
 
-    double actualRmseAvg = session->getRmseAvg();
-    const std::vector<ResultItem> &actualResults = session->getResultItems();
+    double actualRmseAvg = trainSession->getRmseAvg();
+    const std::vector<ResultItem> &actualResults = trainSession->getResultItems();
 
     PRINT_ACTUAL_RESULTS(nr)
     double &expectedRmseAvg = expectedResults[nr].rmseAvg;
