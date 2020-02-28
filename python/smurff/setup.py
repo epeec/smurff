@@ -47,11 +47,10 @@ class CMakeExtension(Extension):
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
-        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
-                      '-DPYTHON_EXECUTABLE=' + sys.executable]
-
         cfg = 'Debug' if self.debug else 'Release'
-        cmake_args = ['-DCMAKE_BUILD_TYPE=' + cfg] + ext.extra_cmake_args
+        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
+                      '-DPYTHON_EXECUTABLE=' + sys.executable,
+                      '-DCMAKE_BUILD_TYPE=' + cfg] + ext.extra_cmake_args
         build_args = ['--config', cfg] + ext.extra_build_args
 
         if not os.path.exists(self.build_temp):
