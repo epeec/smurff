@@ -110,7 +110,7 @@ void HDF5::write(const std::string& section, const std::string& tag, const Matri
       m_group.createGroup(section);
 
    h5::Group group = m_group.getGroup(section);
-   h5::DataSet dataset = group.createDataSet<Matrix::Scalar>(tag, h5::DataSpace::From(M));
+   h5::DataSet dataset = group.createDataSet<Matrix::Scalar>(tag, h5::DataSpace({static_cast<size_t>(M.rows()),  static_cast<size_t>(M.cols())}));
 
    Eigen::Ref<
         const Eigen::Matrix<
