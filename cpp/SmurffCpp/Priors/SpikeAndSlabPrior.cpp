@@ -20,19 +20,19 @@ void SpikeAndSlabPrior::init()
    
    THROWERROR_ASSERT(D > 0);
 
-   Zcol.init(Matrix::Zero(K,nview));
-   W2col.init(Matrix::Zero(K,nview));
+   Zcol.init(Matrix::Zero(nview,K));
+   W2col.init(Matrix::Zero(nview,K));
 
    //-- prior params
-   Zkeep = Array2D::Constant(K, nview, D);
+   Zkeep = Array2D::Constant(nview, K, D);
 
-   alpha = Array2D::Ones(K,nview);
-   log_alpha.resize(K, nview);
+   alpha = Array2D::Ones(nview,K);
+   log_alpha.resize(nview, K);
    log_alpha = alpha.log();
 
-   r = Array2D::Constant(K,nview,.5);
-   log_r.resize(K, nview);
-   log_r = - r.log() + (Array2D::Ones(K, nview) - r).log();
+   r = Array2D::Constant(nview,K,.5);
+   log_r.resize(nview, K);
+   log_r = - r.log() + (Array2D::Ones(nview, K) - r).log();
 }
 
 void SpikeAndSlabPrior::update_prior()
@@ -58,7 +58,7 @@ void SpikeAndSlabPrior::update_prior()
    W2col.reset(); 
 
    log_alpha = alpha.log();
-   log_r = - r.log() + (Array2D::Ones(K, nview) - r).log();
+   log_r = - r.log() + (Array2D::Ones(nview, K) - r).log();
 }
 
 void SpikeAndSlabPrior::restore(const SaveState &sf)
@@ -70,13 +70,13 @@ void SpikeAndSlabPrior::restore(const SaveState &sf)
 
   //compute Zcol
   int d = 0;
-  Array2D Z(Array2D::Zero(K,nview));
-  Array2D W2(Array2D::Zero(K,nview));
+  Array2D Z(Array2D::Zero(nview,K));
+  Array2D W2(Array2D::Zero(nview,K));
   for(int v=0; v<data().nview(m_mode); ++v) 
   {
       for(int i=0; i<data().view_size(m_mode, v); ++i, ++d)
       {
-        for(int k=0; k<K; ++k) if (U()(k,d) != 0) Z(k,v)++;
+        for(int k=0; k<K; ++k) if (U()(k,d) != 0) Z(v,k)++;
         W2.row(v) += U().row(d).array().square(); 
       }
   }
@@ -100,12 +100,12 @@ std::pair<float_type, float_type> SpikeAndSlabPrior::sample_latent(int d, int k,
     std::tie(mu, lambda) = NormalOnePrior::sample_latent(d, k, aXX, yX);
 
     auto Urow = U().row(d);
-    float_type z1 = log_r(k,v) -  0.5 * (lambda * mu * mu - std::log(lambda) + log_alpha(k,v));
+    float_type z1 = log_r(v,k) -  0.5 * (lambda * mu * mu - std::log(lambda) + log_alpha(v,k));
     float_type z = 1 / (1 + exp(z1));
     float_type p = rand_unif(0,1);
-    if (Zkeep(k,v) > 0 && p < z) {
-        Zcol.local()(k,v)++;
-        W2col.local()(k,v) += Urow(k) * Urow(k);
+    if (Zkeep(v,k) > 0 && p < z) {
+        Zcol.local()(v,k)++;
+        W2col.local()(v,k) += Urow(k) * Urow(k);
     } else {
         Urow(k) = .0;
     }

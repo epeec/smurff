@@ -37,7 +37,7 @@ double ScarceMatrixData::train_rmse(const SubModel& model) const
 
 std::ostream& ScarceMatrixData::info(std::ostream& os, std::string indent)
 {
-    MatrixDataTempl<SparseMatrix >::info(os, indent);
+    MatrixDataTempl<SparseMatrix>::info(os, indent);
     if (num_empty[0]) os << indent << "  Warning: " << num_empty[0] << " empty rows\n";
     if (num_empty[1]) os << indent << "  Warning: " << num_empty[1] << " empty cols\n";
     return os;
@@ -66,7 +66,7 @@ void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, in
            auto pos = this->pos(mode, n, idx);
            double noisy_val = ns.sample(model, pos, val);
            rr.noalias() += row * noisy_val;
-           MM.triangularView<Eigen::Lower>() +=  ns.getAlpha() * row * row.transpose();
+           MM.triangularView<Eigen::Lower>() +=  ns.getAlpha() * row.transpose() * row;
        }
 
        // make MM complete

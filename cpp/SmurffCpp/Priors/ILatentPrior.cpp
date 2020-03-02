@@ -117,7 +117,7 @@ void ILatentPrior::sample_latents()
       sample_latent(n);
       const auto &row = U().row(n);
       Urow.local().noalias() += row;
-      UUrow.local().noalias() += row * row.transpose();
+      UUrow.local().noalias() += row.transpose() * row;
 
       if (m_session.inSamplingPhase())
          model().updateAggr(m_mode, n);
@@ -144,6 +144,6 @@ void ILatentPrior::restore(const SaveState &sf)
 void ILatentPrior::init_Usum()
 {
     Usum = U().rowwise().sum();
-    UUsum = U() * U().transpose(); 
+    UUsum = U().transpose() * U(); 
 }
 } // end namespace smurff

@@ -31,7 +31,7 @@ bool DenseSideInfo::is_dense() const
 
 void DenseSideInfo::compute_uhat(Matrix& uhat, Matrix& beta)
 {
-   uhat = beta * m_side_info.transpose();
+   uhat = m_side_info * beta;
 }
 
 void DenseSideInfo::At_mul_A(Matrix& out)
@@ -41,7 +41,7 @@ void DenseSideInfo::At_mul_A(Matrix& out)
 
 Matrix DenseSideInfo::A_mul_B(Matrix& A)
 {
-   return A * m_side_info;
+   return m_side_info.transpose() * A;
 }
 
 int DenseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)

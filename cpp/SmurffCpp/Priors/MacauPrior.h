@@ -28,7 +28,7 @@ public:
    Matrix HyperU;           // num_latent x num_items
    Matrix HyperU2;          // num_latent x num_feat
    Matrix Ft_y;             // num_latent x num_feat -- RHS
-   Matrix BBt;              // num_latent x num_latent
+   Matrix BtB;              // num_latent x num_latent
 
    int blockcg_iter;
    
@@ -53,7 +53,7 @@ public:
 
    const Vector fullMu(int n) const override;
 
-   int num_feat() const { return Features->rows(); }
+   int num_feat() const { return Features->cols(); }
 
    void compute_Ft_y(Matrix& Ft_y);
    virtual void sample_beta();
@@ -66,8 +66,8 @@ public:
    std::ostream& status(std::ostream &os, std::string indent) const override;
 
 public:
-   static std::pair<double, double> posterior_beta_precision(const Matrix & BBt, Matrix & Lambda_u, double nu, double mu, int N);
-   static double sample_beta_precision(const Matrix & BBt, Matrix & Lambda_u, double nu, double mu, int N);
+   static std::pair<double, double> posterior_beta_precision(const Matrix & BtB, Matrix & Lambda_u, double nu, double mu, int N);
+   static double sample_beta_precision(const Matrix & BtB, Matrix & Lambda_u, double nu, double mu, int N);
 };
 
 }

@@ -35,7 +35,7 @@ namespace smurff
          for(int n = 0; n < Vf.rows(); n++) 
          {
             auto v = Vf.row(n);
-            VVs.local() += v * v.transpose(); // VVs = Vvs + v * vT
+            VVs.local() += v.transpose() * v; // VVs = Vvs + vT * v
          }
 
          VV[mode] = VVs.combine(); //accumulate sum

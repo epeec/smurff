@@ -14,8 +14,8 @@ void MacauOnePrior::init()
    NormalOnePrior::init();
 
    // init SideInfo related
-   Uhat = Matrix::Constant(num_latent(), Features->rows(), 0.0);
-   beta() = Matrix::Constant(num_latent(), Features->cols(), 0.0);
+   Uhat = Matrix::Constant(Features->rows(), num_latent(), 0.0);
+   beta() = Matrix::Constant(Features->cols(), num_latent(), 0.0);
 
    // initial value (should be determined automatically)
    // Hyper-prior for beta_precision (mean 1.0):

@@ -193,7 +193,7 @@ Matrix WishartUnit(int m, int df)
       GAMMA_DISTRIBUTION gam(0.5*(df - i));
       c(i,i) = std::sqrt(2.0 * gam(rng));
       Vector r = nrandn(m-i-1);
-      c.block(i,i+1,1,m-i-1) = r.transpose();
+      c.block(i,i+1,1,m-i-1) = r;
    }
 
    Matrix ret = c.transpose() * c;
@@ -261,7 +261,7 @@ std::pair<Vector, Matrix> CondNormalWishart(const int N, const Matrix &NS, const
 
    double kappa_c = kappa + N;
    auto mu_c = (kappa * mu + NU) / (kappa + N);
-   auto X    = (T + NS + kappa * mu * mu.adjoint() - kappa_c * mu_c * mu_c.adjoint());
+   auto X    = T + NS + kappa * mu.transpose() * mu - kappa_c * mu_c.transpose() * mu_c;
    Matrix T_c = X.inverse();
     
    return NormalWishart(mu_c, kappa_c, T_c, nu_c);
@@ -270,21 +270,21 @@ std::pair<Vector, Matrix> CondNormalWishart(const int N, const Matrix &NS, const
 std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, const double kappa, const Matrix &T, const int nu)
 {
    auto N = U.rows();
-   auto NS = U * U.adjoint();
-   auto NU = U.rowwise().sum();
+   auto NS = U.transpose() * U;
+   auto NU = U.colwise().sum();
    return CondNormalWishart(N, NS, NU, mu, kappa, T, nu);
 }
 
 // Normal(0, Lambda^-1) for nn columns
-Matrix MvNormal_prec(const Matrix & Lambda, int ncols)
+Matrix MvNormal_prec(const Matrix & Lambda, int nrows)
 {
-   int nrows = Lambda.rows(); // Dimensionality (rows)
+   int ncols = Lambda.rows(); // Dimensionality (rows)
    Eigen::LLT<Matrix> chol(Lambda);
 
    Matrix r(nrows, ncols);
    bmrandn(r);
 
-   return chol.matrixU().solve(r);
+   return chol.matrixU().solve<Eigen::OnTheRight>(r);
 }
 
 Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn)

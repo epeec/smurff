@@ -42,10 +42,10 @@ public:
   {
     ColsAtCompileTime = Eigen::Dynamic,
     MaxColsAtCompileTime = Eigen::Dynamic,
-    IsRowMajor = false
+    IsRowMajor = true
   };
-  Index rows() const { return m_A.rows(); }
-  Index cols() const { return m_A.rows(); }
+  Index rows() const { return m_A.cols(); }
+  Index cols() const { return m_A.cols(); }
   template <typename Rhs>
   Eigen::Product<AtA, Rhs, Eigen::AliasFreeProduct> operator*(const Eigen::MatrixBase<Rhs> &x) const
   {

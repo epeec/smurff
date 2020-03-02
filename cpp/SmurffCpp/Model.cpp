@@ -49,7 +49,7 @@ void Model::init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_t
    for(size_t i = 0; i < nmodes; ++i)
    {
       Matrix& mat = m_factors.at(i);
-      mat.resize(m_num_latent, dims[i]);
+      mat.resize(dims[i], m_num_latent);
 
       switch(model_init_type)
       {
@@ -67,8 +67,8 @@ void Model::init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_t
 
       if (aggregate)
       {
-         m_aggr_sum.push_back(Matrix::Zero(m_num_latent, dims[i]));
-         m_aggr_dot.push_back(Matrix::Zero(m_num_latent * m_num_latent, dims[i]));
+         m_aggr_sum.push_back(Matrix::Zero(dims[i], m_num_latent));
+         m_aggr_dot.push_back(Matrix::Zero(dims[i], m_num_latent * m_num_latent));
       }
    }
 
@@ -175,7 +175,7 @@ void Model::updateAggr(int m, int i)
    if (!m_collect_aggr) return;
 
    const auto &r = row(m, i);
-   Matrix cov = (r * r.transpose());
+   Matrix cov = (r.transpose() * r);
    m_aggr_sum.at(m).row(i) += r;
    m_aggr_dot.at(m).row(i) += Eigen::Map<Vector>(cov.data(), nlatent() * nlatent());
 }
@@ -209,7 +209,7 @@ void Model::save(SaveState &sf) const
          {
             Vector sum = Usum.row(i);
             Matrix prod = Eigen::Map<const Matrix>(Uprod.row(i).data(), nlatent(), nlatent());
-            Matrix prec_i = ((prod - (sum * sum.transpose() / n)) / (n - 1)).inverse();
+            Matrix prec_i = ((prod - (sum.transpose() * sum / n)) / (n - 1)).inverse();
 
             prec.row(i) = Eigen::Map<Vector>(prec_i.data(), nlatent() * nlatent());
             mu.row(i) = sum / n;
@@ -233,8 +233,8 @@ void Model::restore(const SaveState &sf, int skip_mode)
       {
          auto &U = m_factors.at(i);
          sf.readModel(i, U);
-         m_dims.at(i) = U.cols();
-         m_num_latent = U.rows();
+         m_dims.at(i) = U.rows();
+         m_num_latent = U.cols();
       }
       else
       {
@@ -264,8 +264,8 @@ std::ostream& Model::status(std::ostream &os, std::string indent) const
 {
    os << indent << "  Umean: " << std::endl;
    for(std::uint64_t d = 0; d < nmodes(); ++d)
-      os << indent << "    U(" << d << ").rowwise().mean: "
-         << U(d).rowwise().mean().transpose()
+      os << indent << "    U(" << d << ").colwise().mean: "
+         << U(d).colwise().mean()
          << std::endl;
 
    return os;
@@ -274,7 +274,7 @@ std::ostream& Model::status(std::ostream &os, std::string indent) const
 Matrix::ConstBlockXpr SubModel::U(int f) const
 {
    const Matrix &u = m_model.U(f); //force const
-   return u.block(0, m_off.at(f), m_model.nlatent(), m_dims.at(f));
+   return u.block(m_off.at(f), 0, m_dims.at(f), m_model.nlatent());
 }
 
 ConstVMatrixExprIterator<Matrix::ConstBlockXpr> SubModel::CVbegin(std::uint32_t mode) const

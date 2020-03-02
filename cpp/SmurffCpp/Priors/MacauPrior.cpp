@@ -35,13 +35,13 @@ void MacauPrior::init()
       FtF_plus_precision.diagonal().array() += beta_precision;
    }
 
-   Uhat.resize(num_latent(), Features->rows());
+   Uhat.resize(num_item(), num_latent());
    Uhat.setZero();
 
-   beta().resize(num_latent(), num_feat());
+   beta().resize(num_feat(), num_latent());
    beta().setZero();
 
-   BBt = beta() * beta().transpose();
+   BtB = beta().transpose() * beta();
 }
 
 void MacauPrior::update_prior()
@@ -72,7 +72,7 @@ void MacauPrior::update_prior()
         Udelta = U() - Uhat;
         // uses: Udelta
         // complexity: num_latent x num_items
-        std::tie(mu(), Lambda) = CondNormalWishart(Udelta, mu0, b0, WI + beta_precision * BBt, df + num_feat());
+        std::tie(mu(), Lambda) = CondNormalWishart(Udelta, mu0, b0, WI + beta_precision * BtB, df + num_feat());
     }
 
     // uses: U, F
@@ -99,7 +99,7 @@ void MacauPrior::update_prior()
         // writes: FtF
         COUNTER("sample_beta_precision");
         double old_beta = beta_precision;
-        beta_precision = sample_beta_precision(BBt, Lambda, beta_precision_nu0, beta_precision_mu0, beta().cols());
+        beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().cols());
         FtF_plus_precision.diagonal().array() += beta_precision - old_beta;
    }
 }
@@ -112,7 +112,7 @@ void MacauPrior::sample_beta()
         // uses: FtF, Ft_y, 
         // writes: beta()
         // complexity: num_feat^3
-        beta() = FtF_plus_precision.llt().solve(Ft_y.transpose()).transpose();
+        beta() = FtF_plus_precision.llt().solve(Ft_y);
     } 
     else
     {
@@ -122,7 +122,7 @@ void MacauPrior::sample_beta()
         blockcg_iter = Features->solve_blockcg(beta(), beta_precision, Ft_y, tol, 32, 8, throw_on_cholesky_error);
     }
     // complexity: num_feat x num_feat x num_latent
-    BBt = beta() * beta().transpose();
+    BtB = beta().transpose() * beta();
 }
 
 const Vector MacauPrior::fullMu(int n) const
@@ -203,18 +203,18 @@ std::ostream &MacauPrior::status(std::ostream &os, std::string indent) const
    return os;
 }
 
-std::pair<double, double> MacauPrior::posterior_beta_precision(const Matrix & BBt, Matrix & Lambda_u, double nu, double mu, int N)
+std::pair<double, double> MacauPrior::posterior_beta_precision(const Matrix & BtB, Matrix & Lambda_u, double nu, double mu, int N)
 {
-   double nux = nu + N * BBt.cols();
-   double mux = mu * nux / (nu + mu * (BBt.selfadjointView<Eigen::Lower>() * Lambda_u).trace());
+   double nux = nu + N * BtB.cols();
+   double mux = mu * nux / (nu + mu * (BtB.selfadjointView<Eigen::Lower>() * Lambda_u).trace());
    double b = nux / 2;
    double c = 2 * mux / nux;
    return std::make_pair(b, c);
 }
 
-double MacauPrior::sample_beta_precision(const Matrix & BBt, Matrix & Lambda_u, double nu, double mu, int N)
+double MacauPrior::sample_beta_precision(const Matrix & BtB, Matrix & Lambda_u, double nu, double mu, int N)
 {
-   auto gamma_post = posterior_beta_precision(BBt, Lambda_u, nu, mu, N);
+   auto gamma_post = posterior_beta_precision(BtB, Lambda_u, nu, mu, N);
    return rgamma(gamma_post.first, gamma_post.second);
 }
 } // end namespace smurff

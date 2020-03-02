@@ -30,7 +30,7 @@ SparseMode::SparseMode(const MatrixXui32& idx, const std::vector<double>& vals, 
    m_mode = mode; // save dimension index that is fixed
    std::uint64_t nnz  = idx.rows(); // get nnz from index matrix
 
-   auto rows = idx.row(m_mode); // get column with coordinates for fixed dimension
+   auto rows = idx.col(m_mode); // get column with coordinates for fixed dimension
    
    // compute number of non-zero entries per each element for the mode
    // (compute number of non-zero elements for each coordinate in specific dimension)

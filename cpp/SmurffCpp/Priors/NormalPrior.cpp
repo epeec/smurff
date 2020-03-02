@@ -87,7 +87,7 @@ void  NormalPrior::sample_latent(int n)
    data().getMuLambda(model(), m_mode, n, rr, MM);
 
    // add hyperparams
-   rr.noalias() += Lambda_u * mu_u;
+   rr.noalias() += mu_u * Lambda_u;
    MM.noalias() += Lambda_u;
 
    //Solve system of linear equations for x: MM * x = rr - not exactly correct  because we have random part
@@ -102,9 +102,9 @@ void  NormalPrior::sample_latent(int n)
       }
    }
 
-   chol.matrixL().solveInPlace(rr); // solve for y: y = L^-1 * b
+   chol.matrixL().solveInPlace(rr.transpose()); // solve for y: y = L^-1 * b
    rr.noalias() += nrandn(num_latent());
-   chol.matrixU().solveInPlace(rr); // solve for x: x = U^-1 * y
+   chol.matrixU().solveInPlace(rr.transpose()); // solve for x: x = U^-1 * y
    
    U().row(n).noalias() = rr; // rr is equal to x
 }
@@ -112,7 +112,7 @@ void  NormalPrior::sample_latent(int n)
 std::ostream &NormalPrior::status(std::ostream &os, std::string indent) const
 {
    os << indent << m_name << std::endl;
-   os << indent << "  mu: " <<  mu().transpose() << std::endl;
+   os << indent << "  mu: " <<  mu() << std::endl;
    return os;
 }
 } // end namespace smurff

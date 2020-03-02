@@ -50,7 +50,7 @@ void NormalOnePrior::sample_latent(int d)
    data().getMuLambda(model(), m_mode, d, yX, XX);
 
    // add hyperparams
-   yX.noalias() += Lambda * mu();
+   yX.noalias() += mu() * Lambda;
    XX.noalias() += Lambda;
 
    for(int k=0;k<K;++k) sample_latent(d, k, XX, yX);
