@@ -149,7 +149,7 @@ double ScarceMatrixData::sumsq(const SubModel& model) const
    {
       for (SparseMatrix::InnerIterator it(Y(), j); it; ++it) 
       {
-         sumsq += std::pow(model.predict({static_cast<int>(it.row()), static_cast<int>(it.row())})- it.value(), 2);
+         sumsq += std::pow(model.predict({static_cast<int>(it.row()), static_cast<int>(it.col())})- it.value(), 2);
       }
    }
 
