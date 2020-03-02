@@ -50,7 +50,7 @@ const Vector NormalPrior::fullMu(int n) const
 {
    if (getConfig().hasPropagatedPosterior(getMode()))
    {
-      return getConfig().getMuPropagatedPosterior(getMode()).getDenseMatrixData().col(n);
+      return getConfig().getMuPropagatedPosterior(getMode()).getDenseMatrixData().row(n);
    }
    //else
    return mu();
@@ -61,7 +61,7 @@ const Matrix NormalPrior::getLambda(int n) const
    if (getConfig().hasPropagatedPosterior(getMode()))
    {
       const auto &Lambda_pp = getConfig().getLambdaPropagatedPosterior(getMode()).getDenseMatrixData();
-      return Eigen::Map<const Matrix>(Lambda_pp.col(n).data(), num_latent(), num_latent());
+      return Eigen::Map<const Matrix>(Lambda_pp.row(n).data(), num_latent(), num_latent());
    }
    //else
    return Lambda;
@@ -106,7 +106,7 @@ void  NormalPrior::sample_latent(int n)
    rr.noalias() += nrandn(num_latent());
    chol.matrixU().solveInPlace(rr); // solve for x: x = U^-1 * y
    
-   U().col(n).noalias() = rr; // rr is equal to x
+   U().row(n).noalias() = rr; // rr is equal to x
 }
 
 std::ostream &NormalPrior::status(std::ostream &os, std::string indent) const

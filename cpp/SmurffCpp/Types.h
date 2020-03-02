@@ -13,9 +13,9 @@ namespace smurff {
 
 #define APPROX_EPSILON (smurff::approx_epsilon<smurff::float_type>())
 
-   typedef Eigen::Matrix<float_type, Eigen::Dynamic, Eigen::Dynamic> Matrix;
-   typedef Eigen::Matrix<float_type, Eigen::Dynamic, 1> Vector;
-   typedef Eigen::Array<float_type, Eigen::Dynamic, Eigen::Dynamic> Array2D;
-   typedef Eigen::Array<float_type, Eigen::Dynamic, 1> Array1D;
-   typedef Eigen::SparseMatrix<float_type> SparseMatrix;
+   typedef Eigen::Matrix<float_type, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;
+   typedef Eigen::Matrix<float_type, 1, Eigen::Dynamic, Eigen::RowMajor> Vector;
+   typedef Eigen::Array<float_type, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Array2D;
+   typedef Eigen::Array<float_type, 1, Eigen::Dynamic, Eigen::RowMajor> Array1D;
+   typedef Eigen::SparseMatrix<float_type, Eigen::RowMajor> SparseMatrix;
 };

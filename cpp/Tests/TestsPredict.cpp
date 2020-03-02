@@ -182,7 +182,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
     auto feat = sideInfoMatrix.row(r).transpose();
     auto out_of_matrix_predictions = predict_session_out.predict(0, feat);
     // Vector out_of_matrix_averages =
-    // out_of_matrix_predictions->colwise().mean();
+    // out_of_matrix_predictions->rowwise().mean();
 
 #undef DEBUG_OOM_PREDICT
 #ifdef DEBUG_OOM_PREDICT

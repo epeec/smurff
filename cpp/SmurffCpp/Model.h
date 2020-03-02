@@ -92,7 +92,7 @@ public:
    ConstVMatrixIterator<Matrix> CVend() const;
 
    //return i'th column of f'th U matrix in the model
-   Matrix::ConstColXpr col(int f, int i) const;
+   Matrix::ConstRowXpr row(int f, int i) const;
 
 public:
    //number of dimentions in train data
@@ -186,7 +186,7 @@ std::shared_ptr<Matrix> Model::predict_latent(int mode, const FeatMatrix& f)
 
    auto ret = std::make_shared<Matrix>(nlatent(), f.rows());
    *ret = beta * f.transpose();
-   ret->colwise() += mu;
+   ret->rowwise() += mu;
    #if 0
    std::cout << "beta =\n" << beta.transpose() << std::endl;
    std::cout << "f =\n" << f << std::endl;

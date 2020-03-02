@@ -157,9 +157,9 @@ TEST_CASE("bpmfutils/eval_rmse_tensor", "Testing eval_rmse_tensor") {
   eval_rmse_tensor(sm0, 0, pred, pred_var, samples, gmean);
 
   for (int i = 0; i < C.rows(); i++) {
-    auto v0 = gmean + samples[0]->col(C(i, 0)).
-                  cwiseProduct( samples[1]->col(C(i, 1)) ).
-                  cwiseProduct( samples[2]->col(C(i, 2)) ).sum();
+    auto v0 = gmean + samples[0]->row(C(i, 0)).
+                  cwiseProduct( samples[1]->row(C(i, 1)) ).
+                  cwiseProduct( samples[2]->row(C(i, 2)) ).sum();
     REQUIRE(v0 == Approx(pred(i)));
   }
 }

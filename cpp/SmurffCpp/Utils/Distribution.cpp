@@ -217,7 +217,7 @@ Matrix Wishart(const Matrix &sigma, const int df)
    Matrix r = chol.matrixL();
 
    //  Get AU, a sample from the unit Wishart distribution.
-   Matrix au = WishartUnit(sigma.cols(), df);
+   Matrix au = WishartUnit(sigma.rows(), df);
 
    //  Construct the matrix A = R' * AU * R.
    Matrix a = r * au * chol.matrixU();
@@ -269,7 +269,7 @@ std::pair<Vector, Matrix> CondNormalWishart(const int N, const Matrix &NS, const
 
 std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, const double kappa, const Matrix &T, const int nu)
 {
-   auto N = U.cols();
+   auto N = U.rows();
    auto NS = U * U.adjoint();
    auto NU = U.rowwise().sum();
    return CondNormalWishart(N, NS, NU, mu, kappa, T, nu);
@@ -290,7 +290,7 @@ Matrix MvNormal_prec(const Matrix & Lambda, int ncols)
 Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn)
 {
    Matrix r = MvNormal_prec(Lambda, nn);
-   return r.colwise() + mean;
+   return r.rowwise() + mean;
 }
 
 // Draw nn samples from a size-dimensional normal distribution
@@ -304,7 +304,7 @@ Matrix MvNormal(const Matrix covar, const Vector mean, int nn)
    normTransform = cholSolver.matrixL();
 
    auto normSamples = Matrix::NullaryExpr(size, nn, std::cref(randn));
-   Matrix samples = (normTransform * normSamples).colwise() + mean;
+   Matrix samples = (normTransform * normSamples).rowwise() + mean;
 
    return samples;
 }

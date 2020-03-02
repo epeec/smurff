@@ -64,8 +64,8 @@ std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(TrainSession &tra
    return prior;
 }
 
-//mode - 0 (row), 1 (col)
-//vsideinfo - vector of side feature configs (row or col)
+//mode - 0 (row), 1 (row)
+//vsideinfo - vector of side feature configs (row or row)
 template<class Factory>
 std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(TrainSession &trainSession, int mode, PriorTypes prior_type,
         const SideInfoConfig& config_item)

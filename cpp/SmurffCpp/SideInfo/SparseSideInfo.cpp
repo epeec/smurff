@@ -94,22 +94,22 @@ Vector SparseSideInfo::col_square_sum()
     COUNTER("col_square_sum");
     // component-wise square
     auto E = F.unaryExpr([](const float_type &d) { return d * d; });
-    // col-wise sum
+    // row-wise sum
     return E.transpose() * Vector::Ones(E.rows());
 }
 
-// Y = X[:,col]' * B'
-void SparseSideInfo::At_mul_Bt(Vector& Y, const int col, Matrix& B)
+// Y = X[:,row]' * B'
+void SparseSideInfo::At_mul_Bt(Vector& Y, const int row, Matrix& B)
 {
     COUNTER("At_mul_Bt");
-    auto out = Ft.block(col, 0, col + 1, Ft.cols()) * B.transpose();
+    auto out = Ft.block(row, 0, row + 1, Ft.rows()) * B.transpose();
     Y = out.transpose();
 }
 
-// computes Z += A[:,col] * b', where a and b are vectors
-void SparseSideInfo::add_Acol_mul_bt(Matrix& Z, const int col, Vector& b)
+// computes Z += A[:,row] * b', where a and b are vectors
+void SparseSideInfo::add_Acol_mul_bt(Matrix& Z, const int row, Vector& b)
 {
     COUNTER("add_Acol_mul_bt");
-    Z += (F.col(col) * b.transpose()).transpose();
+    Z += (F.row(row) * b.transpose()).transpose();
 }
 } // end namespace smurff

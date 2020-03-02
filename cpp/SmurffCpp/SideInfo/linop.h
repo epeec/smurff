@@ -44,8 +44,8 @@ public:
     MaxColsAtCompileTime = Eigen::Dynamic,
     IsRowMajor = false
   };
-  Index rows() const { return m_A.cols(); }
-  Index cols() const { return m_A.cols(); }
+  Index rows() const { return m_A.rows(); }
+  Index cols() const { return m_A.rows(); }
   template <typename Rhs>
   Eigen::Product<AtA, Rhs, Eigen::AliasFreeProduct> operator*(const Eigen::MatrixBase<Rhs> &x) const
   {
@@ -238,11 +238,11 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
     #pragma omp parallel for schedule(guided)
     for (int block = 0; block < nblocks; block++) 
     {
-      int col = block * 64;
-      int bcols = std::min(64, nfeat - col);
+      int row = block * 64;
+      int bcols = std::min(64, nfeat - row);
       Matrix xtmp(nrhs, bcols);
-      xtmp = Psi *  P.block(0, col, nrhs, bcols);
-      P.block(0, col, nrhs, bcols) = R.block(0, col, nrhs, bcols) + xtmp;
+      xtmp = Psi *  P.block(0, row, nrhs, bcols);
+      P.block(0, row, nrhs, bcols) = R.block(0, row, nrhs, bcols) + xtmp;
     }
 
     // R R' = R2 R2'

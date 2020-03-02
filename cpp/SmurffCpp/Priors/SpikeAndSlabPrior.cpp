@@ -46,10 +46,10 @@ void SpikeAndSlabPrior::update_prior()
    // update hyper params (alpha and r) (per view)
    for(int v=0; v<nview; ++v) {
        const int D = data().view_size(m_mode, v);
-       r.col(v) = ( Zkeep.col(v).array() + prior_beta ) / ( D + prior_beta * D ) ;
-       auto ww = W2c.col(v).array() / 2 + prior_beta_0;
-       auto tmpz = Zkeep.col(v).array() / 2 + prior_alpha_0 ;
-       alpha.col(v) = tmpz.binaryExpr(ww, [](float_type a, float_type b)->float_type {
+       r.row(v) = ( Zkeep.row(v).array() + prior_beta ) / ( D + prior_beta * D ) ;
+       auto ww = W2c.row(v).array() / 2 + prior_beta_0;
+       auto tmpz = Zkeep.row(v).array() / 2 + prior_alpha_0 ;
+       alpha.row(v) = tmpz.binaryExpr(ww, [](float_type a, float_type b)->float_type {
                return rgamma(a, 1/b) + 1e-7;
        });
    }
@@ -77,7 +77,7 @@ void SpikeAndSlabPrior::restore(const SaveState &sf)
       for(int i=0; i<data().view_size(m_mode, v); ++i, ++d)
       {
         for(int k=0; k<K; ++k) if (U()(k,d) != 0) Z(k,v)++;
-        W2.col(v) += U().col(d).array().square(); 
+        W2.row(v) += U().row(d).array().square(); 
       }
   }
   THROWERROR_ASSERT(d == num_item());
@@ -95,19 +95,19 @@ std::pair<float_type, float_type> SpikeAndSlabPrior::sample_latent(int d, int k,
     const int v = data().view(m_mode, d);
     float_type mu, lambda;
 
-    Matrix aXX = alpha.matrix().col(v).asDiagonal();
+    Matrix aXX = alpha.matrix().row(v).asDiagonal();
     aXX += XX;
     std::tie(mu, lambda) = NormalOnePrior::sample_latent(d, k, aXX, yX);
 
-    auto Ucol = U().col(d);
+    auto Urow = U().row(d);
     float_type z1 = log_r(k,v) -  0.5 * (lambda * mu * mu - std::log(lambda) + log_alpha(k,v));
     float_type z = 1 / (1 + exp(z1));
     float_type p = rand_unif(0,1);
     if (Zkeep(k,v) > 0 && p < z) {
         Zcol.local()(k,v)++;
-        W2col.local()(k,v) += Ucol(k) * Ucol(k);
+        W2col.local()(k,v) += Urow(k) * Urow(k);
     } else {
-        Ucol(k) = .0;
+        Urow(k) = .0;
     }
 
     return std::make_pair(mu, lambda);
@@ -118,7 +118,7 @@ std::ostream &SpikeAndSlabPrior::status(std::ostream &os, std::string indent) co
    const int V = data().nview(m_mode);
    for(int v=0; v<V; ++v) 
    {
-       int Zcount = (Zkeep.col(v).array() > 0).count();
+       int Zcount = (Zkeep.row(v).array() > 0).count();
        os << indent << m_name << ": Z[" << v << "] = " << Zcount << "/" << num_latent() << std::endl;
    }
    return os;

@@ -230,7 +230,7 @@ TEST_CASE( "SparseSideInfo/AtA_mul_B", "[AtA_mul_B] for SparseSideInfo" )
                 -15.286, 20.4846, -39.7644, -35.1639, -44.7608, -352.293;
 
     for (int i = 0; i < true_out.rows(); i++) {
-        for (int j = 0; j < true_out.cols(); j++) {
+        for (int j = 0; j < true_out.; j++) {
             REQUIRE( out(i,j) == Approx(true_out(i,j)) );
         }
     }

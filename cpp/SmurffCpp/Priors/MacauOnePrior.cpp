@@ -36,7 +36,7 @@ void MacauOnePrior::update_prior()
 
 const Vector MacauOnePrior::fullMu(int n) const
 {
-   return mu() + Uhat.col(n);
+   return mu() + Uhat.row(n);
 }
 
 void MacauOnePrior::addSideInfo(const std::shared_ptr<ISideInfo>& si, double bp, double tol, bool, bool ebps, bool toce)

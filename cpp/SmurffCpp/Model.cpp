@@ -99,13 +99,13 @@ double Model::predict(const PVec<> &pos) const
 {
    if (nmodes() == 2)
    {
-      return col(0, pos[0]).dot(col(1, pos[1]));
+      return row(0, pos[0]).dot(row(1, pos[1]));
    }
 
    auto &P = Pcache.local();
    P.setOnes();
    for(uint32_t d = 0; d < nmodes(); ++d)
-      P *= col(d, pos.at(d)).array();
+      P *= row(d, pos.at(d)).array();
    return P.sum();
 }
 
@@ -139,9 +139,9 @@ ConstVMatrixIterator<Matrix> Model::CVend() const
    return ConstVMatrixIterator<Matrix>(m_factors.size());
 }
 
-Matrix::ConstColXpr Model::col(int f, int i) const
+Matrix::ConstRowXpr Model::row(int f, int i) const
 {
-   return U(f).col(i);
+   return U(f).row(i);
 }
 
 std::uint64_t Model::nmodes() const
@@ -157,7 +157,7 @@ int Model::nlatent() const
 int Model::nsamples() const
 {
    return std::accumulate(m_factors.begin(), m_factors.end(), 0,
-      [](const int &a, const Matrix &b) { return a + b.cols(); });
+      [](const int &a, const Matrix &b) { return a + b.rows(); });
 }
 
 const PVec<>& Model::getDims() const
@@ -174,10 +174,10 @@ void Model::updateAggr(int m, int i)
 {
    if (!m_collect_aggr) return;
 
-   const auto &r = col(m, i);
+   const auto &r = row(m, i);
    Matrix cov = (r * r.transpose());
-   m_aggr_sum.at(m).col(i) += r;
-   m_aggr_dot.at(m).col(i) += Eigen::Map<Vector>(cov.data(), nlatent() * nlatent());
+   m_aggr_sum.at(m).row(i) += r;
+   m_aggr_dot.at(m).row(i) += Eigen::Map<Vector>(cov.data(), nlatent() * nlatent());
 }
 
 void Model::updateAggr(int m)
@@ -205,14 +205,14 @@ void Model::save(SaveState &sf) const
          Matrix prec = Matrix::Zero(Uprod.rows(), Uprod.cols());
 
          // calculate real mu and Lambda
-         for (int i = 0; i < U(m).cols(); i++)
+         for (int i = 0; i < U(m).rows(); i++)
          {
-            Vector sum = Usum.col(i);
-            Matrix prod = Eigen::Map<const Matrix>(Uprod.col(i).data(), nlatent(), nlatent());
+            Vector sum = Usum.row(i);
+            Matrix prod = Eigen::Map<const Matrix>(Uprod.row(i).data(), nlatent(), nlatent());
             Matrix prec_i = ((prod - (sum * sum.transpose() / n)) / (n - 1)).inverse();
 
-            prec.col(i) = Eigen::Map<Vector>(prec_i.data(), nlatent() * nlatent());
-            mu.col(i) = sum / n;
+            prec.row(i) = Eigen::Map<Vector>(prec_i.data(), nlatent() * nlatent());
+            mu.row(i) = sum / n;
          }
 
          sf.putPostMuLambda(m, mu, prec);
@@ -264,7 +264,7 @@ std::ostream& Model::status(std::ostream &os, std::string indent) const
 {
    os << indent << "  Umean: " << std::endl;
    for(std::uint64_t d = 0; d < nmodes(); ++d)
-      os << indent << "    U(" << d << ").colwise().mean: "
+      os << indent << "    U(" << d << ").rowwise().mean: "
          << U(d).rowwise().mean().transpose()
          << std::endl;
 

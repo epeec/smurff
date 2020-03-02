@@ -127,7 +127,7 @@ void MacauPrior::sample_beta()
 
 const Vector MacauPrior::fullMu(int n) const
 {
-   return mu() + Uhat.col(n);
+   return mu() + Uhat.row(n);
 }
 
 void MacauPrior::compute_Ft_y(Matrix& Ft_y)
@@ -137,7 +137,7 @@ void MacauPrior::compute_Ft_y(Matrix& Ft_y)
    // Ft_y is [ num_latent x num_feat ] matrix
 
    //HyperU: num_latent x num_item
-   HyperU = (U() + MvNormal_prec(Lambda, num_item())).colwise() - mu();
+   HyperU = (U() + MvNormal_prec(Lambda, num_item())).rowwise() - mu();
    Ft_y = Features->A_mul_B(HyperU); // num_latent x num_feat
 
    //--  add beta_precision 

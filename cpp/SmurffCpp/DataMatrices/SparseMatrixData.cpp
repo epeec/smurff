@@ -16,10 +16,10 @@ void SparseMatrixData::getMuLambda(const SubModel& model, uint32_t mode, int d, 
 
     for (SparseMatrix::InnerIterator it(Y, d); it; ++it) 
     {
-        const auto &col = Vf.col(it.row());
+        const auto &row = Vf.row(it.row());
         auto p = pos(mode, d, it.row());
         double noisy_val = ns.sample(model, p, it.value());
-        rr.noalias() += col * noisy_val; // rr = rr + (V[m] * y[d]) * alpha
+        rr.noalias() += row * noisy_val; // rr = rr + (V[m] * y[d]) * alpha
     }
 
     MM.noalias() += ns.getAlpha() * VV[mode]; // MM = MM + VV[m]
@@ -37,7 +37,7 @@ double SparseMatrixData::var_total() const
    double se = 0.0;
 
    #pragma omp parallel for schedule(guided) reduction(+:se)
-   for(int c = 0; c < Y().cols(); ++c)
+   for(int c = 0; c < Y().outerSize(); ++c)
    {
       int r = 0;
       for (SparseMatrix::InnerIterator it(Y(), c); it; ++it)
@@ -65,7 +65,7 @@ double SparseMatrixData::sumsq(const SubModel& model) const
    double sumsq = 0.0;
    
    #pragma omp parallel for schedule(guided) reduction(+:sumsq)
-   for(int c = 0; c < Y().cols(); ++c)
+   for(int c = 0; c < Y().outerSize(); ++c)
    {
       int r = 0;
       for (SparseMatrix::InnerIterator it(Y(), c); it; ++it)

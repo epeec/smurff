@@ -40,9 +40,9 @@ public:
 
    Vector col_square_sum() override;
 
-   void At_mul_Bt(Vector& Y, const int col, Matrix& B) override;
+   void At_mul_Bt(Vector& Y, const int row, Matrix& B) override;
 
-   void add_Acol_mul_bt(Matrix& Z, const int col, Vector& b) override;
+   void add_Acol_mul_bt(Matrix& Z, const int row, Vector& b) override;
 
 };
 

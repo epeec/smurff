@@ -26,7 +26,7 @@ void MPIMacauPrior::init()
    displs = new int[world_size];
    int sum = 0;
    for (int n = 0; n < world_size; n++) {
-      sendcounts[n] = rhs_for_rank[n] * this->Features->cols();
+      sendcounts[n] = rhs_for_rank[n] * this->Features->rows();
       displs[n] = sum;
       sum += sendcounts[n];
    }

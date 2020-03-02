@@ -53,7 +53,7 @@ public:
 
    const Vector fullMu(int n) const override;
 
-   int num_feat() const { return Features->cols(); }
+   int num_feat() const { return Features->rows(); }
 
    void compute_Ft_y(Matrix& Ft_y);
    virtual void sample_beta();

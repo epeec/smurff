@@ -32,9 +32,9 @@ namespace smurff {
 
       virtual Vector col_square_sum() = 0;
 
-      virtual void At_mul_Bt(Vector& Y, const int col, Matrix& B) = 0;
+      virtual void At_mul_Bt(Vector& Y, const int row, Matrix& B) = 0;
 
-      virtual void add_Acol_mul_bt(Matrix& Z, const int col, Vector& b) = 0;
+      virtual void add_Acol_mul_bt(Matrix& Z, const int row, Vector& b) = 0;
    };
 
 }

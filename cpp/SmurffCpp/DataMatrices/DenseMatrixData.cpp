@@ -11,16 +11,16 @@ DenseMatrixData::DenseMatrixData(Matrix Y)
 //d is an index of column in U matrix
 void DenseMatrixData::getMuLambda(const SubModel& model, uint32_t mode, int d, Vector& rr, Matrix& MM) const
 {
-    auto &Y = this->Y(mode).col(d);
+    auto &Y = this->Y(mode).row(d);
     auto Vf = *model.CVbegin(mode);
     auto &ns = noise();
 
     for(int r = 0; r<Y.rows(); ++r) 
     {
-        const auto &col = Vf.col(r);
+        const auto &row = Vf.row(r);
         PVec<> pos = this->pos(mode, d, r);
         double noisy_val = ns.sample(model, pos, Y(r));
-        rr.noalias() += col * noisy_val; // rr = rr + (V[m] * noisy_y[d]) 
+        rr.noalias() += row * noisy_val; // rr = rr + (V[m] * noisy_y[d]) 
     }
 
     MM.noalias() += ns.getAlpha() * VV[mode]; // MM = MM + VV[m]

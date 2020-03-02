@@ -33,7 +33,7 @@ public:
 
    //mu in NormalPrior does not depend on column index
    //however successors of this class can override this method
-   //for example in MacauPrior mu depends on Uhat.col(n)
+   //for example in MacauPrior mu depends on Uhat.row(n)
    virtual const Vector fullMu(int n) const;
 
    void sample_latent(int n) override;

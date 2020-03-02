@@ -86,7 +86,7 @@ int ILatentPrior::num_latent() const
 
 int ILatentPrior::num_item() const
 {
-   return model().U(m_mode).cols();
+   return model().U(m_mode).rows();
 }
 
 std::ostream &ILatentPrior::info(std::ostream &os, std::string indent)
@@ -105,19 +105,19 @@ void ILatentPrior::sample_latents()
    COUNTER("sample_latents");
    data().update_pnm(model(), m_mode);
 
-   // for effiency, we keep + update Ucol and UUcol by every thread
-   thread_vector<Vector> Ucol(Vector::Zero(num_latent()));
-   thread_vector<Matrix> UUcol(Matrix::Zero(num_latent(), num_latent()));
+   // for effiency, we keep + update Urow and UUrow by every thread
+   thread_vector<Vector> Urow(Vector::Zero(num_latent()));
+   thread_vector<Matrix> UUrow(Matrix::Zero(num_latent(), num_latent()));
 
    #pragma omp parallel for schedule(guided)
-   for(int n = 0; n < U().cols(); n++)
+   for(int n = 0; n < U().rows(); n++)
    #pragma omp task
    {
       COUNTER("sample_latent");
       sample_latent(n);
-      const auto &col = U().col(n);
-      Ucol.local().noalias() += col;
-      UUcol.local().noalias() += col * col.transpose();
+      const auto &row = U().row(n);
+      Urow.local().noalias() += row;
+      UUrow.local().noalias() += row * row.transpose();
 
       if (m_session.inSamplingPhase())
          model().updateAggr(m_mode, n);
@@ -126,8 +126,8 @@ void ILatentPrior::sample_latents()
    if (m_session.inSamplingPhase())
       model().updateAggr(m_mode);
 
-   Usum  = Ucol.combine();
-   UUsum = UUcol.combine();
+   Usum  = Urow.combine();
+   UUsum = UUrow.combine();
 }
 
 bool ILatentPrior::save(SaveState &sf) const
