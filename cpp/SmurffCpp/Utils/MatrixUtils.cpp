@@ -17,6 +17,14 @@ Matrix matrix_utils::dense_to_eigen(const DenseTensor& matrixAsTensor)
    return Eigen::Map<const Matrix>(matrixAsTensor.getValues().data(), matrixAsTensor.getNRow(), matrixAsTensor.getNCol());
 }
 
+Matrix matrix_utils::make_dense(
+          const std::vector<std::uint64_t> &dims,
+          const std::vector<double> &values
+)
+{
+   return dense_to_eigen(smurff::DenseTensor(dims, values));
+}
+
 SparseMatrix matrix_utils::sparse_to_eigen(const SparseTensor& matrixAsTensor)
 {
    THROWERROR_ASSERT_MSG(matrixAsTensor.getNModes() == 2, "Invalid number of dimensions. Tensor can not be converted to matrix.");
@@ -29,6 +37,14 @@ SparseMatrix matrix_utils::sparse_to_eigen(const SparseTensor& matrixAsTensor)
    out.setFromTriplets(begin, end);
 
    return out;
+}
+
+SparseMatrix matrix_utils::make_sparse(
+    const std::vector<std::uint64_t> &dims,
+    const std::vector<std::vector<std::uint32_t>> &columns,
+    const std::vector<double> &values)
+{
+   return sparse_to_eigen(smurff::SparseTensor(dims, columns, values));
 }
 
 bool matrix_utils::equals(const Matrix& m1, const Matrix& m2, double precision)

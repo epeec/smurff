@@ -1,18 +1,22 @@
 #include "catch.hpp"
 
 #include <SmurffCpp/SideInfo/SparseSideInfo.h>
+#include <SmurffCpp/SideInfo/linop.h>
 #include <SmurffCpp/Utils/Distribution.h>
+#include <SmurffCpp/Utils/MatrixUtils.h>
 
 namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
+SparseMatrix sideInfo = matrix_utils::make_sparse(
+    {6, 4},
+    {{0, 3, 3, 2, 5, 4, 1, 2, 4}, {1, 0, 2, 1, 3, 0, 1, 3, 2}},
+    {0.6, -0.76, 1.48, 1.19, 2.44, 1.95, -0.82, 0.06, 2.54});
+
 TEST_CASE( "SparseSideInfo/At_mul_A", "[At_mul_A] for SparseSideInfo" )
 {
-    std::uint32_t rows[9] = { 0, 3, 3, 2, 5, 4, 1, 2, 4 };
-    std::uint32_t cols[9] = { 1, 0, 2, 1, 3, 0, 1, 3, 2 };
-    double vals[9] = { 0.6 , -0.76,  1.48,  1.19,  2.44,  1.95, -0.82,  0.06,  2.54 };
-    SparseSideInfo si = SparseSideInfo(6, 4, 9, rows, cols, vals);
+    SparseSideInfo si = SparseSideInfo(DataConfig(sideInfo));
 
     Matrix AA(4, 4);
     si.At_mul_A(AA);
@@ -33,10 +37,7 @@ TEST_CASE( "SparseSideInfo/At_mul_A", "[At_mul_A] for SparseSideInfo" )
 
 TEST_CASE( "SparseSideInfo/A_mul_B", "[A_mul_B] for SparseSideInfo" )
 {
-    std::uint32_t rows[9] = { 0, 3, 3, 2, 5, 4, 1, 2, 4 };
-    std::uint32_t cols[9] = { 1, 0, 2, 1, 3, 0, 1, 3, 2 };
-    double vals[9] = { 0.6 , -0.76,  1.48,  1.19,  2.44,  1.95, -0.82,  0.06,  2.54 };
-    SparseSideInfo si = SparseSideInfo(6, 4, 9, rows, cols, vals);
+    SparseSideInfo si = SparseSideInfo(DataConfig(sideInfo));
 
     Matrix X(4, 6);
     X << 0., 0.6, 0., 0., 0., -0.82,
@@ -71,10 +72,7 @@ TEST_CASE( "SparseSideInfo/A_mul_B", "[A_mul_B] for SparseSideInfo" )
 
 TEST_CASE( "SparseSideInfo/At_mul_Bt", "[At_mul_Bt] for SparseSideInfo" )
 {
-    std::uint32_t rows[9] = { 0, 3, 3, 2, 5, 4, 1, 2, 4 };
-    std::uint32_t cols[9] = { 1, 0, 2, 1, 3, 0, 1, 3, 2 };
-    double vals[9] = { 0.6 , -0.76,  1.48,  1.19,  2.44,  1.95, -0.82,  0.06,  2.54 };
-    SparseSideInfo si = SparseSideInfo(6, 4, 9, rows, cols, vals);
+    SparseSideInfo si = SparseSideInfo(DataConfig(sideInfo));
 
     Matrix X(4, 6);
     X << 0., 0.6, 0., 0., 0., -0.82,
@@ -94,10 +92,7 @@ TEST_CASE( "SparseSideInfo/At_mul_Bt", "[At_mul_Bt] for SparseSideInfo" )
 
 TEST_CASE( "SparseSideInfo/add_Acol_mul_bt", "[add_Acol_mul_bt] for SparseSideInfo" )
 {
-    std::uint32_t rows[9] = { 0, 3, 3, 2, 5, 4, 1, 2, 4 };
-    std::uint32_t cols[9] = { 1, 0, 2, 1, 3, 0, 1, 3, 2 };
-    double vals[9] = { 0.6 , -0.76,  1.48,  1.19,  2.44,  1.95, -0.82,  0.06,  2.54 };
-    SparseSideInfo si = SparseSideInfo(6, 4, 9, rows, cols, vals);
+    SparseSideInfo si = SparseSideInfo(DataConfig(sideInfo));
     
     Matrix Z(4, 6);
     Z << 0., 0.6, 0., 0., 0., -0.82,
@@ -141,10 +136,7 @@ TEST_CASE( "SparseSideInfo/add_Acol_mul_bt", "[add_Acol_mul_bt] for SparseSideIn
 
 TEST_CASE( "SparseSideInfo/col_square_sum", "[col_square_sum] for SparseSideInfo" )
 {
-    std::uint32_t rows[9] = { 0, 3, 3, 2, 5, 4, 1, 2, 4 };
-    std::uint32_t cols[9] = { 1, 0, 2, 1, 3, 0, 1, 3, 2 };
-    double vals[9] = { 0.6 , -0.76,  1.48,  1.19,  2.44,  1.95, -0.82,  0.06,  2.54 };
-    SparseSideInfo si = SparseSideInfo(6, 4, 9, rows, cols, vals);
+    SparseSideInfo si = SparseSideInfo(DataConfig(sideInfo));
 
     Vector out = si.col_square_sum();
 
@@ -156,11 +148,8 @@ TEST_CASE( "SparseSideInfo/col_square_sum", "[col_square_sum] for SparseSideInfo
 
 TEST_CASE( "SparseSideInfo/compute_uhat", "[compute_uhat] for SparseSideInfo" )
 {
-    std::uint32_t rows[9] = { 0, 3, 3, 2, 5, 4, 1, 2, 4 };
-    std::uint32_t cols[9] = { 1, 0, 2, 1, 3, 0, 1, 3, 2 };
-    double vals[9] = {0.6, -0.76, 1.48, 1.19, 2.44, 1.95, -0.82, 0.06, 2.54};
-    SparseSideInfo si = SparseSideInfo(6, 4, 9, rows, cols, vals);
-    
+    SparseSideInfo si = SparseSideInfo(DataConfig(sideInfo));
+
     Matrix beta(6,4);
     beta << 1.4, 0., 0.76, 1.34,
             -2.32, 0.12, -1.3, 0.,
@@ -187,52 +176,4 @@ TEST_CASE( "SparseSideInfo/compute_uhat", "[compute_uhat] for SparseSideInfo" )
     }
 }
 
-TEST_CASE( "SparseSideInfo/AtA_mul_B", "[AtA_mul_B] for SparseSideInfo" )
-{
-    Matrix out(6,6);
-    const uint32_t rows[30] =  { 
-                        0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2,
-                        3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5
-                    };
-    const uint32_t cols[30] =  {
-                        2, 3, 4, 5, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5,
-                        0, 1, 2, 3, 4, 5, 2, 3, 4, 5, 0, 1, 2, 3, 4
-                    };
-    double vals[30] =   { 
-                            0.0804, 0.0608, 4.6604, 3.2696,
-                            0.072, -0.0984, 0.1428, -0.1608, -7.826,
-                            0.114, -0.1558, 0.3665, -3.1096, -3.8723, 5.7096, 
-                            -0.858, 1.1726, -1.8643, -3.0616, 1.6448, -6.6124,
-                            0.1278, 1.628, 2.794, 5.1972, 
-                            -0.78, 1.066, -1.547, -0.4256, 1.092 
-                        };
-    
-    SparseSideInfo A(6, 6, 30, rows, cols, vals);
-
-    double reg = 0.76;
-    Matrix B(6,6);
-    B <<    1.4, 0., 0.76, 1.34, 0.98, -1.98,
-            -2.32, 0.12, -1.3, 0., 6.54, -3.12,
-            0.45, 0.19, -1.87, 2.34, 0., 0.54,
-            2.12, -1.43, -0.98, -2.71, 0., 2.65,
-            0., 0., 1.10, 2.13, 0., 0.,
-            0.56, -1.3, 0., 0., -0.43, -3.21; 
-
-    Matrix inner(6,6);
-    linop::AtA_mul_Bx<6>(out, A, reg, B, inner);
-
-    Matrix true_out(6,6);
-    true_out << -7.10631, 11.1661, -20.3844, 28.4183, 121.97, -194.977,
-                -49.9681, 65.9712, -106.738, 34.3392, 748.891, -414.892,
-                4.73854, -5.86421, 8.77816, 49.4195, 39.4612, 60.5787,
-                14.0955, -18.1487, 30.9668, -26.6171, -49.6666, 284.69,
-                8.66668, -11.8445, 19.024, 54.2326, 19.6878, 40.6309,
-                -15.286, 20.4846, -39.7644, -35.1639, -44.7608, -352.293;
-
-    for (int i = 0; i < true_out.rows(); i++) {
-        for (int j = 0; j < true_out.; j++) {
-            REQUIRE( out(i,j) == Approx(true_out(i,j)) );
-        }
-    }
-}
 } // end namespace smurff
