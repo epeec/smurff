@@ -2,6 +2,7 @@ FILE (GLOB HEADER_FILES "catch.hpp" "Tests.h")
 source_group ("Header Files" FILES ${HEADER_FILES})
 
 FILE (GLOB SOURCE_FILES "tests.cpp"
+                        "TestsDistribution.cpp"
                         "TestsPVec.cpp"
                         "TestsTensorData.cpp"
                         "TestsLinop.cpp"
