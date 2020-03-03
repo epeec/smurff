@@ -237,7 +237,7 @@ Matrix Wishart(const Matrix &sigma, const int df)
 }
 
 // from julia package Distributions: conjugates/normalwishart.jl
-std::pair<Vector, Matrix> NormalWishart(const Vector & mu, double kappa, const Matrix & T, double nu)
+std::pair<Vector, Matrix> NormalWishart(const Vector & mu, double kappa, const Matrix & T, const int nu)
 {
    Matrix Lam = Wishart(T, nu);
    Matrix mu_o = MvNormal_prec(Lam * kappa, mu);
