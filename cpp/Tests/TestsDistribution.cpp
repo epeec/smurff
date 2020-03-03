@@ -59,16 +59,19 @@ TEST_CASE( "CondNormalWishart" ) {
   Matrix T = Matrix::Identity(3,3);
   int kappa = 2;
   int nu = 4;
-  Matrix U(mu::make_dense({3, 4}, {1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.}));
+  Matrix U(mu::make_dense({4, 3}, {1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.}));
 
   auto N = U.cols();
-  auto NS = U * U.adjoint();
-  auto NU = U.rowwise().sum();
+  auto NS = U.transpose() * U;
+  auto NU = U.colwise().sum();
 
-  auto p1 = CondNormalWishart(N, NS, NU, mean, kappa, T, nu);
+  REQUIRE(NS.rows() == NS.cols());
+  REQUIRE(NS.cols() == 3);
+  REQUIRE(NU.cols() == 3);
 
 // should be the same
   auto p2 = CondNormalWishart(U, mean, kappa, T, nu);
+  auto p1 = CondNormalWishart(N, NS, NU, mean, kappa, T, nu);
 }
 
 }
