@@ -62,8 +62,7 @@ namespace smurff { namespace matrix_utils {
 
    // Conversion of dense data to/from dense eigen matrix
    Matrix dense_to_eigen(const smurff::DenseTensor& );
-   Matrix make_dense(
-          const std::vector<std::uint64_t> &dims,
+   Matrix make_dense(const std::vector<std::uint64_t> &dims,
           const std::vector<double> &values
    );
 
