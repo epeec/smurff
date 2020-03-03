@@ -15,7 +15,7 @@ TEST_CASE( "mvnormal/covar" ) {
   init_bmrng(1234);
 
   const int num_samples = 1000;
-  Vector mean = mu::make_dense({10, 1} , { 1., 2., 3., 4., 5., 6., 7., 8., 9., 10.});
+  Vector mean = mu::make_dense({1, 10} , { 1., 2., 3., 4., 5., 6., 7., 8., 9., 10.});
   Matrix covar = Matrix::Identity(10,10);
 
   auto randomMatrix = MvNormal(covar, mean, num_samples);
@@ -24,9 +24,9 @@ TEST_CASE( "mvnormal/covar" ) {
   REQUIRE(mu::equals_vector(randomMatrix.rowwise().sum(), num_samples * mean, num_samples/10));
 
   // check variance
-  Matrix centered = (randomMatrix.colwise() - mean);
+  Matrix centered = (randomMatrix.rowwise() - mean);
   Matrix squared = centered.array().square(); 
-  Vector var = squared.rowwise().sum() / num_samples;
+  Vector var = squared.colwise().sum() / num_samples;
   REQUIRE(mu::equals_vector(var, covar.diagonal(), 0.1));
 
 }
@@ -36,7 +36,7 @@ TEST_CASE( "mvnormal/prec" ) {
   init_bmrng(1234);
 
   const int num_samples = 1000;
-  Vector mean = mu::make_dense({10, 1} , { 1., 2., 3., 4., 5., 6., 7., 8., 9., 10.});
+  Vector mean = mu::make_dense({1, 10} , { 1., 2., 3., 4., 5., 6., 7., 8., 9., 10.});
   Matrix covar = Matrix::Identity(10,10);
 
   auto randomMatrix = MvNormal_prec(covar, mean, num_samples);
@@ -45,9 +45,9 @@ TEST_CASE( "mvnormal/prec" ) {
   REQUIRE(mu::equals_vector(randomMatrix.rowwise().sum(), num_samples * mean, num_samples/10));
 
   // check variance
-  Matrix centered = (randomMatrix.colwise() - mean);
+  Matrix centered = (randomMatrix.rowwise() - mean);
   Matrix squared = centered.array().square(); 
-  Vector var = squared.rowwise().sum() / num_samples;
+  Vector var = squared.colwise().sum() / num_samples;
   REQUIRE(mu::equals_vector(var, covar.diagonal(), 0.1));
 
 }
@@ -55,11 +55,11 @@ TEST_CASE( "mvnormal/prec" ) {
 
 TEST_CASE( "CondNormalWishart" ) {
   init_bmrng(1234);
-  Vector mean = matrix_utils::make_dense({3, 1} , { 1., 2., 3. });
+  Vector mean = matrix_utils::make_dense({1, 3} , { 1., 2., 3. });
   Matrix T = Matrix::Identity(3,3);
   int kappa = 2;
   int nu = 4;
-  Matrix U(mu::make_dense({3, 4}, {1., 5., 9., 2., 6., 10., 3., 7., 11., 4., 8., 12.}));
+  Matrix U(mu::make_dense({3, 4}, {1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.}));
 
   auto N = U.cols();
   auto NS = U * U.adjoint();
