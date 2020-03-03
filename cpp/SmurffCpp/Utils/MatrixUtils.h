@@ -54,9 +54,18 @@ namespace smurff { namespace matrix_utils {
 
    // Conversion of MatrixConfig to/from sparse eigen matrix
    SparseMatrix sparse_to_eigen(const smurff::SparseTensor& );
+   SparseMatrix make_sparse(
+          const std::vector<std::uint64_t> &dims,
+          const std::vector<std::vector<std::uint32_t>> &columns,
+          const std::vector<double> &values
+   );
 
    // Conversion of dense data to/from dense eigen matrix
    Matrix dense_to_eigen(const smurff::DenseTensor& );
+   Matrix make_dense(
+          const std::vector<std::uint64_t> &dims,
+          const std::vector<double> &values
+   );
 
    bool equals(const Matrix& m1, const Matrix& m2, double precision = std::numeric_limits<double>::epsilon());
    bool equals_vector(const Vector& v1, const Vector& v2, double precision = std::numeric_limits<double>::epsilon() * 100);
