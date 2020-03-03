@@ -61,7 +61,7 @@ TEST_CASE( "CondNormalWishart" ) {
   int nu = 4;
   Matrix U(mu::make_dense({4, 3}, {1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.}));
 
-  auto N = U.cols();
+  auto N = U.rows();
   auto NS = U.transpose() * U;
   auto NU = U.colwise().sum();
 
