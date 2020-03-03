@@ -205,7 +205,7 @@ Matrix WishartUnit(int m, int df)
    std::cout << "  df:\n" << df << std::endl;
    std::cout << "  ret;\n" << ret << std::endl;
    std::cout << "  c:\n" << c << std::endl;
-   std::cout << "}\n" << ret << std::endl;
+   std::cout << "}\n" << std::endl;
    #endif
 
    return ret;
@@ -289,6 +289,13 @@ std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, c
    auto N = U.rows();
    auto NS = U.transpose() * U;
    auto NU = U.colwise().sum();
+
+#ifdef TEST_MVNORMAL
+   std::cout << "CondNormalWishart/5 {\n" << std::endl;
+   std::cout << "  U:\n" << mu << std::endl;
+   std::cout << "}\n" << std::endl;
+#endif
+
    return CondNormalWishart(N, NS, NU, mu, kappa, T, nu);
 }
 
