@@ -181,6 +181,7 @@ auto nrandn(int n, int m) -> decltype(Array2D::NullaryExpr(n, m, std::cref(randn
    return Array2D::NullaryExpr(n, m, std::cref(randn)); 
 }
 
+//#define TEST_MVNORMAL
 
 Matrix WishartUnit(int m, int df)
 {
@@ -199,12 +200,12 @@ Matrix WishartUnit(int m, int df)
    Matrix ret = c.transpose() * c;
 
    #ifdef TEST_MVNORMAL
-   cout << "WISHART UNIT {\n" << endl;
-   cout << "  m:\n" << m << endl;
-   cout << "  df:\n" << df << endl;
-   cout << "  ret;\n" << ret << endl;
-   cout << "  c:\n" << c << endl;
-   cout << "}\n" << ret << endl;
+   std::cout << "WISHART UNIT {\n" << std::endl;
+   std::cout << "  m:\n" << m << std::endl;
+   std::cout << "  df:\n" << df << std::endl;
+   std::cout << "  ret;\n" << ret << std::endl;
+   std::cout << "  c:\n" << c << std::endl;
+   std::cout << "}\n" << ret << std::endl;
    #endif
 
    return ret;
@@ -223,13 +224,13 @@ Matrix Wishart(const Matrix &sigma, const int df)
    Matrix a = r * au * chol.matrixU();
 
    #ifdef TEST_MVNORMAL
-   cout << "WISHART {\n" << endl;
-   cout << "  sigma:\n" << sigma << endl;
-   cout << "  r:\n" << r << endl;
-   cout << "  au:\n" << au << endl;
-   cout << "  df:\n" << df << endl;
-   cout << "  a:\n" << a << endl;
-   cout << "}\n" << endl;
+   std::cout << "WISHART {\n" << std::endl;
+   std::cout << "  sigma:\n" << sigma << std::endl;
+   std::cout << "  r:\n" << r << std::endl;
+   std::cout << "  au:\n" << au << std::endl;
+   std::cout << "  df:\n" << df << std::endl;
+   std::cout << "  a:\n" << a << std::endl;
+   std::cout << "}\n" << std::endl;
    #endif
 
   return a;
@@ -242,14 +243,14 @@ std::pair<Vector, Matrix> NormalWishart(const Vector & mu, double kappa, const M
    Matrix mu_o = MvNormal_prec(Lam * kappa, mu);
 
    #ifdef TEST_MVNORMAL
-   cout << "NORMAL WISHART {\n" << endl;
-   cout << "  mu:\n" << mu << endl;
-   cout << "  kappa:\n" << kappa << endl;
-   cout << "  T:\n" << T << endl;
-   cout << "  nu:\n" << nu << endl;
-   cout << "  mu_o\n" << mu_o << endl;
-   cout << "  Lam\n" << Lam << endl;
-   cout << "}\n" << endl;
+   std::cout << "NORMAL WISHART {\n" << std::endl;
+   std::cout << "  mu:\n" << mu << std::endl;
+   std::cout << "  kappa:\n" << kappa << std::endl;
+   std::cout << "  T:\n" << T << std::endl;
+   std::cout << "  nu:\n" << nu << std::endl;
+   std::cout << "  mu_o\n" << mu_o << std::endl;
+   std::cout << "  Lam\n" << Lam << std::endl;
+   std::cout << "}\n" << std::endl;
    #endif
 
    return std::make_pair(mu_o , Lam);
@@ -267,17 +268,17 @@ std::pair<Vector, Matrix> CondNormalWishart(const int N, const Matrix &NS, const
    const auto ret = NormalWishart(mu_c, kappa_c, T_c, nu_c);
 
 #ifdef TEST_MVNORMAL
-   cout << "CondNormalWishart/7 {\n" << endl;
-   cout << "  mu:\n" << mu << endl;
-   cout << "  kappa:\n" << kappa << endl;
-   cout << "  T:\n" << T << endl;
-   cout << "  nu:\n" << nu << endl;
-   cout << "  N:\n" << N << endl;
-   cout << "  NS:\n" << NS << endl;
-   cout << "  NU:\n" << NU << endl;
-   cout << "  mu_o\n" << ret.first << endl;
-   cout << "  Lam\n" << ret.second << endl;
-   cout << "}\n" << endl;
+   std::cout << "CondNormalWishart/7 {\n" << std::endl;
+   std::cout << "  mu:\n" << mu << std::endl;
+   std::cout << "  kappa:\n" << kappa << std::endl;
+   std::cout << "  T:\n" << T << std::endl;
+   std::cout << "  nu:\n" << nu << std::endl;
+   std::cout << "  N:\n" << N << std::endl;
+   std::cout << "  NS:\n" << NS << std::endl;
+   std::cout << "  NU:\n" << NU << std::endl;
+   std::cout << "  mu_o\n" << ret.first << std::endl;
+   std::cout << "  Lam\n" << ret.second << std::endl;
+   std::cout << "}\n" << std::endl;
 #endif
 
    return ret;
@@ -303,11 +304,11 @@ Matrix MvNormal_prec(const Matrix & Lambda, int ncols)
    Matrix ret = chol.matrixU().solve(r);
 
 #ifdef TEST_MVNORMAL
-   cout << "MvNormal_prec/2 {\n" << endl;
-   cout << "  Lambda\n" << Lambda << endl;
-   cout << "  ncols\n" << ncols << endl;
-   cout << "  ret\n" << ret << endl;
-   cout << "}\n" << endl;
+   std::cout << "MvNormal_prec/2 {\n" << std::endl;
+   std::cout << "  Lambda\n" << Lambda << std::endl;
+   std::cout << "  ncols\n" << ncols << std::endl;
+   std::cout << "  ret\n" << ret << std::endl;
+   std::cout << "}\n" << std::endl;
 #endif
 
    return ret;
@@ -320,12 +321,12 @@ Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn)
    r.colwise() += mean;
   
 #ifdef TEST_MVNORMAL
-   cout << "MvNormal_prec/2 {\n" << endl;
-   cout << "  Lambda\n" << Lambda << endl;
-   cout << "  mean\n" << Lambda << endl;
-   cout << "  nn\n" << nn << endl;
-   cout << "  r\n" << ret << endl;
-   cout << "}\n" << endl;
+   std::cout << "MvNormal_prec/2 {\n" << std::endl;
+   std::cout << "  Lambda\n" << Lambda << std::endl;
+   std::cout << "  mean\n" << mean << std::endl;
+   std::cout << "  nn\n" << nn << std::endl;
+   std::cout << "  r\n" << r << std::endl;
+   std::cout << "}\n" << std::endl;
 #endif
 
    return r;
