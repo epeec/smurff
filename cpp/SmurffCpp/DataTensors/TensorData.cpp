@@ -141,18 +141,18 @@ void TensorData::getMuLambda(const SubModel& model, uint32_t mode, int d, Vector
    auto V0 = model.CVbegin(mode); //get first V matrix
    for (std::uint64_t j = sview->beginPlane(d); j < sview->endPlane(d); j++) //go through hyperplane in tensor rotation
    {
-      Vector col = (*V0).col(sview->getIndices()(j, 0)); //create a copy of m'th column from V (m = 0)
+      Vector row = (*V0).row(sview->getIndices()(j, 0)); //create a copy of m'th column from V (m = 0)
       auto V = model.CVbegin(mode); //get V matrices for mode      
       for (std::uint64_t m = 1; m < sview->getNCoords(); m++) //go through each coordinate of value
       {
          ++V; //inc iterator prior to access since we are starting from m = 1
-         col.noalias() = col.cwiseProduct((*V).col(sview->getIndices()(j, m))); //multiply by m'th column from V
+         row.noalias() = row.cwiseProduct((*V).row(sview->getIndices()(j, m))); //multiply by m'th column from V
       }
-      MM.triangularView<Eigen::Lower>() += noise().getAlpha() * col * col.transpose(); // MM = MM + (col * colT) * alpha (where col = product of columns in each V)
+      MM.triangularView<Eigen::Lower>() += noise().getAlpha() * row.transpose() * row; // MM = MM + (row * colT) * alpha (where row = product of columns in each V)
       
       auto pos = sview->pos(d, j);
       double noisy_val = noise().sample(model, pos, sview->getValues()[j]);
-      rr.noalias() += col * noisy_val; // rr = rr + (col * value) * alpha (where value = j'th value of Y)
+      rr.noalias() += row * noisy_val; // rr = rr + (row * value) * alpha (where value = j'th value of Y)
    }
 
    MM.triangularView<Eigen::Upper>() = MM.transpose();

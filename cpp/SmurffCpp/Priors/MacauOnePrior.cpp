@@ -100,15 +100,15 @@ void MacauOnePrior::sample_mu_lambda(const Matrix &U)
 {
    Matrix WI(num_latent(), num_latent());
    WI.setIdentity();
-   int N = U.cols();
+   int N = U.rows();
 
-   Matrix Udelta(num_latent(), N);
+   Matrix Udelta(N, num_latent());
    #pragma omp parallel for schedule(static)
    for (int i = 0; i < N; i++)
    {
       for (int d = 0; d < num_latent(); d++)
       {
-         Udelta(d, i) = U(d, i) - Uhat(d, i);
+         Udelta(i,d) = U(i,d) - Uhat(i,d);
       }
    }
    std::tie(mu(), Lambda) = CondNormalWishart(Udelta, Vector::Constant(num_latent(), 0.0), 2.0, WI, num_latent());
