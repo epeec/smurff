@@ -56,8 +56,8 @@ void HDF5::read(const std::string& section, const std::string& tag, Vector &X) c
 {
    auto dataset = m_group.getGroup(section).getDataSet(tag);
    std::vector<size_t> dims = dataset.getDimensions();
-   THROWERROR_ASSERT(dims[1] == 1);
-   X.resize(dims[0]);
+   THROWERROR_ASSERT(dims[0] == 1);
+   X.resize(dims[1]);
    dataset.read(X.data());
 }
 

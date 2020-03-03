@@ -3,8 +3,15 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <iostream>
 
-#define SHOW(M) std::cout << #M << " =\n" << M << std::endl << std::endl;
+template<typename T>
+void show_internal(const char *name, const T variable)
+{
+   std::cout << name << " =\n" << variable << std::endl << std::endl;
+}
+
+#define SHOW(M) show_internal(#M, M);
 
 #define CONCAT_VAR(n1, n2) n1 ## n2
 

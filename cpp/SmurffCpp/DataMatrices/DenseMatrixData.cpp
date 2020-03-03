@@ -15,9 +15,13 @@ void DenseMatrixData::getMuLambda(const SubModel& model, uint32_t mode, int d, V
     auto Vf = *model.CVbegin(mode);
     auto &ns = noise();
 
-    for(int r = 0; r<Y.rows(); ++r) 
+    SHOW(this->Y(mode));
+    SHOW(Y);
+
+    for(int r = 0; r<Y.cols(); ++r) 
     {
         const auto &row = Vf.row(r);
+        SHOW(row);
         PVec<> pos = this->pos(mode, d, r);
         double noisy_val = ns.sample(model, pos, Y(r));
         rr.noalias() += row * noisy_val; // rr = rr + (V[m] * noisy_y[d]) 
