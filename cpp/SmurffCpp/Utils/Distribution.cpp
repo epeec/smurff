@@ -307,12 +307,12 @@ Matrix MvNormal_prec(const Matrix & Lambda, int nrows)
 
    Matrix r(nrows, ncols);
    bmrandn(r);
-   Matrix ret = chol.matrixU().solve(r);
+   Matrix ret = chol.matrixU().solve(r.transpose()).transpose();
 
 #ifdef TEST_MVNORMAL
    std::cout << "MvNormal_prec/2 {\n" << std::endl;
    std::cout << "  Lambda\n" << Lambda << std::endl;
-   std::cout << "  ncols\n" << ncols << std::endl;
+   std::cout << "  nrows\n" << nrows << std::endl;
    std::cout << "  ret\n" << ret << std::endl;
    std::cout << "}\n" << std::endl;
 #endif
@@ -321,16 +321,17 @@ Matrix MvNormal_prec(const Matrix & Lambda, int nrows)
 
 }
 
-Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn)
+Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nrows)
 {
-   Matrix r = MvNormal_prec(Lambda, nn);
+   Matrix r = MvNormal_prec(Lambda, nrows);
    r.rowwise() += mean;
   
 #ifdef TEST_MVNORMAL
+   THROWERROR_ASSERT(r.rows() == nrows);
    std::cout << "MvNormal_prec/2 {\n" << std::endl;
    std::cout << "  Lambda\n" << Lambda << std::endl;
    std::cout << "  mean\n" << mean << std::endl;
-   std::cout << "  nn\n" << nn << std::endl;
+   std::cout << "  nrows\n" << nrows << std::endl;
    std::cout << "  r\n" << r << std::endl;
    std::cout << "}\n" << std::endl;
 #endif
