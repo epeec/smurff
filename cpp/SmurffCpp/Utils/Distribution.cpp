@@ -264,7 +264,23 @@ std::pair<Vector, Matrix> CondNormalWishart(const int N, const Matrix &NS, const
    auto X    = (T + NS + kappa * mu * mu.adjoint() - kappa_c * mu_c * mu_c.adjoint());
    Matrix T_c = X.inverse();
     
-   return NormalWishart(mu_c, kappa_c, T_c, nu_c);
+   const auto ret = NormalWishart(mu_c, kappa_c, T_c, nu_c);
+
+#ifdef TEST_MVNORMAL
+   cout << "CondNormalWishart/7 {\n" << endl;
+   cout << "  mu:\n" << mu << endl;
+   cout << "  kappa:\n" << kappa << endl;
+   cout << "  T:\n" << T << endl;
+   cout << "  nu:\n" << nu << endl;
+   cout << "  N:\n" << N << endl;
+   cout << "  NS:\n" << NS << endl;
+   cout << "  NU:\n" << NU << endl;
+   cout << "  mu_o\n" << ret.first << endl;
+   cout << "  Lam\n" << ret.second << endl;
+   cout << "}\n" << endl;
+#endif
+
+   return ret;
 }
 
 std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, const double kappa, const Matrix &T, const int nu)
@@ -272,6 +288,7 @@ std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, c
    auto N = U.cols();
    auto NS = U * U.adjoint();
    auto NU = U.rowwise().sum();
+
    return CondNormalWishart(N, NS, NU, mu, kappa, T, nu);
 }
 
@@ -283,14 +300,35 @@ Matrix MvNormal_prec(const Matrix & Lambda, int ncols)
 
    Matrix r(nrows, ncols);
    bmrandn(r);
+   Matrix ret = chol.matrixU().solve(r);
 
-   return chol.matrixU().solve(r);
+#ifdef TEST_MVNORMAL
+   cout << "MvNormal_prec/2 {\n" << endl;
+   cout << "  Lambda\n" << Lambda << endl;
+   cout << "  ncols\n" << ncols << endl;
+   cout << "  ret\n" << ret << endl;
+   cout << "}\n" << endl;
+#endif
+
+   return ret;
+
 }
 
 Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn)
 {
    Matrix r = MvNormal_prec(Lambda, nn);
-   return r.colwise() + mean;
+   r.colwise() += mean;
+  
+#ifdef TEST_MVNORMAL
+   cout << "MvNormal_prec/2 {\n" << endl;
+   cout << "  Lambda\n" << Lambda << endl;
+   cout << "  mean\n" << Lambda << endl;
+   cout << "  nn\n" << nn << endl;
+   cout << "  r\n" << ret << endl;
+   cout << "}\n" << endl;
+#endif
+
+   return r;
 }
 
 // Draw nn samples from a size-dimensional normal distribution

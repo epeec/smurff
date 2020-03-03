@@ -11,7 +11,7 @@ namespace smurff {
 
 namespace mu = smurff::matrix_utils;
 
-TEST_CASE( "mvnormal" ) {
+TEST_CASE( "mvnormal/covar" ) {
   init_bmrng(1234);
 
   const int num_samples = 1000;
@@ -39,7 +39,7 @@ TEST_CASE( "mvnormal/prec" ) {
   Vector mean = mu::make_dense({10, 1} , { 1., 2., 3., 4., 5., 6., 7., 8., 9., 10.});
   Matrix covar = Matrix::Identity(10,10);
 
-  auto randomMatrix = MvNormal(covar, mean, num_samples);
+  auto randomMatrix = MvNormal_prec(covar, mean, num_samples);
 
   // check mean
   REQUIRE(mu::equals_vector(randomMatrix.rowwise().sum(), num_samples * mean, num_samples/10));
