@@ -292,7 +292,7 @@ std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, c
 
 #ifdef TEST_MVNORMAL
    std::cout << "CondNormalWishart/5 {\n" << std::endl;
-   std::cout << "  U:\n" << mu << std::endl;
+   std::cout << "  U:\n" << U << std::endl;
    std::cout << "}\n" << std::endl;
 #endif
 
