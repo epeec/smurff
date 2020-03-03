@@ -53,4 +53,22 @@ TEST_CASE( "mvnormal/prec" ) {
 }
 
 
+TEST_CASE( "CondNormalWishart" ) {
+  init_bmrng(1234);
+  Vector mean = matrix_utils::make_dense({3, 1} , { 1., 2., 3. });
+  Matrix T = Matrix::Identity(3,3);
+  int kappa = 2;
+  int nu = 4;
+  Matrix U(mu::make_dense({3, 4}, {1., 5., 9., 2., 6., 10., 3., 7., 11., 4., 8., 12.}));
+
+  auto N = U.cols();
+  auto NS = U * U.adjoint();
+  auto NU = U.rowwise().sum();
+
+  auto p1 = CondNormalWishart(N, NS, NU, mean, kappa, T, nu);
+
+// should be the same
+  auto p2 = CondNormalWishart(U, mean, kappa, T, nu);
+}
+
 }
