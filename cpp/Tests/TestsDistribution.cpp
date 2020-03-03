@@ -68,6 +68,7 @@ TEST_CASE( "CondNormalWishart" ) {
   REQUIRE(NS.rows() == NS.cols());
   REQUIRE(NS.cols() == 3);
   REQUIRE(NU.cols() == 3);
+  REQUIRE(U.cols() == 3);
 
 // should be the same
   auto p2 = CondNormalWishart(U, mean, kappa, T, nu);
