@@ -51,18 +51,18 @@ int DenseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, c
 
 Vector DenseSideInfo::col_square_sum()
 {
-    return m_side_info.array().square().rowwise().sum();
+    return m_side_info.array().square().colwise().sum();
 }
 
 
-void DenseSideInfo::At_mul_Bt(Vector& Y, const int row, Matrix& B)
+void DenseSideInfo::At_mul_Bt(Vector& Y, const int feat, Matrix& B)
 {
-   Y = B * m_side_info.row(row);
+   Y = m_side_info.col(feat).transpose() * B;
 }
 
 void DenseSideInfo::add_Acol_mul_bt(Matrix& Z, const int row, Vector& b)
 {
-   Z += (m_side_info.row(row) * b.transpose()).transpose();
+   Z += m_side_info.col(row) * b;
 }
 
 const Matrix &DenseSideInfo::get_features()
