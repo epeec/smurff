@@ -41,7 +41,7 @@ bool SparseSideInfo::is_dense() const
 void SparseSideInfo::compute_uhat(Matrix& uhat, Matrix& beta)
 {
     COUNTER("compute_uhat");
-    uhat = beta * (Ft);
+    uhat = F * beta;
 }
 
 void SparseSideInfo::At_mul_A(Matrix& out)
@@ -53,7 +53,7 @@ void SparseSideInfo::At_mul_A(Matrix& out)
 Matrix SparseSideInfo::A_mul_B(Matrix& A)
 {
     COUNTER("A_mul_B");
-    return (A * F);
+    return F.transpose() * A;
 }
 
 int SparseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
