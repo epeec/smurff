@@ -5,10 +5,16 @@
 #include <sstream>
 #include <iostream>
 
-template<typename T>
-void show_internal(const char *name, const T variable)
+#include <Eigen/Core>
+
+template<typename Matrix>
+inline void show_internal(const char *name, const Matrix& variable)
 {
-   std::cout << name << " =\n" << variable << std::endl << std::endl;
+
+   if (variable.cols()==1)
+      std::cout << name << ".T (" << variable.cols() << "," << variable.cols() << ") =\n" << variable.transpose() << std::endl << std::endl;
+   else
+      std::cout << name << " (" << variable.cols() << "," << variable.cols() << ") =\n" << variable << std::endl << std::endl;
 }
 
 #define SHOW(M) show_internal(#M, M);
