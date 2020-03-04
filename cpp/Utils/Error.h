@@ -12,9 +12,9 @@ inline void show_internal(const char *name, const Matrix& variable)
 {
 
    if (variable.cols()==1)
-      std::cout << name << ".T (" << variable.cols() << "," << variable.cols() << ") =\n" << variable.transpose() << std::endl << std::endl;
+      std::cout << name << ".T (" << variable.rows() << "," << variable.cols() << ") =\n" << variable.transpose() << std::endl << std::endl;
    else
-      std::cout << name << " (" << variable.cols() << "," << variable.cols() << ") =\n" << variable << std::endl << std::endl;
+      std::cout << name << " (" << variable.rows() << "," << variable.cols() << ") =\n" << variable << std::endl << std::endl;
 }
 
 #define SHOW(M) show_internal(#M, M);
