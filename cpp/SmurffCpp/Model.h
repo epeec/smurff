@@ -184,14 +184,14 @@ std::shared_ptr<Matrix> Model::predict_latent(int mode, const FeatMatrix& f)
    const auto &beta = m_link_matrices.at(mode);
    const auto &mu = m_mus.at(mode);
 
-   auto ret = std::make_shared<Matrix>(nlatent(), f.rows());
-   *ret = beta * f.transpose();
+   auto ret = std::make_shared<Matrix>(f.rows(), nlatent());
+   *ret = f * beta;
    ret->rowwise() += mu;
-   #if 0
+   #if 1
    std::cout << "beta =\n" << beta.transpose() << std::endl;
    std::cout << "f =\n" << f << std::endl;
-   std::cout << "beta * f.transpose() =\n" << beta * f.transpose() << std::endl;
-   std::cout << "Umean: " << Umean << std::endl;
+   std::cout << "f * beta.transpose() =\n" << f * beta << std::endl;
+   std::cout << "mu: " << mu << std::endl;
    std::cout << "U: " << U(mode) << std::endl;
    std::cout << "ret: " << *ret << std::endl;
    #endif
@@ -209,13 +209,16 @@ const Matrix Model::predict(int mode, const FeatMatrix& f)
 
    int othermode = (mode+1) % 2;
 
-   #if 0
+   auto result = *latent * U(othermode).transpose();
+
+   #if 1
    std::cout << "predicted latent: " << *latent << std::endl;
    std::cout << "other U: " << U(othermode) << std::endl;
-   std::cout << "ret: " << latent->transpose() * U(othermode) << std::endl;
+   std::cout << "result: " << result << std::endl;
    #endif
 
-   return latent->transpose() * U(othermode);
+   return result;
+
 }
 
 };
