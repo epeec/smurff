@@ -41,5 +41,5 @@ namespace smurff
 
    Matrix MvNormal_prec(const Matrix & Lambda, int nn = 1);
    Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn = 1);
-   Matrix MvNormal(const Matrix covar, const Vector mean, int nn = 1);
+   Matrix MvNormal(const Matrix &covar, const Vector &mean, int nn = 1);
 }

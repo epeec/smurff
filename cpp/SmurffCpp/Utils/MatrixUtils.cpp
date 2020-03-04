@@ -47,7 +47,7 @@ SparseMatrix matrix_utils::make_sparse(
    return sparse_to_eigen(smurff::SparseTensor(dims, columns, values));
 }
 
-bool matrix_utils::equals(const Matrix& m1, const Matrix& m2, double precision)
+bool matrix_utils::equals(const Matrix& m1, const Matrix& m2, double epsilon)
 {
    if (m1.rows() != m2.rows() || m1.cols() != m2.cols())
       return false;
@@ -56,29 +56,28 @@ bool matrix_utils::equals(const Matrix& m1, const Matrix& m2, double precision)
    {
       for (Eigen::Index j = 0; j < m1.cols(); j++)
       {
-         Matrix::Scalar m1_v = m1(i, j);
-         Matrix::Scalar m2_v = m2(i, j);
+         auto abs_m1 = std::abs(m1(i, j));
+         auto abs_m2 = std::abs(m2(i, j));
+         auto abs_diff = std::abs(m2(i, j) - m1(i, j));
 
-         if (std::abs(m1_v - m2_v) > precision)
+			if ((abs_diff / (abs_m1 + abs_m2)) > epsilon)
+         {
+            std::cout << "@" << i << "," << j << ":"
+                      << abs_m1 << " != " << abs_m2 << "(diff: " << abs_diff << ")" 
+                      << std::endl;
             return false;
+         }
       }
    }
 
    return true;
 }
 
-bool matrix_utils::equals_vector(const Vector& v1, const Vector& v2, double precision)
+// make sure they are both row-vectors
+bool matrix_utils::equals_vector(const Vector& v1, const Vector& v2, double epsilon)
 {
-   if (v1.size() != v2.size())
-      return false;
-
-   for (auto i = 0; i < v1.size(); i++)
-   {
-      if (std::abs(v1(i) - v2(i)) > precision)
-         return false;
-   }
-
-   return true;
+   return equals(v1, v2, epsilon);
 }
+
 
 } // end namespace

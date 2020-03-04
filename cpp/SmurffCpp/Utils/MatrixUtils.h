@@ -66,6 +66,6 @@ namespace smurff { namespace matrix_utils {
           const std::vector<double> &values
    );
 
-   bool equals(const Matrix& m1, const Matrix& m2, double precision = std::numeric_limits<double>::epsilon());
-   bool equals_vector(const Vector& v1, const Vector& v2, double precision = std::numeric_limits<double>::epsilon() * 100);
+   bool equals(const Matrix& m1, const Matrix& m2, double epsilon = std::numeric_limits<double>::epsilon());
+   bool equals_vector(const Vector& v1, const Vector& v2, double epsilon = std::numeric_limits<double>::epsilon() * 100);
 }}

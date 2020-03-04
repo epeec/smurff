@@ -339,19 +339,15 @@ Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nrows)
    return r;
 }
 
-// Draw nn samples from a size-dimensional normal distribution
+// Draw n samples from a dim-dimensional normal distribution
 // with a specified mean and covariance
-Matrix MvNormal(const Matrix covar, const Vector mean, int nn) 
+Matrix MvNormal(const Matrix &covar, const Vector &mean, int num_samples) 
 {
-   int size = mean.rows(); // Dimensionality (rows)
-   Matrix normTransform(size,size);
-
-   Eigen::LLT<Matrix> cholSolver(covar);
-   normTransform = cholSolver.matrixL();
-
-   auto normSamples = Matrix::NullaryExpr(size, nn, std::cref(randn));
-   Matrix samples = (normTransform * normSamples).rowwise() + mean;
-
-   return samples;
+   THROWERROR_ASSERT(mean.nonZeros() == covar.rows());
+   THROWERROR_ASSERT(mean.nonZeros() == covar.cols());
+   auto dim = mean.nonZeros();
+   auto normSamples = Matrix::NullaryExpr(num_samples, dim, std::cref(randn));
+   return covar.llt().solve(normSamples.transpose()).transpose().rowwise() + mean;
 }
+
 } // end namespace smurff

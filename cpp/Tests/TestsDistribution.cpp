@@ -21,13 +21,13 @@ TEST_CASE( "mvnormal/covar" ) {
   auto randomMatrix = MvNormal(covar, mean, num_samples);
 
   // check mean
-  REQUIRE(mu::equals_vector(randomMatrix.rowwise().sum(), num_samples * mean, num_samples/10));
+  REQUIRE(mu::equals_vector(randomMatrix.colwise().sum(), num_samples * mean, num_samples/10));
 
   // check variance
   Matrix centered = (randomMatrix.rowwise() - mean);
   Matrix squared = centered.array().square(); 
-  Vector var = squared.colwise().sum() / num_samples;
-  REQUIRE(mu::equals_vector(var, covar.diagonal(), 0.1));
+  Vector actual_var = squared.colwise().sum() / num_samples;
+  REQUIRE(mu::equals_vector(actual_var, covar.diagonal(), 0.1));
 
 }
 
@@ -36,19 +36,27 @@ TEST_CASE( "mvnormal/prec" ) {
   init_bmrng(1234);
 
   const int num_samples = 1000;
-  Vector mean = mu::make_dense({1, 10} , { 1., 2., 3., 4., 5., 6., 7., 8., 9., 10.});
-  Matrix covar = Matrix::Identity(10,10);
+  const double var = 10.;
 
-  auto randomMatrix = MvNormal_prec(covar, mean, num_samples);
+  Vector mean = mu::make_dense({1, 10} , { 1., 2., 3., 4., 5., 6., 7., 8., 9., 10.});
+  Matrix covar = Vector::Constant(10, var).asDiagonal(); /* 0.1 precision == 10. covar */
+  Matrix prec = Vector::Constant(10, 1./var).asDiagonal(); /* 0.1 precision == 10. covar */
+
+  REQUIRE(mu::equals(covar.inverse(), prec, 0.001));
+
+  auto randomMatrix = MvNormal_prec(prec, mean, num_samples);
+
+  SHOW(randomMatrix.colwise().sum());
+  SHOW(num_samples * mean);
 
   // check mean
-  REQUIRE(mu::equals_vector(randomMatrix.rowwise().sum(), num_samples * mean, num_samples/10));
+  REQUIRE(mu::equals_vector(randomMatrix.colwise().sum(), num_samples * mean, num_samples));
 
   // check variance
   Matrix centered = (randomMatrix.rowwise() - mean);
   Matrix squared = centered.array().square(); 
-  Vector var = squared.colwise().sum() / num_samples;
-  REQUIRE(mu::equals_vector(var, covar.diagonal(), 0.1));
+  Vector actual_var = squared.colwise().sum() / num_samples;
+  REQUIRE(mu::equals_vector(actual_var, covar.diagonal(), 0.1));
 
 }
 
