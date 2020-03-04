@@ -50,8 +50,8 @@ void MacauOnePrior::addSideInfo(const std::shared_ptr<ISideInfo>& si, double bp,
 void MacauOnePrior::sample_beta(const Matrix &U)
 {
    // updating beta() and beta_var
-   const int nfeat = beta().cols();
-   const int N = U.cols();
+   const int nfeat = beta().rows();
+   const int nitem = U.rows();
    const int blocksize = 4;
 
    Matrix Z;
@@ -60,14 +60,14 @@ void MacauOnePrior::sample_beta(const Matrix &U)
    for (int dstart = 0; dstart < num_latent(); dstart += blocksize)
    {
       const int dcount = std::min(blocksize, num_latent() - dstart);
-      Z.resize(dcount, U.cols());
+      Z.resize(nitem, dcount);
 
-      for (int i = 0; i < N; i++)
+      for (int i = 0; i < nitem; i++)
       {
          for (int d = 0; d < dcount; d++)
          {
             int dx = d + dstart;
-            Z(d, i) = U(dx, i) - mu()(dx) - Uhat(dx, i);
+            Z(i, d) = U(i, dx) - mu()(dx) - Uhat(i, dx);
          }
       }
 
@@ -83,12 +83,12 @@ void MacauOnePrior::sample_beta(const Matrix &U)
          {
             int dx = d + dstart;
             double A_df = beta_precision(dx) + Lambda(dx, dx) * F_colsq(f);
-            double B_df = Lambda(dx, dx) * (zx(d) + beta()(dx, f) * F_colsq(f));
+            double B_df = Lambda(dx, dx) * (zx(d) + beta()(f, dx) * F_colsq(f));
             double A_inv = 1.0 / A_df;
             double beta_new = B_df * A_inv + std::sqrt(A_inv) * randvals(d);
-            delta_beta(d) = beta()(dx, f) - beta_new;
+            delta_beta(d) = beta()(f, dx) - beta_new;
 
-            beta()(dx, f) = beta_new;
+            beta()(f, dx) = beta_new;
          }
          // Z[dstart : dstart + dcount, :] += F[:, f] * delta_beta'
          Features->add_Acol_mul_bt(Z, f, delta_beta);
@@ -100,11 +100,11 @@ void MacauOnePrior::sample_mu_lambda(const Matrix &U)
 {
    Matrix WI(num_latent(), num_latent());
    WI.setIdentity();
-   int N = U.rows();
+   int nitem = U.rows();
 
-   Matrix Udelta(N, num_latent());
+   Matrix Udelta(nitem, num_latent());
    #pragma omp parallel for schedule(static)
-   for (int i = 0; i < N; i++)
+   for (int i = 0; i < nitem; i++)
    {
       for (int d = 0; d < num_latent(); d++)
       {
@@ -118,16 +118,14 @@ void MacauOnePrior::sample_beta_precision()
 {
    double beta_precision_a = beta_precision_a0 + beta().cols() / 2.0;
    Vector beta_precision_b = Vector::Constant(beta().rows(), beta_precision_b0);
-   const int D = beta().rows();
-   const int F = beta().cols();
    #pragma omp parallel
    {
-      Vector tmp(D);
+      Vector tmp(num_item());
       tmp.setZero();
       #pragma omp for schedule(static)
-      for (int f = 0; f < F; f++)
+      for (int f = 0; f < num_latent(); f++)
       {
-         for (int d = 0; d < D; d++)
+         for (int d = 0; d < num_item(); d++)
          {
             tmp(d) += std::pow(beta()(d, f), 2);
          }
@@ -137,7 +135,7 @@ void MacauOnePrior::sample_beta_precision()
          beta_precision_b += tmp / 2;
       }
    }
-   for (int d = 0; d < D; d++)
+   for (int d = 0; d < num_item(); d++)
    {
       beta_precision(d) = rgamma(beta_precision_a, 1.0 / beta_precision_b(d));
    }
