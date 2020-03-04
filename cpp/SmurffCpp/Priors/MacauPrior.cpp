@@ -72,6 +72,8 @@ void MacauPrior::update_prior()
         Udelta = U() - Uhat;
         // uses: Udelta
         // complexity: num_latent x num_items
+        SHOW(BtB);
+        SHOW(beta_precision * BtB);
         std::tie(mu(), Lambda) = CondNormalWishart(Udelta, mu0, b0, WI + beta_precision * BtB, df + num_feat());
     }
 
@@ -99,7 +101,7 @@ void MacauPrior::update_prior()
         // writes: FtF
         COUNTER("sample_beta_precision");
         double old_beta = beta_precision;
-        beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().cols());
+        beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
         FtF_plus_precision.diagonal().array() += beta_precision - old_beta;
    }
 }
