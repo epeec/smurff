@@ -16,11 +16,12 @@ static MatrixXui32 toMatrixNew(const DenseTensor &tc)
    MatrixXui32 idx(nnz, nmodes);
 
    std::uint64_t c = 0;
-   auto rev_dims = std::vector<std::uint64_t>(tc.getDims().rbegin(), tc.getDims().rend());
-   for (auto it = PVecIterator(rev_dims); !it.done(); ++it, c++)
+   for (auto it = PVecIterator(tc.getDims()); !it.done(); ++it, c++)
       for (unsigned d = 0; d < tc.getNModes(); ++d)
-            idx(c, d) = (*it).at(nmodes-1-d);
+            idx(c, d) = (*it).at(d);
 
+
+   SHOW(idx);
    return idx;
 }
 
@@ -142,15 +143,18 @@ void TensorData::getMuLambda(const SubModel& model, uint32_t mode, int d, Vector
    for (std::uint64_t j = sview->beginPlane(d); j < sview->endPlane(d); j++) //go through hyperplane in tensor rotation
    {
       Vector row = (*V0).row(sview->getIndices()(j, 0)); //create a copy of m'th column from V (m = 0)
+      SHOW(row);
       auto V = model.CVbegin(mode); //get V matrices for mode      
       for (std::uint64_t m = 1; m < sview->getNCoords(); m++) //go through each coordinate of value
       {
          ++V; //inc iterator prior to access since we are starting from m = 1
          row.noalias() = row.cwiseProduct((*V).row(sview->getIndices()(j, m))); //multiply by m'th column from V
+         SHOW(row);
       }
       MM.triangularView<Eigen::Lower>() += noise().getAlpha() * row.transpose() * row; // MM = MM + (row * colT) * alpha (where row = product of columns in each V)
       
       auto pos = sview->pos(d, j);
+      // SHOW(sview->getValues()[j]);
       double noisy_val = noise().sample(model, pos, sview->getValues()[j]);
       rr.noalias() += row * noisy_val; // rr = rr + (row * value) * alpha (where value = j'th value of Y)
    }

@@ -18,6 +18,7 @@ SparseMode::SparseMode()
 // mode_size - size of dimension to fix
 SparseMode::SparseMode(const MatrixXui32& idx, const std::vector<double>& vals, std::uint64_t mode, std::uint64_t mode_size) 
 {
+   SHOW(idx);
    if ((size_t)idx.rows() != vals.size())
    {
       THROWERROR("Number of rows in 'idx' should equal number of values in 'vals'");
