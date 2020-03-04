@@ -45,7 +45,9 @@ TEST_CASE( "SparseSideInfo/A_mul_B", "[A_mul_B] for SparseSideInfo" )
         -0.76, 0., 1.48, 0., 1.95, 0.,
         2.54, 0., 0., 0., 0., 2.44;
 
-    Matrix AB = si.A_mul_B(X);
+    Matrix Xt = X.transpose();
+    Matrix AB = si.A_mul_B(Xt).transpose();
+
     REQUIRE( AB(0,0) == 0 );
     REQUIRE( AB(1,1) == 0 );
     REQUIRE( AB(2,2) == Approx(4.953) );
@@ -79,10 +81,12 @@ TEST_CASE( "SparseSideInfo/At_mul_Bt", "[At_mul_Bt] for SparseSideInfo" )
         0., 0., 0., 1.19, 0., 0.06,
         -0.76, 0., 1.48, 0., 1.95, 0.,
         2.54, 0., 0., 0., 0., 2.44;
+
+    Matrix Xt = X.transpose();
     
     Vector Y(4);
 
-    si.At_mul_Bt(Y, 0, X);
+    si.At_mul_Bt(Y, 0, Xt);
 
     REQUIRE( Y(0) == 0 );
     REQUIRE( Y(1) == Approx(-0.9044));
@@ -99,11 +103,15 @@ TEST_CASE( "SparseSideInfo/add_Acol_mul_bt", "[add_Acol_mul_bt] for SparseSideIn
         0., 0., 0., 1.19, 0., 0.06,
         -0.76, 0., 1.48, 0., 1.95, 0.,
         2.54, 0., 0., 0., 0., 2.44;
+
+    Matrix Zt = Z.transpose();
     
     Vector b(4);
     b << 1.4, 0., -0.46, 0.13;
 
-    si.add_Acol_mul_bt(Z, 2, b);
+    si.add_Acol_mul_bt(Zt, 2, b);
+
+    Z = Zt.transpose();
 
     REQUIRE( Z(0,0) == 0 );
     REQUIRE( Z(0,1) == Approx(0.6) );
@@ -158,6 +166,8 @@ TEST_CASE( "SparseSideInfo/compute_uhat", "[compute_uhat] for SparseSideInfo" )
             0., 0., 1.10, 2.13,
             0.56, -1.3, 0, 0;
 
+    beta.transposeInPlace();
+
     Matrix true_uhat(6,6);
     true_uhat << 0, 0, 0.0804, 0.0608, 4.6604, 3.2696,
                 0.072, -0.0984, 0.1428, -0.1608, -7.826, 0,
@@ -165,6 +175,8 @@ TEST_CASE( "SparseSideInfo/compute_uhat", "[compute_uhat] for SparseSideInfo" )
                 -0.858, 1.1726, -1.8643, -3.0616, 1.6448, -6.6124,
                 0, 0, 0.1278, 1.628, 2.794, 5.1972,
                 -0.78, 1.066, -1.547, -0.4256, 1.092, 0;
+
+    true_uhat.transposeInPlace();
 
     Matrix out(6,6);
     si.compute_uhat(out, beta);
