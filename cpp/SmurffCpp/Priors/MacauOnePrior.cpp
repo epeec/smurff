@@ -14,8 +14,8 @@ void MacauOnePrior::init()
    NormalOnePrior::init();
 
    // init SideInfo related
-   Uhat = Matrix::Constant(Features->rows(), num_latent(), 0.0);
-   beta() = Matrix::Constant(Features->cols(), num_latent(), 0.0);
+   Uhat = Matrix::Constant(num_item(), num_latent(), 0.0);
+   beta() = Matrix::Constant(num_feat(), num_latent(), 0.0);
 
    // initial value (should be determined automatically)
    // Hyper-prior for beta_precision (mean 1.0):
@@ -50,8 +50,8 @@ void MacauOnePrior::addSideInfo(const std::shared_ptr<ISideInfo>& si, double bp,
 void MacauOnePrior::sample_beta(const Matrix &U)
 {
    // updating beta() and beta_var
-   const int nfeat = beta().rows();
-   const int nitem = U.rows();
+   const int nfeat = num_feat();
+   const int nitem = num_item();
    const int blocksize = 4;
 
    Matrix Z;
@@ -100,7 +100,7 @@ void MacauOnePrior::sample_mu_lambda(const Matrix &U)
 {
    Matrix WI(num_latent(), num_latent());
    WI.setIdentity();
-   int nitem = U.rows();
+   int nitem = num_item();
 
    Matrix Udelta(nitem, num_latent());
    #pragma omp parallel for schedule(static)
@@ -116,18 +116,18 @@ void MacauOnePrior::sample_mu_lambda(const Matrix &U)
 
 void MacauOnePrior::sample_beta_precision()
 {
-   double beta_precision_a = beta_precision_a0 + beta().cols() / 2.0;
-   Vector beta_precision_b = Vector::Constant(beta().rows(), beta_precision_b0);
+   double beta_precision_a = beta_precision_a0 + num_feat() / 2.0;
+   Vector beta_precision_b = Vector::Constant(num_latent(), beta_precision_b0);
    #pragma omp parallel
    {
-      Vector tmp(num_item());
+      Vector tmp(num_latent());
       tmp.setZero();
       #pragma omp for schedule(static)
-      for (int f = 0; f < num_latent(); f++)
+      for (int f = 0; f < num_feat(); f++)
       {
-         for (int d = 0; d < num_item(); d++)
+         for (int d = 0; d < num_latent(); d++)
          {
-            tmp(d) += std::pow(beta()(d, f), 2);
+            tmp(d) += std::pow(beta()(f, d), 2);
          }
       }
       #pragma omp critical
@@ -135,7 +135,7 @@ void MacauOnePrior::sample_beta_precision()
          beta_precision_b += tmp / 2;
       }
    }
-   for (int d = 0; d < num_item(); d++)
+   for (int d = 0; d < num_latent(); d++)
    {
       beta_precision(d) = rgamma(beta_precision_a, 1.0 / beta_precision_b(d));
    }

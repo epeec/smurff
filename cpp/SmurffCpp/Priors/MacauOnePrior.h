@@ -40,6 +40,8 @@ public:
     
    const Vector fullMu(int n) const override;
 
+   int num_feat() const { return Features->cols(); }
+   
 public:
    //FIXME: tolerance_a and direct_a are not really used. 
    //should remove later after PriorFactory is properly implemented. 
