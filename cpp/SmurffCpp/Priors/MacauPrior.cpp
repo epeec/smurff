@@ -72,8 +72,6 @@ void MacauPrior::update_prior()
         Udelta = U() - Uhat;
         // uses: Udelta
         // complexity: num_latent x num_items
-        SHOW(BtB);
-        SHOW(beta_precision * BtB);
         std::tie(mu(), Lambda) = CondNormalWishart(Udelta, mu0, b0, WI + beta_precision * BtB, df + num_feat());
     }
 

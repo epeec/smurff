@@ -51,7 +51,6 @@ static Config& prepareResultDir(Config &config, const std::string &dir)
 
 TEST_CASE("PredictSession/BPMF")
 {
-  SHOW(trainDenseMatrix);
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
   prepareResultDir(config, Catch::getResultCapture().getCurrentTestName() + "_train");
 

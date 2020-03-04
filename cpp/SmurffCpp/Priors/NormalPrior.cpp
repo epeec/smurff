@@ -68,9 +68,6 @@ const Matrix NormalPrior::getLambda(int n) const
 }
 void NormalPrior::update_prior()
 {
-   SHOW(U());
-   SHOW(getUsum());
-   SHOW(getUUsum());
    std::tie(mu(), Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
 }
 
@@ -84,19 +81,13 @@ void  NormalPrior::sample_latent(int n)
    Matrix &MM = MMs.local();
 
    rr.setZero();
-SHOW(rr);
    MM.setZero();
 
    // add pnm
    data().getMuLambda(model(), m_mode, n, rr, MM);
-SHOW(rr);
 
    // add hyperparams
    rr.noalias() += mu_u * Lambda_u;
-   SHOW(mu_u);
-   SHOW(Lambda_u);
-   SHOW(mu_u * Lambda_u);
-   SHOW(rr);
    MM.noalias() += Lambda_u;
 
    //Solve system of linear equations for x: MM * x = rr - not exactly correct  because we have random part
@@ -112,11 +103,8 @@ SHOW(rr);
    }
 
    chol.matrixL().solveInPlace(rr.transpose()); // solve for y: y = L^-1 * b
-SHOW(rr);
    rr.noalias() += nrandn(num_latent());
-SHOW(rr);
    chol.matrixU().solveInPlace(rr.transpose()); // solve for x: x = U^-1 * y
-SHOW(rr);
    
    U().row(n).noalias() = rr; // rr is equal to x
 }

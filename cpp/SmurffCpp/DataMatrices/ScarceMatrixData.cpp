@@ -52,8 +52,6 @@ void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, in
    auto from = Y.outerIndexPtr()[n];
    auto to = Y.outerIndexPtr()[n+1];
 
-   SHOW(Y.row(n));
-
    auto getMuLambdaBasic = [&model, this, mode, n](int from, int to, Vector& rr, Matrix& MM) -> void
    {
        auto &Y = this->Y(mode);

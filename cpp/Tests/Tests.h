@@ -54,7 +54,7 @@ template <class Train, class Test> Config genConfig(const Train &train, const Te
   Config config;
   config.setBurnin(50);
   config.setNSamples(50);
-  config.setVerbose(2);
+  config.setVerbose(0);
   config.setRandomSeed(1234);
   config.setNumThreads(1);
   config.setNumLatent(4);

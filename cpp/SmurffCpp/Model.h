@@ -187,7 +187,7 @@ std::shared_ptr<Matrix> Model::predict_latent(int mode, const FeatMatrix& f)
    auto ret = std::make_shared<Matrix>(f.rows(), nlatent());
    *ret = f * beta;
    ret->rowwise() += mu;
-   #if 1
+   #if 0
    std::cout << "beta =\n" << beta.transpose() << std::endl;
    std::cout << "f =\n" << f << std::endl;
    std::cout << "f * beta.transpose() =\n" << f * beta << std::endl;
@@ -211,7 +211,7 @@ const Matrix Model::predict(int mode, const FeatMatrix& f)
 
    auto result = *latent * U(othermode).transpose();
 
-   #if 1
+   #if 0
    std::cout << "predicted latent: " << *latent << std::endl;
    std::cout << "other U: " << U(othermode) << std::endl;
    std::cout << "result: " << result << std::endl;

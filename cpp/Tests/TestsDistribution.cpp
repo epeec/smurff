@@ -46,9 +46,6 @@ TEST_CASE( "mvnormal/prec" ) {
 
   auto randomMatrix = MvNormal_prec(prec, mean, num_samples);
 
-  SHOW(randomMatrix.colwise().sum());
-  SHOW(num_samples * mean);
-
   // check mean
   REQUIRE(mu::equals_vector(randomMatrix.colwise().sum(), num_samples * mean, num_samples));
 
