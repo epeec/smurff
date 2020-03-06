@@ -73,11 +73,11 @@ void MacauOnePrior::sample_beta(const Matrix &U)
 
       for (int f = 0; f < nfeat; f++)
       {
-         Vector zx(dcount), delta_beta(dcount), randvals(dcount);
+         Vector zx(dcount), delta_beta(dcount);
          // zx = Z[dstart : dstart + dcount, :] * F[:, f]
          Features->At_mul_Bt(zx, f, Z);
          // TODO: check if sampling randvals for whole [nfeat x dcount] matrix works faster
-         rand_normal(randvals);
+         auto randvals = Vector::NullaryExpr(dcount, RandNormalGenerator());
 
          for (int d = 0; d < dcount; d++)
          {

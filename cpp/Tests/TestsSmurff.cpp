@@ -61,8 +61,8 @@ void printActualResults(int nr, double actualRmseAvg, const std::vector<smurff::
      << "},\n";
 }
 
-#define PRINT_ACTUAL_RESULTS(nr)
-//#define PRINT_ACTUAL_RESULTS(nr) printActualResults(nr, actualRmseAvg, actualResults);
+//#define PRINT_ACTUAL_RESULTS(nr)
+#define PRINT_ACTUAL_RESULTS(nr) printActualResults(nr, actualRmseAvg, actualResults);
 
 struct ExpectedResult {
   double rmseAvg;

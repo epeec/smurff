@@ -88,7 +88,13 @@ double rand_normal()
    rand_normal(&x, 1);
    return x;
 }
- 
+
+double RandNormalGenerator::operator()(double) const
+{
+   if ((c % 2) == 0) rand_normal(x, 2);
+   return x[(c++)%2];
+}
+
 void rand_normal(Vector & x) 
 {
    rand_normal(x.data(), x.size());
