@@ -7,10 +7,6 @@
 
 namespace smurff
 {
-   
-   void bmrandn(float_type* x, long n);
-   void bmrandn(Matrix & X);
-   
    double bmrandn_single_thread();
    void bmrandn_single_thread(float_type* x, long n);
    void bmrandn_single_thread(Vector & x);

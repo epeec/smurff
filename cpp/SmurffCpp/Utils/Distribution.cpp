@@ -29,41 +29,6 @@ namespace smurff {
 
 static thread_vector<MERSENNE_TWISTER> bmrngs;
 
-void bmrandn(float_type* x, long n) 
-{
-   #pragma omp parallel 
-   {
-      UNIFORM_REAL_DISTRIBUTION unif(-1.0, 1.0);
-      auto& bmrng = bmrngs.local();
-      
-      #pragma omp for schedule(static)
-      for (long i = 0; i < n; i += 2) 
-      {
-         double x1, x2, w;
-         do 
-         {
-           x1 = unif(bmrng);
-           x2 = unif(bmrng);
-           w = x1 * x1 + x2 * x2;
-         } while ( w >= 1.0 );
-   
-         w = std::sqrt( (-2.0 * std::log( w ) ) / w );
-         x[i] = x1 * w;
-
-         if (i + 1 < n) 
-         {
-           x[i+1] = x2 * w;
-         }
-      }
-   }
-}
-   
-void bmrandn(Matrix & X) 
-{
-   long n = X.rows() * (long)X.cols();
-   bmrandn(X.data(), n);
-}
-
 double bmrandn_single_thread() 
 {
    //TODO: add bmrng as input
@@ -278,7 +243,7 @@ Matrix MvNormal_prec(const Matrix & Lambda, int nrows)
    Eigen::LLT<Matrix> chol(Lambda);
 
    Matrix r(nrows, ncols);
-   bmrandn(r);
+   bmrandn_single_thread(r);
    Matrix ret = chol.matrixU().solve(r.transpose()).transpose();
 
 #ifdef TEST_MVNORMAL
