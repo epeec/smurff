@@ -126,8 +126,7 @@ void bmrandn_single_thread(Vector & x)
  
 void bmrandn_single_thread(Matrix & X) 
 {
-   long n = X.rows() * (long)X.cols();
-   bmrandn_single_thread(X.data(), n);
+   bmrandn_single_thread(X.data(), X.size());
 }
 
 
