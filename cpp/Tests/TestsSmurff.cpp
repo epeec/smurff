@@ -140,22 +140,19 @@ struct SmurffTest {
 };
 
 ///===========================================================================
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "normal normal --aux-data none none",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data none none",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal}).runAndCheck(359);
 }
 
-TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
-          "normal normal --aux-data none none",
+TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data none none",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal}).runAndCheck(411);
 }
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "normal normal --aux-data <dense_matrix> <dense_matrix>",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal})
@@ -164,8 +161,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
       .runAndCheck(467);
 }
 
-TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
-          "normal normal --aux-data <dense_matrix> <dense_matrix>",
+TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normal normal --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal})
@@ -176,23 +172,20 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "spikeandslab spikeandslab --aux-data none none",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data none none",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::spikeandslab}).runAndCheck(577);
 }
 
-TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
-          "spikeandslab spikeandslab --aux-data none none",
+TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data none none",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
       .runAndCheck(629);
 }
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix>",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
@@ -201,8 +194,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
       .runAndCheck(685);
 }
 
-TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
-          "spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix>",
+TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior spikeandslab spikeandslab --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
@@ -213,22 +205,19 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "normalone normalone --aux-data none none",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data none none",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normalone, PriorTypes::normalone}).runAndCheck(795);
 }
 
-TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
-          "normalone normalone --aux-data none none",
+TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data none none",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::normalone, PriorTypes::normalone}).runAndCheck(847);
 }
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "normalone normalone --aux-data <dense_matrix> <dense_matrix>",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normalone, PriorTypes::normalone})
@@ -237,8 +226,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
       .runAndCheck(903);
 }
 
-TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
-          "normalone normalone --aux-data <dense_matrix> <dense_matrix>",
+TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior normalone normalone --aux-data <dense_matrix> <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::normalone, PriorTypes::normalone})
@@ -249,9 +237,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "macau macau --aux-data <row_side_info_dense_matrix> "
-          "<col_side_info_dense_matrix> --direct",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau macau --aux-data <row_side_info_dense_matrix> <col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau})
@@ -260,9 +246,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
       .runAndCheck(1018);
 }
 
-TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
-          "macau macau --aux-data <row_side_info_dense_matrix> "
-          "<col_side_info_dense_matrix> --direct",
+TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior macau macau --aux-data <row_side_info_dense_matrix> <col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::macau})
@@ -273,9 +257,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "macauone macauone --aux-data <row_side_info_sparse_matrix> "
-          "<col_side_info_sparse_matrix> --direct",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macauone macauone --aux-data <row_side_info_sparse_matrix> <col_side_info_sparse_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone})
@@ -284,9 +266,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
       .runAndCheck(1135);
 }
 
-TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
-          "macauone macauone --aux-data <row_side_info_sparse_matrix> "
-          "<col_side_info_sparse_matrix> --direct",
+TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior macauone macauone --aux-data <row_side_info_sparse_matrix> <col_side_info_sparse_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainSparseMatrix, testSparseMatrix, {PriorTypes::macauone, PriorTypes::macauone})
@@ -297,8 +277,7 @@ TEST_CASE("--train <train_sparse_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "macau normal --aux-data <row_side_info_dense_matrix> none --direct",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau normal --aux-data <row_side_info_dense_matrix> none --direct",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal})
@@ -306,8 +285,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
       .runAndCheck(1250);
 }
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "normal macau --aux-data none <col_side_info_dense_matrix> --direct",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal macau --aux-data none <col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::macau})
@@ -317,8 +295,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
 
 // test throw - macau prior should have side info
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "macau normal --aux-data none none --direct",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau normal --aux-data none none --direct",
           TAG_MATRIX_TESTS) {
 
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal});
@@ -329,8 +306,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
 
 // test throw - wrong dimentions of side info
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "macau normal --aux-data <col_side_info_dense_matrix> none --direct",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau normal --aux-data <col_side_info_dense_matrix> none --direct",
           TAG_MATRIX_TESTS) {
 
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal});
@@ -341,22 +317,19 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "normal spikeandslab --aux-data none none",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal spikeandslab --aux-data none none",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::spikeandslab}).runAndCheck(1466);
 }
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "spikeandslab normal --aux-data none none",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab normal --aux-data none none",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::normal}).runAndCheck(1518);
 }
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "normal spikeandslab --aux-data none <dense_matrix>",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior normal spikeandslab --aux-data none <dense_matrix>",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::normal})
@@ -364,8 +337,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
       .runAndCheck(1572);
 }
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "spikeandslab normal --aux-data <dense_matrix> none",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab normal --aux-data <dense_matrix> none",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::normal})
@@ -375,8 +347,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau "
-          "spikeandslab --aux-data <row_side_info_dense_matrix> none --direct",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior macau spikeandslab --aux-data <row_side_info_dense_matrix> none --direct",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::spikeandslab})
@@ -384,8 +355,7 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior maca
       .runAndCheck(1683);
 }
 
-TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
-          "spikeandslab macau --aux-data none <col_side_info_dense_matrix> --direct",
+TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior spikeandslab macau --aux-data none <col_side_info_dense_matrix> --direct",
           TAG_MATRIX_TESTS) {
 
   SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::spikeandslab, PriorTypes::macau})
@@ -395,29 +365,25 @@ TEST_CASE("--train <train_dense_matrix> --test <test_sparse_matrix> --prior "
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
-          "--prior normal normal --aux-data none none",
+TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prior normal normal --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
 
   SmurffTest(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck(1792);
 }
 
-TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
-          "--prior normal normal --aux-data none none",
+TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --prior normal normal --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
   SmurffTest(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normal, PriorTypes::normal}).runAndCheck(1844);
 }
 
 //=================================================================
-TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
-          "--prior spikeandslab spikeandslab --aux-data none none",
+TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prior spikeandslab spikeandslab --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
   SmurffTest(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
       .runAndCheck(1898);
 }
 
-TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
-          "--prior spikeandslab spikeandslab --aux-data none none",
+TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --prior spikeandslab spikeandslab --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
   SmurffTest(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::spikeandslab, PriorTypes::spikeandslab})
       .runAndCheck(1950);
@@ -425,22 +391,19 @@ TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> "
-          "--prior normalone normalone --aux-data none none",
+TEST_CASE("--train <train_dense_2d_tensor> --test <test_sparse_2d_tensor> --prior normalone normalone --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
   SmurffTest(trainDenseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normalone}).runAndCheck(2004);
 }
 
-TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> "
-          "--prior normalone normalone --aux-data none none",
+TEST_CASE("--train <train_sparse_2d_tensor> --test <test_sparse_2d_tensor> --prior normalone normalone --aux-data none none",
           TAG_TWO_DIMENTIONAL_TENSOR_TESTS) {
   SmurffTest(trainSparseTensor2d, testSparseTensor2d, {PriorTypes::normalone, PriorTypes::normalone}).runAndCheck(2056);
 }
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
-          "--prior normal normal --aux-data none none",
+TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior normal normal --aux-data none none",
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS) {
   SmurffTest(trainDenseTensor3d, testSparseTensor3d, {PriorTypes::normal, PriorTypes::normal, PriorTypes::normal})
       .runAndCheck(2110);
@@ -448,8 +411,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
 
 //=================================================================
 
-TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
-          "--prior spikeandslab spikeandslab --aux-data none none",
+TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior spikeandslab spikeandslab --aux-data none none",
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS) {
 
   SmurffTest(trainDenseTensor3d, testSparseTensor3d,
@@ -461,8 +423,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
 
 // not sure if this test produces correct results
 
-TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
-          "--prior macau normal --side-info row_dense_side_info none",
+TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior macau normal --side-info row_dense_side_info none",
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS) {
   SmurffTest(trainDenseTensor3d, testSparseTensor3d, {PriorTypes::macau, PriorTypes::normal, PriorTypes::normal})
       .addSideInfoConfig(0, rowSideDenseMatrix3d)
@@ -473,8 +434,7 @@ TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
 
 // not sure if this test produces correct results
 
-TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> "
-          "--prior macauone normal --side-info row_dense_side_info none",
+TEST_CASE("--train <train_dense_3d_tensor> --test <test_sparse_3d_tensor> --prior macauone normal --side-info row_dense_side_info none",
           TAG_THREE_DIMENTIONAL_TENSOR_TESTS "[!mayfail]") {
   SmurffTest(trainDenseTensor3d, testSparseTensor3d, {PriorTypes::macauone, PriorTypes::normal, PriorTypes::normal})
       .addSideInfoConfig(0, rowSideDenseMatrix3d)
