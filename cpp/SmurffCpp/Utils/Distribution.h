@@ -22,13 +22,11 @@ namespace smurff
    void init_bmrng(int seed);
    
    double rand_unif(double low = 0.0, double high = 1.);
-   
    double rgamma(double shape, double scale);
    
    // return a random matrix of size n, m
    
    auto nrandn(int n) -> decltype(Vector::NullaryExpr(n, std::cref(randn)) ); 
-   auto nrandn(int n, int m) -> decltype(Array2D::NullaryExpr(n, m, std::cref(randn)) );
    
    // Wishart distribution
    
