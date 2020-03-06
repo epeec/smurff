@@ -101,7 +101,7 @@ double rand_unif(double low, double high)
 
 // returns random number according to Gamma distribution
 // with the given shape (k) and scale (theta). See wiki.
-double rgamma(double shape, double scale) 
+double rand_gamma(double shape, double scale) 
 {
    GAMMA_DISTRIBUTION gamma(shape, scale);
    return gamma(bmrngs.local());

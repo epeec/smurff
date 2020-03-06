@@ -33,7 +33,7 @@ void AdaptiveGaussianNoise::update(const SubModel& model)
    double b0 = 0.5 * var_total;
    double aN = a0 + data().nnz() / 2.0;
    double bN = b0 + sumsq / 2.0;
-   alpha = rgamma(aN, 1.0 / bN);
+   alpha = rand_gamma(aN, 1.0 / bN);
 
    if (alpha > alpha_max)
    {

@@ -40,9 +40,9 @@ namespace smurff {
 
 static NoiseConfig fixed_ncfg(NoiseTypes::fixed);
 
-TEST_CASE( "mvnormal/rgamma", "generaring random gamma variable" ) {
+TEST_CASE( "mvnormal/rand_gamma", "generaring random gamma variable" ) {
   init_bmrng(1234);
-  double g = rgamma(100.0, 0.01);
+  double g = rand_gamma(100.0, 0.01);
   REQUIRE( g > 0 );
 }
 
@@ -264,41 +264,41 @@ TEST_CASE("Test random number generation", "[random]")
    #endif
 }
 
-TEST_CASE("rgamma", " [random]")
+TEST_CASE("rand_gamma", " [random]")
 {
    #ifdef USE_BOOST_RANDOM
    std::cout << "Running boost" << std::endl;
    init_bmrng(1234);
 
    double rnd = 0.0;
-   rnd = rgamma(1, 2);
+   rnd = rand_gamma(1, 2);
    REQUIRE(rnd == Approx(0.425197).epsilon(APPROX_EPSILON));
 
-   rnd = rgamma(1, 2);
+   rnd = rand_gamma(1, 2);
    REQUIRE(rnd == Approx(1.37697).epsilon(APPROX_EPSILON));
 
-   rnd = rgamma(1, 2);
+   rnd = rand_gamma(1, 2);
    REQUIRE(rnd == Approx(1.9463).epsilon(APPROX_EPSILON));
 
-   rnd = rgamma(1, 2);
+   rnd = rand_gamma(1, 2);
    REQUIRE(rnd == Approx(3.40572).epsilon(APPROX_EPSILON));
 
-   rnd = rgamma(1, 2);
+   rnd = rand_gamma(1, 2);
    REQUIRE(rnd == Approx(1.15154).epsilon(APPROX_EPSILON));
 
-   rnd = rgamma(1, 2);
+   rnd = rand_gamma(1, 2);
    REQUIRE(rnd == Approx(1.89408).epsilon(APPROX_EPSILON));
 
-   rnd = rgamma(1, 2);
+   rnd = rand_gamma(1, 2);
    REQUIRE(rnd == Approx(3.07757).epsilon(APPROX_EPSILON));
 
-   rnd = rgamma(1, 2);
+   rnd = rand_gamma(1, 2);
    REQUIRE(rnd == Approx(2.95121).epsilon(APPROX_EPSILON));
 
-   rnd = rgamma(1, 2);
+   rnd = rand_gamma(1, 2);
    REQUIRE(rnd == Approx(3.02804).epsilon(APPROX_EPSILON));
 
-   rnd = rgamma(1, 2);
+   rnd = rand_gamma(1, 2);
    REQUIRE(rnd == Approx(3.94182).epsilon(APPROX_EPSILON));
 #endif  
 }

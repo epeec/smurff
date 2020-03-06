@@ -50,7 +50,7 @@ void SpikeAndSlabPrior::update_prior()
        auto ww = W2c.row(v).array() / 2 + prior_beta_0;
        auto tmpz = Zkeep.row(v).array() / 2 + prior_alpha_0 ;
        alpha.row(v) = tmpz.binaryExpr(ww, [](float_type a, float_type b)->float_type {
-               return rgamma(a, 1/b) + 1e-7;
+               return rand_gamma(a, 1/b) + 1e-7;
        });
    }
 

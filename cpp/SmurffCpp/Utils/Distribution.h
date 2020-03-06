@@ -16,7 +16,7 @@ namespace smurff
    void init_bmrng(int seed);
    
    double rand_unif(double low = 0.0, double high = 1.);
-   double rgamma(double shape, double scale);
+   double rand_gamma(double shape, double scale);
   
 #define RandomVectorExpr(n) \
    (Vector::NullaryExpr(n, [](double) { return rand_normal(); })) 

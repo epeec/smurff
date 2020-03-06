@@ -137,7 +137,7 @@ void MacauOnePrior::sample_beta_precision()
    }
    for (int d = 0; d < num_latent(); d++)
    {
-      beta_precision(d) = rgamma(beta_precision_a, 1.0 / beta_precision_b(d));
+      beta_precision(d) = rand_gamma(beta_precision_a, 1.0 / beta_precision_b(d));
    }
 }
 

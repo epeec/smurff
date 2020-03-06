@@ -215,6 +215,6 @@ std::pair<double, double> MacauPrior::posterior_beta_precision(const Matrix & Bt
 double MacauPrior::sample_beta_precision(const Matrix & BtB, Matrix & Lambda_u, double nu, double mu, int N)
 {
    auto gamma_post = posterior_beta_precision(BtB, Lambda_u, nu, mu, N);
-   return rgamma(gamma_post.first, gamma_post.second);
+   return rand_gamma(gamma_post.first, gamma_post.second);
 }
 } // end namespace smurff
