@@ -21,8 +21,7 @@ namespace smurff
    void init_bmrng();
    void init_bmrng(int seed);
    
-   double rand_unif();
-   double rand_unif(double low, double high);
+   double rand_unif(double low = 0.0, double high = 1.);
    
    double rgamma(double shape, double scale);
    

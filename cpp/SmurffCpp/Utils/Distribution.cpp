@@ -149,13 +149,6 @@ void init_bmrng(int seed)
     bmrngs.init(v);
 }
    
-double rand_unif() 
-{
-   UNIFORM_REAL_DISTRIBUTION unif(0.0, 1.0);
-   auto& bmrng = bmrngs.local();
-   return unif(bmrng);
-}
- 
 double rand_unif(double low, double high) 
 {
    UNIFORM_REAL_DISTRIBUTION unif(low, high);
