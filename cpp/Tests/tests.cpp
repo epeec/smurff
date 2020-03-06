@@ -267,7 +267,6 @@ TEST_CASE("Test random number generation", "[random]")
 TEST_CASE("rand_gamma", " [random]")
 {
    #ifdef USE_BOOST_RANDOM
-   std::cout << "Running boost" << std::endl;
    init_bmrng(1234);
 
    double rnd = 0.0;

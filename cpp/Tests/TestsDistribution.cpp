@@ -23,7 +23,7 @@ TEST_CASE( "mvnormal/prec" ) {
 
   REQUIRE(mu::equals(covar.inverse(), prec, 0.001));
 
-  auto randomMatrix = MvNormal_prec(prec, mean, num_samples);
+  auto randomMatrix = MvNormal(prec, mean, num_samples);
 
   // check mean
   REQUIRE(mu::equals_vector(randomMatrix.colwise().sum(), num_samples * mean, num_samples));

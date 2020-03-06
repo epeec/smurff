@@ -137,11 +137,11 @@ void MacauPrior::compute_Ft_y(Matrix& Ft_y)
    // Ft_y is [ num_latent x num_feat ] matrix
 
    //HyperU: num_latent x num_item
-   HyperU = (U() + MvNormal_prec(Lambda, num_item())).rowwise() - mu();
+   HyperU = (U() + MvNormal(Lambda, num_item())).rowwise() - mu();
    Ft_y = Features->A_mul_B(HyperU); // num_latent x num_feat
 
    //--  add beta_precision 
-   HyperU2 = MvNormal_prec(Lambda, num_feat()); // num_latent x num_feat
+   HyperU2 = MvNormal(Lambda, num_feat()); // num_latent x num_feat
    Ft_y += std::sqrt(beta_precision) * HyperU2;
 }
 

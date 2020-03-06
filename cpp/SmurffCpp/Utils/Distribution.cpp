@@ -180,7 +180,7 @@ Matrix Wishart(const Matrix &sigma, const int df)
 std::pair<Vector, Matrix> NormalWishart(const Vector & mu, double kappa, const Matrix & T, const int nu)
 {
    Matrix Lam = Wishart(T, nu);
-   Matrix mu_o = MvNormal_prec(Lam * kappa, mu);
+   Matrix mu_o = MvNormal(Lam * kappa, mu);
 
    #ifdef TEST_MVNORMAL
    std::cout << "NORMAL WISHART {\n" << std::endl;
@@ -240,7 +240,7 @@ std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, c
 }
 
 // Normal(0, Lambda^-1) for nn columns
-Matrix MvNormal_prec(const Matrix & Lambda, int nrows)
+Matrix MvNormal(const Matrix & Lambda, int nrows)
 {
    int ncols = Lambda.rows(); // Dimensionality (rows)
    Eigen::LLT<Matrix> chol(Lambda);
@@ -250,7 +250,7 @@ Matrix MvNormal_prec(const Matrix & Lambda, int nrows)
    Matrix ret = chol.matrixU().solve(r.transpose()).transpose();
 
 #ifdef TEST_MVNORMAL
-   std::cout << "MvNormal_prec/2 {\n" << std::endl;
+   std::cout << "MvNormal/2 {\n" << std::endl;
    std::cout << "  Lambda\n" << Lambda << std::endl;
    std::cout << "  nrows\n" << nrows << std::endl;
    std::cout << "  ret\n" << ret << std::endl;
@@ -261,14 +261,14 @@ Matrix MvNormal_prec(const Matrix & Lambda, int nrows)
 
 }
 
-Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nrows)
+Matrix MvNormal(const Matrix & Lambda, const Vector & mean, int nrows)
 {
-   Matrix r = MvNormal_prec(Lambda, nrows);
+   Matrix r = MvNormal(Lambda, nrows);
    r.rowwise() += mean;
   
 #ifdef TEST_MVNORMAL
    THROWERROR_ASSERT(r.rows() == nrows);
-   std::cout << "MvNormal_prec/2 {\n" << std::endl;
+   std::cout << "MvNormal/2 {\n" << std::endl;
    std::cout << "  Lambda\n" << Lambda << std::endl;
    std::cout << "  mean\n" << mean << std::endl;
    std::cout << "  nrows\n" << nrows << std::endl;

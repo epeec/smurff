@@ -17,7 +17,7 @@ namespace smurff
    double rand_unif(double low = 0.0, double high = 1.);
    double rand_gamma(double shape, double scale);
 
-   // Generate streams for random numbers
+   // Generate stream of random numbers
 
    struct RandNormalGenerator
    {
@@ -37,6 +37,6 @@ namespace smurff
    
    // Multivariate normal gaussian
 
-   Matrix MvNormal_prec(const Matrix & Lambda, int nn = 1);
-   Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn = 1);
+   Matrix MvNormal(const Matrix & Lambda, int nn = 1);
+   Matrix MvNormal(const Matrix & Lambda, const Vector & mean, int nn = 1);
 }
