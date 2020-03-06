@@ -7,8 +7,6 @@
 
 namespace smurff
 {
-   double randn0();
-   double randn(double = .0);
    
    void bmrandn(float_type* x, long n);
    void bmrandn(Matrix & X);
@@ -23,11 +21,10 @@ namespace smurff
    
    double rand_unif(double low = 0.0, double high = 1.);
    double rgamma(double shape, double scale);
-   
-   // return a random matrix of size n, m
-   
-   auto nrandn(int n) -> decltype(Vector::NullaryExpr(n, std::cref(randn)) ); 
-   
+  
+#define RandomVectorExpr(n) \
+   (Vector::NullaryExpr(n, [](double) { return bmrandn_single_thread(); })) 
+
    // Wishart distribution
    
    std::pair<Vector, Matrix> NormalWishart(const Vector & mu, double kappa, const Matrix & T, double nu);

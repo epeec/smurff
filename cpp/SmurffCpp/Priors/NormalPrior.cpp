@@ -103,7 +103,7 @@ void  NormalPrior::sample_latent(int n)
    }
 
    chol.matrixL().solveInPlace(rr.transpose()); // solve for y: y = L^-1 * b
-   rr.noalias() += nrandn(num_latent());
+   rr.noalias() += RandomVectorExpr(num_latent());
    chol.matrixU().solveInPlace(rr.transpose()); // solve for x: x = U^-1 * y
    
    U().row(n).noalias() = rr; // rr is equal to x

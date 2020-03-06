@@ -29,16 +29,6 @@ namespace smurff {
 
 static thread_vector<MERSENNE_TWISTER> bmrngs;
 
-double randn0()
-{
-   return bmrandn_single_thread();
-}
-
-double randn(double) 
-{
-   return bmrandn_single_thread();
-}
-
 void bmrandn(float_type* x, long n) 
 {
    #pragma omp parallel 
@@ -163,10 +153,6 @@ double rgamma(double shape, double scale)
    return gamma(bmrngs.local());
 }
 
-auto nrandn(int n) -> decltype(Vector::NullaryExpr(n, std::cref(randn))) 
-{
-   return Vector::NullaryExpr(n, std::cref(randn));
-}
 
 //#define TEST_MVNORMAL
 
@@ -180,8 +166,7 @@ Matrix WishartUnit(int m, int df)
    {
       GAMMA_DISTRIBUTION gam(0.5*(df - i));
       c(i,i) = std::sqrt(2.0 * gam(rng));
-      Vector r = nrandn(m-i-1);
-      c.block(i,i+1,1,m-i-1) = r;
+      c.block(i,i+1,1,m-i-1) = RandomVectorExpr(m-i-1);
    }
 
    Matrix ret = c.transpose() * c;
@@ -333,7 +318,7 @@ Matrix MvNormal(const Matrix &covar, const Vector &mean, int num_samples)
    THROWERROR_ASSERT(mean.nonZeros() == covar.rows());
    THROWERROR_ASSERT(mean.nonZeros() == covar.cols());
    auto dim = mean.nonZeros();
-   auto normSamples = Matrix::NullaryExpr(num_samples, dim, std::cref(randn));
+   auto normSamples = Matrix::NullaryExpr(num_samples, dim, [](double) { return bmrandn_single_thread(); });
    return covar.llt().solve(normSamples.transpose()).transpose().rowwise() + mean;
 }
 
