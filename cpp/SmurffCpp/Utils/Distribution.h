@@ -7,13 +7,13 @@
 
 namespace smurff
 {
-   double rand_normal();
-   void rand_normal(float_type* x, long n);
-   void rand_normal(Vector & x);
-   void rand_normal(Matrix & X);
    
    void init_bmrng();
    void init_bmrng(int seed);
+
+   double rand_normal();
+   void rand_normal(Vector & x);
+   void rand_normal(Matrix & X);
    
    double rand_unif(double low = 0.0, double high = 1.);
    double rand_gamma(double shape, double scale);

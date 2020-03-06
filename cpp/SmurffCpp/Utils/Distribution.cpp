@@ -27,17 +27,36 @@
 
 namespace smurff {
 
+/*
+ *  Init functions
+ */
+ 
 static thread_vector<MERSENNE_TWISTER> bmrngs;
 
-double rand_normal() 
+void init_bmrng() 
 {
-   double x;
-   rand_normal(&x, 1);
-   return x;
+   using namespace std::chrono;
+   auto ms = (duration_cast< milliseconds >(system_clock::now().time_since_epoch())).count();
+   init_bmrng(ms);
 }
 
-// to be called within OpenMP parallel loop (also from serial code is fine)
-void rand_normal(float_type* x, long n) 
+void init_bmrng(int seed) 
+{
+    std::vector<MERSENNE_TWISTER> v;
+    for (int i = 0; i < threads::get_max_threads(); i++)
+    {
+        v.push_back(MERSENNE_TWISTER(seed + i * 1999));
+    }
+
+    bmrngs.init(v);
+}
+
+
+/*
+ *  Normal distribution random numbers
+ */
+ 
+static void rand_normal(float_type* x, long n) 
 {
    UNIFORM_REAL_DISTRIBUTION unif(-1.0, 1.0);
    auto& bmrng = bmrngs.local();
@@ -62,7 +81,14 @@ void rand_normal(float_type* x, long n)
       }
    }
 }
-  
+
+double rand_normal() 
+{
+   double x;
+   rand_normal(&x, 1);
+   return x;
+}
+ 
 void rand_normal(Vector & x) 
 {
    rand_normal(x.data(), x.size());
@@ -73,24 +99,6 @@ void rand_normal(Matrix & X)
    rand_normal(X.data(), X.size());
 }
 
-
-void init_bmrng() 
-{
-   using namespace std::chrono;
-   auto ms = (duration_cast< milliseconds >(system_clock::now().time_since_epoch())).count();
-   init_bmrng(ms);
-}
-
-void init_bmrng(int seed) 
-{
-    std::vector<MERSENNE_TWISTER> v;
-    for (int i = 0; i < threads::get_max_threads(); i++)
-    {
-        v.push_back(MERSENNE_TWISTER(seed + i * 1999));
-    }
-
-    bmrngs.init(v);
-}
    
 double rand_unif(double low, double high) 
 {
