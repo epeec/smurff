@@ -7,10 +7,10 @@
 
 namespace smurff
 {
-   double bmrandn_single_thread();
-   void bmrandn_single_thread(float_type* x, long n);
-   void bmrandn_single_thread(Vector & x);
-   void bmrandn_single_thread(Matrix & X);
+   double rand_normal();
+   void rand_normal(float_type* x, long n);
+   void rand_normal(Vector & x);
+   void rand_normal(Matrix & X);
    
    void init_bmrng();
    void init_bmrng(int seed);
@@ -19,7 +19,7 @@ namespace smurff
    double rgamma(double shape, double scale);
   
 #define RandomVectorExpr(n) \
-   (Vector::NullaryExpr(n, [](double) { return bmrandn_single_thread(); })) 
+   (Vector::NullaryExpr(n, [](double) { return rand_normal(); })) 
 
    // Wishart distribution
    

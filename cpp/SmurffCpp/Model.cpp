@@ -54,7 +54,7 @@ void Model::init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_t
       switch(model_init_type)
       {
       case ModelInitTypes::random:
-         bmrandn_single_thread(mat);
+         rand_normal(mat);
          break;
       case ModelInitTypes::zero:
          mat.setZero();

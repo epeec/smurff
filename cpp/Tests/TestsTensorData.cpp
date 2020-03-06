@@ -145,7 +145,7 @@ TEST_CASE("bpmfutils/eval_rmse_tensor", "Testing eval_rmse_tensor") {
 
   for (int d = 0; d < 3; d++) {
     Matrix* x = new Matrix(nlatent, dims(d));
-    bmrandn_single_thread(*x);
+    rand_normal(*x);
     samples.push_back( std::move(std::unique_ptr<Matrix>(x)) );
   }
 
@@ -195,7 +195,7 @@ TEST_CASE("latentprior/sample_tensor", "Test whether sampling tensor is correct"
 
   for (int d = 0; d < 3; d++) {
     Matrix* x = new Matrix(nlatent, dims(d));
-    bmrandn_single_thread(*x);
+    rand_normal(*x);
     samples.push_back( std::move(std::unique_ptr<Matrix>(x)) );
 
 		SparseMode* sm  = new SparseMode(C, v, d, dims(d));
@@ -243,7 +243,7 @@ TEST_CASE("macauoneprior/sample_tensor_uni", "Testing sampling tensor univariate
 
   for (int d = 0; d < 3; d++) {
     Matrix* x = new Matrix(nlatent, dims(d));
-    bmrandn_single_thread(*x);
+    rand_normal(*x);
     samples.push_back( std::move(std::unique_ptr<Matrix>(x)) );
   }
 

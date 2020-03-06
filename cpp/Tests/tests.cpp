@@ -232,34 +232,34 @@ TEST_CASE("Test random number generation", "[random]")
    init_bmrng(1234);
 
    double rnd = 0.0;
-   rnd = bmrandn_single_thread();
+   rnd = rand_normal();
    REQUIRE(rnd == Approx(-1.38981).epsilon(APPROX_EPSILON));
 
-   rnd = bmrandn_single_thread();
+   rnd = rand_normal();
    REQUIRE(rnd == Approx(0.444601).epsilon(APPROX_EPSILON));
 
-   rnd = bmrandn_single_thread();
+   rnd = rand_normal();
    REQUIRE(rnd == Approx(-1.13281).epsilon(APPROX_EPSILON));
 
-   rnd = bmrandn_single_thread();
+   rnd = rand_normal();
    REQUIRE(rnd == Approx(0.708248).epsilon(APPROX_EPSILON));
 
-   rnd = bmrandn_single_thread();
+   rnd = rand_normal();
    REQUIRE(rnd == Approx(0.369621).epsilon(APPROX_EPSILON));
 
-   rnd = bmrandn_single_thread();
+   rnd = rand_normal();
    REQUIRE(rnd == Approx(-0.465294).epsilon(APPROX_EPSILON));
 
-   rnd = bmrandn_single_thread();
+   rnd = rand_normal();
    REQUIRE(rnd == Approx(-0.637987).epsilon(APPROX_EPSILON));
 
-   rnd = bmrandn_single_thread();
+   rnd = rand_normal();
    REQUIRE(rnd == Approx(0.510229).epsilon(APPROX_EPSILON));
 
-   rnd = bmrandn_single_thread();
+   rnd = rand_normal();
    REQUIRE(rnd == Approx(0.28734).epsilon(APPROX_EPSILON));
 
-   rnd = bmrandn_single_thread();
+   rnd = rand_normal();
    REQUIRE(rnd == Approx(1.22677).epsilon(APPROX_EPSILON));
    #endif
 }

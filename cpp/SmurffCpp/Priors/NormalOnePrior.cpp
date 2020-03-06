@@ -61,7 +61,7 @@ std::pair<float_type,float_type> NormalOnePrior::sample_latent(int d, int k, con
     auto Urow = U().row(d);
     float_type lambda = XX(k,k);
     float_type mu = (1/lambda) * (yX(k) - Urow * XX.row(k).transpose() + Urow(k) * XX(k,k));
-    Urow(k) = mu + bmrandn_single_thread() / sqrt(lambda);
+    Urow(k) = mu + rand_normal() / sqrt(lambda);
     return std::make_pair(mu, lambda);
 }
 

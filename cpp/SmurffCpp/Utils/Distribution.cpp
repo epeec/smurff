@@ -29,26 +29,15 @@ namespace smurff {
 
 static thread_vector<MERSENNE_TWISTER> bmrngs;
 
-double bmrandn_single_thread() 
+double rand_normal() 
 {
-   //TODO: add bmrng as input
-   UNIFORM_REAL_DISTRIBUTION unif(-1.0, 1.0);
-   auto& bmrng = bmrngs.local();
-  
-   double x1, x2, w;
-   do 
-   {
-      x1 = unif(bmrng);
-      x2 = unif(bmrng);
-      w = x1 * x1 + x2 * x2;
-   } while ( w >= 1.0 );
-
-   w = std::sqrt( (-2.0 * std::log( w ) ) / w );
-   return x1 * w;
+   double x;
+   rand_normal(&x, 1);
+   return x;
 }
 
 // to be called within OpenMP parallel loop (also from serial code is fine)
-void bmrandn_single_thread(float_type* x, long n) 
+void rand_normal(float_type* x, long n) 
 {
    UNIFORM_REAL_DISTRIBUTION unif(-1.0, 1.0);
    auto& bmrng = bmrngs.local();
@@ -74,14 +63,14 @@ void bmrandn_single_thread(float_type* x, long n)
    }
 }
   
-void bmrandn_single_thread(Vector & x) 
+void rand_normal(Vector & x) 
 {
-   bmrandn_single_thread(x.data(), x.size());
+   rand_normal(x.data(), x.size());
 }
  
-void bmrandn_single_thread(Matrix & X) 
+void rand_normal(Matrix & X) 
 {
-   bmrandn_single_thread(X.data(), X.size());
+   rand_normal(X.data(), X.size());
 }
 
 
@@ -243,7 +232,7 @@ Matrix MvNormal_prec(const Matrix & Lambda, int nrows)
    Eigen::LLT<Matrix> chol(Lambda);
 
    Matrix r(nrows, ncols);
-   bmrandn_single_thread(r);
+   rand_normal(r);
    Matrix ret = chol.matrixU().solve(r.transpose()).transpose();
 
 #ifdef TEST_MVNORMAL
@@ -283,7 +272,7 @@ Matrix MvNormal(const Matrix &covar, const Vector &mean, int num_samples)
    THROWERROR_ASSERT(mean.nonZeros() == covar.rows());
    THROWERROR_ASSERT(mean.nonZeros() == covar.cols());
    auto dim = mean.nonZeros();
-   auto normSamples = Matrix::NullaryExpr(num_samples, dim, [](double) { return bmrandn_single_thread(); });
+   auto normSamples = Matrix::NullaryExpr(num_samples, dim, [](double) { return rand_normal(); });
    return covar.llt().solve(normSamples.transpose()).transpose().rowwise() + mean;
 }
 
