@@ -17,6 +17,15 @@ inline void show_internal(const char *name, const Matrix& variable)
       std::cout << name << " (" << variable.rows() << "," << variable.cols() << ") =\n" << variable << std::endl << std::endl;
 }
 
+
+template<>
+inline void show_internal(const char *name, const double& variable)
+{
+
+   std::cout << name << " =\n" << variable << std::endl << std::endl;
+}
+
+
 #define SHOW(M) show_internal(#M, M);
 
 #define CONCAT_VAR(n1, n2) n1 ## n2
