@@ -279,15 +279,4 @@ Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nrows)
    return r;
 }
 
-// Draw n samples from a dim-dimensional normal distribution
-// with a specified mean and covariance
-Matrix MvNormal(const Matrix &covar, const Vector &mean, int num_samples) 
-{
-   THROWERROR_ASSERT(mean.nonZeros() == covar.rows());
-   THROWERROR_ASSERT(mean.nonZeros() == covar.cols());
-   auto dim = mean.nonZeros();
-   auto normSamples = Matrix::NullaryExpr(num_samples, dim, [](double) { return rand_normal(); });
-   return covar.llt().solve(normSamples.transpose()).transpose().rowwise() + mean;
-}
-
 } // end namespace smurff

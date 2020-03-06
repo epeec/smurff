@@ -11,9 +11,13 @@ namespace smurff
    void init_bmrng();
    void init_bmrng(int seed);
 
+   // Generate single numbers 
+
    double rand_normal();
    double rand_unif(double low = 0.0, double high = 1.);
    double rand_gamma(double shape, double scale);
+
+   // Generate streams for random numbers
 
    struct RandNormalGenerator
    {
@@ -35,5 +39,4 @@ namespace smurff
 
    Matrix MvNormal_prec(const Matrix & Lambda, int nn = 1);
    Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn = 1);
-   Matrix MvNormal(const Matrix &covar, const Vector &mean, int nn = 1);
 }
