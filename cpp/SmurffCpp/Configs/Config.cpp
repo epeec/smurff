@@ -241,7 +241,7 @@ bool Config::validate() const
       THROWERROR("Empty test data matrix/tensor");
    }
 
-   if (!getTest().hasData() && getTest().getDims() != getTrain().getDims())
+   if (getTest().hasData() && getTest().getDims() != getTrain().getDims())
    {
       THROWERROR("Train and test data should have the same dimensions");
    }
