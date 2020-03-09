@@ -124,9 +124,6 @@ public:
    ConfigFile &save(ConfigFile &) const;
    bool restore(const ConfigFile &);
 
-   std::string to_string() const;
-   bool from_string(std::string str);
-
    std::ostream& info(std::ostream &os, std::string indent) const;
 
 public:
