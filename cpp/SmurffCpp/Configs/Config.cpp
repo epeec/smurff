@@ -135,7 +135,7 @@ std::string modelInitTypeToString(ModelInitTypes type)
 //config
 int Config::BURNIN_DEFAULT_VALUE = 200;
 int Config::NSAMPLES_DEFAULT_VALUE = 800;
-int Config::NUM_LATENT_DEFAULT_VALUE = 96;
+int Config::NUM_LATENT_DEFAULT_VALUE = 32;
 int Config::NUM_THREADS_DEFAULT_VALUE = 0; // as many as you want
 ModelInitTypes Config::INIT_MODEL_DEFAULT_VALUE = ModelInitTypes::zero;
 const std::string Config::SAVE_PREFIX_DEFAULT_VALUE = "";
