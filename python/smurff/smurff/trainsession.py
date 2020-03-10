@@ -1,7 +1,8 @@
-from .helper import PyNoiseConfig, PyStatusItem, SparseTensor
-from .wrapper import Config, PythonSession
+import logging
+from .helper import SparseTensor, make_dataconfig
+from .wrapper import Config, NoiseConfig, StatusItem, PythonSession
 
-class TrainSession(wrapper.PythonSession):
+class TrainSession(PythonSession):
     """Class for doing a training run in smurff
 
     A simple use case could be:
@@ -59,7 +60,7 @@ class TrainSession(wrapper.PythonSession):
     # construction functions
     #
     def __init__(self,
-        priors           = None,
+        priors           = ["normal", "normal"],
         num_latent       = None,
         num_threads      = None,
         burnin           = None,
@@ -88,7 +89,7 @@ class TrainSession(wrapper.PythonSession):
         if save_freq is not None:      self.config.setSaveFreq(save_freq)
         if checkpoint_freq is not None:self.config.setCheckpointFreq(checkpoint_freq)
 
-    def addTrainAndTest(self, Y, Ytest = None, noise = PyNoiseConfig(), is_scarce = True):
+    def addTrainAndTest(self, Y, Ytest = None, noise = NoiseConfig(), is_scarce = True):
         """Adds a train and optionally a test matrix as input data to this TrainSession
 
         Parameters
@@ -100,7 +101,7 @@ class TrainSession(wrapper.PythonSession):
         Ytest : :mod:`scipy.sparse` matrix or :class: `SparseTensor`
             Test matrix/tensor. Mainly used for calculating RMSE.
 
-        noise : :class: `PyNoiseConfig`
+        noise : :class: `NoiseConfig`
             Noise model to use for `Y`
 
         is_scarce : bool
@@ -109,14 +110,13 @@ class TrainSession(wrapper.PythonSession):
             When `Y` is dense, this parameter is ignored.
 
         """
-        self.noise_config = noise.toNoiseConfig()
-        train, test = prepare_train_and_test(Y, Ytest, self.noise_config, is_scarce)
-        self.config.setTrain(train)
+        
+        self.config.setTrain(make_dataconfig(Y, noise, is_scarce))
 
         if Ytest is not None:
-            self.config.setTest(test)
+            self.config.setTest(make_dataconfig(Ytest))
 
-    def addSideInfo(self, mode, Y, noise = PyNoiseConfig(), tol = 1e-6, direct = False):
+    def addSideInfo(self, mode, Y, noise = NoiseConfig(), tol = 1e-6, direct = False):
         """Adds fully known side info, for use in with the macau or macauone prior
 
         mode : int
@@ -127,7 +127,7 @@ class TrainSession(wrapper.PythonSession):
             Y should have as many rows in Y as you have elemnts in the dimension selected using `mode`.
             Columns in Y are features for each element.
 
-        noise : :class: `PyNoiseConfig`
+        noise : :class: `NoiseConfig`
             Noise model to use for `Y`
         
         direct : boolean
@@ -140,8 +140,7 @@ class TrainSession(wrapper.PythonSession):
             Tolerance for the CG solver.
 
         """
-        noise_config = noise.toNoiseConfig()
-        self.config.addSideInfoConfig(mode, prepare_sideinfo(Y, noise_config, tol, direct))
+        self.config.addSideInfoConfig(mode, prepare_sideinfo(Y, noise, tol, direct))
 
     def addPropagatedPosterior(self, mode, mu, Lambda):
         """Adds mu and Lambda from propagated posterior
@@ -167,7 +166,7 @@ class TrainSession(wrapper.PythonSession):
         self.config.addPropagatedPosterior(mode, mu, Lambda)
 
 
-    def addData(self, pos, Y, is_scarce = False, noise = PyNoiseConfig()):
+    def addData(self, pos, Y, is_scarce = False, noise = NoiseConfig()):
         """Stacks more matrices/tensors next to the main train matrix.
 
         pos : shape
@@ -182,12 +181,11 @@ class TrainSession(wrapper.PythonSession):
             When `Y` is sparse, and `is_scarce` is *False* the missing values are considered as *zero*.
             When `Y` is dense, this parameter is ignored.
 
-        noise : :class: `PyNoiseConfig`
+        noise : :class: `NoiseConfig`
             Noise model to use for `Y`
         
         """
-        self.noise_config = noise.toNoiseConfig()
-        self.config.addAuxData(prepare_auxdata(Y, pos, is_scarce, self.noise_config))
+        self.config.addAuxData(prepare_auxdata(Y, pos, is_scarce, noise))
 
     # 
     # running functions
@@ -243,32 +241,6 @@ class TrainSession(wrapper.PythonSession):
             pass
 
         return self.getTestPredictions()
-
-    def getStatus(self):
-        """ Returns :class:`StatusItem` with current state of the trainSession
-
-        """
-        if self..getStatus():
-            self.status_item = self.ptr_get().getStatus()
-            status =  PyStatusItem(
-                self.status_item.get().phase,
-                self.status_item.get().iter,
-                self.status_item.get().phase_iter,
-                self.status_item.get().model_norms,
-                self.status_item.get().rmse_avg,
-                self.status_item.get().rmse_1sample,
-                self.status_item.get().train_rmse,
-                self.status_item.get().auc_1sample,
-                self.status_item.get().auc_avg,
-                self.status_item.get().elapsed_iter,
-                self.status_item.get().nnz_per_sec,
-                self.status_item.get().samples_per_sec)
-
-            logging.info(status)
-            
-            return status
-        else:
-            return None
 
     def getConfig(self):
         """Get this `TrainSession`'s configuration in ini-file format

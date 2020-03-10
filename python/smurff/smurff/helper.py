@@ -2,7 +2,22 @@ import pandas as pd
 import numpy as np
 import math
 
-from .wrapper import NoiseConfig
+from .wrapper import NoiseConfig, DataConfig
+
+def make_dataconfig(data, noise = None, is_scarce = None, pos = None):
+    ret = DataConfig()
+    if is_scarce is not None:
+        ret.setData(data, is_scarce)
+    else:
+        ret.setData(data)
+
+    if noise is not None:
+        ret.setNoiseConfig(noise)
+
+    if pos is not None:
+        ret.setPos(pod)
+
+    return ret
 
 class SparseTensor:
     """Wrapper around a pandas DataFrame to represent a sparse tensor
@@ -44,86 +59,18 @@ class SparseTensor:
 
         self.ndim = len(self.shape)
 
-class PyNoiseConfig(NoiseConfig):
-    def __init__(self, noise_type = "fixed", precision = 5.0, sn_init = 1.0, sn_max = 10.0, threshold = 0.5): 
-        self.setNoiseType(self.noise_type.encode('UTF-8'))
-        self.setPrecision(self.precision)
-        self.setSnInit(self.sn_init)
-        self.setSnMax(self.sn_max)
-        self.setThreshold(self.threshold)
-
-class FixedNoise(PyNoiseConfig):
+class FixedNoise(NoiseConfig):
     def __init__(self, precision = 5.0): 
-        PyNoiseConfig.__init__(self, "fixed", precision)
+        NoiseConfig.__init__(self, "fixed", precision)
 
-class SampledNoise(PyNoiseConfig):
+class SampledNoise(NoiseConfig):
     def __init__(self, precision = 5.0): 
-        PyNoiseConfig.__init__(self, "sampled", precision)
+        NoiseConfig.__init__(self, "sampled", precision)
 
-class AdaptiveNoise(PyNoiseConfig):
+class AdaptiveNoise(NoiseConfig):
     def __init__(self, sn_init = 5.0, sn_max = 10.0): 
-        PyNoiseConfig.__init__(self, "adaptive", sn_init = sn_init, sn_max = sn_max)
+        NoiseConfig.__init__(self, "adaptive", sn_init = sn_init, sn_max = sn_max)
 
-class ProbitNoise(PyNoiseConfig):
+class ProbitNoise(NoiseConfig):
     def __init__(self, threshold = 0.): 
-        PyNoiseConfig.__init__(self, "probit", threshold = threshold)
-
-class PyStatusItem:
-    """Short set of parameters indicative for the training progress.
-    
-    Attributes
-    ----------
-
-    phase : { "Burnin", "Sampling" }
-
-    iter : int
-        Current iteration in current phase
-
-    phase_iter : int
-        Number of iterations in this phase
-
-    model_norms : list of float
-        Norm of each U/V matrix
-
-    rmse_avg : float
-        Averag RMSE for test matrix across all samples
-
-    rmse_1sample : float
-        RMSE for test matrix of last sample
-
-    train_rmse : float
-        RMSE for train matrix of last sample
-
-    auc_1sample : float
-        ROC AUC of the test matrix of the last sample
-        Only available if you provided a threshold.
-
-    auc_avg : float
-        Averag ROC AUC of the test matrix accross all samples
-        Only available if you provided a threshold.
-
-    elapsed_iter : float
-        Number of seconds the last sampling iteration took
-
-    nnz_per_sec : float
-        Compute performance indicator; number of non-zero elements in train processed per second
-
-    samples_per_sec : float
-        Compute performance indicator; number of rows and columns in U/V processed per second
-
-
-    """
-    
-    def __init__(self, phase, iter, phase_iter, model_norms, rmse_avg, rmse_1sample, train_rmse, auc_1sample, auc_avg, elapsed_iter, nnz_per_sec, samples_per_sec):
-        self.phase = phase.decode('UTF-8')
-        self.iter = iter
-        self.phase_iter = phase_iter
-        self.model_norms = model_norms
-        self.rmse_avg = rmse_avg
-        self.rmse_1sample = rmse_1sample
-        self.train_rmse = train_rmse
-        self.auc_1sample = auc_1sample
-        self.auc_avg = auc_avg
-        self.elapsed_iter = elapsed_iter
-        self.nnz_per_sec = nnz_per_sec
-        self.samples_per_sec = samples_per_sec
+        NoiseConfig.__init__(self, "probit", threshold = threshold)
