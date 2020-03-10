@@ -16,14 +16,14 @@ struct StatusItem;
 
 extern const std::string LAST_CHECKPOINT_TAG;
 
-class OutputFile
+class StateFile
 {
 private:
    std::string m_path;
    h5::File m_h5;
 
 public:
-   OutputFile(std::string path, bool create = false);
+   StateFile(std::string path, bool create = false);
 
 public:
    std::string getPrefix() const;

@@ -6,7 +6,7 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/PVec.hpp>
-#include <SmurffCpp/Utils/OutputFile.h>
+#include <SmurffCpp/Utils/StateFile.h>
 #include <SmurffCpp/Sessions/ISession.h>
 #include <SmurffCpp/Model.h>
 #include <SmurffCpp/result.h>
@@ -20,8 +20,8 @@ struct ResultItem;
 class PredictSession : public ISession
 {
 private:
-    OutputFile m_model_rootfile;
-    std::unique_ptr<OutputFile> m_pred_rootfile;
+    StateFile m_model_rootfile;
+    std::unique_ptr<StateFile> m_pred_rootfile;
     bool m_has_config;
 
     Result m_result;

@@ -10,7 +10,7 @@ namespace smurff {
 class DataConfig;
 
 class SaveState;
-class OutputFile;
+class StateFile;
 
 class Model;
 class Data;

@@ -14,7 +14,7 @@
 #include <Utils/Error.h>
 #include <SmurffCpp/IO/INIFile.h>
 
-#include <SmurffCpp/Utils/OutputFile.h>
+#include <SmurffCpp/Utils/StateFile.h>
 #include <Utils/StringUtils.h>
 
 namespace smurff {

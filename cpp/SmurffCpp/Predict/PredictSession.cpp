@@ -4,7 +4,7 @@
 #include <SmurffCpp/Types.h>
 
 #include <Utils/counters.h>
-#include <SmurffCpp/Utils/OutputFile.h>
+#include <SmurffCpp/Utils/StateFile.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/result.h>
 #include <SmurffCpp/ResultItem.h>
@@ -17,7 +17,7 @@ namespace smurff
 {
 
 PredictSession::PredictSession(const std::string &model_file)
-    : m_model_rootfile(OutputFile(model_file))
+    : m_model_rootfile(StateFile(model_file))
     , m_pred_rootfile()
     , m_has_config(false)
     , m_num_latent(-1)

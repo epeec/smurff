@@ -6,7 +6,7 @@
 #include <Utils/Error.h>
 #include <SmurffCpp/Configs/Config.h>
 #include <SmurffCpp/Priors/IPriorFactory.h>
-#include <SmurffCpp/Utils/OutputFile.h>
+#include <SmurffCpp/Utils/StateFile.h>
 #include <SmurffCpp/StatusItem.h>
 #include <SmurffCpp/Sessions/ISession.h>
 #include <SmurffCpp/Model.h>
@@ -36,7 +36,7 @@ protected:
    std::shared_ptr<Data> data_ptr;
 
 private:
-   std::shared_ptr<OutputFile> m_rootFile;
+   std::shared_ptr<StateFile> m_stateFile;
 
 private:
    int m_iter = -1; //index of step iteration

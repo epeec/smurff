@@ -1,4 +1,4 @@
-#include "OutputFile.h"
+#include "StateFile.h"
 
 #include <iostream>
 #include <fstream>
@@ -22,7 +22,7 @@ const std::string LAST_CHECKPOINT_TAG = "last_checkpoint";
 const std::string CHECKPOINT_PREFIX = "checkpoint_";
 const std::string SAMPLE_PREFIX = "sample_";
 
-OutputFile::OutputFile(std::string path, bool create)
+StateFile::StateFile(std::string path, bool create)
    : m_path(path)
    , m_h5(path, create ? h5::File::Create : h5::File::ReadWrite)
 {
@@ -32,22 +32,22 @@ OutputFile::OutputFile(std::string path, bool create)
    }
 }
 
-std::string OutputFile::getFullPath() const
+std::string StateFile::getFullPath() const
 {
    return m_path;
 }
 
-std::string OutputFile::getPrefix() const
+std::string StateFile::getPrefix() const
 {
    return dirName(m_path);
 }
 
-std::string OutputFile::getOptionsFileName() const
+std::string StateFile::getOptionsFileName() const
 {
    return getPrefix() + "options.ini";
 }
 
-void OutputFile::saveConfig(Config& config)
+void StateFile::saveConfig(Config& config)
 {
    // save to INIFile
    INIFile cfg_file;
@@ -59,29 +59,29 @@ void OutputFile::saveConfig(Config& config)
    config.save(h5_cfg);
 }
 
-void OutputFile::restoreConfig(Config& config)
+void StateFile::restoreConfig(Config& config)
 {
    //get options filename
    HDF5 h5_cfg(m_h5.getGroup(OPTIONS_TAG));
    config.restore(h5_cfg);
 }
 
-SaveState OutputFile::createSampleStep(std::int32_t isample)
+SaveState StateFile::createSampleStep(std::int32_t isample)
 {
    return createStep(isample, false);
 }
 
-SaveState OutputFile::createCheckpointStep(std::int32_t isample)
+SaveState StateFile::createCheckpointStep(std::int32_t isample)
 {
    return createStep(isample, true);
 }
 
-SaveState OutputFile::createStep(std::int32_t isample, bool checkpoint)
+SaveState StateFile::createStep(std::int32_t isample, bool checkpoint)
 {
    return SaveState(m_h5, isample, checkpoint);
 }
 
-void OutputFile::removeOldCheckpoints()
+void StateFile::removeOldCheckpoints()
 {
    std::string lastCheckpointItem;
    m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
@@ -98,14 +98,14 @@ void OutputFile::removeOldCheckpoints()
    }
 }
 
-bool OutputFile::hasCheckpoint() const
+bool StateFile::hasCheckpoint() const
 {
    std::string lastCheckpointItem;
    m_h5.getAttribute(LAST_CHECKPOINT_TAG).read(lastCheckpointItem);
    return (lastCheckpointItem != NONE_VALUE);
 }
 
-SaveState OutputFile::openCheckpoint() const
+SaveState StateFile::openCheckpoint() const
 {
    THROWERROR_ASSERT(hasCheckpoint());
    std::string lastCheckpointItem;
@@ -114,7 +114,7 @@ SaveState OutputFile::openCheckpoint() const
    return SaveState(m_h5, group);
 }
 
-std::vector<SaveState> OutputFile::openSampleSteps() const
+std::vector<SaveState> StateFile::openSampleSteps() const
 {
    std::vector<std::string> h5_objects = m_h5.listObjectNames();
    std::vector<SaveState> samples;

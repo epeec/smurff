@@ -8,7 +8,7 @@
 #include <SmurffCpp/Configs/Config.h>
 
 namespace smurff {
-   class OutputFile;
+   class StateFile;
    class Result;
 
    class ISession
@@ -26,7 +26,6 @@ namespace smurff {
       virtual void init() = 0;
 
       const Config &getConfig() const { return m_config; }
-      std::string getOutputFilename() const { return getConfig().getOutputFilename(); }
       virtual StatusItem getStatus() const = 0;
       virtual const Result &getResult() const = 0;
 
