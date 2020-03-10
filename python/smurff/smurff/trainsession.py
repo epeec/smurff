@@ -1,7 +1,7 @@
 from .helper import PyNoiseConfig, PyStatusItem, SparseTensor
 from .wrapper import Config, PythonSession
 
-class TrainSession:
+class TrainSession(wrapper.PythonSession):
     """Class for doing a training run in smurff
 
     A simple use case could be:
@@ -140,8 +140,8 @@ class TrainSession:
             Tolerance for the CG solver.
 
         """
-        self.noise_config = prepare_noise_config(noise)
-        self.config.addSideInfoConfig(mode, prepare_sideinfo(Y, self.noise_config, tol, direct))
+        noise_config = noise.toNoiseConfig()
+        self.config.addSideInfoConfig(mode, prepare_sideinfo(Y, noise_config, tol, direct))
 
     def addPropagatedPosterior(self, mode, mu, Lambda):
         """Adds mu and Lambda from propagated posterior
@@ -159,17 +159,12 @@ class TrainSession:
             Lambda should be shaped like K x K x N 
             Where K == `num_latent` and N == dimension `mode` in `train`
         """
-        self.noise_config = prepare_noise_config(PyNoiseConfig())
         if len(Lambda.shape) == 3:
             assert Lambda.shape[0] == self.num_latent
             assert Lambda.shape[1] == self.num_latent
             Lambda = Lambda.reshape(self.num_latent * self.num_latent, Lambda.shape[2], order='F')
 
-        self.config.addPropagatedPosterior(
-            mode,
-            shared_ptr[MatrixConfig](prepare_dense_matrix(mu, self.noise_config)),
-            shared_ptr[MatrixConfig](prepare_dense_matrix(Lambda, self.noise_config))
-        )
+        self.config.addPropagatedPosterior(mode, mu, Lambda)
 
 
     def addData(self, pos, Y, is_scarce = False, noise = PyNoiseConfig()):
@@ -191,7 +186,7 @@ class TrainSession:
             Noise model to use for `Y`
         
         """
-        self.noise_config = prepare_noise_config(noise)
+        self.noise_config = noise.toNoiseConfig()
         self.config.addAuxData(prepare_auxdata(Y, pos, is_scarce, self.noise_config))
 
     # 
@@ -215,10 +210,6 @@ class TrainSession:
         logging.info(self)
         return self.getStatus()
 
-    def __dealloc__(self):
-        if (self.ptr.get()):
-            self.ptr.reset()
-
     def step(self):
         """Does on sampling or burnin iteration.
 
@@ -228,9 +219,9 @@ class TrainSession:
         - After the last iteration, when no step was executed: `None`.
 
         """
-        not_done = self.ptr_get().step()
+        not_done = self.step()
         
-        if self.ptr_get().interrupted():
+        if self.interrupted():
             raise KeyboardInterrupt
 
         if not_done:
@@ -253,22 +244,11 @@ class TrainSession:
 
         return self.getTestPredictions()
 
-    #
-    # get state
-    #
-
-    def __str__(self):
-        try:
-            return self.ptr_get().infoAsString().decode('UTF-8')
-        except ValueError:
-            return "Uninitialized SMURFF Train TrainSession (call .init())"
-
-
     def getStatus(self):
         """ Returns :class:`StatusItem` with current state of the trainSession
 
         """
-        if self.ptr_get().getStatus():
+        if self..getStatus():
             self.status_item = self.ptr_get().getStatus()
             status =  PyStatusItem(
                 self.status_item.get().phase,

@@ -44,25 +44,13 @@ class SparseTensor:
 
         self.ndim = len(self.shape)
 
-class PyNoiseConfig:
+class PyNoiseConfig(NoiseConfig):
     def __init__(self, noise_type = "fixed", precision = 5.0, sn_init = 1.0, sn_max = 10.0, threshold = 0.5): 
-        self.noise_type = noise_type
-        self.precision = precision
-        self.sn_init = sn_init
-        self.sn_max = sn_max
-        self.threshold = threshold
-
-    def toNoiseConfig(self):
-        """
-            Converts a PyNoiseConfig object to a C++ NoiseConfig object
-        """
-        n = NoiseConfig()
-        n.setNoiseType(self.noise_type.encode('UTF-8'))
-        n.setPrecision(self.precision)
-        n.setSnInit(self.sn_init)
-        n.setSnMax(self.sn_max)
-        n.setThreshold(self.threshold)
-        return n
+        self.setNoiseType(self.noise_type.encode('UTF-8'))
+        self.setPrecision(self.precision)
+        self.setSnInit(self.sn_init)
+        self.setSnMax(self.sn_max)
+        self.setThreshold(self.threshold)
 
 class FixedNoise(PyNoiseConfig):
     def __init__(self, precision = 5.0): 
@@ -139,18 +127,3 @@ class PyStatusItem:
         self.elapsed_iter = elapsed_iter
         self.nnz_per_sec = nnz_per_sec
         self.samples_per_sec = samples_per_sec
-
-    def __str__(self):
-        model_norms_str = ",".join("%d: %.2f" % (i,m) for i,m in enumerate(self.model_norms))
-
-        if  math.isnan(self.auc_1sample):
-            auc_str = ""
-        else:
-            auc_str = "AUC: %.2f (1sample: %.2f) " % (self.auc_avg, self.auc_1sample)
-
-        return "%7s: %3d/%d RMSE: %.2f (1samp: %.2f) %sU: [ %s ] took %.1fs" % (
-            self.phase, self.iter, self.phase_iter, self.rmse_avg, self.rmse_1sample,
-            auc_str, model_norms_str, self.elapsed_iter)
-
-    def __repr__(self):
-        return str(self)
