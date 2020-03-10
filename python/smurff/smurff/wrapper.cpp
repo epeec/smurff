@@ -41,12 +41,13 @@ PYBIND11_MODULE(wrapper, m)
         ;
 
     py::class_<smurff::NoiseConfig>(m, "NoiseConfig")
-        .def(py::init<>())
-        .def("setNoiseType", py::overload_cast<std::string>(&smurff::NoiseConfig::setNoiseType))
-        .def("setPrecision", &smurff::NoiseConfig::setPrecision)
-        .def("setSnInit", &smurff::NoiseConfig::setSnInit)
-        .def("setSnMax", &smurff::NoiseConfig::setSnMax)
-        .def("setThreshold", &smurff::NoiseConfig::setThreshold)
+        .def(py::init<const std::string, double, double, double, double>(),
+           py::arg("noise_type") = "fixed",
+           py::arg("precision") = 5.0,
+           py::arg("sn_init") = 1.0,
+           py::arg("sn_max") = 10.0,
+           py::arg("threshold") = 0.5
+        )  
         ;
 
     py::class_<smurff::StatusItem>(m, "StatusItem", "Short set of parameters indicative for the training progress.")
