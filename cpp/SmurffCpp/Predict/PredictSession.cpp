@@ -16,28 +16,22 @@
 namespace smurff
 {
 
-PredictSession::PredictSession(std::shared_ptr<OutputFile> rf)
-    : m_model_rootfile(rf), m_pred_rootfile(0),
-      m_has_config(false), m_num_latent(-1),
-      m_dims(PVec<>(0)), m_is_init(false)
+PredictSession::PredictSession(const std::string &model_file)
+    : m_model_rootfile(OutputFile(model_file))
+    , m_pred_rootfile()
+    , m_has_config(false)
+    , m_num_latent(-1)
+    , m_dims(PVec<>(0))
+    , m_is_init(false)
 {
-    m_stepfiles = m_model_rootfile->openSampleSteps();
+    m_stepfiles = m_model_rootfile.openSampleSteps();
 }
 
-PredictSession::PredictSession(std::shared_ptr<OutputFile> rf, const Config &config)
-    : m_model_rootfile(rf), m_pred_rootfile(0),
-      m_config(config), m_has_config(true), m_num_latent(-1),
-      m_dims(PVec<>(0)), m_is_init(false)
-{
-    m_stepfiles = m_model_rootfile->openSampleSteps();
-}
 PredictSession::PredictSession(const Config &config)
-    : m_pred_rootfile(0), m_config(config), m_has_config(true),
-      m_num_latent(-1), m_dims(PVec<>(0)), m_is_init(false)
+    : PredictSession(config.getRootName())
 {
-    THROWERROR_ASSERT(config.getRootName().size())
-    m_model_rootfile = std::make_shared<OutputFile>(config.getRootName());
-    m_stepfiles = m_model_rootfile->openSampleSteps();
+    m_config = config;
+    m_has_config = true;
 }
 
 void PredictSession::run()
@@ -85,14 +79,13 @@ void PredictSession::init()
     m_iter = 0;
     m_is_init = true;
 
-    THROWERROR_ASSERT_MSG(m_config.getSavePrefix() != getModelRoot()->getPrefix(),
-                          "Cannot have same prefix for model and predictions - both have " + m_config.getSavePrefix());
+    THROWERROR_ASSERT_MSG(m_config.getOutputFilename() != m_model_rootfile.getFullPath(),
+                          "Cannot have same output file for model and predictions - both have " + m_config.getOutputFilename());
 
     if (m_config.getSaveFreq())
     {
         // create root file
-        m_pred_rootfile = std::make_shared<OutputFile>(m_config.getSavePrefix() + "root.h5", true);
-        //m_pred_rootfile->createCsvStatusFile();
+        m_pred_rootfile = std::make_unique<OutputFile>(m_config.getOutputFilename(), true);
     }
 
     if (m_config.getVerbose())
@@ -135,7 +128,7 @@ bool PredictSession::step()
 void PredictSession::save()
 {
     //save this iteration
-    SaveState saveState = getOutputFile()->createSampleStep(m_iter);
+    SaveState saveState = m_pred_rootfile->createSampleStep(m_iter);
 
     if (m_config.getVerbose())
     {
@@ -143,8 +136,6 @@ void PredictSession::save()
     }
 
     m_result.save(saveState);
-
-    //m_pred_rootfile->addCsvStatusLine(*getStatus());
 }
 
 StatusItem PredictSession::getStatus() const
@@ -177,7 +168,7 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
 {
     os << indent << "PredictSession {\n";
     os << indent << "  Model {\n";
-    os << indent << "    model root-file: " << getModelRoot()->getFullPath() << "\n";
+    os << indent << "    model root-file: " << m_model_rootfile.getFullPath() << "\n";
     os << indent << "    num-samples: " << getNumSteps() << "\n";
     os << indent << "    num-latent: " << getNumLatent() << "\n";
     os << indent << "    dimensions: " << getModelDims() << "\n";
@@ -187,14 +178,12 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
     if (m_config.getSaveFreq() > 0)
     {
         os << indent << "    Save predictions: every " << m_config.getSaveFreq() << " iteration\n";
-        os << indent << "    Save extension: " << m_config.getSaveExtension() << "\n";
-        os << indent << "    Output root-file: " << getOutputFile()->getFullPath() << "\n";
+        os << indent << "    Output file: " << getOutputFilename() << "\n";
     }
     else if (m_config.getSaveFreq() < 0)
     {
         os << indent << "    Save predictions after last iteration\n";
-        os << indent << "    Save extension: " << m_config.getSaveExtension() << "\n";
-        os << indent << "    Output root-file: " << getOutputFile()->getFullPath() << "\n";
+        os << indent << "    Output file: " << getOutputFilename() << "\n";
     }
     else
     {
@@ -248,7 +237,7 @@ void PredictSession::predict(ResultItem &res, const SaveState &sf)
 // predict one element
 void PredictSession::predict(ResultItem &res)
 {
-    auto stepfiles = getModelRoot()->openSampleSteps();
+    auto stepfiles = m_model_rootfile.openSampleSteps();
 
     for (const auto &sf : stepfiles)
         predict(res, sf);

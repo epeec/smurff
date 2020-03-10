@@ -33,7 +33,6 @@ static const std::string PRIOR_PREFIX = "prior";
 static const std::string NUM_AUX_DATA_TAG = "num_aux_data";
 static const std::string AUX_DATA_PREFIX = "aux_data";
 static const std::string SAVE_PREFIX_TAG = "save_prefix";
-static const std::string SAVE_EXTENSION_TAG = "save_extension";
 static const std::string SAVE_FREQ_TAG = "save_freq";
 static const std::string SAVE_PRED_TAG = "save_pred";
 static const std::string SAVE_MODEL_TAG = "save_model";
@@ -139,7 +138,6 @@ int Config::NUM_LATENT_DEFAULT_VALUE = 32;
 int Config::NUM_THREADS_DEFAULT_VALUE = 0; // as many as you want
 ModelInitTypes Config::INIT_MODEL_DEFAULT_VALUE = ModelInitTypes::zero;
 const std::string Config::SAVE_PREFIX_DEFAULT_VALUE = "";
-const std::string Config::SAVE_EXTENSION_DEFAULT_VALUE = ".ddm";
 int Config::SAVE_FREQ_DEFAULT_VALUE = 0;
 bool Config::SAVE_PRED_DEFAULT_VALUE = true;
 bool Config::SAVE_MODEL_DEFAULT_VALUE = true;
@@ -156,8 +154,7 @@ Config::Config()
 
    m_model_init_type = Config::INIT_MODEL_DEFAULT_VALUE;
 
-   m_save_prefix = Config::SAVE_PREFIX_DEFAULT_VALUE;
-   m_save_extension = Config::SAVE_EXTENSION_DEFAULT_VALUE;
+   m_output_filename = Config::SAVE_PREFIX_DEFAULT_VALUE;
    m_save_freq = Config::SAVE_FREQ_DEFAULT_VALUE;
    m_save_pred = Config::SAVE_PRED_DEFAULT_VALUE;
    m_save_model = Config::SAVE_MODEL_DEFAULT_VALUE;
@@ -176,27 +173,28 @@ Config::Config()
    m_classify = false;
 }
 
-std::string Config::getSavePrefix() const
+std::string Config::getOutputFilename() const
 {
-    auto &pfx = m_save_prefix;
-    if (pfx == Config::SAVE_PREFIX_DEFAULT_VALUE || pfx.empty())
+    if (m_output_filename == Config::SAVE_PREFIX_DEFAULT_VALUE || m_output_filename.empty())
     {
 #ifdef _WINDOWS
        char templ[1024];
-	   static int temp_counter = 0;
+	    static int temp_counter = 0;
        snprintf(templ, 1023, "%s\\smurff.%03d", getenv("TEMP"), temp_counter++);
        CreateDirectory(templ, NULL);
-       pfx = templ;
+       m_output_filename = templ;
 #else
         char templ[1024] = "/tmp/smurff.XXXXXX";
-        pfx = mkdtemp(templ);
+        m_output_filename = mkdtemp(templ);
 #endif
+
+        if (*m_output_filename.rbegin() != '/') 
+            m_output_filename += "/";
+
+        m_output_filename += "output.h5";
     }
 
-    if (*pfx.rbegin() != '/') 
-        pfx += "/";
-
-    return m_save_prefix;
+    return m_output_filename;
 }
 
 const SideInfoConfig& Config::getSideInfoConfig(int mode) const
@@ -334,13 +332,6 @@ bool Config::validate() const
       }
    }
 
-   std::set<std::string> save_extensions = { ".csv", ".ddm" };
-
-   if (save_extensions.find(m_save_extension) == save_extensions.end())
-   {
-      THROWERROR("Unknown output extension: " + m_save_extension + " (expected \".csv\" or \".ddm\")");
-   }
-
    getTrain().getNoiseConfig().validate();
 
    // validate propagated posterior
@@ -386,8 +377,7 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
       cfg_file.put(GLOBAL_SECTION_TAG, addIndex(PRIOR_PREFIX, prior_idx++), priorTypeToString(pt));
 
    //save data
-   cfg_file.put(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, m_save_prefix);
-   cfg_file.put(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, m_save_extension);
+   cfg_file.put(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, m_output_filename);
    cfg_file.put(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, m_save_freq);
    cfg_file.put(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, m_save_pred);
    cfg_file.put(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, m_save_model);
@@ -480,8 +470,7 @@ bool Config::restore(const ConfigFile &cfg_file)
 
 
    //restore save data
-   m_save_prefix = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
-   m_save_extension = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_EXTENSION_TAG, Config::SAVE_EXTENSION_DEFAULT_VALUE);
+   m_output_filename = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_PREFIX_TAG, Config::SAVE_PREFIX_DEFAULT_VALUE);
    m_save_freq = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
    m_save_pred = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
    m_save_model = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, Config::SAVE_MODEL_DEFAULT_VALUE);
@@ -524,8 +513,7 @@ std::ostream& Config::info(std::ostream &os, std::string indent) const
           os << indent << "  Checkpoint state: every " << getCheckpointFreq() << " seconds\n";
       }
 
-      os << indent << "  Save prefix: " << getSavePrefix() << "\n";
-      os << indent << "  Save extension: " << getSaveExtension() << "\n";
+      os << indent << "  Output file: " << getOutputFilename() << "\n";
    }
    else
    {

@@ -52,7 +52,6 @@ public:
    static bool POSTPROP_DEFAULT_VALUE;
    static ModelInitTypes INIT_MODEL_DEFAULT_VALUE;
    static const std::string SAVE_PREFIX_DEFAULT_VALUE;
-   static const std::string SAVE_EXTENSION_DEFAULT_VALUE;
    static int SAVE_FREQ_DEFAULT_VALUE;
    static bool SAVE_PRED_DEFAULT_VALUE;
    static bool SAVE_MODEL_DEFAULT_VALUE;
@@ -86,8 +85,7 @@ private:
    ModelInitTypes m_model_init_type;
 
    //-- save
-   mutable std::string m_save_prefix;
-   std::string m_save_extension;
+   mutable std::string m_output_filename;
    int m_save_freq;
    bool m_save_pred;
    bool m_save_model;
@@ -289,21 +287,11 @@ public:
       m_model_init_type = stringToModelInitType(value);
    }
 
-   std::string getSavePrefix() const;
+   std::string getOutputFilename() const;
 
-   void setSavePrefix(std::string value)
+   void setOutputFilename(std::string value)
    {
-      m_save_prefix = value;
-   }
-
-   std::string getSaveExtension() const
-   {
-      return m_save_extension;
-   }
-
-   void setSaveExtension(std::string value)
-   {
-      m_save_extension = value;
+      m_output_filename = value;
    }
 
    int getSaveFreq() const

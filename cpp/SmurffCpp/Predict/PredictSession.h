@@ -6,6 +6,7 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/PVec.hpp>
+#include <SmurffCpp/Utils/OutputFile.h>
 #include <SmurffCpp/Sessions/ISession.h>
 #include <SmurffCpp/Model.h>
 #include <SmurffCpp/result.h>
@@ -13,16 +14,14 @@
 
 namespace smurff {
 
-class OutputFile;
 class Result;
 struct ResultItem;
 
 class PredictSession : public ISession
 {
 private:
-    std::shared_ptr<OutputFile> m_model_rootfile;
-    std::shared_ptr<OutputFile> m_pred_rootfile;
-    Config m_config;
+    OutputFile m_model_rootfile;
+    std::unique_ptr<OutputFile> m_pred_rootfile;
     bool m_has_config;
 
     Result m_result;
@@ -56,21 +55,12 @@ public:
     StatusItem getStatus() const override;
     const Result &getResult() const override;
 
-    std::shared_ptr<OutputFile> getOutputFile() const override {
-        return m_pred_rootfile;
-    }
-
 private:
     void save();
 
-    std::shared_ptr<OutputFile> getModelRoot() const {
-        return m_model_rootfile;
-    }
-
   public:
+    PredictSession(const std::string &model_file);
     PredictSession(const Config &config);
-    PredictSession(std::shared_ptr<OutputFile> rf, const Config &config);
-    PredictSession(std::shared_ptr<OutputFile> rf);
 
     std::ostream& info(std::ostream &os, std::string indent) const override;
 
@@ -115,7 +105,7 @@ std::shared_ptr<Matrix> PredictSession::predict(int mode, const Feat &f, int sav
 
         if (save_freq > 0 && (step % save_freq) == 0)
         {
-            auto filename = m_config.getSavePrefix() + "/predictions-sample-" + std::to_string(step) + m_config.getSaveExtension();
+            auto filename = m_config.getOutputFilename();
             if (m_config.getVerbose())
             {
                 std::cout << "-- Saving sample " << step << " to " << filename << "." << std::endl;
@@ -129,7 +119,7 @@ std::shared_ptr<Matrix> PredictSession::predict(int mode, const Feat &f, int sav
 
     if (save_freq != 0)
     {
-        auto filename = m_config.getSavePrefix() + "/predictions-average" + m_config.getSaveExtension();
+        auto filename = m_config.getOutputFilename();
         if (m_config.getVerbose())
         {
             std::cout << "-- Saving average predictions to " << filename << "." << std::endl;

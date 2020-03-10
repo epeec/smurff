@@ -5,6 +5,7 @@
 
 #include <SmurffCpp/StatusItem.h>
 #include <SmurffCpp/ResultItem.h>
+#include <SmurffCpp/Configs/Config.h>
 
 namespace smurff {
    class OutputFile;
@@ -24,9 +25,10 @@ namespace smurff {
       virtual bool interrupted() { return false; }
       virtual void init() = 0;
 
+      const Config &getConfig() const { return m_config; }
+      std::string getOutputFilename() const { return getConfig().getOutputFilename(); }
       virtual StatusItem getStatus() const = 0;
       virtual const Result &getResult() const = 0;
-      virtual std::shared_ptr<OutputFile> getOutputFile() const = 0;
 
       double getRmseAvg() { return getStatus().rmse_avg; }
       const std::vector<ResultItem> & getResultItems() const;
@@ -39,6 +41,9 @@ namespace smurff {
           info(ss, "");
           return ss.str();
       }
+
+   protected:
+      Config m_config;
    };
 
 }

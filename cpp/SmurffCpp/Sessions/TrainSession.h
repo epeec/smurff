@@ -38,9 +38,6 @@ protected:
 private:
    std::shared_ptr<OutputFile> m_rootFile;
 
-protected:
-   Config m_config;
-
 private:
    int m_iter = -1; //index of step iteration
    double m_secs_per_iter = .0; //time in seconds for last_iter
@@ -99,18 +96,7 @@ private:
 public:
    virtual std::shared_ptr<IPriorFactory> create_prior_factory() const;
 
-   std::shared_ptr<OutputFile> getOutputFile() const override
-   {
-       THROWERROR_ASSERT_MSG(m_rootFile, "No root file found. Did you save any models?");
-       return m_rootFile;
-   }
-
 public:
-   const Config& getConfig()
-   {
-      return m_config;
-   }
-
    Data &data() const
    {
       THROWERROR_ASSERT(data_ptr != 0);

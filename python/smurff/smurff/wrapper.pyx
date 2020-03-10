@@ -318,7 +318,7 @@ cdef class TrainSession:
         if seed:           self.config.setRandomSeed(seed)
         if threshold is not None:
                            self.config.setThreshold(threshold)
-        if save_prefix:    self.config.setSavePrefix(save_prefix.encode('UTF-8'))
+        if save_prefix:    self.config.setOutputFilename(save_prefix.encode('UTF-8'))
         if save_extension: self.config.setSaveExtension(save_extension.encode('UTF-8'))
         if save_freq:      self.config.setSaveFreq(save_freq)
         if checkpoint_freq:self.config.setCheckpointFreq(checkpoint_freq)

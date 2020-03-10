@@ -35,8 +35,7 @@ static const char *BURNIN_NAME = "burnin";
 static const char *NSAMPLES_NAME = "nsamples";
 static const char *NUM_LATENT_NAME = "num-latent";
 static const char *NUM_THREADS_NAME = "num-threads";
-static const char *SAVE_PREFIX_NAME = "save-prefix";
-static const char *SAVE_EXTENSION_NAME = "save-extension";
+static const char *OUTPUT_FILENAME = "output";
 static const char *SAVE_FREQ_NAME = "save-freq";
 static const char *CHECKPOINT_FREQ_NAME = "checkpoint-freq";
 static const char *THRESHOLD_NAME = "threshold";
@@ -77,8 +76,7 @@ po::options_description get_desc()
     po::options_description save_desc("Storing models and predictions");
     save_desc.add_options()
 	(ROOT_NAME, po::value<std::string>(), "restore trainSession from root .ini file")
-	(SAVE_PREFIX_NAME, po::value<std::string>()->default_value(Config::SAVE_PREFIX_DEFAULT_VALUE), "prefix for result files")
-	(SAVE_EXTENSION_NAME, po::value<std::string>()->default_value(Config::SAVE_EXTENSION_DEFAULT_VALUE), "extension for result files (.csv or .ddm)")
+	(OUTPUT_FILENAME, po::value<std::string>()->default_value(Config::SAVE_PREFIX_DEFAULT_VALUE), "prefix for result files")
 	(SAVE_FREQ_NAME, po::value<int>()->default_value(Config::SAVE_FREQ_DEFAULT_VALUE), "save every n iterations (0 == never, -1 == final model)")
 	(CHECKPOINT_FREQ_NAME, po::value<int>()->default_value(Config::CHECKPOINT_FREQ_DEFAULT_VALUE), "save state every n seconds, only one checkpointing state is kept");
 
@@ -176,8 +174,7 @@ fill_config(const po::variables_map &vm)
     filler.set<int,         &Config::setNSamples>(NSAMPLES_NAME);
     filler.set<int,         &Config::setNumLatent>(NUM_LATENT_NAME);
     filler.set<int,         &Config::setNumThreads>(NUM_THREADS_NAME);
-    filler.set<std::string, &Config::setSavePrefix>(SAVE_PREFIX_NAME);
-    filler.set<std::string, &Config::setSaveExtension>(SAVE_EXTENSION_NAME);
+    filler.set<std::string, &Config::setOutputFilename>(OUTPUT_FILENAME);
     filler.set<int,         &Config::setSaveFreq>(SAVE_FREQ_NAME);
     filler.set<int,         &Config::setCheckpointFreq>(CHECKPOINT_FREQ_NAME);
     filler.set<double,      &Config::setThreshold>(THRESHOLD_NAME);
@@ -298,16 +295,16 @@ Config parse_options(int argc, char *argv[])
 //parses args with setFromArgs, then internally calls setFromConfig (to validate, save, set config)
 std::shared_ptr<ISession> create_cmd_session(int argc, char **argv)
 {
-    std::shared_ptr<ISession> trainSession;
+    std::shared_ptr<ISession> session;
 
     auto config = parse_options(argc, argv);
     if (config.isActionTrain())
-        trainSession = SessionFactory::create_session(config);
+        session = SessionFactory::create_session(config);
     else if (config.isActionPredict())
-        trainSession = std::make_shared<PredictSession>(config);
+        session = std::make_shared<PredictSession>(config);
     else
         exit(0);
 
-    return trainSession;
+    return session;
 }
 } // end namespace smurff

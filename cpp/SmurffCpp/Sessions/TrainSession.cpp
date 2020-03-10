@@ -54,7 +54,7 @@ void TrainSession::fromConfig(const Config &cfg)
     {
 
         // create root file
-        m_rootFile = std::make_shared<OutputFile>(m_config.getSavePrefix() + "root.h5", true);
+        m_rootFile = std::make_shared<OutputFile>(m_config.getOutputFilename(), true);
 
         //save config
         m_rootFile->saveConfig(m_config);

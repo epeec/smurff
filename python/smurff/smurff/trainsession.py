@@ -36,9 +36,8 @@ class TrainSession(PythonSession):
     seed: float
         Random seed to use for sampling
 
-    save_prefix: path
-        Path where to store the samples. The path includes the directory name, as well
-        as the initial part of the file names.
+    output_filename: path
+        HDF5 filename to store the samples.
 
     save_freq: int
         - N>0: save every Nth sample
@@ -68,7 +67,7 @@ class TrainSession(PythonSession):
         seed             = None,
         threshold        = None,
         verbose          = None,
-        save_prefix      = None,
+        output_filename  = None,
         save_extension   = None,
         save_freq        = None,
         checkpoint_freq  = None,
@@ -86,8 +85,7 @@ class TrainSession(PythonSession):
         if seed is not None:           self.config.setRandomSeed(seed)
         if threshold is not None:      self.config.setThreshold(threshold)
         if verbose is not None:        self.config.setVerbose(verbose)
-        if save_prefix is not None:    self.config.setSavePrefix(save_prefix.encode('UTF-8'))
-        if save_extension is not None: self.config.setSaveExtension(save_extension.encode('UTF-8'))
+        if output_filename is not None:self.config.setOutputFilename(output_filename.encode('UTF-8'))
         if save_freq is not None:      self.config.setSaveFreq(save_freq)
         if checkpoint_freq is not None:self.config.setCheckpointFreq(checkpoint_freq)
 
@@ -262,8 +260,8 @@ class TrainSession(PythonSession):
            that as built in this `TrainSession`.
 
         """
-        rf = self.getOutputFile().get().getFullPath().decode('UTF-8')
-        return PredictSession(rf)
+        output_file = self.getOutputFilename()
+        return PredictSession(output_file)
 
     def getTestPredictions(self):
         """Get predictions for test matrix.

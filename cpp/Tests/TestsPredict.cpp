@@ -41,9 +41,10 @@ static Config& prepareResultDir(Config &config, const std::string &dir)
             ), save_dir.end());
   
   output_dir /= fs::path(save_dir);
+  fs::path output_filename = output_dir / "output.h5";
  
   config.setSaveFreq(1);
-  config.setSavePrefix(output_dir.native());
+  config.setOutputFilename(output_filename.native());
   fs::remove_all(output_dir);
   fs::create_directory(output_dir);
   return config;
@@ -60,12 +61,10 @@ TEST_CASE("PredictSession/BPMF")
   // std::cout << "Prediction from TrainSession RMSE: " << trainSession->getRmseAvg() <<
   // std::endl;
 
-  std::string root_fname = trainSession->getOutputFile()->getFullPath();
-  auto rf = std::make_shared<OutputFile>(root_fname);
-
   {
+    std::string root_fname = trainSession->getOutputFilename();
     prepareResultDir(config, Catch::getResultCapture().getCurrentTestName() + "_predict");
-    PredictSession s(rf, config);
+    PredictSession s(root_fname);
 
     // test predict from TensorConfig
     auto result = s.predict(config.getTest());
@@ -73,16 +72,6 @@ TEST_CASE("PredictSession/BPMF")
     // std::cout << "Prediction from OutputFile RMSE: " << result->rmse_avg <<
     // std::endl;
     REQUIRE(trainSession->getRmseAvg() == Approx(result->rmse_avg).epsilon(APPROX_EPSILON));
-  }
-
-  {
-    PredictSession s(rf, config);
-    s.run();
-    auto result = s.getResult();
-
-    // std::cout << "Prediction from OutputFile+Config RMSE: " << result->rmse_avg
-    // << std::endl;
-    REQUIRE(trainSession->getRmseAvg() == Approx(result.rmse_avg).epsilon(APPROX_EPSILON));
   }
 }
 
@@ -98,7 +87,7 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
   std::shared_ptr<ISession> trainSession = SessionFactory::create_session(config);
   trainSession->run();
 
-  PredictSession predict_session(trainSession->getOutputFile());
+  PredictSession predict_session(trainSession->getOutputFilename());
 
   const auto &sideInfoMatrix = rowSideInfoDenseMatrixConfig.getDenseMatrixData();
 
@@ -172,10 +161,10 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   std::shared_ptr<ISession> trainSession = SessionFactory::create_session(config);
   trainSession->run();
 
-  PredictSession predict_session_in(trainSession->getOutputFile());
+  PredictSession predict_session_in(trainSession->getOutputFilename());
   auto in_matrix_predictions = predict_session_in.predict(config.getTest())->m_predictions;
 
-  PredictSession predict_session_out(trainSession->getOutputFile());
+  PredictSession predict_session_out(trainSession->getOutputFilename());
   const auto &sideInfoMatrix = rowSideInfoConfig.getSparseMatrixData();
   int d = config.getTrain().getDims()[0];
   for (int r = 0; r < d; r++) {
