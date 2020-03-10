@@ -74,6 +74,8 @@ class TrainSession(PythonSession):
         checkpoint_freq  = None,
         ):
 
+        super().__init__()
+
         self.config = Config()
 
         if priors is not None:         self.config.setPriorTypes(priors)
@@ -89,7 +91,7 @@ class TrainSession(PythonSession):
         if save_freq is not None:      self.config.setSaveFreq(save_freq)
         if checkpoint_freq is not None:self.config.setCheckpointFreq(checkpoint_freq)
 
-    def addTrainAndTest(self, Y, Ytest = None, noise = NoiseConfig(), is_scarce = True):
+    def addTrainAndTest(self, Y, Ytest = None, noise = NoiseConfig(), is_scarce = None):
         """Adds a train and optionally a test matrix as input data to this TrainSession
 
         Parameters
@@ -202,9 +204,8 @@ class TrainSession(PythonSession):
 
         """
 
-        self.pySession = PythonSession()
-        self.pySession.fromConfig(self.config)
-        self.pySession.init()
+        self.fromConfig(self.config)
+        super().init()
         logging.info(self)
         return self.getStatus()
 
@@ -217,7 +218,7 @@ class TrainSession(PythonSession):
         - After the last iteration, when no step was executed: `None`.
 
         """
-        not_done = self.step()
+        not_done = super().step()
         
         if self.interrupted():
             raise KeyboardInterrupt
@@ -261,7 +262,7 @@ class TrainSession(PythonSession):
            that as built in this `TrainSession`.
 
         """
-        rf = self.ptr_get().getOutputFile().get().getFullPath().decode('UTF-8')
+        rf = self.getOutputFile().get().getFullPath().decode('UTF-8')
         return PredictSession(rf)
 
     def getTestPredictions(self):
