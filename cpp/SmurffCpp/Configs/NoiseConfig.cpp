@@ -34,6 +34,15 @@ NoiseConfig::NoiseConfig(NoiseTypes nt)
    m_threshold = PROBIT_DEFAULT_VALUE;
 }
 
+NoiseConfig::NoiseConfig(const std::string type, double precision, double sn_init, double sn_max, double threshold)
+   : m_noise_type(stringToNoiseType(type))
+   , m_precision(precision)
+   , m_sn_init(sn_init)
+   , m_sn_max(sn_max)
+   , m_threshold(threshold)
+   {}
+
+
 NoiseTypes stringToNoiseType(std::string name)
 {
    if(name == NOISE_NAME_FIXED)
