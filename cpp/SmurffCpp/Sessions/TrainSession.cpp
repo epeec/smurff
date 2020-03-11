@@ -28,13 +28,13 @@ void TrainSession::init()
 
     if (!getConfig().getRestoreName().empty())
     {
-        // open root file
+        // open state file
         m_stateFile = std::make_shared<StateFile>(getConfig().getRestoreName());
     }
     else if (getConfig().getSaveFreq() || getConfig().getCheckpointFreq())
     {
 
-        // create root file
+        // create state file
         m_stateFile = std::make_shared<StateFile>(getConfig().getSaveName(), true);
 
         //save config

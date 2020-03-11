@@ -74,7 +74,7 @@ po::options_description get_desc()
 
     po::options_description save_desc("Storing models and predictions");
     save_desc.add_options()
-	(RESTORE_NAME, po::value<std::string>(), "restore trainSession from root .h5 file")
+	(RESTORE_NAME, po::value<std::string>(), "restore trainSession from a saved .h5 file")
 	(SAVE_NAME, po::value<std::string>()->default_value(Config::SAVE_NAME_DEFAULT_VALUE), "save model and/or predictions to this .h5 file")
 	(SAVE_FREQ_NAME, po::value<int>()->default_value(Config::SAVE_FREQ_DEFAULT_VALUE), "save every n iterations (0 == never, -1 == final model)")
 	(CHECKPOINT_FREQ_NAME, po::value<int>()->default_value(Config::CHECKPOINT_FREQ_DEFAULT_VALUE), "save state every n seconds, only one checkpointing state is kept");
@@ -137,10 +137,10 @@ fill_config(const po::variables_map &vm)
     ConfigFiller filler = {vm, config};
 
 
-    //restore trainSession from root file (command line arguments are already stored in file)
+    //restore trainSession from saved state file (command line arguments are already stored in file)
     if (vm.count(RESTORE_NAME))
     {
-        //restore config from root file
+        //restore config from state file
         std::string restore_filename = vm[RESTORE_NAME].as<std::string>();
         config.setRestoreName(restore_filename);
 
@@ -239,12 +239,12 @@ Config parse_options(int argc, char *argv[])
     if (vm.count(PREDICT_NAME) || vm.count(COL_FEAT_NAME) || vm.count(ROW_FEAT_NAME))
     {
         if (!vm.count(RESTORE_NAME))
-            THROWERROR("Need --root option in predict mode");
+            THROWERROR("Need --" RESTORE_NAME " option in predict mode");
 
         for (auto name : train_only_options)
         {
             if (vm.count(name) && !vm[name].defaulted())
-                THROWERROR("You're not allowed to mix train options (--" + name + ") with --predict");
+                THROWERROR("You're not allowed to mix train options (--" + name + ") with --" PREDICT_NAME);
         }
     }
 
@@ -257,7 +257,7 @@ Config parse_options(int argc, char *argv[])
 Config parse_options(int argc, char *argv[])
 {
     auto usage = []() {
-        std::cerr << "Usage:\n\tsmurff --[ini|root] <ini_file.ini>\n\n"
+        std::cerr << "Usage:\n\tsmurff --" RESTORE_NAME " <saved_smurff.h5>\n\n"
                   << "(Limited smurff compiled w/o boost program options)" << std::endl;
         exit(0);
     };
@@ -266,7 +266,7 @@ Config parse_options(int argc, char *argv[])
 
     Config config;
 
-    //restore trainSession from root file (command line arguments are already stored in file)
+    //restore trainSession from saved file (config arguments are already stored in file)
     if (std::string(argv[1]) == "--" + std::string(RESTORE_NAME))
     {
         std::string RESTORE_NAME(argv[2]);

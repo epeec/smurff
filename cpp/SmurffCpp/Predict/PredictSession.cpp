@@ -88,7 +88,7 @@ void PredictSession::init()
 
     if (getConfig().getSaveFreq())
     {
-        // create root file
+        // create save file
         m_pred_savefile = std::make_unique<StateFile>(getConfig().getSaveName(), true);
     }
 
@@ -172,7 +172,7 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
 {
     os << indent << "PredictSession {\n";
     os << indent << "  Model {\n";
-    os << indent << "    model root-file: " << m_model_file.getFullPath() << "\n";
+    os << indent << "    model-file: " << m_model_file.getFullPath() << "\n";
     os << indent << "    num-samples: " << getNumSteps() << "\n";
     os << indent << "    num-latent: " << getNumLatent() << "\n";
     os << indent << "    dimensions: " << getModelDims() << "\n";
