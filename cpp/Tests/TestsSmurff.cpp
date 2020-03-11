@@ -7,8 +7,7 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Configs/Config.h>
-#include <SmurffCpp/Predict/PredictSession.h>
-#include <SmurffCpp/Sessions/SessionFactory.h>
+#include <SmurffCpp/Sessions/TrainSession.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/Utils/StateFile.h>
 #include <SmurffCpp/result.h>
@@ -124,7 +123,7 @@ struct SmurffTest {
   }
 
   void runAndCheck(int nr) {
-    std::shared_ptr<ISession> trainSession = SessionFactory::create_session(config);
+    std::shared_ptr<ISession> trainSession = std::make_shared<TrainSession>(config);
     trainSession->run();
 
     double actualRmseAvg = trainSession->getRmseAvg();
@@ -301,7 +300,7 @@ TEST_CASE("train_dense_matrix_test_sparse_matrix_macau_normal_none_none_",
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal});
   config.addSideInfoConfig(1, makeSideInfoConfig(rowSideDenseMatrix));
 
-  REQUIRE_THROWS(SessionFactory::create_session(config));
+  REQUIRE_THROWS(TrainSession(config).init());
 }
 
 // test throw - wrong dimentions of side info
@@ -312,7 +311,7 @@ TEST_CASE("train_dense_matrix_test_sparse_matrix_macau_normal_col_side_info_dens
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal});
   config.addSideInfoConfig(1, makeSideInfoConfig(colSideDenseMatrix));
 
-  REQUIRE_THROWS(SessionFactory::create_session(config));
+  REQUIRE_THROWS(TrainSession(config).init());
 }
 
 //=================================================================

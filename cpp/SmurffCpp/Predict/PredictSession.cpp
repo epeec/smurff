@@ -17,21 +17,25 @@ namespace smurff
 {
 
 PredictSession::PredictSession(const std::string &model_file)
-    : m_model_rootfile(StateFile(model_file))
-    , m_pred_rootfile()
+    : ISession(Config()) //FIXME
+    , m_model_file(StateFile(model_file))
+    , m_pred_savefile()
     , m_has_config(false)
     , m_num_latent(-1)
     , m_dims(PVec<>(0))
-    , m_is_init(false)
 {
-    m_stepfiles = m_model_rootfile.openSampleSteps();
+    m_stepfiles = m_model_file.openSampleSteps();
 }
 
 PredictSession::PredictSession(const Config &config)
-    : PredictSession(config.getRootName())
+    : ISession(config)
+    , m_model_file(StateFile(config.getRestoreName()))
+    , m_pred_savefile(std::make_unique<StateFile>(config.getSaveName()))
+    , m_has_config(true)
+    , m_num_latent(-1)
+    , m_dims(PVec<>(0))
 {
-    m_config = config;
-    m_has_config = true;
+    m_stepfiles = m_model_file.openSampleSteps();
 }
 
 void PredictSession::run()
@@ -39,7 +43,7 @@ void PredictSession::run()
     THROWERROR_ASSERT(m_has_config);
 
 
-    if (m_config.getTest().hasData())
+    if (getConfig().getTest().hasData())
     {
         init();
         while (step())
@@ -50,21 +54,21 @@ void PredictSession::run()
     else
     {
         std::pair<int, const DataConfig &> side_info =
-            (m_config.getRowFeatures().hasData()) ?
-            std::make_pair(0, m_config.getRowFeatures()) :
-            std::make_pair(1, m_config.getColFeatures()) ;
+            (getConfig().getRowFeatures().hasData()) ?
+            std::make_pair(0, getConfig().getRowFeatures()) :
+            std::make_pair(1, getConfig().getColFeatures()) ;
 
         THROWERROR_ASSERT_MSG(!side_info.second.hasData(), "Need either test, row features or col features");
 
         if (side_info.second.isDense())
         {
             const auto &dense_matrix = side_info.second.getDenseMatrixData();
-            predict(side_info.first, dense_matrix, m_config.getSaveFreq());
+            predict(side_info.first, dense_matrix, getConfig().getSaveFreq());
         }
         else
         {
             const auto &sparse_matrix = side_info.second.getSparseMatrixData();
-            predict(side_info.first, sparse_matrix, m_config.getSaveFreq());
+            predict(side_info.first, sparse_matrix, getConfig().getSaveFreq());
         }
     }
 }
@@ -72,23 +76,23 @@ void PredictSession::run()
 void PredictSession::init()
 {
     THROWERROR_ASSERT(m_has_config);
-    THROWERROR_ASSERT(m_config.getTest().hasData());
-    m_result = Result(m_config.getTest(), m_config.getNSamples());
+    THROWERROR_ASSERT(getConfig().getTest().hasData());
+    m_result = Result(getConfig().getTest(), getConfig().getNSamples());
 
     m_pos = m_stepfiles.rbegin();
     m_iter = 0;
     m_is_init = true;
 
-    THROWERROR_ASSERT_MSG(m_config.getOutputFilename() != m_model_rootfile.getFullPath(),
-                          "Cannot have same output file for model and predictions - both have " + m_config.getOutputFilename());
+    THROWERROR_ASSERT_MSG(getConfig().getSaveName() != m_model_file.getFullPath(),
+                          "Cannot have same output file for model and predictions - both have " + getConfig().getSaveName());
 
-    if (m_config.getSaveFreq())
+    if (getConfig().getSaveFreq())
     {
         // create root file
-        m_pred_rootfile = std::make_unique<OutputFile>(m_config.getOutputFilename(), true);
+        m_pred_savefile = std::make_unique<StateFile>(getConfig().getSaveName(), true);
     }
 
-    if (m_config.getVerbose())
+    if (getConfig().getVerbose())
         info(std::cout, "");
 }
 
@@ -107,10 +111,10 @@ bool PredictSession::step()
     m_secs_per_iter = stop - start;
     m_secs_total += m_secs_per_iter;
 
-    if (m_config.getVerbose())
+    if (getConfig().getVerbose())
         std::cout << getStatus().asString() << std::endl;
 
-    if (m_config.getSaveFreq() > 0 && (m_iter % m_config.getSaveFreq()) == 0)
+    if (getConfig().getSaveFreq() > 0 && (m_iter % getConfig().getSaveFreq()) == 0)
         save();
 
     auto next_pos = m_pos;
@@ -118,7 +122,7 @@ bool PredictSession::step()
     bool last_iter = next_pos == m_stepfiles.rend();
 
     //save last iter
-    if (last_iter && m_config.getSaveFreq() == -1)
+    if (last_iter && getConfig().getSaveFreq() == -1)
         save();
 
     m_pos++;
@@ -128,11 +132,11 @@ bool PredictSession::step()
 void PredictSession::save()
 {
     //save this iteration
-    SaveState saveState = m_pred_rootfile->createSampleStep(m_iter);
+    SaveState saveState = m_pred_savefile->createSampleStep(m_iter);
 
-    if (m_config.getVerbose())
+    if (getConfig().getVerbose())
     {
-        std::cout << "-- Saving predictions into '" << m_pred_rootfile->getFullPath() << "'." << std::endl;
+        std::cout << "-- Saving predictions into '" << m_pred_savefile->getFullPath() << "'." << std::endl;
     }
 
     m_result.save(saveState);
@@ -168,22 +172,22 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
 {
     os << indent << "PredictSession {\n";
     os << indent << "  Model {\n";
-    os << indent << "    model root-file: " << m_model_rootfile.getFullPath() << "\n";
+    os << indent << "    model root-file: " << m_model_file.getFullPath() << "\n";
     os << indent << "    num-samples: " << getNumSteps() << "\n";
     os << indent << "    num-latent: " << getNumLatent() << "\n";
     os << indent << "    dimensions: " << getModelDims() << "\n";
     os << indent << "  }\n";
     os << indent << "  Predictions {\n";
     m_result.info(os, indent + "    ");
-    if (m_config.getSaveFreq() > 0)
+    if (getConfig().getSaveFreq() > 0)
     {
-        os << indent << "    Save predictions: every " << m_config.getSaveFreq() << " iteration\n";
-        os << indent << "    Output file: " << getOutputFilename() << "\n";
+        os << indent << "    Save predictions: every " << getConfig().getSaveFreq() << " iteration\n";
+        os << indent << "    Output file: " << getConfig().getSaveName() << "\n";
     }
-    else if (m_config.getSaveFreq() < 0)
+    else if (getConfig().getSaveFreq() < 0)
     {
         os << indent << "    Save predictions after last iteration\n";
-        os << indent << "    Output file: " << getOutputFilename() << "\n";
+        os << indent << "    Output file: " << getConfig().getSaveName() << "\n";
     }
     else
     {
@@ -237,7 +241,7 @@ void PredictSession::predict(ResultItem &res, const SaveState &sf)
 // predict one element
 void PredictSession::predict(ResultItem &res)
 {
-    auto stepfiles = m_model_rootfile.openSampleSteps();
+    auto stepfiles = m_model_file.openSampleSteps();
 
     for (const auto &sf : stepfiles)
         predict(res, sf);

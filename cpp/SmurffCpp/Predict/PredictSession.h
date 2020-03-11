@@ -20,8 +20,8 @@ struct ResultItem;
 class PredictSession : public ISession
 {
 private:
-    StateFile m_model_rootfile;
-    std::unique_ptr<StateFile> m_pred_rootfile;
+    StateFile m_model_file;
+    std::unique_ptr<StateFile> m_pred_savefile;
     bool m_has_config;
 
     Result m_result;
@@ -35,7 +35,6 @@ private:
 
     int m_num_latent;
     PVec<> m_dims;
-    bool m_is_init;
 
 private:
     void restoreModel(Model &, const SaveState &, int skip_mode = -1);
@@ -90,7 +89,7 @@ std::shared_ptr<Matrix> PredictSession::predict(int mode, const Feat &f, int sav
 
     for (int step = 0; step < getNumSteps(); step++)
     {
-        if (m_config.getVerbose())
+        if (getConfig().getVerbose())
         {
             std::cout << "Out-of-matrix prediction step " << step << "/" << getNumSteps() << "." << std::endl;
         }
@@ -105,8 +104,8 @@ std::shared_ptr<Matrix> PredictSession::predict(int mode, const Feat &f, int sav
 
         if (save_freq > 0 && (step % save_freq) == 0)
         {
-            auto filename = m_config.getOutputFilename();
-            if (m_config.getVerbose())
+            auto filename = getConfig().getSaveName();
+            if (getConfig().getVerbose())
             {
                 std::cout << "-- Saving sample " << step << " to " << filename << "." << std::endl;
             }
@@ -119,8 +118,8 @@ std::shared_ptr<Matrix> PredictSession::predict(int mode, const Feat &f, int sav
 
     if (save_freq != 0)
     {
-        auto filename = m_config.getOutputFilename();
-        if (m_config.getVerbose())
+        auto filename = getConfig().getSaveName();
+        if (getConfig().getVerbose())
         {
             std::cout << "-- Saving average predictions to " << filename << "." << std::endl;
         }

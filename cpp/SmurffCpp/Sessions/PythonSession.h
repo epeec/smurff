@@ -4,18 +4,16 @@
 
 namespace smurff {
 
-class SessionFactory;
-
 class PythonSession : public TrainSession
 {
-   friend class SessionFactory;
 
 private:
    static bool keepRunning;
    static bool keepRunningVerbose;
 
 public:
-   PythonSession()
+   PythonSession(const Config &c)
+   : TrainSession(c)
    {
       name = "PythonSession";
       keepRunning = true;

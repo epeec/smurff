@@ -13,7 +13,7 @@ bool PythonSession::step()
 {
     
     keepRunning = true;
-    keepRunningVerbose = m_config.getVerbose();
+    keepRunningVerbose = getConfig().getVerbose();
 
 #ifdef _WINDOWS
     signal(SIGINT, intHandler);

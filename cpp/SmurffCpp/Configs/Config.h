@@ -51,7 +51,7 @@ public:
    static int NUM_THREADS_DEFAULT_VALUE;
    static bool POSTPROP_DEFAULT_VALUE;
    static ModelInitTypes INIT_MODEL_DEFAULT_VALUE;
-   static const std::string SAVE_PREFIX_DEFAULT_VALUE;
+   static std::string SAVE_NAME_DEFAULT_VALUE;
    static int SAVE_FREQ_DEFAULT_VALUE;
    static bool SAVE_PRED_DEFAULT_VALUE;
    static bool SAVE_MODEL_DEFAULT_VALUE;
@@ -85,7 +85,6 @@ private:
    ModelInitTypes m_model_init_type;
 
    //-- save
-   mutable std::string m_output_filename;
    int m_save_freq;
    bool m_save_pred;
    bool m_save_model;
@@ -105,7 +104,8 @@ private:
    double m_threshold;
 
    //-- meta
-   std::string m_root_name;
+   std::string m_restore_name;
+   std::string m_save_name;
    std::string m_ini_name;
 
    const PVec<> getTrainPos() const
@@ -287,11 +287,24 @@ public:
       m_model_init_type = stringToModelInitType(value);
    }
 
-   std::string getOutputFilename() const;
-
-   void setOutputFilename(std::string value)
+   std::string getRestoreName() const 
    {
-      m_output_filename = value;
+      return m_restore_name;
+   }
+
+   void setRestoreName(std::string value)
+   {
+      m_restore_name = value;
+   }
+
+   std::string getSaveName() const 
+   {
+      return m_save_name;
+   }
+
+   void setSaveName(std::string value)
+   {
+      m_save_name = value;
    }
 
    int getSaveFreq() const
@@ -416,16 +429,6 @@ public:
    void setNumThreads(int value)
    {
        m_num_threads = value;
-   }
-
-   std::string getRootName() const
-   {
-       return m_root_name;
-   }
-
-   void setRootName(std::string value)
-   {
-       m_root_name = value;
    }
 
    std::string getIniName() const

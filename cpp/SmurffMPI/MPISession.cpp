@@ -17,6 +17,15 @@ MPISession::MPISession()
    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 }
 
+MPISession::MPISession(const Config &config)
+    : TrainSession(config)
+{
+   name = "MPISession";
+
+   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+}
+
 void MPISession::run()
 {
    if (world_rank == 0)
@@ -43,8 +52,7 @@ std::shared_ptr<IPriorFactory> MPISession::create_prior_factory() const
 //parses args with setFromArgs, then internally calls setFromConfig (to validate, save, set config)
 std::shared_ptr<ISession> create_mpi_session(int argc, char** argv)
 {
-   std::shared_ptr<MPISession> trainSession(new MPISession());
-   trainSession->fromConfig(parse_options(argc, argv));
-   return trainSession;
+   Config config  = parse_options(argc, argv);
+   return std::make_shared<MPISession>(config);
 }
 } // end namespace smurff

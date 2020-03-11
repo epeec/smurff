@@ -107,13 +107,12 @@ FILE (GLOB SESSION_FILES "Sessions/ISession.h"
                          "Sessions/TrainSession.h"
                          "Sessions/CmdSession.h"
                          "Sessions/PythonSession.h"
-                         "Sessions/SessionFactory.h"
 
                          "Sessions/ISession.cpp"
                          "Sessions/TrainSession.cpp"
                          "Sessions/CmdSession.cpp"
                          "Sessions/PythonSession.cpp"
-                         "Sessions/SessionFactory.cpp")
+                         )
 
 source_group ("Sessions" FILES ${SESSION_FILES})
 

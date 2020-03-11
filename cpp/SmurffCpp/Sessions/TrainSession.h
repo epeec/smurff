@@ -14,12 +14,12 @@
 
 namespace smurff {
 
-class SessionFactory;
 
 class TrainSession : public ISession
 {
-   //only trainSession factory should call setFromConfig
-   friend class SessionFactory;
+public:
+   TrainSession() {};
+   TrainSession(const Config &c) : ISession(c) {}
 
 protected:
    Model m_model;
@@ -28,9 +28,6 @@ protected:
 protected:
    std::vector<std::shared_ptr<ILatentPrior> > m_priors;
    std::string name;
-
-protected:
-   bool is_init = false;
 
    //train data
    std::shared_ptr<Data> data_ptr;
@@ -46,25 +43,12 @@ private:
    int m_lastCheckpointIter;
 
 public:
-   bool inBurninPhase() const { return m_iter < m_config.getBurnin(); }
+   bool inBurninPhase() const { return m_iter < getConfig().getBurnin(); }
    bool inSamplingPhase() const { return !inBurninPhase(); }
-   bool finalSample() const { return m_iter == (m_config.getNSamples() + m_config.getBurnin()); }
-
-protected:
-   TrainSession();
-
-public:
-   void addPrior(std::shared_ptr<ILatentPrior> prior);
+   bool finalSample() const { return m_iter == (getConfig().getNSamples() + getConfig().getBurnin()); }
 
 public:
    const Result &getResult() const override;
-
-public:
-   void fromRootPath(std::string rootPath);
-   void fromConfig(const Config& cfg);
-
-protected:
-   void setFromBase();
 
    // execution of the sampler
 public:

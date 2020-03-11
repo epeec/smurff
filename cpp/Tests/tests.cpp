@@ -25,7 +25,6 @@
 #include <SmurffCpp/Priors/MacauOnePrior.h>
 
 #include <SmurffCpp/Noises/NoiseFactory.h>
-#include <SmurffCpp/Sessions/SessionFactory.h>
 
 #include <SmurffCpp/DataMatrices/Data.h>
 #include <SmurffCpp/DataMatrices/ScarceMatrixData.h>

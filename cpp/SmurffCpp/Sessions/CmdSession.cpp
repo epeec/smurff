@@ -8,7 +8,6 @@
 
 #include "CmdSession.h"
 #include <SmurffCpp/Predict/PredictSession.h>
-#include <SmurffCpp/Sessions/SessionFactory.h>
 
 #include <SmurffCpp/Configs/Config.h>
 #include <Utils/Error.h>
@@ -20,7 +19,7 @@
 namespace smurff {
 
 static const char *INI_NAME = "ini";
-static const char *ROOT_NAME = "root";
+static const char *RESTORE_NAME = "restore-from";
 
 #ifdef HAVE_BOOST
 
@@ -35,7 +34,7 @@ static const char *BURNIN_NAME = "burnin";
 static const char *NSAMPLES_NAME = "nsamples";
 static const char *NUM_LATENT_NAME = "num-latent";
 static const char *NUM_THREADS_NAME = "num-threads";
-static const char *OUTPUT_FILENAME = "output";
+static const char *SAVE_NAME = "save-name";
 static const char *SAVE_FREQ_NAME = "save-freq";
 static const char *CHECKPOINT_FREQ_NAME = "checkpoint-freq";
 static const char *THRESHOLD_NAME = "threshold";
@@ -75,8 +74,8 @@ po::options_description get_desc()
 
     po::options_description save_desc("Storing models and predictions");
     save_desc.add_options()
-	(ROOT_NAME, po::value<std::string>(), "restore trainSession from root .ini file")
-	(OUTPUT_FILENAME, po::value<std::string>()->default_value(Config::SAVE_PREFIX_DEFAULT_VALUE), "prefix for result files")
+	(RESTORE_NAME, po::value<std::string>(), "restore trainSession from root .h5 file")
+	(SAVE_NAME, po::value<std::string>()->default_value(Config::SAVE_NAME_DEFAULT_VALUE), "save model and/or predictions to this .h5 file")
 	(SAVE_FREQ_NAME, po::value<int>()->default_value(Config::SAVE_FREQ_DEFAULT_VALUE), "save every n iterations (0 == never, -1 == final model)")
 	(CHECKPOINT_FREQ_NAME, po::value<int>()->default_value(Config::CHECKPOINT_FREQ_DEFAULT_VALUE), "save state every n seconds, only one checkpointing state is kept");
 
@@ -139,15 +138,15 @@ fill_config(const po::variables_map &vm)
 
 
     //restore trainSession from root file (command line arguments are already stored in file)
-    if (vm.count(ROOT_NAME))
+    if (vm.count(RESTORE_NAME))
     {
         //restore config from root file
-        std::string root_name = vm[ROOT_NAME].as<std::string>();
-        config.setRootName(root_name);
+        std::string restore_filename = vm[RESTORE_NAME].as<std::string>();
+        config.setRestoreName(restore_filename);
 
         //  skip if predict-trainSession
         if (!vm.count(PREDICT_NAME) && !vm.count(ROW_FEAT_NAME) && !vm.count(COL_FEAT_NAME))
-            OutputFile(root_name).restoreConfig(config);
+            StateFile(restore_filename).restoreConfig(config);
     }
 
     //restore ini file if it was specified
@@ -174,7 +173,8 @@ fill_config(const po::variables_map &vm)
     filler.set<int,         &Config::setNSamples>(NSAMPLES_NAME);
     filler.set<int,         &Config::setNumLatent>(NUM_LATENT_NAME);
     filler.set<int,         &Config::setNumThreads>(NUM_THREADS_NAME);
-    filler.set<std::string, &Config::setOutputFilename>(OUTPUT_FILENAME);
+    filler.set<std::string, &Config::setRestoreName>(RESTORE_NAME);
+    filler.set<std::string, &Config::setSaveName>(SAVE_NAME);
     filler.set<int,         &Config::setSaveFreq>(SAVE_FREQ_NAME);
     filler.set<int,         &Config::setCheckpointFreq>(CHECKPOINT_FREQ_NAME);
     filler.set<double,      &Config::setThreshold>(THRESHOLD_NAME);
@@ -238,7 +238,7 @@ Config parse_options(int argc, char *argv[])
     //-- prediction only
     if (vm.count(PREDICT_NAME) || vm.count(COL_FEAT_NAME) || vm.count(ROW_FEAT_NAME))
     {
-        if (!vm.count(ROOT_NAME))
+        if (!vm.count(RESTORE_NAME))
             THROWERROR("Need --root option in predict mode");
 
         for (auto name : train_only_options)
@@ -267,11 +267,11 @@ Config parse_options(int argc, char *argv[])
     Config config;
 
     //restore trainSession from root file (command line arguments are already stored in file)
-    if (std::string(argv[1]) == "--" + std::string(ROOT_NAME))
+    if (std::string(argv[1]) == "--" + std::string(RESTORE_NAME))
     {
-        std::string root_name(argv[2]);
-        OutputFile(root_name).restoreConfig(config);
-        config.setRootName(root_name);
+        std::string RESTORE_NAME(argv[2]);
+        StateFile(RESTORE_NAME).restoreConfig(config);
+        config.setRestoreName(RESTORE_NAME);
      }
 
     //create new trainSession from config (passing command line arguments)
@@ -291,15 +291,16 @@ Config parse_options(int argc, char *argv[])
 }
 #endif
 
-//create cmd trainSession
-//parses args with setFromArgs, then internally calls setFromConfig (to validate, save, set config)
+// create cmd TrainSession or PredictSession
+// parses args with setFromArgs, then internally creates a TrainSession or
+// PredictSession from config (to validate, save, set config)
 std::shared_ptr<ISession> create_cmd_session(int argc, char **argv)
 {
     std::shared_ptr<ISession> session;
 
-    auto config = parse_options(argc, argv);
+    Config config = parse_options(argc, argv);
     if (config.isActionTrain())
-        session = SessionFactory::create_session(config);
+        session = std::make_shared<TrainSession>(config);
     else if (config.isActionPredict())
         session = std::make_shared<PredictSession>(config);
     else

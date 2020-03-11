@@ -15,6 +15,7 @@ public:
 
 public:
    MPISession();
+   MPISession(const Config &c);
 
    void run() override;
 

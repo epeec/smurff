@@ -6,8 +6,7 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Configs/Config.h>
-#include <SmurffCpp/Predict/PredictSession.h>
-#include <SmurffCpp/Sessions/SessionFactory.h>
+#include <SmurffCpp/Sessions/TrainSession.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/Utils/StateFile.h>
 #include <SmurffCpp/result.h>
@@ -40,8 +39,8 @@ struct CompareTest {
   }
 
   void runAndCheck() {
-    std::shared_ptr<ISession> matrixSession = SessionFactory::create_session(matrixConfig);
-    std::shared_ptr<ISession> tensorSession = SessionFactory::create_session(tensorConfig);
+    std::shared_ptr<ISession> matrixSession = std::make_shared<TrainSession>(matrixConfig);
+    std::shared_ptr<ISession> tensorSession = std::make_shared<TrainSession>(tensorConfig);
     matrixSession->run();
     tensorSession->run();
 

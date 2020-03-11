@@ -36,7 +36,7 @@ class TrainSession(PythonSession):
     seed: float
         Random seed to use for sampling
 
-    output_filename: path
+    save_name: path
         HDF5 filename to store the samples.
 
     save_freq: int
@@ -67,27 +67,28 @@ class TrainSession(PythonSession):
         seed             = None,
         threshold        = None,
         verbose          = None,
-        output_filename  = None,
+        save_name        = None,
         save_extension   = None,
         save_freq        = None,
         checkpoint_freq  = None,
         ):
 
-        super().__init__()
 
-        self.config = Config()
+        config = Config()
 
-        if priors is not None:         self.config.setPriorTypes(priors)
-        if num_latent is not None:     self.config.setNumLatent(num_latent)
-        if num_threads is not None:    self.config.setNumThreads(num_threads)
-        if burnin is not None:         self.config.setBurnin(burnin)
-        if nsamples is not None:       self.config.setNSamples(nsamples)
-        if seed is not None:           self.config.setRandomSeed(seed)
-        if threshold is not None:      self.config.setThreshold(threshold)
-        if verbose is not None:        self.config.setVerbose(verbose)
-        if output_filename is not None:self.config.setOutputFilename(output_filename.encode('UTF-8'))
-        if save_freq is not None:      self.config.setSaveFreq(save_freq)
-        if checkpoint_freq is not None:self.config.setCheckpointFreq(checkpoint_freq)
+        if priors is not None:          config.setPriorTypes(priors)
+        if num_latent is not None:      config.setNumLatent(num_latent)
+        if num_threads is not None:     config.setNumThreads(num_threads)
+        if burnin is not None:          config.setBurnin(burnin)
+        if nsamples is not None:        config.setNSamples(nsamples)
+        if seed is not None:            config.setRandomSeed(seed)
+        if threshold is not None:       config.setThreshold(threshold)
+        if verbose is not None:         config.setVerbose(verbose)
+        if save_name is not None:       config.setSaveName(save_name)
+        if save_freq is not None:       config.setSaveFreq(save_freq)
+        if checkpoint_freq is not None: config.setCheckpointFreq(checkpoint_freq)
+
+        super().__init__(self.config)
 
     def addTrainAndTest(self, Y, Ytest = None, noise = NoiseConfig(), is_scarce = None):
         """Adds a train and optionally a test matrix as input data to this TrainSession
@@ -111,10 +112,10 @@ class TrainSession(PythonSession):
 
         """
         
-        self.config.setTrain(make_dataconfig(Y, noise, is_scarce))
+        self.getConfig().setTrain(make_dataconfig(Y, noise, is_scarce))
 
         if Ytest is not None:
-            self.config.setTest(make_dataconfig(Ytest))
+            self.getConfig().setTest(make_dataconfig(Ytest))
 
     def addSideInfo(self, mode, Y, noise = NoiseConfig(), tol = 1e-6, direct = False):
         """Adds fully known side info, for use in with the macau or macauone prior
@@ -202,7 +203,6 @@ class TrainSession(PythonSession):
 
         """
 
-        self.fromConfig(self.config)
         super().init()
         logging.info(self)
         return self.getStatus()
