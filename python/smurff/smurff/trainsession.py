@@ -106,7 +106,7 @@ class Config(cppConfig):
         
         self.setTrain(make_dataconfig(Y, noise, is_scarce))
         if Ytest is not None:
-            self.setTest(make_dataconfig(Ytest))
+            self.setTest(make_dataconfig(Ytest, is_scarce=True))
 
     def addSideInfo(self, mode, Y, noise = NoiseConfig(), tol = 1e-6, direct = False):
         """Adds fully known side info, for use in with the macau or macauone prior
@@ -252,29 +252,3 @@ class TrainSession(PythonSession):
         """
         output_file = self.getOutputFilename()
         return PredictSession(output_file)
-
-    def getTestPredictions(self):
-        """Get predictions for test matrix.
-
-        Returns
-        -------
-        list 
-            list of :class:`Prediction`
-
-        """
-        py_items = []
-
-        if self.ptr_get().getResultItems().size():
-            cpp_items = self.ptr_get().getResultItems()
-            it = cpp_items.begin()
-            while it != cpp_items.end():
-                py_items.append(prepare_result_item(deref(it)))
-                inc(it)
-
-        return py_items
-    
-    def getRmseAvg(self): 
-        """Average RMSE across all samples for the test matrix
-
-        """
-        return self.ptr_get().getRmseAvg()
