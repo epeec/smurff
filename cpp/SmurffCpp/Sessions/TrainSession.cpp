@@ -290,6 +290,8 @@ const Result &TrainSession::getResult() const
 
 StatusItem TrainSession::getStatus() const
 {
+    THROWERROR_ASSERT(m_is_init);
+
     StatusItem ret;
 
     if (m_iter < 0)
