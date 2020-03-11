@@ -18,29 +18,29 @@
 
 namespace smurff {
 
-static const char *INI_NAME = "ini";
-static const char *RESTORE_NAME = "restore-from";
+static const std::string INI_NAME = "ini";
+static const std::string RESTORE_NAME = "restore-from";
 
 #ifdef HAVE_BOOST
 
-static const char *PREDICT_NAME = "predict";
-static const char *ROW_FEAT_NAME = "row-features";
-static const char *COL_FEAT_NAME = "col-features";
-static const char *HELP_NAME = "help";
-static const char *PRIOR_NAME = "prior";
-static const char *TEST_NAME = "test";
-static const char *TRAIN_NAME = "train";
-static const char *BURNIN_NAME = "burnin";
-static const char *NSAMPLES_NAME = "nsamples";
-static const char *NUM_LATENT_NAME = "num-latent";
-static const char *NUM_THREADS_NAME = "num-threads";
-static const char *SAVE_NAME = "save-name";
-static const char *SAVE_FREQ_NAME = "save-freq";
-static const char *CHECKPOINT_FREQ_NAME = "checkpoint-freq";
-static const char *THRESHOLD_NAME = "threshold";
-static const char *VERBOSE_NAME = "verbose";
-static const char *VERSION_NAME = "version";
-static const char *SEED_NAME = "seed";
+static const std::string PREDICT_NAME = "predict";
+static const std::string ROW_FEAT_NAME = "row-features";
+static const std::string COL_FEAT_NAME = "col-features";
+static const std::string HELP_NAME = "help";
+static const std::string PRIOR_NAME = "prior";
+static const std::string TEST_NAME = "test";
+static const std::string TRAIN_NAME = "train";
+static const std::string BURNIN_NAME = "burnin";
+static const std::string NSAMPLES_NAME = "nsamples";
+static const std::string NUM_LATENT_NAME = "num-latent";
+static const std::string NUM_THREADS_NAME = "num-threads";
+static const std::string SAVE_NAME = "save-name";
+static const std::string SAVE_FREQ_NAME = "save-freq";
+static const std::string CHECKPOINT_FREQ_NAME = "checkpoint-freq";
+static const std::string THRESHOLD_NAME = "threshold";
+static const std::string VERBOSE_NAME = "verbose";
+static const std::string VERSION_NAME = "version";
+static const std::string SEED_NAME = "seed";
 
 namespace po = boost::program_options;
 
@@ -48,36 +48,36 @@ po::options_description get_desc()
 {
     po::options_description general_desc("General parameters");
     general_desc.add_options()
-	(VERSION_NAME, "print version info (and exit)")
-	(HELP_NAME, "show this help information (and exit)")
-	(INI_NAME, po::value<std::string>(), "read options from this .ini file")
-	(NUM_THREADS_NAME, po::value<int>()->default_value(Config::NUM_THREADS_DEFAULT_VALUE), "number of threads (0 = default by OpenMP)")
-	(VERBOSE_NAME, po::value<int>()->default_value(Config::VERBOSE_DEFAULT_VALUE), "verbosity of output (0, 1, 2 or 3)")
-	(SEED_NAME, po::value<int>()->default_value(Config::RANDOM_SEED_DEFAULT_VALUE), "random number generator seed");
+	(VERSION_NAME.c_str(), "print version info (and exit)")
+	(HELP_NAME.c_str(), "show this help information (and exit)")
+	(INI_NAME.c_str(), po::value<std::string>(), "read options from this .ini file")
+	(NUM_THREADS_NAME.c_str(), po::value<int>()->default_value(Config::NUM_THREADS_DEFAULT_VALUE), "number of threads (0 = default by OpenMP)")
+	(VERBOSE_NAME.c_str(), po::value<int>()->default_value(Config::VERBOSE_DEFAULT_VALUE), "verbosity of output (0, 1, 2 or 3)")
+	(SEED_NAME.c_str(), po::value<int>()->default_value(Config::RANDOM_SEED_DEFAULT_VALUE), "random number generator seed");
 
     po::options_description train_desc("Used during training");
     train_desc.add_options()
-	(TRAIN_NAME, po::value<std::string>(), "train data file")
-	(TEST_NAME, po::value<std::string>(), "test data")
-	(PRIOR_NAME, po::value<std::vector<std::string>>()->multitoken(), "provide a prior-type for each dimension of train; prior-types:  <normal|normalone|spikeandslab|macau|macauone>")
-	(BURNIN_NAME, po::value<int>()->default_value(Config::BURNIN_DEFAULT_VALUE), "number of samples to discard")
-	(NSAMPLES_NAME, po::value<int>()->default_value(Config::NSAMPLES_DEFAULT_VALUE), "number of samples to collect")
-	(NUM_LATENT_NAME, po::value<int>()->default_value(Config::NUM_LATENT_DEFAULT_VALUE), "number of latent dimensions")
-	(THRESHOLD_NAME, po::value<double>()->default_value(Config::THRESHOLD_DEFAULT_VALUE), "threshold for binary classification and AUC calculation");
+	(TRAIN_NAME.c_str(), po::value<std::string>(), "train data file")
+	(TEST_NAME.c_str(), po::value<std::string>(), "test data")
+	(PRIOR_NAME.c_str(), po::value<std::vector<std::string>>()->multitoken(), "provide a prior-type for each dimension of train; prior-types:  <normal|normalone|spikeandslab|macau|macauone>")
+	(BURNIN_NAME.c_str(), po::value<int>()->default_value(Config::BURNIN_DEFAULT_VALUE), "number of samples to discard")
+	(NSAMPLES_NAME.c_str(), po::value<int>()->default_value(Config::NSAMPLES_DEFAULT_VALUE), "number of samples to collect")
+	(NUM_LATENT_NAME.c_str(), po::value<int>()->default_value(Config::NUM_LATENT_DEFAULT_VALUE), "number of latent dimensions")
+	(THRESHOLD_NAME.c_str(), po::value<double>()->default_value(Config::THRESHOLD_DEFAULT_VALUE), "threshold for binary classification and AUC calculation");
 
     po::options_description predict_desc("Used during prediction");
     predict_desc.add_options()
-	(PREDICT_NAME, po::value<std::string>(), "sparse matrix with values to predict")
-	(ROW_FEAT_NAME, po::value<std::string>(), "sparse/dense row features for out-of-matrix predictions")
-	(COL_FEAT_NAME, po::value<std::string>(), "sparse/dense col features for out-of-matrix predictions")
-	(THRESHOLD_NAME, po::value<double>()->default_value(Config::THRESHOLD_DEFAULT_VALUE), "threshold for binary classification and AUC calculation");
+	(PREDICT_NAME.c_str(), po::value<std::string>(), "sparse matrix with values to predict")
+	(ROW_FEAT_NAME.c_str(), po::value<std::string>(), "sparse/dense row features for out-of-matrix predictions")
+	(COL_FEAT_NAME.c_str(), po::value<std::string>(), "sparse/dense col features for out-of-matrix predictions")
+	(THRESHOLD_NAME.c_str(), po::value<double>()->default_value(Config::THRESHOLD_DEFAULT_VALUE), "threshold for binary classification and AUC calculation");
 
     po::options_description save_desc("Storing models and predictions");
     save_desc.add_options()
-	(RESTORE_NAME, po::value<std::string>(), "restore trainSession from a saved .h5 file")
-	(SAVE_NAME, po::value<std::string>()->default_value(Config::SAVE_NAME_DEFAULT_VALUE), "save model and/or predictions to this .h5 file")
-	(SAVE_FREQ_NAME, po::value<int>()->default_value(Config::SAVE_FREQ_DEFAULT_VALUE), "save every n iterations (0 == never, -1 == final model)")
-	(CHECKPOINT_FREQ_NAME, po::value<int>()->default_value(Config::CHECKPOINT_FREQ_DEFAULT_VALUE), "save state every n seconds, only one checkpointing state is kept");
+	(RESTORE_NAME.c_str(), po::value<std::string>(), "restore trainSession from a saved .h5 file")
+	(SAVE_NAME.c_str(), po::value<std::string>()->default_value(Config::SAVE_NAME_DEFAULT_VALUE), "save model and/or predictions to this .h5 file")
+	(SAVE_FREQ_NAME.c_str(), po::value<int>()->default_value(Config::SAVE_FREQ_DEFAULT_VALUE), "save every n iterations (0 == never, -1 == final model)")
+	(CHECKPOINT_FREQ_NAME.c_str(), po::value<int>()->default_value(Config::CHECKPOINT_FREQ_DEFAULT_VALUE), "save state every n seconds, only one checkpointing state is kept");
 
     po::options_description desc("SMURFF: Scalable Matrix Factorization Framework\n\thttp://github.com/ExaScience/smurff");
     desc.add(general_desc);
@@ -239,12 +239,12 @@ Config parse_options(int argc, char *argv[])
     if (vm.count(PREDICT_NAME) || vm.count(COL_FEAT_NAME) || vm.count(ROW_FEAT_NAME))
     {
         if (!vm.count(RESTORE_NAME))
-            THROWERROR("Need --" RESTORE_NAME " option in predict mode");
+            THROWERROR("Need --" + RESTORE_NAME + " option in predict mode");
 
         for (auto name : train_only_options)
         {
             if (vm.count(name) && !vm[name].defaulted())
-                THROWERROR("You're not allowed to mix train options (--" + name + ") with --" PREDICT_NAME);
+                THROWERROR("You're not allowed to mix train options (--" + name + ") with --" + PREDICT_NAME);
         }
     }
 
