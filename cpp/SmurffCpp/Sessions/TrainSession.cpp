@@ -83,6 +83,9 @@ void TrainSession::init()
     for (auto &p : m_priors)
         p->init();
 
+    // all basic init done
+    m_is_init = true;
+
     //write info to console
     if (getConfig().getVerbose())
         info(std::cout, "");
@@ -92,11 +95,7 @@ void TrainSession::init()
 
     //print trainSession status to console
     if (getConfig().getVerbose())
-    {
         printStatus(std::cout, resume);
-    }
-
-    m_is_init = true;
 }
 
 void TrainSession::run()
