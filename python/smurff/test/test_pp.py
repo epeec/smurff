@@ -32,7 +32,7 @@ class TestPP(unittest.TestCase):
     def test_bmf_pp(self):
         Y = scipy.sparse.rand(30, 20, 0.2)
         Y, Ytest = smurff.make_train_test(Y, 0.5)
-        trainSession = smurff.BPMFSession(Y, Ytest=Ytest, num_latent=4, verbose=verbose, burnin=5, nsamples=20, save_freq=1)
+        trainSession = smurff.BPMFSession(Y, is_scarce = True, Ytest=Ytest, num_latent=4, verbose=verbose, burnin=5, nsamples=20, save_freq=1)
         trainSession.run()
         predict_session = trainSession.makePredictSession()
 

@@ -1,9 +1,9 @@
 from .trainsession import TrainSession
 
 class SmurffSession(TrainSession):
-    def __init__(self, Ytrain, priors, Ytest=None, side_info=None, direct=False, **args):
+    def __init__(self, Ytrain, priors, is_scarce = None, Ytest=None, side_info=None, direct=False, **args):
         TrainSession.__init__(self, priors=priors, **args)
-        self.addTrainAndTest(Ytrain, Ytest)
+        self.addTrainAndTest(Ytrain, Ytest, is_scarce = is_scarce)
 
         if side_info is not None:
             assert len(side_info) == self.nmodes
@@ -39,7 +39,7 @@ class MacauSession(SmurffSession):
              Extra arguments are passed to the :class:`TrainSession`
     """
 
-    def __init__(self,  Ytrain, Ytest=None, side_info=None, univariate=False, direct=False, **args):
+    def __init__(self,  Ytrain, is_scarce = None, Ytest=None, side_info=None, univariate=False, direct=False, **args):
         nmodes = len(Ytrain.shape)
         priors = ['normal'] * nmodes
 
@@ -52,7 +52,7 @@ class MacauSession(SmurffSession):
         if univariate:
             priors = [p + "one" for p in priors]
 
-        SmurffSession.__init__(self, Ytrain, priors, Ytest, side_info, direct, **args)
+        SmurffSession.__init__(self, Ytrain, priors, is_scarce, Ytest, side_info, direct, **args)
 
 
 class BPMFSession(MacauSession):
@@ -72,8 +72,8 @@ class BPMFSession(MacauSession):
         \*\*args:
             Extra arguments are passed to the :class:`TrainSession`
     """
-    def __init__(self, Ytrain, Ytest=None, univariate=False, **args):
-         MacauSession.__init__(self, Ytrain, Ytest, None, univariate, **args)
+    def __init__(self, Ytrain, is_scarce = None, Ytest=None, univariate=False, **args):
+         MacauSession.__init__(self, Ytrain, is_scarce, Ytest, None, univariate, **args)
 
 
 class GFASession(SmurffSession):
