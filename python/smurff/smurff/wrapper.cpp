@@ -4,6 +4,7 @@
 #include <pybind11/eigen.h>
 
 
+#include <SmurffCpp/Types.h>
 #include <SmurffCpp/Configs/Config.h>
 #include <SmurffCpp/Configs/NoiseConfig.h>
 #include <SmurffCpp/Configs/DataConfig.h>
@@ -23,12 +24,6 @@ PYBIND11_MODULE(wrapper, m)
 
     py::class_<smurff::Config>(m, "Config")
         .def(py::init<>())
-        // add data
-        .def("setTrain", &smurff::Config::setTrain)
-        .def("setTest", &smurff::Config::setTest)
-        .def("addSideInfoConfig", &smurff::Config::addSideInfoConfig)
-
-        // set scalar config values
         .def("setPriorTypes", py::overload_cast<std::vector<std::string>>(&smurff::Config::setPriorTypes))
         .def("setModelInitType", py::overload_cast<std::string>(&smurff::Config::setModelInitType))
         .def("setSaveName", &smurff::Config::setSaveName)
@@ -92,9 +87,31 @@ PYBIND11_MODULE(wrapper, m)
     py::class_<smurff::PythonSession>(m, "PythonSession")
         .def(py::init<const smurff::Config &>())
         .def("__str__", &smurff::ISession::infoAsString)
+
+        // add data
+        .def("setTrain", &smurff::PythonSession::setTrainDense<smurff::Matrix>)
+        .def("setTrain", &smurff::PythonSession::setTrainSparse<smurff::SparseMatrix>)
+        .def("setTrain", &smurff::PythonSession::setTrainDense<smurff::DenseTensor>)
+        .def("setTrain", &smurff::PythonSession::setTrainSparse<smurff::SparseTensor>)
+
+        .def("setTest", &smurff::PythonSession::setTest<smurff::SparseMatrix>)
+        
+        .def("addSideInfo", &smurff::PythonSession::addSideInfoDense)
+        .def("addSideInfo", &smurff::PythonSession::addSideInfoSparse)
+        
+        .def("addData", &smurff::PythonSession::addDataDense<smurff::Matrix>)
+        .def("addData", &smurff::PythonSession::addDataSparse<smurff::SparseMatrix>)
+        .def("addData", &smurff::PythonSession::addDataDense<smurff::DenseTensor>)
+        .def("addData", &smurff::PythonSession::addDataSparse<smurff::SparseTensor>)
+
+        .def("addPropagatedPosterior", &smurff::PythonSession::addPropagatedPosterior)
+
+        // get result functions
         .def("getStatus", &smurff::TrainSession::getStatus)
         .def("getRmseAvg", &smurff::TrainSession::getRmseAvg)
         .def("getTestPredictions", [](const smurff::PythonSession &s) { return s.getResult().m_predictions; })
+
+        // run functions
         .def("init", &smurff::TrainSession::init)
         .def("step", &smurff::PythonSession::step)
         .def("interrupted", &smurff::PythonSession::interrupted)

@@ -1,11 +1,17 @@
 import logging
 from .helper import SparseTensor, make_dataconfig
-from .wrapper import NoiseConfig, StatusItem, PythonSession
-from .wrapper import Config as cppConfig
+from .wrapper import Config, NoiseConfig, StatusItem, PythonSession
 
 
-class Config(cppConfig):
-    """
+class TrainSession(PythonSession):
+    """Class for doing a training run in smurff
+
+    A simple use case could be:
+
+    >>> trainSession = smurff.TrainSession(burnin = 5, nsamples = 5)
+    >>> trainSession.addTrainAndTest(Ydense)
+    >>> trainSession.run()
+
     Attributes
     ----------
 
@@ -67,22 +73,23 @@ class Config(cppConfig):
         checkpoint_freq  = None,
         ):
 
-        super().__init__()
+        config = Config()
 
-        if priors is not None:          self.setPriorTypes(priors)
-        if num_latent is not None:      self.setNumLatent(num_latent)
-        if num_threads is not None:     self.setNumThreads(num_threads)
-        if burnin is not None:          self.setBurnin(burnin)
-        if nsamples is not None:        self.setNSamples(nsamples)
-        if seed is not None:            self.setRandomSeed(seed)
-        if threshold is not None:       self.setThreshold(threshold)
-        if verbose is not None:         self.setVerbose(verbose)
-        if save_name is not None:       self.setSaveName(save_name)
-        if save_freq is not None:       self.setSaveFreq(save_freq)
-        if checkpoint_freq is not None: self.setCheckpointFreq(checkpoint_freq)
+        if priors is not None:          config.setPriorTypes(priors)
+        if num_latent is not None:      config.setNumLatent(num_latent)
+        if num_threads is not None:     config.setNumThreads(num_threads)
+        if burnin is not None:          config.setBurnin(burnin)
+        if nsamples is not None:        config.setNSamples(nsamples)
+        if seed is not None:            config.setRandomSeed(seed)
+        if threshold is not None:       config.setThreshold(threshold)
+        if verbose is not None:         config.setVerbose(verbose)
+        if save_name is not None:       config.setSaveName(save_name)
+        if save_freq is not None:       config.setSaveFreq(save_freq)
+        if checkpoint_freq is not None: config.setCheckpointFreq(checkpoint_freq)
 
+        super().__init__(config)
 
-    def addTrainAndTest(self, Y, Ytest = None, noise = NoiseConfig(), is_scarce = None):
+    def setTrain(self, Y, noise = NoiseConfig(), is_scarce = None):
         """Adds a train and optionally a test matrix as input data to this TrainSession
 
         Parameters
@@ -90,9 +97,6 @@ class Config(cppConfig):
 
         Y : :class: `numpy.ndarray`, :mod:`scipy.sparse` matrix or :class: `SparseTensor`
             Train matrix/tensor 
-       
-        Ytest : :mod:`scipy.sparse` matrix or :class: `SparseTensor`
-            Test matrix/tensor. Mainly used for calculating RMSE.
 
         noise : :class: `NoiseConfig`
             Noise model to use for `Y`
@@ -105,8 +109,12 @@ class Config(cppConfig):
         """
         
         self.setTrain(make_dataconfig(Y, noise, is_scarce))
-        if Ytest is not None:
-            self.setTest(make_dataconfig(Ytest, is_scarce=True))
+       
+    def setTest(self, Ytest):
+        """Adds a test matrix 
+
+        """
+        self.setTest(make_dataconfig(Ytest, is_scarce=True))
 
     def addSideInfo(self, mode, Y, noise = NoiseConfig(), tol = 1e-6, direct = False):
         """Adds fully known side info, for use in with the macau or macauone prior
@@ -179,18 +187,6 @@ class Config(cppConfig):
         """
         self.addAuxData(prepare_auxdata(Y, pos, is_scarce, noise))
 
-class TrainSession(PythonSession):
-    """Class for doing a training run in smurff
-
-    A simple use case could be:
-
-    >>> trainSession = smurff.TrainSession(burnin = 5, nsamples = 5)
-    >>> trainSession.addTrainAndTest(Ydense)
-    >>> trainSession.run()
-    """
-
-    def __init__(self, config):
-        super().__init__(config)
 
     # 
     # running functions
