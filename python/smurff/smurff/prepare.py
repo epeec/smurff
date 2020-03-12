@@ -20,10 +20,10 @@ def make_train_test(Y, ntest):
 
     Returns
     -------
-        Ytrain : coo_matrix
+        Ytrain : csr_matrix
             train part
 
-        Ytest : coo_matrix
+        Ytest : csr_matrix
             test part
     """
     if type(Y) not in [sp.sparse.coo.coo_matrix, sp.sparse.csr.csr_matrix, sp.sparse.csc.csc_matrix]:
@@ -37,8 +37,8 @@ def make_train_test(Y, ntest):
     rperm = np.random.permutation(Y.nnz)
     train = rperm[ntest:]
     test  = rperm[0:ntest]
-    Ytrain = sp.sparse.coo_matrix( (Y.data[train], (Y.row[train], Y.col[train])), shape=Y.shape )
-    Ytest  = sp.sparse.coo_matrix( (Y.data[test],  (Y.row[test],  Y.col[test])),  shape=Y.shape )
+    Ytrain = sp.sparse.coo_matrix( (Y.data[train], (Y.row[train], Y.col[train])), shape=Y.shape ).tocsr()
+    Ytest  = sp.sparse.coo_matrix( (Y.data[test],  (Y.row[test],  Y.col[test])),  shape=Y.shape ).tocsr()
     return Ytrain, Ytest
 
 def make_train_test_df(Y, ntest, shape = None):
@@ -47,7 +47,7 @@ def make_train_test_df(Y, ntest, shape = None):
        ntest  either a float below 1.0 or integer.
               if float, then indicates the ratio of test cells
               if integer, then indicates the number of test cells
-       returns Ytrain, Ytest (type coo_matrix)
+       returns Ytrain, Ytest (type SparseTensor)
     """
     if type(Y) != pd.core.frame.DataFrame:
         raise TypeError("Y should be DataFrame.")
