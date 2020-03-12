@@ -47,7 +47,7 @@ std::string StateFile::getOptionsFileName() const
    return getPrefix() + "options.ini";
 }
 
-void StateFile::saveConfig(Config& config)
+void StateFile::saveConfig(const Config& config)
 {
    // save to INIFile
    INIFile cfg_file;

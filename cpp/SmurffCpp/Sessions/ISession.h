@@ -29,7 +29,6 @@ namespace smurff {
       virtual void init() = 0;
 
       const Config &getConfig() const { return m_config; }
-      Config &getConfig() { return m_config; }
 
       virtual StatusItem getStatus() const = 0;
       virtual const Result &getResult() const = 0;
@@ -46,10 +45,8 @@ namespace smurff {
           return ss.str();
       }
 
-   private:
-      Config m_config;
-
    protected:
+      Config m_config;
       bool m_is_init = false;
    };
 

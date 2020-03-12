@@ -31,7 +31,7 @@ public:
    std::string getOptionsFileName() const;
 
 public:
-   void saveConfig(Config& config);
+   void saveConfig(const Config& config);
    void restoreConfig(Config& config);
 
 public:
