@@ -4,20 +4,6 @@ import math
 
 from .wrapper import NoiseConfig, DataConfig
 
-def make_dataconfig(data, noise = None, is_scarce = None, pos = None):
-    ret = DataConfig()
-    if is_scarce is not None:
-        ret.setData(data, is_scarce)
-    else:
-        ret.setData(data)
-
-    if noise is not None:
-        ret.setNoiseConfig(noise)
-
-    if pos is not None:
-        ret.setPos(pod)
-
-    return ret
 
 class SparseTensor:
     """Wrapper around a pandas DataFrame to represent a sparse tensor
