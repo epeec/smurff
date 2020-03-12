@@ -81,7 +81,7 @@ TEST_CASE("PredictSession/Features/1", TAG_MATRIX_TESTS) {
   const SideInfoConfig rowSideInfoDenseMatrixConfig = makeSideInfoConfig(rowSideDenseMatrix);
 
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal});
-  config.addSideInfoConfig(0, rowSideInfoDenseMatrixConfig);
+  config.addSideInfo(0, rowSideInfoDenseMatrixConfig);
   prepareResultDir(config, Catch::getResultCapture().getCurrentTestName());
   std::string model_file = config.getSaveName();
 
@@ -153,7 +153,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   }
 
   Config config = genConfig(trainMatrix, testMatrix, {PriorTypes::macau, PriorTypes::normal});
-  config.addSideInfoConfig(0, rowSideInfoConfig);
+  config.addSideInfo(0, rowSideInfoConfig);
   NoiseConfig trainNoise(NoiseTypes::fixed);
   trainNoise.setPrecision(1.);
   config.getTrain().setNoiseConfig(trainNoise);

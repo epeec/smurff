@@ -183,7 +183,7 @@ const SideInfoConfig& Config::getSideInfoConfig(int mode) const
   return iter->second;
 }
 
-SideInfoConfig& Config::addSideInfoConfig(int mode, const SideInfoConfig &c)
+SideInfoConfig& Config::addSideInfo(int mode, const SideInfoConfig &c)
 {
    THROWERROR_ASSERT(!hasSideInfo(mode));
 

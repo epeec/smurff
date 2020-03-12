@@ -32,9 +32,9 @@ struct CompareTest {
         tensorConfig(genConfig(tensor_train, tensor_test, priors)) {}
  
   template<class M>
-  CompareTest &addSideInfoConfig(int m, const M &c) {
-    matrixConfig.addSideInfoConfig(m) = makeSideInfoConfig(c);
-    tensorConfig.addSideInfoConfig(m) = makeSideInfoConfig(c);
+  CompareTest &addSideInfo(int m, const M &c) {
+    matrixConfig.addSideInfo(m) = makeSideInfoConfig(c);
+    tensorConfig.addSideInfo(m) = makeSideInfoConfig(c);
     return *this;
   }
 
@@ -166,8 +166,8 @@ TEST_CASE("matrix_vs_2D-tensor_train_dense_2d_tensor_test_sparse_2d_tensor_macau
 
   CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
               {PriorTypes::macau, PriorTypes::macau})
-      .addSideInfoConfig(0, rowSideDenseMatrix)
-      .addSideInfoConfig(1, colSideDenseMatrix)
+      .addSideInfo(0, rowSideDenseMatrix)
+      .addSideInfo(1, colSideDenseMatrix)
       .runAndCheck();
 }
 
@@ -176,8 +176,8 @@ TEST_CASE("matrix_vs_2D-tensor_train_sparse_2d_tensor_test_sparse_2d_tensor_maca
 
   CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
               {PriorTypes::macau, PriorTypes::macau})
-      .addSideInfoConfig(0, rowSideDenseMatrix)
-      .addSideInfoConfig(1, colSideDenseMatrix)
+      .addSideInfo(0, rowSideDenseMatrix)
+      .addSideInfo(1, colSideDenseMatrix)
       .runAndCheck();
 }
 
@@ -186,8 +186,8 @@ TEST_CASE("matrix_vs_2D-tensor_train_dense_2d_tensor_test_sparse_2d_tensor_macau
 
   CompareTest(trainDenseMatrix, testSparseMatrix, trainDenseTensor2d, testSparseTensor2d,
               {PriorTypes::macauone, PriorTypes::macauone})
-      .addSideInfoConfig(0, rowSideDenseMatrix)
-      .addSideInfoConfig(1, colSideDenseMatrix)
+      .addSideInfo(0, rowSideDenseMatrix)
+      .addSideInfo(1, colSideDenseMatrix)
       .runAndCheck();
 }
 
@@ -196,8 +196,8 @@ TEST_CASE("matrix_vs_2D-tensor_train_sparse_2d_tensor_test_sparse_2d_tensor_maca
 
   CompareTest(trainSparseMatrix, testSparseMatrix, trainSparseTensor2d, testSparseTensor2d,
               {PriorTypes::macauone, PriorTypes::macauone})
-      .addSideInfoConfig(0, rowSideDenseMatrix)
-      .addSideInfoConfig(1, colSideDenseMatrix)
+      .addSideInfo(0, rowSideDenseMatrix)
+      .addSideInfo(1, colSideDenseMatrix)
       .runAndCheck();
 }
 

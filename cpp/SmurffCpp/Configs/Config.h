@@ -201,7 +201,7 @@ public:
 
    const SideInfoConfig& getSideInfoConfig(int mode) const;
 
-   SideInfoConfig& addSideInfoConfig(int mode, const SideInfoConfig & = SideInfoConfig());
+   SideInfoConfig& addSideInfo(int mode, const SideInfoConfig & = SideInfoConfig());
 
    bool hasSideInfo(int mode) const
    {
@@ -245,6 +245,12 @@ public:
    bool hasPropagatedPosterior(int mode) const
    {
        return m_mu_postprop.find(mode) != m_mu_postprop.end() && !getMuPropagatedPosterior(mode).hasData();
+   }
+
+   void addPropagatedPosterior(int mode, const Matrix &mu, const Matrix &Lambda) 
+   {
+      getMuPropagatedPosterior(mode).setData(mu);
+      getLambdaPropagatedPosterior(mode).setData(Lambda);
    }
 
    const DataConfig& getMuPropagatedPosterior(int mode) const
