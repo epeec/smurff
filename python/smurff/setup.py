@@ -49,10 +49,9 @@ class CMakeBuild(build_ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
         cfg = 'Debug' if self.debug else 'Release'
 
-        if not os.path.exists(self.build_temp):
-            os.makedirs(self.build_temp)
 
-        if ext.extra_cmake_args:
+        if not os.path.exists(self.build_temp) or ext.extra_cmake_args:
+            os.makedirs(self.build_temp, exist_ok = True)
             cmake_args = [
                            '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                            '-DPYTHON_EXECUTABLE=' + sys.executable,

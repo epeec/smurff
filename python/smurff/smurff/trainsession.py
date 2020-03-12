@@ -1,5 +1,5 @@
 import logging
-from .helper import SparseTensor, make_dataconfig
+from .helper import SparseTensor, FixedNoise
 from .wrapper import Config, NoiseConfig, StatusItem, PythonSession
 
 
@@ -9,7 +9,7 @@ class TrainSession(PythonSession):
     A simple use case could be:
 
     >>> trainSession = smurff.TrainSession(burnin = 5, nsamples = 5)
-    >>> trainSession.addTrainAndTest(Ydense)
+    >>> trainSession.setTrain(Ydense)
     >>> trainSession.run()
 
     Attributes
@@ -89,7 +89,7 @@ class TrainSession(PythonSession):
 
         super().__init__(config)
 
-    def setTrain(self, Y, noise = NoiseConfig(), is_scarce = None):
+    def setTrain(self, Y, noise = FixedNoise(), is_scarce = None):
         """Adds a train and optionally a test matrix as input data to this TrainSession
 
         Parameters
@@ -108,14 +108,13 @@ class TrainSession(PythonSession):
 
         """
         
-        self.setTrain(make_dataconfig(Y, noise, is_scarce))
+        if is_scarce is not None:
+            # sparse/scarce
+            super().setTrain(Y, noise, is_scarce)
+        else:
+            # dense
+            super().setTrain(Y, noise)
        
-    def setTest(self, Ytest):
-        """Adds a test matrix 
-
-        """
-        self.setTest(make_dataconfig(Ytest, is_scarce=True))
-
     def addSideInfo(self, mode, Y, noise = NoiseConfig(), tol = 1e-6, direct = False):
         """Adds fully known side info, for use in with the macau or macauone prior
 
@@ -140,7 +139,7 @@ class TrainSession(PythonSession):
             Tolerance for the CG solver.
 
         """
-        self.addSideInfoConfig(mode, prepare_sideinfo(Y, noise, tol, direct))
+        super().addSideInfoConfig(mode, Y, noise, tol, direct)
 
     def addPropagatedPosterior(self, mode, mu, Lambda):
         """Adds mu and Lambda from propagated posterior

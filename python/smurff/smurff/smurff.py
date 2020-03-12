@@ -1,5 +1,4 @@
-from .wrapper import TrainSession
-
+from .trainsession import TrainSession
 
 class SmurffSession(TrainSession):
     def __init__(self, Ytrain, priors, Ytest=None, side_info=None, direct=False, **args):

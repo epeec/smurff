@@ -142,7 +142,9 @@ public:
 
    DataConfig& getTrain() 
    {
-      return m_data.at(0);
+      auto &train_config = m_data.at(0);
+      if (!train_config.hasPos()) train_config.setPos(PVec<>{0,0});
+      return train_config;
    }
    
    DataConfig& setTrain(const DataConfig &c)
