@@ -89,6 +89,12 @@ class TrainSession(PythonSession):
 
         super().__init__(config)
 
+    def addTrainAndTest(self, Y, Ytest = None, noise = FixedNoise(), is_scarce = None):
+        self.setTrain(Y, noise, is_scarce)
+
+        if Ytest is not None:
+            self.setTest(Ytest)
+
     def setTrain(self, Y, noise = FixedNoise(), is_scarce = None):
         """Adds a train and optionally a test matrix as input data to this TrainSession
 
