@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import numpy as np
-import h5py
+import h5sparse
+
+from .result import Prediction
 
 class Sample:
     def __init__(self, h5_file, name):
@@ -23,19 +25,16 @@ class Sample:
         return [ self.h5_group[templ % i] for i in range(self.nmodes) ]
 
     def latents(self):
-        return self.lookup_modes("latents/latent_%d")
+        return self.lookup_modes("latents/latents_%d")
 
     def betas(self):
-        self.lookup_modes("link_matrices/link_matrix_%d")
+        return self.lookup_modes("link_matrices/link_matrix_%d")
         
     def mus(self):
-        self.lookup_modes("link_matrices/mu_%d")
+        return self.lookup_modes("link_matrices/mu_%d")
 
     def beta_shape(self):
-        if self.betas():
-            return [b.shape[1] for b in self.betas()]
-        else:
-            return None
+        return [b.shape[1] for b in self.betas()]
 
     def postMus(self):
         pass
@@ -51,20 +50,20 @@ class Sample:
             None] * self.nmodes
 
         operands = []
-        for U, mu, c, m in zip(self.latents, self.mus, cs, range(self.nmodes)):
+        for U, mu, c, m in zip(self.latents(), self.mus(), cs, range(self.nmodes)):
             # predict all in this dimension
             if c is None:
-                operands += [U, [0, m+1]]
+                operands += [U, [m+1, 0]]
             else:
                 # if side_info was specified for this dimension, we predict for this side_info
                 try:  # try to compute sideinfo * beta using dot
                     # compute latent vector from side_info
-                    uhat = c.dot(self.betas[m].transpose())
+                    uhat = c.dot(self.betas[m]).transpose()
                     uhat = np.squeeze(uhat) 
                     operands += [uhat + mu, [0]]
                 except AttributeError:  # assume it is a coord
                     # if coords was specified for this dimension, we predict for this coord
-                    operands += [U[:, c], [0]]
+                    operands += [U[c, :], [0]]
 
         return np.einsum(*operands)
 
@@ -90,7 +89,7 @@ class PredictSession:
            Name of the HDF5 file.
  
         """
-        self.h5_file = h5py.File(h5_fname, 'r')
+        self.h5_file = h5sparse.File(h5_fname, 'r')
         self.options = self.h5_file["config/options"].attrs
         self.nmodes = int(self.options['num_priors'])
         self.num_latent = int(self.options["num_latent"])
@@ -110,6 +109,7 @@ class PredictSession:
             raise ValueError("No samples found in " + h5_fname)
 
         self.samples.sort(key=lambda x: x.no)
+        self.num_samples = len(self.samples)
 
     def lastSample(self):
         return self.samples[-1]
