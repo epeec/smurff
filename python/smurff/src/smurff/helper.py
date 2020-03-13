@@ -44,10 +44,6 @@ class SparseTensor(wrapper.SparseTensor):
             self.columns = [ data[c] for c in idx_column_names ]
             self.values = data[val_column_names[0]]
 
-            print("df: ", data)
-            print("shape: ", self.shape)
-            print("columns: ", self.columns)
-            print("values: ", self.values)
         else:
             error_msg = "Unsupported sparse tensor data type: {}".format(data)
             raise ValueError(error_msg)
