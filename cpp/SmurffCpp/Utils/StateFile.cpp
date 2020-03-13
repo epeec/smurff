@@ -7,7 +7,6 @@
 
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
-#include <SmurffCpp/IO/INIFile.h>
 #include <SmurffCpp/StatusItem.h>
 
 namespace h5 = HighFive;
@@ -15,7 +14,7 @@ namespace h5 = HighFive;
 namespace smurff {
 
 const std::string NONE_VALUE = "none";
-const std::string OPTIONS_TAG = "options";
+const std::string CONFIG_TAG = "config";
 const std::string STEPS_TAG = "steps";
 const std::string STATUS_TAG = "status";
 const std::string LAST_CHECKPOINT_TAG = "last_checkpoint";
@@ -49,20 +48,13 @@ std::string StateFile::getOptionsFileName() const
 
 void StateFile::saveConfig(const Config& config)
 {
-   // save to INIFile
-   INIFile cfg_file;
-   config.save(cfg_file);
-   cfg_file.write(getOptionsFileName());
-
-   // save to HDF5
-   HDF5 h5_cfg(m_h5.createGroup(OPTIONS_TAG));
+   HDF5Group h5_cfg(m_h5.createGroup(CONFIG_TAG));
    config.save(h5_cfg);
 }
 
 void StateFile::restoreConfig(Config& config)
 {
-   //get options filename
-   HDF5 h5_cfg(m_h5.getGroup(OPTIONS_TAG));
+   HDF5Group h5_cfg(m_h5.getGroup(CONFIG_TAG));
    config.restore(h5_cfg);
 }
 

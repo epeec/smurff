@@ -16,7 +16,7 @@
 #include <memory>
 
 #include <Utils/Error.h>
-#include <SmurffCpp/Utils/ConfigFile.h>
+#include <SmurffCpp/Utils/HDF5Group.h>
 #include <SmurffCpp/DataMatrices/Data.h>
 #include <Utils/StringUtils.h>
 
@@ -344,7 +344,7 @@ bool Config::validate() const
    return true;
 }
 
-ConfigFile &Config::save(ConfigFile &cfg_file) const
+HDF5Group &Config::save(HDF5Group &cfg_file) const
 {
    //count data
    cfg_file.put(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, m_prior_types.size());
@@ -408,7 +408,7 @@ ConfigFile &Config::save(ConfigFile &cfg_file) const
    return cfg_file;
 }
 
-bool Config::restore(const ConfigFile &cfg_file)
+bool Config::restore(const HDF5Group &cfg_file)
 {
 
    //restore train data

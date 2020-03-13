@@ -13,7 +13,7 @@
 namespace smurff
 {
    class Data;
-   class ConfigFile;
+   class HDF5Group;
 
    class DataConfig 
    {
@@ -90,8 +90,8 @@ namespace smurff
       virtual std::ostream& info(std::ostream& os) const;
       virtual std::string info() const;
 
-      void save(ConfigFile& writer, const std::string& section_name) const;
-      bool restore(const ConfigFile& reader, const std::string& sec_name);
+      void save(HDF5Group& writer, const std::string& section_name) const;
+      bool restore(const HDF5Group& reader, const std::string& sec_name);
 
    public:
       void check() const;

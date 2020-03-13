@@ -2,7 +2,7 @@
 #include <fstream>
 #include <memory>
 
-#include <SmurffCpp/Utils/ConfigFile.h>
+#include <SmurffCpp/Utils/HDF5Group.h>
 #include <Utils/StringUtils.h>
 
 #include "SideInfoConfig.h"
@@ -35,7 +35,7 @@ SideInfoConfig::SideInfoConfig(const SparseMatrix &data, const NoiseConfig &ncfg
    m_throw_on_cholesky_error = false;
 }
 
-void SideInfoConfig::save(ConfigFile& cfg_file, std::size_t prior_index) const
+void SideInfoConfig::save(HDF5Group& cfg_file, std::size_t prior_index) const
 {
    std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
 
@@ -48,7 +48,7 @@ void SideInfoConfig::save(ConfigFile& cfg_file, std::size_t prior_index) const
    DataConfig::save(cfg_file, sectionName);
 }
 
-bool SideInfoConfig::restore(const ConfigFile& cfg_file, std::size_t prior_index)
+bool SideInfoConfig::restore(const HDF5Group& cfg_file, std::size_t prior_index)
 {
    std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
 

@@ -8,7 +8,7 @@
 
 namespace smurff
 {
-   class ConfigFile;
+   class HDF5Group;
 
    class SideInfoConfig : public DataConfig
    {
@@ -59,8 +59,8 @@ namespace smurff
       }
 
    public:
-      void save(ConfigFile& writer, std::size_t prior_index) const;
-      bool restore(const ConfigFile& reader, std::size_t prior_index);
+      void save(HDF5Group& writer, std::size_t prior_index) const;
+      bool restore(const HDF5Group& reader, std::size_t prior_index);
 
    };
 }

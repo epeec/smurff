@@ -12,7 +12,7 @@
 
 namespace smurff {
 
-class ConfigFile;
+class HDF5Group;
 
 enum class PriorTypes
 {
@@ -119,8 +119,8 @@ private:
 public:
    bool validate() const;
 
-   ConfigFile &save(ConfigFile &) const;
-   bool restore(const ConfigFile &);
+   HDF5Group &save(HDF5Group &) const;
+   bool restore(const HDF5Group &);
 
    std::ostream& info(std::ostream &os, std::string indent) const;
 

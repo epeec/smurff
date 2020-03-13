@@ -4,23 +4,16 @@ FILE (GLOB UTIL_FILES
                         "Utils/PVec.hpp"
                         "Utils/StateFile.h"
                         "Utils/SaveState.h"
-                        "Utils/HDF5.h"
+                        "Utils/HDF5Group.h"
 
                         "Utils/Distribution.cpp"
                         "Utils/MatrixUtils.cpp"
                         "Utils/StateFile.cpp"
                         "Utils/SaveState.cpp"
-                        "Utils/HDF5.cpp"
+                        "Utils/HDF5Group.cpp"
                         )
 
 source_group ("Utils" FILES ${UTIL_FILES})
-
-FILE (GLOB IO_FILES     
-                        "IO/INIFile.h"
-                        "IO/INIFile.cpp"
-                        )
-
-source_group ("IO" FILES ${IO_FILES})
 
 FILE (GLOB CONFIG_FILES "Configs/Config.h"
                         "Configs/DataConfig.h"

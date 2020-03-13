@@ -11,14 +11,12 @@
 
 #include <SmurffCpp/Configs/Config.h>
 #include <Utils/Error.h>
-#include <SmurffCpp/IO/INIFile.h>
 
 #include <SmurffCpp/Utils/StateFile.h>
 #include <Utils/StringUtils.h>
 
 namespace smurff {
 
-static const std::string INI_NAME = "ini";
 static const std::string RESTORE_NAME = "restore-from";
 
 #ifdef HAVE_BOOST
@@ -50,7 +48,6 @@ po::options_description get_desc()
     general_desc.add_options()
 	(VERSION_NAME.c_str(), "print version info (and exit)")
 	(HELP_NAME.c_str(), "show this help information (and exit)")
-	(INI_NAME.c_str(), po::value<std::string>(), "read options from this .ini file")
 	(NUM_THREADS_NAME.c_str(), po::value<int>()->default_value(Config::NUM_THREADS_DEFAULT_VALUE), "number of threads (0 = default by OpenMP)")
 	(VERBOSE_NAME.c_str(), po::value<int>()->default_value(Config::VERBOSE_DEFAULT_VALUE), "verbosity of output (0, 1, 2 or 3)")
 	(SEED_NAME.c_str(), po::value<int>()->default_value(Config::RANDOM_SEED_DEFAULT_VALUE), "random number generator seed");
@@ -147,17 +144,6 @@ fill_config(const po::variables_map &vm)
         //  skip if predict-trainSession
         if (!vm.count(PREDICT_NAME) && !vm.count(ROW_FEAT_NAME) && !vm.count(COL_FEAT_NAME))
             StateFile(restore_filename).restoreConfig(config);
-    }
-
-    //restore ini file if it was specified
-    if (vm.count(INI_NAME))
-    {
-        const auto ini_filename = vm[INI_NAME].as<std::string>();
-        INIFile ini_file;
-        ini_file.read(ini_filename);
-        bool success = config.restore(ini_file);
-        THROWERROR_ASSERT_MSG(success, "Could not load ini file '" + ini_filename + "'");
-        config.setIniName(ini_filename);
     }
 
     filler.fill_data<&Config::getPredict>(PREDICT_NAME);

@@ -7,7 +7,7 @@
 #include <cstdint>
 
 #include <SmurffCpp/Types.h>
-#include <SmurffCpp/Utils/HDF5.h>
+#include <SmurffCpp/Utils/HDF5Group.h>
 
 namespace h5 = HighFive;
 
@@ -17,7 +17,7 @@ namespace smurff {
    class Result;
    class ILatentPrior;
 
-   class SaveState : private HDF5
+   class SaveState : private HDF5Group
    {
    private:
       h5::File m_file;

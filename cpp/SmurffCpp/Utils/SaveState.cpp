@@ -42,7 +42,7 @@
 namespace smurff {
 
 SaveState::SaveState(h5::File file, std::int32_t isample, bool checkpoint)
-   : HDF5(file.createGroup(std::string(checkpoint ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(isample)))
+   : HDF5Group(file.createGroup(std::string(checkpoint ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(isample)))
    , m_file(file) 
    , m_isample(isample)
    , m_checkpoint(checkpoint)
@@ -52,7 +52,7 @@ SaveState::SaveState(h5::File file, std::int32_t isample, bool checkpoint)
 }
 
 SaveState::SaveState(h5::File file, h5::Group group)
-   : HDF5(group), m_file(file)
+   : HDF5Group(group), m_file(file)
 {
    group.getAttribute(NUMBER_TAG).read(m_isample);
    group.getAttribute(IS_CHECKPOINT_TAG).read(m_checkpoint);

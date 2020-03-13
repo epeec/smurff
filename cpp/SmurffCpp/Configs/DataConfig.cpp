@@ -3,7 +3,7 @@
 #include <numeric>
 
 #include <SmurffCpp/Utils/PVec.hpp>
-#include <SmurffCpp/Utils/ConfigFile.h>
+#include <SmurffCpp/Utils/HDF5Group.h>
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
 
@@ -268,7 +268,7 @@ std::string DataConfig::info() const
     return ss.str();
 }
 
-void DataConfig::save(ConfigFile& cfg_file, const std::string& sectionName) const
+void DataConfig::save(HDF5Group& cfg_file, const std::string& sectionName) const
 {
    //write tensor config position
    if (hasPos())
@@ -306,7 +306,7 @@ void DataConfig::save(ConfigFile& cfg_file, const std::string& sectionName) cons
 
 }
 
-bool DataConfig::restore(const ConfigFile& cfg_file, const std::string& sectionName)
+bool DataConfig::restore(const HDF5Group& cfg_file, const std::string& sectionName)
 {
    //restore position
    std::string pos_str = cfg_file.get(sectionName, POS_TAG, NONE_VALUE);

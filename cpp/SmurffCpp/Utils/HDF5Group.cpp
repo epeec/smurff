@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <SmurffCpp/Utils/HDF5.h>
+#include <SmurffCpp/Utils/HDF5Group.h>
 
 #include <Utils/Error.h>
 #include <Utils/StringUtils.h>
@@ -8,30 +8,30 @@
 
 namespace smurff {
 
-bool HDF5::hasDataSet(const std::string& section, const std::string& tag) const
+bool HDF5Group::hasDataSet(const std::string& section, const std::string& tag) const
 {
    if (!m_group.exist(section)) return false;
    auto section_group = m_group.getGroup(section);
    return (section_group.exist(tag));
 }
 
-bool HDF5::hasSection(const std::string& section) const
+bool HDF5Group::hasSection(const std::string& section) const
 {
    return m_group.exist(section);
 }
 
-h5::Group HDF5::addGroup(const std::string& name)
+h5::Group HDF5Group::addGroup(const std::string& name)
 {
    if (!m_group.exist(name)) m_group.createGroup(name);
    return getGroup(name);
 }
 
-h5::Group HDF5::getGroup(const std::string& name) const
+h5::Group HDF5Group::getGroup(const std::string& name) const
 {
    return m_group.getGroup(name);
 }
 
-void HDF5::read(const std::string& section, const std::string& tag, Matrix &X) const
+void HDF5Group::read(const std::string& section, const std::string& tag, Matrix &X) const
 {
    auto dataset = m_group.getGroup(section).getDataSet(tag);
    std::vector<size_t> dims = dataset.getDimensions();
@@ -52,7 +52,7 @@ void HDF5::read(const std::string& section, const std::string& tag, Matrix &X) c
    }
 }
 
-void HDF5::read(const std::string& section, const std::string& tag, Vector &X) const
+void HDF5Group::read(const std::string& section, const std::string& tag, Vector &X) const
 {
    auto dataset = m_group.getGroup(section).getDataSet(tag);
    std::vector<size_t> dims = dataset.getDimensions();
@@ -61,7 +61,7 @@ void HDF5::read(const std::string& section, const std::string& tag, Vector &X) c
    dataset.read(X.data());
 }
 
-void HDF5::read(const std::string& section, const std::string& tag, SparseMatrix &X) const
+void HDF5Group::read(const std::string& section, const std::string& tag, SparseMatrix &X) const
 {
    auto sparse_group = m_group.getGroup(section).getGroup(tag); 
 
@@ -89,22 +89,22 @@ void HDF5::read(const std::string& section, const std::string& tag, SparseMatrix
    indices.read(X.innerIndexPtr());
 }
 
-void HDF5::read(const std::string& section, const std::string& tag, DenseTensor &) const
+void HDF5Group::read(const std::string& section, const std::string& tag, DenseTensor &) const
 {
    THROWERROR_NOTIMPL();
 }
 
-void HDF5::read(const std::string& section, const std::string& tag, SparseTensor &) const
+void HDF5Group::read(const std::string& section, const std::string& tag, SparseTensor &) const
 {
    THROWERROR_NOTIMPL();
 }
 
-void HDF5::write(const std::string& section, const std::string& tag, const Vector &V)
+void HDF5Group::write(const std::string& section, const std::string& tag, const Vector &V)
 {
    write(section, tag, Matrix(V));
 }
 
-void HDF5::write(const std::string& section, const std::string& tag, const Matrix &M)
+void HDF5Group::write(const std::string& section, const std::string& tag, const Matrix &M)
 {
    if (!m_group.exist(section))
       m_group.createGroup(section);
@@ -126,7 +126,7 @@ void HDF5::write(const std::string& section, const std::string& tag, const Matri
     dataset.write(row_major.data());
 }
 
-void HDF5::write(const std::string& section, const std::string& tag, const SparseMatrix &X)
+void HDF5Group::write(const std::string& section, const std::string& tag, const SparseMatrix &X)
 {
    if (!m_group.exist(section))
       m_group.createGroup(section);
@@ -147,12 +147,12 @@ void HDF5::write(const std::string& section, const std::string& tag, const Spars
    indices.write(X.innerIndexPtr());
 }
 
-void HDF5::write(const std::string& section, const std::string& tag, const DenseTensor &X)
+void HDF5Group::write(const std::string& section, const std::string& tag, const DenseTensor &X)
 {
    THROWERROR_NOTIMPL();
 }
 
-void HDF5::write(const std::string& section, const std::string& tag, const SparseTensor &X)
+void HDF5Group::write(const std::string& section, const std::string& tag, const SparseTensor &X)
 {
    THROWERROR_NOTIMPL();
 }
