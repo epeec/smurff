@@ -134,7 +134,7 @@ void HDF5Group::write(const std::string& section, const std::string& tag, const 
    h5::Group sparse_group = m_group.getGroup(section).createGroup(tag);
 
    sparse_group.createAttribute<std::string>("h5sparse_format", (SparseMatrix::IsRowMajor ? "csr" : "csc"));
-   std::vector<Eigen::Index> shape{X.innerSize(), X.outerSize()};
+   std::vector<Eigen::Index> shape{X.rows(), X.cols()};
    sparse_group.createAttribute<Eigen::Index>("h5sparse_shape", h5::DataSpace::From(shape)).write(shape);
 
    auto data = sparse_group.createDataSet<SparseMatrix::value_type>("data", h5::DataSpace(X.nonZeros()));
