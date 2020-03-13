@@ -75,6 +75,14 @@ PYBIND11_MODULE(wrapper, m)
         .def_readonly("pred_all", &smurff::ResultItem::pred_all)
         ;
 
+    py::class_<smurff::SparseTensor>(m, "SparseTensor")
+        .def(py::init<
+          const std::vector<std::uint64_t> &,
+          const std::vector<std::vector<std::uint32_t>> &,
+          const std::vector<double> &
+        >())
+        ;
+
     py::class_<smurff::DataConfig>(m, "DataConfig")
         .def(py::init<>())
         .def("setData", py::overload_cast<const smurff::Matrix &>(&smurff::DataConfig::setData))
@@ -95,6 +103,7 @@ PYBIND11_MODULE(wrapper, m)
         .def("setTrain", &smurff::PythonSession::setTrainSparse<smurff::SparseTensor>)
 
         .def("setTest", &smurff::PythonSession::setTest<smurff::SparseMatrix>)
+        .def("setTest", &smurff::PythonSession::setTest<smurff::SparseTensor>)
         
         .def("addSideInfo", &smurff::PythonSession::addSideInfoDense)
         .def("addSideInfo", &smurff::PythonSession::addSideInfoSparse)
