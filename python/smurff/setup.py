@@ -1,5 +1,7 @@
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
+from setuptools import find_packages
+
 
 import os
 import shutil
@@ -49,7 +51,6 @@ class CMakeBuild(build_ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
         cfg = 'Debug' if self.debug else 'Release'
 
-
         if not os.path.exists(self.build_temp) or ext.extra_cmake_args:
             os.makedirs(self.build_temp, exist_ok = True)
             cmake_args = [
@@ -79,7 +80,8 @@ if "--extra-build-args" in sys.argv:
 
 setup(
     name = 'smurff',
-    packages = [ 'smurff' ],
+    packages = find_packages('src'),
+    package_dir={'':'src'},
     version = git_describe_version(),
     url = "http://github.com/ExaScience/smurff",
     ext_modules=[CMakeExtension('smurff/wrapper', '../..', extra_cmake_args, extra_build_args)],

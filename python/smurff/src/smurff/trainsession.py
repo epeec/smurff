@@ -56,9 +56,6 @@ class TrainSession(PythonSession):
     checkpoint_freq: int
         Save the state of the trainSession every N seconds.
 
-    csv_status: filepath
-        Stores limited set of parameters, indicative for training progress in this file. See :class:`StatusItem`
-
     """
     #
     # construction functions
@@ -124,7 +121,7 @@ class TrainSession(PythonSession):
             super().setTrain(Y, noise)
         elif sp.issparse(Y):
             # sparse/scarce scipy.sparse matrix
-            super().setTrain(Y.to_csr(), noise, is_scarce)
+            super().setTrain(Y.tocsr(), noise, is_scarce)
         elif isinstance(Y, SparseTensor):
             # sparse/scarce scipy.sparse tensor
             super().setTrain(Y, noise, is_scarce)

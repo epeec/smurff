@@ -1,9 +1,13 @@
 import pandas as pd
 import numpy as np
 import math
+import tempfile
+import os
 
 from .wrapper import NoiseConfig, DataConfig
 
+def temp_savename():
+    return os.path.join(tempfile.mkdtemp(), "smurff_temp_output.h5")
 
 class SparseTensor:
     """Wrapper around a pandas DataFrame to represent a sparse tensor
