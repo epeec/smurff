@@ -36,16 +36,6 @@ std::string StateFile::getFullPath() const
    return m_path;
 }
 
-std::string StateFile::getPrefix() const
-{
-   return dirName(m_path);
-}
-
-std::string StateFile::getOptionsFileName() const
-{
-   return getPrefix() + "options.ini";
-}
-
 void StateFile::saveConfig(const Config& config)
 {
    HDF5Group h5_cfg(m_h5.createGroup(CONFIG_TAG));

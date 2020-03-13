@@ -24,7 +24,7 @@ namespace smurff {
 
 static const std::string NONE_VALUE = "none";
 
-static const std::string GLOBAL_SECTION_TAG = "global";
+static const std::string OPTIONS_SECTION_TAG = "options";
 static const std::string TRAIN_SECTION_TAG = "train";
 static const std::string TEST_SECTION_TAG = "test";
 
@@ -347,35 +347,35 @@ bool Config::validate() const
 HDF5Group &Config::save(HDF5Group &cfg_file) const
 {
    //count data
-   cfg_file.put(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, m_prior_types.size());
-   cfg_file.put(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, getData().size() - 1);
+   cfg_file.put(OPTIONS_SECTION_TAG, NUM_PRIORS_TAG, m_prior_types.size());
+   cfg_file.put(OPTIONS_SECTION_TAG, NUM_AUX_DATA_TAG, getData().size() - 1);
 
    //priors data
    int prior_idx = 0;
    for(const auto &pt : m_prior_types)
-      cfg_file.put(GLOBAL_SECTION_TAG, addIndex(PRIOR_PREFIX, prior_idx++), priorTypeToString(pt));
+      cfg_file.put(OPTIONS_SECTION_TAG, addIndex(PRIOR_PREFIX, prior_idx++), priorTypeToString(pt));
 
    //save data
-   cfg_file.put(GLOBAL_SECTION_TAG, RESTORE_NAME_TAG, m_restore_name);
-   cfg_file.put(GLOBAL_SECTION_TAG, SAVE_NAME_TAG, m_save_name);
-   cfg_file.put(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, m_save_freq);
-   cfg_file.put(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, m_save_pred);
-   cfg_file.put(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, m_save_model);
-   cfg_file.put(GLOBAL_SECTION_TAG, CHECKPOINT_FREQ_TAG, m_checkpoint_freq);
+   cfg_file.put(OPTIONS_SECTION_TAG, RESTORE_NAME_TAG, m_restore_name);
+   cfg_file.put(OPTIONS_SECTION_TAG, SAVE_NAME_TAG, m_save_name);
+   cfg_file.put(OPTIONS_SECTION_TAG, SAVE_FREQ_TAG, m_save_freq);
+   cfg_file.put(OPTIONS_SECTION_TAG, SAVE_PRED_TAG, m_save_pred);
+   cfg_file.put(OPTIONS_SECTION_TAG, SAVE_MODEL_TAG, m_save_model);
+   cfg_file.put(OPTIONS_SECTION_TAG, CHECKPOINT_FREQ_TAG, m_checkpoint_freq);
 
    //general data
-   cfg_file.put(GLOBAL_SECTION_TAG, VERBOSE_TAG, m_verbose);
-   cfg_file.put(GLOBAL_SECTION_TAG, BURNING_TAG, m_burnin);
-   cfg_file.put(GLOBAL_SECTION_TAG, NSAMPLES_TAG, m_nsamples);
-   cfg_file.put(GLOBAL_SECTION_TAG, NUM_LATENT_TAG, m_num_latent);
-   cfg_file.put(GLOBAL_SECTION_TAG, NUM_THREADS_TAG, m_num_threads);
-   cfg_file.put(GLOBAL_SECTION_TAG, RANDOM_SEED_SET_TAG, m_random_seed_set);
-   cfg_file.put(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, m_random_seed);
-   cfg_file.put(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(m_model_init_type));
+   cfg_file.put(OPTIONS_SECTION_TAG, VERBOSE_TAG, m_verbose);
+   cfg_file.put(OPTIONS_SECTION_TAG, BURNING_TAG, m_burnin);
+   cfg_file.put(OPTIONS_SECTION_TAG, NSAMPLES_TAG, m_nsamples);
+   cfg_file.put(OPTIONS_SECTION_TAG, NUM_LATENT_TAG, m_num_latent);
+   cfg_file.put(OPTIONS_SECTION_TAG, NUM_THREADS_TAG, m_num_threads);
+   cfg_file.put(OPTIONS_SECTION_TAG, RANDOM_SEED_SET_TAG, m_random_seed_set);
+   cfg_file.put(OPTIONS_SECTION_TAG, RANDOM_SEED_TAG, m_random_seed);
+   cfg_file.put(OPTIONS_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(m_model_init_type));
 
    //probit prior data
-   cfg_file.put(GLOBAL_SECTION_TAG, CLASSIFY_TAG, m_classify);
-   cfg_file.put(GLOBAL_SECTION_TAG, THRESHOLD_TAG, m_threshold);
+   cfg_file.put(OPTIONS_SECTION_TAG, CLASSIFY_TAG, m_classify);
+   cfg_file.put(OPTIONS_SECTION_TAG, THRESHOLD_TAG, m_threshold);
 
    //write train data section
    getTrain().save(cfg_file, TRAIN_SECTION_TAG);
@@ -418,11 +418,11 @@ bool Config::restore(const HDF5Group &cfg_file)
    getTrain().restore(cfg_file, TRAIN_SECTION_TAG);
 
    //restore priors
-   std::size_t num_priors = cfg_file.get(GLOBAL_SECTION_TAG, NUM_PRIORS_TAG, 0);
+   std::size_t num_priors = cfg_file.get(OPTIONS_SECTION_TAG, NUM_PRIORS_TAG, 0);
    std::vector<std::string> pNames;
    for(std::size_t pIndex = 0; pIndex < num_priors; pIndex++)
    {
-      pNames.push_back(cfg_file.get(GLOBAL_SECTION_TAG, addIndex(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
+      pNames.push_back(cfg_file.get(OPTIONS_SECTION_TAG, addIndex(PRIOR_PREFIX, pIndex),  PRIOR_NAME_DEFAULT));
    }
    setPriorTypes(pNames);
 
@@ -435,7 +435,7 @@ bool Config::restore(const HDF5Group &cfg_file)
    }
 
    //restore aux data
-   std::size_t num_aux_data = cfg_file.get(GLOBAL_SECTION_TAG, NUM_AUX_DATA_TAG, 0);
+   std::size_t num_aux_data = cfg_file.get(OPTIONS_SECTION_TAG, NUM_AUX_DATA_TAG, 0);
    for(std::size_t pIndex = 0; pIndex < num_aux_data; pIndex++)
    {
       addData().restore(cfg_file, addIndex(AUX_DATA_PREFIX, pIndex));
@@ -450,26 +450,26 @@ bool Config::restore(const HDF5Group &cfg_file)
 
 
    //restore save data
-   m_restore_name = cfg_file.get(GLOBAL_SECTION_TAG, RESTORE_NAME_TAG, "");
-   m_save_name = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_NAME_TAG, "");
-   m_save_freq = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
-   m_save_pred = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
-   m_save_model = cfg_file.get(GLOBAL_SECTION_TAG, SAVE_MODEL_TAG, Config::SAVE_MODEL_DEFAULT_VALUE);
-   m_checkpoint_freq = cfg_file.get(GLOBAL_SECTION_TAG, CHECKPOINT_FREQ_TAG, Config::CHECKPOINT_FREQ_DEFAULT_VALUE);
+   m_restore_name = cfg_file.get(OPTIONS_SECTION_TAG, RESTORE_NAME_TAG, "");
+   m_save_name = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_NAME_TAG, "");
+   m_save_freq = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
+   m_save_pred = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
+   m_save_model = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_MODEL_TAG, Config::SAVE_MODEL_DEFAULT_VALUE);
+   m_checkpoint_freq = cfg_file.get(OPTIONS_SECTION_TAG, CHECKPOINT_FREQ_TAG, Config::CHECKPOINT_FREQ_DEFAULT_VALUE);
 
    //restore general data
-   m_verbose = cfg_file.get(GLOBAL_SECTION_TAG, VERBOSE_TAG, Config::VERBOSE_DEFAULT_VALUE);
-   m_burnin = cfg_file.get(GLOBAL_SECTION_TAG, BURNING_TAG, Config::BURNIN_DEFAULT_VALUE);
-   m_nsamples = cfg_file.get(GLOBAL_SECTION_TAG, NSAMPLES_TAG, Config::NSAMPLES_DEFAULT_VALUE);
-   m_num_latent = cfg_file.get(GLOBAL_SECTION_TAG, NUM_LATENT_TAG, Config::NUM_LATENT_DEFAULT_VALUE);
-   m_num_threads = cfg_file.get(GLOBAL_SECTION_TAG, NUM_THREADS_TAG, Config::NUM_THREADS_DEFAULT_VALUE);
-   m_random_seed_set = cfg_file.get(GLOBAL_SECTION_TAG, RANDOM_SEED_SET_TAG,  false);
-   m_random_seed = cfg_file.get(GLOBAL_SECTION_TAG, RANDOM_SEED_TAG, Config::RANDOM_SEED_DEFAULT_VALUE);
-   m_model_init_type = stringToModelInitType(cfg_file.get(GLOBAL_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(Config::INIT_MODEL_DEFAULT_VALUE)));
+   m_verbose = cfg_file.get(OPTIONS_SECTION_TAG, VERBOSE_TAG, Config::VERBOSE_DEFAULT_VALUE);
+   m_burnin = cfg_file.get(OPTIONS_SECTION_TAG, BURNING_TAG, Config::BURNIN_DEFAULT_VALUE);
+   m_nsamples = cfg_file.get(OPTIONS_SECTION_TAG, NSAMPLES_TAG, Config::NSAMPLES_DEFAULT_VALUE);
+   m_num_latent = cfg_file.get(OPTIONS_SECTION_TAG, NUM_LATENT_TAG, Config::NUM_LATENT_DEFAULT_VALUE);
+   m_num_threads = cfg_file.get(OPTIONS_SECTION_TAG, NUM_THREADS_TAG, Config::NUM_THREADS_DEFAULT_VALUE);
+   m_random_seed_set = cfg_file.get(OPTIONS_SECTION_TAG, RANDOM_SEED_SET_TAG,  false);
+   m_random_seed = cfg_file.get(OPTIONS_SECTION_TAG, RANDOM_SEED_TAG, Config::RANDOM_SEED_DEFAULT_VALUE);
+   m_model_init_type = stringToModelInitType(cfg_file.get(OPTIONS_SECTION_TAG, INIT_MODEL_TAG, modelInitTypeToString(Config::INIT_MODEL_DEFAULT_VALUE)));
 
    //restore probit prior data
-   m_classify = cfg_file.get(GLOBAL_SECTION_TAG, CLASSIFY_TAG,  false);
-   m_threshold = cfg_file.get(GLOBAL_SECTION_TAG, THRESHOLD_TAG, Config::THRESHOLD_DEFAULT_VALUE);
+   m_classify = cfg_file.get(OPTIONS_SECTION_TAG, CLASSIFY_TAG,  false);
+   m_threshold = cfg_file.get(OPTIONS_SECTION_TAG, THRESHOLD_TAG, Config::THRESHOLD_DEFAULT_VALUE);
 
    return true;
 }
