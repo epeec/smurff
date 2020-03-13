@@ -83,7 +83,7 @@ void PredictSession::init()
     m_iter = 0;
     m_is_init = true;
 
-    THROWERROR_ASSERT_MSG(getConfig().getSaveName() != m_model_file.getFullPath(),
+    THROWERROR_ASSERT_MSG(getConfig().getSaveName() != m_model_file.getPath(),
                           "Cannot have same output file for model and predictions - both have " + getConfig().getSaveName());
 
     if (getConfig().getSaveFreq())
@@ -136,7 +136,7 @@ void PredictSession::save()
 
     if (getConfig().getVerbose())
     {
-        std::cout << "-- Saving predictions into '" << m_pred_savefile->getFullPath() << "'." << std::endl;
+        std::cout << "-- Saving predictions into '" << m_pred_savefile->getPath() << "'." << std::endl;
     }
 
     m_result.save(saveState);
@@ -172,7 +172,7 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
 {
     os << indent << "PredictSession {\n";
     os << indent << "  Model {\n";
-    os << indent << "    model-file: " << m_model_file.getFullPath() << "\n";
+    os << indent << "    model-file: " << m_model_file.getPath() << "\n";
     os << indent << "    num-samples: " << getNumSteps() << "\n";
     os << indent << "    num-latent: " << getNumLatent() << "\n";
     os << indent << "    dimensions: " << getModelDims() << "\n";

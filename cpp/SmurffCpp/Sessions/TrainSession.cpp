@@ -221,7 +221,7 @@ void TrainSession::saveInternal(int iteration, bool checkpoint)
 
     if (getConfig().getVerbose())
     {
-        std::cout << "-- Saving model, predictions,... into '" << m_stateFile->getFullPath() << "'." << std::endl;
+        std::cout << "-- Saving model, predictions,... into '" << m_stateFile->getPath() << "'." << std::endl;
     }
     double start = tick();
 
@@ -253,7 +253,7 @@ bool TrainSession::restore(int &iteration)
         SaveState saveState = m_stateFile->openCheckpoint();
         if (getConfig().getVerbose())
         {
-            std::cout << "-- Restoring model, predictions,... from '" << m_stateFile->getFullPath() << "'." << std::endl;
+            std::cout << "-- Restoring model, predictions,... from '" << m_stateFile->getPath() << "'." << std::endl;
         }
 
         m_model.restore(saveState);

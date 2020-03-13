@@ -26,7 +26,7 @@ public:
    StateFile(std::string path, bool create = false);
 
 public:
-   std::string getFullPath() const;
+   std::string getPath() const;
 
 public:
    void saveConfig(const Config& config);

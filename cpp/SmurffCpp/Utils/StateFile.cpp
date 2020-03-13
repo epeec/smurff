@@ -31,7 +31,7 @@ StateFile::StateFile(std::string path, bool create)
    }
 }
 
-std::string StateFile::getFullPath() const
+std::string StateFile::getPath() const
 {
    return m_path;
 }
