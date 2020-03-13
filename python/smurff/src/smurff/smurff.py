@@ -1,7 +1,7 @@
 from .trainsession import TrainSession
 
 class SmurffSession(TrainSession):
-    def __init__(self, Ytrain, priors, is_scarce = None, Ytest=None, side_info=None, direct=False, **args):
+    def __init__(self, Ytrain, priors, is_scarce = True, Ytest=None, side_info=None, direct=False, **args):
         TrainSession.__init__(self, priors=priors, **args)
         self.addTrainAndTest(Ytrain, Ytest, is_scarce = is_scarce)
 
@@ -39,7 +39,7 @@ class MacauSession(SmurffSession):
              Extra arguments are passed to the :class:`TrainSession`
     """
 
-    def __init__(self,  Ytrain, is_scarce = None, Ytest=None, side_info=None, univariate=False, direct=False, **args):
+    def __init__(self,  Ytrain, is_scarce = True, Ytest=None, side_info=None, univariate=False, direct=False, **args):
         nmodes = len(Ytrain.shape)
         priors = ['normal'] * nmodes
 
@@ -72,7 +72,7 @@ class BPMFSession(MacauSession):
         \*\*args:
             Extra arguments are passed to the :class:`TrainSession`
     """
-    def __init__(self, Ytrain, is_scarce = None, Ytest=None, univariate=False, **args):
+    def __init__(self, Ytrain, is_scarce = True, Ytest=None, univariate=False, **args):
          MacauSession.__init__(self, Ytrain, is_scarce, Ytest, None, univariate, **args)
 
 
