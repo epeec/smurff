@@ -7,7 +7,7 @@ class Sample:
     def __init__(self, h5_file, name):
         self.h5_group = h5_file[name]
         self.no = int(self.h5_group.attrs["number"])
-        self.nmodes = h5_file["config/global"].attrs['num_priors']
+        self.nmodes = h5_file["config/options"].attrs['num_priors']
 
     def predStats(self):
         # rmse , auc
@@ -91,7 +91,7 @@ class PredictSession:
  
         """
         self.h5_file = h5py.File(h5_fname, 'r')
-        self.options = self.h5_file["config/global"].attrs
+        self.options = self.h5_file["config/options"].attrs
         self.nmodes = int(self.options['num_priors'])
         self.num_latent = int(self.options["num_latent"])
         self.data_shape = self.h5_file["config/train/data"].shape
@@ -180,5 +180,5 @@ class PredictSession:
         return p
 
     def __str__(self):
-        dat = (len(self.samples), self.data_shape(), self.beta_shape(), self.num_latent())
+        dat = (len(self.samples), self.data_shape, self.beta_shape, self.num_latent)
         return "PredictSession with %d samples\n  Data shape = %s\n  Beta shape = %s\n  Num latent = %d" % dat
