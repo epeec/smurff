@@ -7,7 +7,7 @@ import smurff
 
 logging.getLogger().setLevel(logging.INFO)
 
-trainSession = smurff.TrainSession(priors = ["normal", "normal"], verbose = 1)
+trainSession = smurff.TrainSession(priors = ["normal", "normal"])
 
 Y = np.array([[1.,2.],[3.,4.]])
 trainSession.setTrain(Y)
