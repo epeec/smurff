@@ -1,6 +1,11 @@
 import logging
+
+import numpy as np
+import scipy.sparse as sp
+
 from .helper import SparseTensor, FixedNoise
 from .wrapper import Config, NoiseConfig, StatusItem, PythonSession
+from .predict import PredictSession
 
 
 class TrainSession(PythonSession):
@@ -89,13 +94,13 @@ class TrainSession(PythonSession):
 
         super().__init__(config)
 
-    def addTrainAndTest(self, Y, Ytest = None, noise = FixedNoise(), is_scarce = None):
+    def addTrainAndTest(self, Y, Ytest = None, noise = FixedNoise(), is_scarce = True):
         self.setTrain(Y, noise, is_scarce)
 
         if Ytest is not None:
             self.setTest(Ytest)
 
-    def setTrain(self, Y, noise = FixedNoise(), is_scarce = None):
+    def setTrain(self, Y, noise = FixedNoise(), is_scarce = True):
         """Adds a train and optionally a test matrix as input data to this TrainSession
 
         Parameters
@@ -114,12 +119,17 @@ class TrainSession(PythonSession):
 
         """
         
-        if is_scarce is not None:
-            # sparse/scarce
+        if isinstance(Y, np.ndarray):
+            # dense array or matrix
+            super().setTrain(Y, noise)
+        elif sp.issparse(Y):
+            # sparse/scarce scipy.sparse matrix
+            super().setTrain(Y.to_csr(), noise, is_scarce)
+        elif isinstance(Y, SparseTensor):
+            # sparse/scarce scipy.sparse tensor
             super().setTrain(Y, noise, is_scarce)
         else:
-            # dense
-            super().setTrain(Y, noise)
+            raise TypeError("Unsupported type for train: {}. We support numpy.ndarray, scipy.sparce matrix or SparseTensora.".format(Y))
        
     def addSideInfo(self, mode, Y, noise = NoiseConfig(), tol = 1e-6, direct = False):
         """Adds fully known side info, for use in with the macau or macauone prior
@@ -251,5 +261,4 @@ class TrainSession(PythonSession):
            that as built in this `TrainSession`.
 
         """
-        output_file = self.getOutputFilename()
-        return PredictSession(output_file)
+        return PredictSession(self.getSaveName())
