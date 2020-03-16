@@ -19,20 +19,6 @@ public:
       keepRunning = true;
    }
    
-   template <typename DenseType>
-   void setTrainDense(const DenseType &data, const NoiseConfig &nc)
-   {
-      m_config.getTrain().setData(data);
-      m_config.getTrain().setNoiseConfig(nc);
-   }
- 
-   template <typename SparseType>
-   void setTrainSparse(const SparseType &data, const NoiseConfig &nc, bool is_scarce)
-   {
-      m_config.getTrain().setData(data, is_scarce);
-      m_config.getTrain().setNoiseConfig(nc);
-   }
-
    template <typename SparseType>
    void setTest(const SparseType &data)
    {

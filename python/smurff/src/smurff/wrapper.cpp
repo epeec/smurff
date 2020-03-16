@@ -96,12 +96,6 @@ PYBIND11_MODULE(wrapper, m)
         .def(py::init<const smurff::Config &>())
         .def("__str__", &smurff::ISession::infoAsString)
 
-        // add data
-        .def("setTrain", &smurff::PythonSession::setTrainDense<smurff::Matrix>)
-        .def("setTrain", &smurff::PythonSession::setTrainSparse<smurff::SparseMatrix>)
-        .def("setTrain", &smurff::PythonSession::setTrainDense<smurff::DenseTensor>)
-        .def("setTrain", &smurff::PythonSession::setTrainSparse<smurff::SparseTensor>)
-
         .def("setTest", &smurff::PythonSession::setTest<smurff::SparseMatrix>)
         .def("setTest", &smurff::PythonSession::setTest<smurff::SparseTensor>)
         
