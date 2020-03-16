@@ -116,17 +116,8 @@ class TrainSession(PythonSession):
 
         """
         
-        if isinstance(Y, np.ndarray):
-            # dense array or matrix
-            super().setTrain(Y, noise)
-        elif sp.issparse(Y):
-            # sparse/scarce scipy.sparse matrix
-            super().setTrain(Y.tocsr(), noise, is_scarce)
-        elif isinstance(Y, SparseTensor):
-            # sparse/scarce scipy.sparse tensor
-            super().setTrain(Y, noise, is_scarce)
-        else:
-            raise TypeError("Unsupported type for train: {}. We support numpy.ndarray, scipy.sparce matrix or SparseTensora.".format(Y))
+        pos = ([0] * len(Y.shape)) # [ 0, 0, ... ]
+        self.addData(pos, Y, noise, is_scarce)
        
     def addSideInfo(self, mode, Y, noise = NoiseConfig(), tol = 1e-6, direct = False):
         """Adds fully known side info, for use in with the macau or macauone prior
@@ -178,7 +169,7 @@ class TrainSession(PythonSession):
         self.addPropagatedPosterior(mode, mu, Lambda)
 
 
-    def addData(self, pos, Y, is_scarce = False, noise = NoiseConfig()):
+    def addData(self, pos, Y, noise = FixedNoise(), is_scarce = False):
         """Stacks more matrices/tensors next to the main train matrix.
 
         pos : shape
@@ -197,7 +188,17 @@ class TrainSession(PythonSession):
             Noise model to use for `Y`
         
         """
-        self.addAuxData(prepare_auxdata(Y, pos, is_scarce, noise))
+        if isinstance(Y, np.ndarray):
+            # dense array or matrix
+            super().addData(pos, Y, noise)
+        elif sp.issparse(Y):
+            # sparse/scarce scipy.sparse matrix
+            super().addData(pos, Y.tocsr(), noise, is_scarce)
+        elif isinstance(Y, SparseTensor):
+            # sparse/scarce scipy.sparse tensor
+            super().addData(pos, Y, noise, is_scarce)
+        else:
+            raise TypeError("Unsupported type for addData: {}. We support numpy.ndarray, scipy.sparce matrix or SparseTensora.".format(Y))
 
 
     # 
