@@ -41,16 +41,22 @@ class SparseTensor(wrapper.SparseTensor):
             else:
                 self.shape = [data[c].max() + 1 for c in idx_column_names]
 
-            self.columns = [ data[c] for c in idx_column_names ]
-            self.values = data[val_column_names[0]]
-
+            self.columns = [ data[c].to_numpy() for c in idx_column_names ]
+            self.values = data[val_column_names[0]].to_numpy()
         else:
             error_msg = "Unsupported sparse tensor data type: {}".format(data)
             raise ValueError(error_msg)
 
         self.ndim = len(self.shape)
+        for col in self.columns:
+            assert len(col) == len(self.values)
 
         super().__init__(self.shape, self.columns, self.values)
+
+    def __str__(self):
+        return "SparseTensor(shape = " + str(self.shape) + ", nnz: " + str(len(self.values)) + "): \n" + \
+            "\n".join( [ "(" + ",".join([str(c[i]) for  c in self.columns ]) + "): " + str(v) for i, v in enumerate(self.values) ] ) +  \
+        ")"
 
 class FixedNoise(NoiseConfig):
     def __init__(self, precision = 5.0): 
