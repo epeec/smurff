@@ -52,17 +52,18 @@ SideInfoConfig makeSideInfoConfig(const M &data) {
 
 template <class Train, class Test> Config genConfig(const Train &train, const Test &test, std::vector<PriorTypes> priors) {
   Config config;
+  config.setPriorTypes(priors);
   config.setBurnin(50);
   config.setNSamples(50);
   config.setVerbose(0);
   config.setRandomSeed(1234);
   config.setNumThreads(1);
   config.setNumLatent(4);
-  DataConfig train_data_config(train);
-  train_data_config.setNoiseConfig(fixed_ncfg);
-  config.setTrain(train_data_config);
-  config.setTest(DataConfig(test));
-  config.setPriorTypes(priors);
+
+  config.getTrain().setData(train);
+  config.getTrain().setNoiseConfig(fixed_ncfg);
+  config.getTest().setData(test);
+
   return config;
 }
 } // namespace test

@@ -143,15 +143,13 @@ public:
    DataConfig& getTrain() 
    {
       auto &train_config = m_data.at(0);
-      if (!train_config.hasPos()) train_config.setPos(PVec<>{0,0});
+
+      if (!train_config.hasPos()) 
+         train_config.setPos(PVec<>{0,0});
+      else 
+         THROWERROR_ASSERT((train_config.getPos().as_vector() == std::vector<std::int64_t>{0,0}));
+
       return train_config;
-   }
-   
-   DataConfig& setTrain(const DataConfig &c)
-   {
-      getTrain() = c;
-      if (!getTrain().hasPos()) getTrain().setPos(PVec<>{0,0});
-      return getTrain();
    }
    
    const DataConfig &getTest() const
@@ -161,12 +159,6 @@ public:
 
    DataConfig &getTest() 
    {
-      return m_test;
-   }
-
-   DataConfig &setTest(const DataConfig &c) 
-   {
-      m_test = c;
       return m_test;
    }
    
