@@ -16,8 +16,8 @@ void SparseMatrixData::getMuLambda(const SubModel& model, uint32_t mode, int d, 
 
     for (SparseMatrix::InnerIterator it(Y, d); it; ++it) 
     {
-        const auto &row = Vf.row(it.row());
-        auto p = pos(mode, d, it.row());
+        const auto &row = Vf.row(it.col());
+        auto p = pos(mode, d, it.col());
         double noisy_val = ns.sample(model, p, it.value());
         rr.noalias() += row * noisy_val; // rr = rr + (V[m] * y[d]) * alpha
     }
@@ -64,20 +64,22 @@ double SparseMatrixData::sumsq(const SubModel& model) const
 {
    double sumsq = 0.0;
    
+   THROWERROR_ASSERT(Y().IsRowMajor);
    #pragma omp parallel for schedule(guided) reduction(+:sumsq)
-   for(int c = 0; c < Y().outerSize(); ++c)
+   for(int r = 0; r < Y().outerSize(); ++r) // rows
    {
-      int r = 0;
-      for (SparseMatrix::InnerIterator it(Y(), c); it; ++it)
+      int c = 0;
+      for (SparseMatrix::InnerIterator it(Y(), r); it; ++it) // cols
       {
-         for(; r < it.row(); r++) //handle implicit zeroes
+         for(; c < it.col(); c++) //handle implicit zeroes
             sumsq += std::pow(model.predict({r, c}), 2);
 
+         // actual non-zero
          sumsq += std::pow(model.predict({r, c}) - it.value(), 2);
-         r++;
+         c++;
       }
 
-      for(; r < Y().rows(); r++) //handle implicit zeroes
+      for(; c < Y().cols(); c++) //handle implicit zeroes
          sumsq += std::pow(model.predict({r, c}), 2);
    }
 
