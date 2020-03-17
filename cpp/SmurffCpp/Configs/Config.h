@@ -142,6 +142,8 @@ public:
 
    DataConfig& getTrain() 
    {
+      if (m_data.size() == 0) m_data.resize(1);
+
       auto &train_config = m_data.at(0);
 
       if (!train_config.hasPos()) 

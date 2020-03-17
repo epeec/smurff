@@ -151,8 +151,6 @@ int Config::RANDOM_SEED_DEFAULT_VALUE = 0;
 
 Config::Config()
 {
-   m_data.resize(1); // place for train data
-
    m_model_init_type = Config::INIT_MODEL_DEFAULT_VALUE;
 
    m_restore_name.clear();
