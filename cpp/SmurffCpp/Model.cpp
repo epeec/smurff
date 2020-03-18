@@ -257,6 +257,8 @@ void Model::restore(const SaveState &sf, int skip_mode)
 std::ostream& Model::info(std::ostream &os, std::string indent) const
 {
    os << indent << "Num-latents: " << m_num_latent << std::endl;
+   os << indent << "Dimensions: " << m_dims << std::endl;
+
    return os;
 }
 
