@@ -195,7 +195,7 @@ void Model::save(SaveState &sf) const
 
       if (m_collect_aggr && sf.saveAggr())
       {
-         double n            = m_num_aggr.at(m);
+         int n               = m_num_aggr.at(m);
          const Matrix &Usum  = m_aggr_sum.at(m);
          const Matrix &Uprod = m_aggr_dot.at(m);
          sf.putPostMuLambda(m, n, Usum, Uprod);
@@ -210,6 +210,10 @@ void Model::restore(const SaveState &sf, int skip_mode)
    m_dims = PVec<>(nmodes);
    m_factors.resize(nmodes);
 
+   m_num_aggr.resize(nmodes);
+   m_aggr_sum.resize(nmodes);
+   m_aggr_dot.resize(nmodes);
+
    for (std::uint64_t i = 0; i < nmodes; ++i)
    {
       if ((int)i != skip_mode)
@@ -221,7 +225,10 @@ void Model::restore(const SaveState &sf, int skip_mode)
 
          if (sf.hasPostMuLambda(i))
          {
-
+            int        &n = m_num_aggr.at(i);
+            Matrix  &Usum = m_aggr_sum.at(i);
+            Matrix &Uprod = m_aggr_dot.at(i);
+            sf.readPostMuLambda(i, n, Usum, Uprod);
          }
       }
       else

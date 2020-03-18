@@ -128,7 +128,7 @@ bool SaveState::hasPostMuLambda(std::uint64_t index) const
    return hasDataSet(LATENTS_SEC_TAG, POST_NUM_PREFIX + std::to_string(index));
 }
 
-void SaveState::readPostMuLambda(std::uint64_t index, int &num, Matrix &sum, Matrix &dot)
+void SaveState::readPostMuLambda(std::uint64_t index, int &num, Matrix &sum, Matrix &dot) const
 {
    m_group.getGroup(LATENTS_SEC_TAG).getAttribute(POST_NUM_PREFIX + std::to_string(index)).read(num);
    read(LATENTS_SEC_TAG, POST_SUM_PREFIX + std::to_string(index), sum);

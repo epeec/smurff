@@ -43,7 +43,7 @@ namespace smurff {
       void readModel(std::uint64_t index, Matrix &) const;
       void readMu(std::uint64_t index, Vector &) const;
       void readLinkMatrix(std::uint32_t index, Matrix &) const;
-      void readPostMuLambda(std::uint64_t index, int &, Matrix &, Matrix &);
+      void readPostMuLambda(std::uint64_t index, int &, Matrix &, Matrix &) const;
 
       void getPredState(double &rmse_avg, double &rmse_1sample, double &auc_avg, double &auc_1sample, int &sample_iter, int &burnin_iter) const;
 
