@@ -36,14 +36,15 @@ namespace smurff {
 
    public:
       bool hasModel(std::uint64_t index) const;
-      bool hasPostMuLambda(std::uint64_t index) const;
+      bool hasAggr(std::uint64_t index) const;
       bool hasPred() const;
 
 
       void readModel(std::uint64_t index, Matrix &) const;
       void readMu(std::uint64_t index, Vector &) const;
       void readLinkMatrix(std::uint32_t index, Matrix &) const;
-      void readPostMuLambda(std::uint64_t index, int &, Matrix &, Matrix &) const;
+      void readAggr(std::uint64_t index, int &, Matrix &, Matrix &) const;
+      void readPostMuLambda(std::uint64_t index, Matrix &, Matrix &) const;
 
       void getPredState(double &rmse_avg, double &rmse_1sample, double &auc_avg, double &auc_1sample, int &sample_iter, int &burnin_iter) const;
 
@@ -52,7 +53,8 @@ namespace smurff {
       void readPredVar(Matrix &) const;
 
       void putModel(const std::vector<Matrix> &);
-      void putPostMuLambda(std::uint64_t index, const int, const Matrix &, const Matrix &);
+      void putAggr(std::uint64_t index, const int, const Matrix &, const Matrix &);
+      void putPostMuLambda(std::uint64_t index, const Matrix &, const Matrix &);
 
       void putMu(std::uint64_t index, const Matrix &);
       void putLinkMatrix(std::uint64_t mode, const Matrix &);

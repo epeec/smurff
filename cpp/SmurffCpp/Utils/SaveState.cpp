@@ -37,6 +37,8 @@
 #define POST_NUM_PREFIX "post_num_"
 #define POST_SUM_PREFIX "post_sum_"
 #define POST_DOT_PREFIX "post_dot_"
+#define POST_MU_PREFIX "post_mu_"
+#define POST_LAMBDA_PREFIX "post_lambda_"
 
 #define CHECKPOINT_PREFIX "checkpoint_"
 #define SAMPLE_PREFIX "sample_"
@@ -123,24 +125,37 @@ void SaveState::putMu(std::uint64_t index, const Matrix &M)
    write(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), M);
 }
 
-bool SaveState::hasPostMuLambda(std::uint64_t index) const
+bool SaveState::hasAggr(std::uint64_t index) const
 {
    return hasDataSet(LATENTS_SEC_TAG, POST_NUM_PREFIX + std::to_string(index));
 }
 
-void SaveState::readPostMuLambda(std::uint64_t index, int &num, Matrix &sum, Matrix &dot) const
+void SaveState::readAggr(std::uint64_t index, int &num, Matrix &sum, Matrix &dot) const
 {
    m_group.getGroup(LATENTS_SEC_TAG).getAttribute(POST_NUM_PREFIX + std::to_string(index)).read(num);
    read(LATENTS_SEC_TAG, POST_SUM_PREFIX + std::to_string(index), sum);
    read(LATENTS_SEC_TAG, POST_DOT_PREFIX + std::to_string(index), dot);
 }
 
-void SaveState::putPostMuLambda(std::uint64_t index, int num, const Matrix &sum, const Matrix &dot)
+void SaveState::putAggr(std::uint64_t index, int num, const Matrix &sum, const Matrix &dot)
 {
    m_group.getGroup(LATENTS_SEC_TAG).createAttribute(POST_NUM_PREFIX + std::to_string(index), num);
    write(LATENTS_SEC_TAG, POST_SUM_PREFIX + std::to_string(index), sum);
    write(LATENTS_SEC_TAG, POST_DOT_PREFIX + std::to_string(index), dot);
 }
+
+void SaveState::readPostMuLambda(std::uint64_t index, Matrix &mu, Matrix &Lambda) const
+{
+   read(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
+   read(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
+}
+
+void SaveState::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda)
+{
+   write(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
+   write(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
+}
+
 
 bool SaveState::hasPred() const
 {

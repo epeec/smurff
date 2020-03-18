@@ -195,10 +195,30 @@ void Model::save(SaveState &sf) const
 
       if (m_collect_aggr && sf.saveAggr())
       {
-         int n               = m_num_aggr.at(m);
-         const Matrix &Usum  = m_aggr_sum.at(m);
+         int n = m_num_aggr.at(m);
+         const Matrix &Usum = m_aggr_sum.at(m);
          const Matrix &Uprod = m_aggr_dot.at(m);
-         sf.putPostMuLambda(m, n, Usum, Uprod);
+         if (sf.isCheckpoint())
+            sf.putAggr(m, n, Usum, Uprod);
+         else
+         {
+            // compute mean and precision (inverse of the covariance)
+            Matrix mu = Matrix::Zero(Usum.rows(), Usum.cols());
+            Matrix prec = Matrix::Zero(Uprod.rows(), Uprod.cols());
+
+            // calculate real mu and Lambda
+            for (int i = 0; i < U(m).rows(); i++)
+            {
+               Vector sum = Usum.row(i);
+               Matrix prod = Eigen::Map<const Matrix>(Uprod.row(i).data(), nlatent(), nlatent());
+               Matrix prec_i = ((prod - (sum.transpose() * sum / n)) / (n - 1)).inverse();
+
+               prec.row(i) = Eigen::Map<Vector>(prec_i.data(), nlatent() * nlatent());
+               mu.row(i) = sum / n;
+            }
+
+            sf.putPostMuLambda(m, mu, prec);
+         }
       }
    }
 }
@@ -223,12 +243,12 @@ void Model::restore(const SaveState &sf, int skip_mode)
          m_dims.at(i) = U.rows();
          m_num_latent = U.cols();
 
-         if (sf.hasPostMuLambda(i))
+         if (sf.hasAggr(i))
          {
             int        &n = m_num_aggr.at(i);
             Matrix  &Usum = m_aggr_sum.at(i);
             Matrix &Uprod = m_aggr_dot.at(i);
-            sf.readPostMuLambda(i, n, Usum, Uprod);
+            sf.readAggr(i, n, Usum, Uprod);
          }
       }
       else
