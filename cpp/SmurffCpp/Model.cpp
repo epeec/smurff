@@ -245,7 +245,7 @@ void Model::restore(const SaveState &sf, int skip_mode)
    m_link_matrices.resize(nmodes);
    m_mus.resize(nmodes);
 
-   for(int i=0; i<nmodes; ++i)
+   for(unsigned i=0; i<nmodes; ++i)
    {
       sf.readLinkMatrix(i, m_link_matrices.at(i));
       sf.readMu(i, m_mus.at(i));
