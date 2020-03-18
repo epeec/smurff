@@ -119,7 +119,7 @@ class TrainSession(PythonSession):
         pos = ([0] * len(Y.shape)) # [ 0, 0, ... ]
         self.addData(pos, Y, noise, is_scarce)
        
-    def addSideInfo(self, mode, Y, noise = NoiseConfig(), tol = 1e-6, direct = False):
+    def addSideInfo(self, mode, Y, noise = FixedNoise(), tol = 1e-6, direct = True):
         """Adds fully known side info, for use in with the macau or macauone prior
 
         mode : int
@@ -143,7 +143,8 @@ class TrainSession(PythonSession):
             Tolerance for the CG solver.
 
         """
-        super().addSideInfoConfig(mode, Y, noise, tol, direct)
+        print ("noise = ", noise)
+        super().addSideInfo(mode, Y, noise, tol, direct)
 
     def addPropagatedPosterior(self, mode, mu, Lambda):
         """Adds mu and Lambda from propagated posterior
