@@ -110,6 +110,7 @@ PYBIND11_MODULE(wrapper, m)
         .def("addPropagatedPosterior", &smurff::PythonSession::addPropagatedPosterior)
 
         // get result functions
+        .def("getSaveName", [](const smurff::PythonSession &s) { return s.getConfig().getSaveName(); })
         .def("getStatus", &smurff::TrainSession::getStatus)
         .def("getRmseAvg", &smurff::TrainSession::getRmseAvg)
         .def("getTestPredictions", [](const smurff::PythonSession &s) { return s.getResult().m_predictions; })
