@@ -143,7 +143,6 @@ class TrainSession(PythonSession):
             Tolerance for the CG solver.
 
         """
-        print ("noise = ", noise)
         super().addSideInfo(mode, Y, noise, tol, direct)
 
     def addPropagatedPosterior(self, mode, mu, Lambda):
