@@ -23,6 +23,7 @@ class SparseTensor(wrapper.SparseTensor):
         if type(data) == SparseTensor:
             self.columns = data.columns
             self.values = data.values
+            self.data = data.data
 
             if shape is not None:
                 self.shape = shape
@@ -49,6 +50,8 @@ class SparseTensor(wrapper.SparseTensor):
             raise ValueError(error_msg)
 
         self.ndim = len(self.shape)
+        self.nnz = len(self.values)
+
         for col in self.columns:
             assert len(col) == len(self.values)
 
