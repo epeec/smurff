@@ -132,7 +132,7 @@ bool PredictSession::step()
 void PredictSession::save()
 {
     //save this iteration
-    SaveState saveState = m_pred_savefile->createSampleStep(m_iter);
+    SaveState saveState = m_pred_savefile->createSampleStep(m_iter, false);
 
     if (getConfig().getVerbose())
     {

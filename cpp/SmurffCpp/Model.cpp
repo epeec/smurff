@@ -193,7 +193,7 @@ void Model::save(SaveState &sf) const
       sf.putLinkMatrix(m, m_link_matrices.at(m));
       sf.putMu(m, m_mus.at(m));
 
-      if (m_collect_aggr && m_save_aggr)
+      if (m_collect_aggr && sf.saveAggr())
       {
          double n = m_num_aggr.at(m);
 

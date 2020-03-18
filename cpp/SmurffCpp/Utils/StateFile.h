@@ -33,9 +33,8 @@ public:
    void restoreConfig(Config& config);
 
 public:
-   SaveState createSampleStep(std::int32_t isample);
-   SaveState createCheckpointStep(std::int32_t isample);
-   SaveState createStep(std::int32_t isample, bool checkpoint);
+   SaveState createSampleStep(std::int32_t isample, bool save_aggr);
+   SaveState createStep(std::int32_t isample, bool checkpoint, bool save_aggr);
 
 public:
    void removeOldCheckpoints();

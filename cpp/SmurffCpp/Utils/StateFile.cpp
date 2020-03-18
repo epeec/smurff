@@ -48,19 +48,14 @@ void StateFile::restoreConfig(Config& config)
    config.restore(h5_cfg);
 }
 
-SaveState StateFile::createSampleStep(std::int32_t isample)
+SaveState StateFile::createSampleStep(std::int32_t isample, bool save_aggr)
 {
-   return createStep(isample, false);
+   return createStep(isample, false, save_aggr);
 }
 
-SaveState StateFile::createCheckpointStep(std::int32_t isample)
+SaveState StateFile::createStep(std::int32_t isample, bool checkpoint, bool save_aggr)
 {
-   return createStep(isample, true);
-}
-
-SaveState StateFile::createStep(std::int32_t isample, bool checkpoint)
-{
-   return SaveState(m_h5, isample, checkpoint);
+   return SaveState(m_h5, isample, checkpoint, save_aggr);
 }
 
 void StateFile::removeOldCheckpoints()

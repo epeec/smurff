@@ -41,11 +41,12 @@
 
 namespace smurff {
 
-SaveState::SaveState(h5::File file, std::int32_t isample, bool checkpoint)
+SaveState::SaveState(h5::File file, std::int32_t isample, bool checkpoint, bool save_aggr)
    : HDF5Group(file.createGroup(std::string(checkpoint ? CHECKPOINT_PREFIX : SAMPLE_PREFIX) + std::to_string(isample)))
    , m_file(file) 
    , m_isample(isample)
    , m_checkpoint(checkpoint)
+   , m_save_aggr(save_aggr)
 {
    m_group.createAttribute<bool>(IS_CHECKPOINT_TAG, m_checkpoint);
    m_group.createAttribute<int>(NUMBER_TAG, m_isample);
@@ -120,6 +121,12 @@ void SaveState::putMu(std::uint64_t index, const Matrix &M)
    write(LINK_MATRICES_SEC_TAG, MU_PREFIX + std::to_string(index), M);
 }
 
+void SaveState::readPostMuLambda(std::uint64_t index, Matrix &mu, Matrix &Lambda)
+{
+   read(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
+   read(LATENTS_SEC_TAG, POST_LAMBDA_PREFIX + std::to_string(index), Lambda);
+}
+
 void SaveState::putPostMuLambda(std::uint64_t index, const Matrix &mu, const Matrix &Lambda)
 {
    write(LATENTS_SEC_TAG, POST_MU_PREFIX + std::to_string(index), mu);
@@ -184,6 +191,11 @@ std::int32_t SaveState::getIsample() const
 bool SaveState::isCheckpoint() const
 {
    return m_checkpoint;
+}
+
+bool SaveState::saveAggr() const
+{
+   return m_save_aggr;
 }
 
 } // end namespace

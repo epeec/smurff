@@ -120,7 +120,6 @@ public:
    // output to file
    void save(SaveState &sf) const;
    bool m_save_model = true;
-   bool m_save_aggr = false;
    void restore(const SaveState &sf, int skip_mode = -1);
 
    std::ostream& info(std::ostream &os, std::string indent) const;

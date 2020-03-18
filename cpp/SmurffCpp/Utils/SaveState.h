@@ -23,11 +23,11 @@ namespace smurff {
       h5::File m_file;
       std::int32_t m_isample;
       bool m_checkpoint;
-      bool m_final;
+      bool m_save_aggr;
 
    public:
       //this constructor should be used to create a step file on a first run of trainSession
-      SaveState(h5::File file, std::int32_t isample, bool checkpoint);
+      SaveState(h5::File file, std::int32_t isample, bool checkpoint, bool final);
 
       //this constructor should be used to  open existing step file when previous trainSession is continued
       SaveState(h5::File file, h5::Group group);
@@ -41,6 +41,7 @@ namespace smurff {
       void readModel(std::uint64_t index, Matrix &) const;
       void readMu(std::uint64_t index, Vector &) const;
       void readLinkMatrix(std::uint32_t index, Matrix &) const;
+      void readPostMuLambda(std::uint64_t index, Matrix &, Matrix &);
 
       void getPredState(double &rmse_avg, double &rmse_1sample, double &auc_avg, double &auc_1sample, int &sample_iter, int &burnin_iter) const;
 
@@ -58,9 +59,10 @@ namespace smurff {
       void putPredAvgVar(const SparseMatrix &, const SparseMatrix &, const SparseMatrix &);
 
    public:
-      unsigned getNModes() const;
+      unsigned     getNModes() const;
       std::int32_t getIsample() const;
-      bool isCheckpoint() const;
-      std::string getName() const;
+      bool         isCheckpoint() const;
+      bool         saveAggr() const;
+      std::string  getName() const;
    };
 }

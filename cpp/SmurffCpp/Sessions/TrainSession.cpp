@@ -217,7 +217,8 @@ void TrainSession::save()
 
 void TrainSession::saveInternal(int iteration, bool checkpoint)
 {
-    SaveState saveState = m_stateFile->createStep(iteration, checkpoint);
+    bool final = iteration == getConfig().getNSamples();
+    SaveState saveState = m_stateFile->createStep(iteration, checkpoint, final || checkpoint);
 
     if (getConfig().getVerbose())
     {
