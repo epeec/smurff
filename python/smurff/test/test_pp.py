@@ -13,7 +13,7 @@ verbose = 0
 # Taken from BMF_PP/postprocess_posterior_samples
 def calc_posteriorMeanPrec(predict_session, axis):
     # collect U/V for all samples
-    Us = [ s.latents[axis] for s in predict_session.samples() ]
+    Us = [ s.latents()[axis] for s in predict_session.samples ]
 
     # stack them and compute mean
     Ustacked = np.stack(Us)
