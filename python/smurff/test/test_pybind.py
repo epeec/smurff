@@ -5,7 +5,7 @@ import scipy.sparse as sp
 
 import smurff
 
-logging.getLogger().setLevel(logging.INFO)
+# logging.getLogger().setLevel(logging.INFO)
 
 trainSession = smurff.TrainSession(priors = ["normal", "normal"])
 
