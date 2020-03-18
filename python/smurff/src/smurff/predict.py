@@ -16,10 +16,10 @@ class Sample:
         return self.h5_group["predictions"].attrs
 
     def predAvg(self):
-        return self.h5_group["predictions/pred_avg"]
+        return self.h5_group["predictions/pred_avg"][()]
 
     def predVar(self):
-        return self.h5_group["predictions/pred_var"]
+        return self.h5_group["predictions/pred_var"][()]
 
     def lookup_modes(self, templ):
         return [ self.h5_group[templ % i] for i in range(self.nmodes) ]
