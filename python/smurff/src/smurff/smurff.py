@@ -1,14 +1,15 @@
 from .trainsession import TrainSession
+from .helper import FixedNoise
 
 class SmurffSession(TrainSession):
-    def __init__(self, Ytrain, priors, is_scarce = True, Ytest=None, side_info=None, direct=False, **args):
-        TrainSession.__init__(self, priors=priors, **args)
+    def __init__(self, Ytrain, priors, is_scarce = True, Ytest=None, side_info=None, direct=False, *args, **kwargs):
+        TrainSession.__init__(self, priors=priors, *args, **kwargs)
         self.addTrainAndTest(Ytrain, Ytest, is_scarce = is_scarce)
 
         if side_info is not None:
-            assert len(side_info) == self.nmodes
-            for mode in range(self.nmodes):
-                si = side_info[mode]
+            nmodes = len(Ytrain.shape)
+            assert len(side_info) == nmodes
+            for mode, si in enumerate(side_info):
                 if si is not None:
                     self.addSideInfo(mode, si, direct=direct)
 
@@ -39,7 +40,7 @@ class MacauSession(SmurffSession):
              Extra arguments are passed to the :class:`TrainSession`
     """
 
-    def __init__(self,  Ytrain, is_scarce = True, Ytest=None, side_info=None, univariate=False, direct=False, **args):
+    def __init__(self,  Ytrain, is_scarce = True, Ytest=None, side_info=None, univariate=False, direct=False, *args, **kwargs):
         nmodes = len(Ytrain.shape)
         priors = ['normal'] * nmodes
 
@@ -52,7 +53,7 @@ class MacauSession(SmurffSession):
         if univariate:
             priors = [p + "one" for p in priors]
 
-        SmurffSession.__init__(self, Ytrain, priors, is_scarce, Ytest, side_info, direct, **args)
+        SmurffSession.__init__(self, Ytrain, priors, is_scarce, Ytest, side_info, direct, *args, **kwargs)
 
 
 class BPMFSession(MacauSession):
@@ -72,22 +73,22 @@ class BPMFSession(MacauSession):
         \*\*args:
             Extra arguments are passed to the :class:`TrainSession`
     """
-    def __init__(self, Ytrain, is_scarce = True, Ytest=None, univariate=False, **args):
-         MacauSession.__init__(self, Ytrain, is_scarce, Ytest, None, univariate, **args)
+    def __init__(self, Ytrain, is_scarce = True, Ytest=None, univariate=False, *args, **kwargs):
+         MacauSession.__init__(self, Ytrain, is_scarce, Ytest, None, univariate, *args, **kwargs)
 
 
 class GFASession(SmurffSession):
-    def __init__(self, Views, Ytest=None, **args):
+    def __init__(self, Views, Ytest=None, *args, noise = FixedNoise(), **kwargs):
         Ytrain = Views[0]
         nmodes = len(Ytrain.shape)
         assert nmodes == 2
         priors = ['normal', 'spikeandslab']
 
-        TrainSession.__init__(self, priors=priors, **args)
-        self.addTrainAndTest(Ytrain, Ytest)
+        TrainSession.__init__(self, priors=priors, *args, **kwargs)
+        self.addTrainAndTest(Ytrain, Ytest, noise = noise)
 
         for p in range(1, len(Views)):
-            self.addData([0, p], Views[p])
+            self.addData([0, p], Views[p], noise = noise)
 
 # old API -- for compatibility reasons
 
