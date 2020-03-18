@@ -14,6 +14,6 @@ trainSession.setTrain(Y)
 trainSession.setTest(sp.csr_matrix(Y))
 
 results = trainSession.run()
-for r in results:
-    print(r)
+# for r in results:
+#     print(r)
 
