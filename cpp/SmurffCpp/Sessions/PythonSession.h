@@ -29,6 +29,7 @@ public:
    {
       auto &si = m_config.addSideInfo(mode);
       si.setData(data);
+      si.setNoiseConfig(nc);
       si.setDirect(direct);
       si.setTol(tol);
    }
@@ -37,6 +38,7 @@ public:
    {
       auto &si = m_config.addSideInfo(mode);
       si.setData(data, false);
+      si.setNoiseConfig(nc);
       si.setDirect(direct);
       si.setTol(tol);
    }
