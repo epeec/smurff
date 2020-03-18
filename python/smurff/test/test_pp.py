@@ -20,11 +20,11 @@ def calc_posteriorMeanPrec(predict_session, axis):
     mu = np.mean(Ustacked, axis = 0)
 
     # Compute Lambdaariance, first unstack in different way
-    Uunstacked = np.squeeze(np.split(Ustacked, Ustacked.shape[2], axis = 2))
+    Uunstacked = np.squeeze(np.split(Ustacked, Ustacked.shape[1], axis = 1))
     Uprec = [ np.linalg.inv(np.cov(u, rowvar = False)) for u in Uunstacked ]
 
-    # restack, shape: (K, K, N)
-    Uprecstacked = np.stack(Uprec, axis = 2)
+    # restack, shape: (N, K, K)
+    Uprecstacked = np.stack(Uprec, axis = 0)
 
     return mu, Uprecstacked
 

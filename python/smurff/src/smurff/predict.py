@@ -6,10 +6,11 @@ import h5sparse
 from .result import Prediction
 
 class Sample:
-    def __init__(self, h5_file, name):
+    def __init__(self, h5_file, name, num_latent):
         self.h5_group = h5_file[name]
         self.no = int(self.h5_group.attrs["number"])
         self.nmodes = h5_file["config/options"].attrs['num_priors']
+        self.num_latent = num_latent
 
     def predStats(self):
         # rmse , auc
@@ -21,8 +22,11 @@ class Sample:
     def predVar(self):
         return self.h5_group["predictions/pred_var"][()]
 
+    def lookup_mode(self, templ, mode):
+        return self.h5_group[templ % mode][()]
+
     def lookup_modes(self, templ):
-        return [ self.h5_group[templ % i] for i in range(self.nmodes) ]
+        return [ self.lookup_mode(templ, i) for i in range(self.nmodes) ]
 
     def latents(self):
         return self.lookup_modes("latents/latents_%d")
@@ -36,11 +40,13 @@ class Sample:
     def beta_shape(self):
         return [b.shape[1] for b in self.betas()]
 
-    def postMus(self):
-        pass
+    def postMuLambda(self, mode):
+        mu = self.lookup_mode("latents/post_mu_%d", mode)
+        Lambda = self.lookup_mode("latents/post_lambda_%d", mode)
+        assert Lambda.shape[1] == self.num_latent * self.num_latent
+        Lambda = Lambda.reshape(Lambda.shape[0], self.num_latent, self.num_latent)
 
-    def postLambdas(self):
-        pass
+        return mu, Lambda
 
     def predict(self, coords_or_sideinfo=None):
         # for one prediction: einsum(U[:,coords[0]], [0], U[:,coords[1]], [0], ...)
@@ -101,7 +107,7 @@ class PredictSession:
             if not name.startswith("sample_"):
                 continue
 
-            sample = Sample(self.h5_file, name)
+            sample = Sample(self.h5_file, name, self.num_latent)
             self.samples.append(sample)
             self.beta_shape = sample.beta_shape()
 
@@ -113,6 +119,9 @@ class PredictSession:
 
     def lastSample(self):
         return self.samples[-1]
+
+    def postMuLambda(self, mode):
+        return self.lastSample().postMuLambda(mode)
 
     def predictionsYTest(self):
         return self.lastSample().predAvg(), self.lastSample().predVar()
