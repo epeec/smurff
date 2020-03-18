@@ -240,12 +240,12 @@ std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, c
 }
 
 // Normal(0, Lambda^-1) for nn columns
-Matrix MvNormal(const Matrix & Lambda, int nrows)
+Matrix MvNormal(const Matrix & Lambda, int num_samples)
 {
-   int ncols = Lambda.rows(); // Dimensionality (rows)
+   int ndims = Lambda.rows(); // Dimensionality 
    Eigen::LLT<Matrix> chol(Lambda);
 
-   Matrix r(nrows, ncols);
+   Matrix r(num_samples, ndims);
    rand_normal(r);
    Matrix ret = chol.matrixU().solve(r.transpose()).transpose();
 
@@ -261,9 +261,9 @@ Matrix MvNormal(const Matrix & Lambda, int nrows)
 
 }
 
-Matrix MvNormal(const Matrix & Lambda, const Vector & mean, int nrows)
+Matrix MvNormal(const Matrix & Lambda, const Vector & mean, int num_samples)
 {
-   Matrix r = MvNormal(Lambda, nrows);
+   Matrix r = MvNormal(Lambda, num_samples);
    r.rowwise() += mean;
   
 #ifdef TEST_MVNORMAL
