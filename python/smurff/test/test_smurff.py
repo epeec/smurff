@@ -131,7 +131,7 @@ class TestSmurff(unittest.TestCase):
 
     def test_too_many_sides(self):
         Y = scipy.sparse.rand(10, 20, 0.2)
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(AssertionError):
             smurff.smurff(Y,
                           priors=['normal', 'normal', 'normal'],
                           side_info=[None, None, None],
