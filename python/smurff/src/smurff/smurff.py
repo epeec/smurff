@@ -8,7 +8,7 @@ class SmurffSession(TrainSession):
 
         if side_info is not None:
             nmodes = len(Ytrain.shape)
-            assert len(side_info) == nmodes
+            assert len(side_info) == nmodes, "Too many side info, got %d, expected %d" % (len(side_info), nmodes)
             for mode, si in enumerate(side_info):
                 if si is not None:
                     self.addSideInfo(mode, si, direct=direct)
