@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 #include <pybind11/eigen.h>
+#include <pybind11/operators.h>
 
 
 #include <SmurffCpp/Types.h>
@@ -66,6 +67,8 @@ PYBIND11_MODULE(wrapper, m)
 
     py::class_<smurff::ResultItem>(m, "ResultItem", "Predictions for a single point in the matrix/tensor")
         .def("__str__", &smurff::ResultItem::to_string)
+        .def(py::self < py::self)
+        // we want a tuple, not a list
         .def_property_readonly("coords",  [](const smurff::ResultItem &r) { 
             py::tuple c(r.coords.size());
             for (unsigned i=0; i<r.coords.size(); ++i) c[i] = r.coords[i];
