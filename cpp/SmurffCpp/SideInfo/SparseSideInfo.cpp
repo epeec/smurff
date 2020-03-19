@@ -102,7 +102,7 @@ Vector SparseSideInfo::col_square_sum()
 void SparseSideInfo::At_mul_Bt(Vector& Y, const int row, Matrix& B)
 {
     COUNTER("At_mul_Bt");
-    Y = Ft.block(row, 0, row + 1, Ft.cols()) * B;
+    Y = Ft.row(row) * B;
 }
 
 // computes Z += A[:,row] * b', where a and b are vectors
