@@ -64,7 +64,8 @@ class Sample:
                 # if side_info was specified for this dimension, we predict for this side_info
                 try:  # try to compute sideinfo * beta using dot
                     # compute latent vector from side_info
-                    uhat = c.dot(self.betas[m]).transpose()
+                    uhat = c.dot(self.betas()[m]).transpose()
+                    mu = np.squeeze(mu)
                     uhat = np.squeeze(uhat) 
                     operands += [uhat + mu, [0]]
                 except AttributeError:  # assume it is a coord
