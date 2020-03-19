@@ -36,7 +36,7 @@ class TestPredictSession(unittest.TestCase):
         train_session = self.run_train_session()
         predict_session = train_session.makePredictSession()
 
-        p1 = sorted(train_session.getTestPredictions(), key=lambda x: x.coords)
+        p1 = sorted(train_session.getTestPredictions())
         p2 = sorted(predict_session.predict_some(self.Ytest))
 
         one = p1[0]

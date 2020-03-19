@@ -109,8 +109,8 @@ class TestBPMF(unittest.TestCase):
                                               seed=1234)
 
         # Transfrom SMURFF results to dictionary of coords and predicted values
-        sparse_matrix_predictions.sort(key=lambda x: x.coords)
-        sparse_tensor_predictions.sort(key=lambda x: x.coords)
+        sparse_matrix_predictions.sort()
+        sparse_tensor_predictions.sort()
 
         self.assertEqual(len(sparse_matrix_predictions), len(sparse_tensor_predictions))
         for m, t in zip(sparse_matrix_predictions, sparse_tensor_predictions):
@@ -162,8 +162,8 @@ class TestBPMF(unittest.TestCase):
                                               seed=1234)
 
         # Sort and compare coords and predicted values
-        sparse_matrix_predictions.sort(key=lambda x: x.coords)
-        sparse_tensor_predictions.sort(key=lambda x: x.coords)
+        sparse_matrix_predictions.sort()
+        sparse_tensor_predictions.sort()
 
         self.assertEqual(len(sparse_matrix_predictions), len(sparse_tensor_predictions))
         for m, t in zip(sparse_matrix_predictions, sparse_tensor_predictions):
