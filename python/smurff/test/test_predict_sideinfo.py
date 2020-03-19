@@ -25,7 +25,7 @@ class TestPredictSession(unittest.TestCase):
 
         trainSession = smurff.TrainSession(priors = priors, num_latent=32,
                 burnin=10, nsamples=15, verbose=verbose,
-                save_freq = 1)
+                save_freq = 1, save_name=smurff.helper.temp_savename())
 
         trainSession.addTrainAndTest(self.Ytrain, self.Ytest)
         trainSession.addSideInfo(0, self.side_info, direct=True)
