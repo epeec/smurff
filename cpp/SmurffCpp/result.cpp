@@ -103,7 +103,7 @@ std::shared_ptr<const SparseMatrix> Result::toMatrix(const Accessor &acc) const
    std::vector<Eigen::Triplet<smurff::float_type>> triplets;
 
    for (const auto &p : m_predictions)
-      triplets.push_back({ p.coords.at(0), p.coords.at(1), acc(p) });
+      triplets.push_back({ (Eigen::Index)p.coords.at(0), (Eigen::Index)p.coords.at(1), acc(p) });
    
    ret->setFromTriplets(triplets.begin(), triplets.end());
    return ret;
