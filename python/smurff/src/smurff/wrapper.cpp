@@ -66,7 +66,11 @@ PYBIND11_MODULE(wrapper, m)
 
     py::class_<smurff::ResultItem>(m, "ResultItem", "Predictions for a single point in the matrix/tensor")
         .def("__str__", &smurff::ResultItem::to_string)
-        .def_property_readonly("coords",  [](const smurff::ResultItem &r) { return r.coords.as_vector(); })
+        .def_property_readonly("coords",  [](const smurff::ResultItem &r) { 
+            py::tuple c(r.coords.size());
+            for (unsigned i=0; i<r.coords.size(); ++i) c[i] = r.coords[i];
+            return c;
+        })
         .def_readonly("val", &smurff::ResultItem::val)
         .def_readonly("pred_1sample", &smurff::ResultItem::pred_1sample)
         .def_readonly("pred_avg", &smurff::ResultItem::pred_avg)

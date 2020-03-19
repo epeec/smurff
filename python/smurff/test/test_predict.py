@@ -32,7 +32,7 @@ class TestPredictSession(unittest.TestCase):
         train_session = self.run_train_session()
         predict_session = train_session.makePredictSession()
 
-        p1 = sorted(train_session.getTestPredictions())
+        p1 = sorted(train_session.getTestPredictions(), key=lambda x: x.coords)
         p2 = sorted(predict_session.predict_some(self.Ytest))
         p3 = predict_session.predict_one(p1[0].coords, p1[0].val)
         p4 = predict_session.predict_all()
