@@ -64,9 +64,13 @@ class CMakeBuild(build_ext):
         build_args = ['--config', cfg] + ext.extra_build_args
         subprocess.check_call(['cmake', '--build', '.' ] + build_args, cwd=self.build_temp)
 
+        if install_binaries:
+            subprocess.check_call(['cmake', '--install', '.' ], cwd=self.build_temp)
+
 
 extra_cmake_args = ''
 extra_build_args = ''
+install_binaries = False
 
 if "--extra-cmake-args" in sys.argv:
     index = sys.argv.index('--extra-cmake-args')
@@ -77,6 +81,13 @@ if "--extra-build-args" in sys.argv:
     index = sys.argv.index('--extra-build-args')
     sys.argv.pop(index)
     extra_build_args = sys.argv.pop(index)
+
+try:
+    index = sys.argv.index('--install-binaries')
+    sys.argv.pop(index)
+    install_binaries = True
+except ValueError:
+    pass
 
 setup(
     name = 'smurff',
