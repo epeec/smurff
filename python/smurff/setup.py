@@ -65,8 +65,7 @@ class CMakeBuild(build_ext):
         subprocess.check_call(['cmake', '--build', '.' ] + build_args, cwd=self.build_temp)
 
         if install_binaries:
-            subprocess.check_call(['cmake', '--install', '.' ], cwd=self.build_temp)
-
+            subprocess.check_call(['cmake', '--build', '.', '--target', 'install'] + build_args, cwd=self.build_temp)
 
 extra_cmake_args = ''
 extra_build_args = ''
