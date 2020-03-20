@@ -248,8 +248,8 @@ include(cmake/DependenciesConfig.cmake)
 
 
 configure_eigen()
-configure_boost()
 configure_highfive()
+configure_boost()
 configure_openmp()
 
 if(ENABLE_MPI)
@@ -260,7 +260,7 @@ set(ALGEBRA_LIB_FOUND OFF)
 
 if(${ENABLE_OPENBLAS})
   if(${ENABLE_MKL})
-  message(FATAL_ERROR "You cannot both enable OpenBLAS and MKL")
+    message(FATAL_ERROR "You cannot both enable OpenBLAS and MKL")
   endif()
   configure_openblas()
   set(ALGEBRA_LIBS ${BLAS_LIBRARIES})

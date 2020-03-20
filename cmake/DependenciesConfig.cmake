@@ -100,7 +100,6 @@ macro(configure_eigen)
 endmacro(configure_eigen)
 
 macro(configure_highfive)
-  set(HIGHFIVE_USE_BOOST OFF)
   message ("Dependency check for HighFive...")
   find_package(HighFive REQUIRED)
 endmacro(configure_highfive)
