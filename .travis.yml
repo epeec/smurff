@@ -20,11 +20,12 @@ addons:
       - libhdf5-dev
 
 script:
-    - cd "${TRAVIS_BUILD_DIR}"
-    - git clone --depth 1 https://github.com/BlueBrain/HighFive
-    - cd HighFive && mkdir build && cd build
-    - cmake .. -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/prefix
-    - make -j2 && make install
+    - cd "${TRAVIS_BUILD_DIR}" &&
+      wget -O HighFive.tar.gz https://github.com/tvandera/HighFive/archive/v2.1.1_unlink.tar.gz && 
+      tar xzf HighFive.tar.gz && 
+      cd HighFive* && mkdir build && cd build && 
+      cmake .. && 
+      make -j2 && make install 
 
     - cd "${TRAVIS_BUILD_DIR}"
     - mkdir build && cd build

@@ -23,10 +23,11 @@ RUN wget https://cmake.org/files/v3.12/cmake-3.12.0-Linux-x86_64.sh && \
    sh cmake-3.12.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
 
 
-RUN git clone --depth 1 https://github.com/tvandera/HighFive.git && \
-    cd HighFive && mkdir build && cd build && \
+RUN wget -O HighFive.tar.gz https://github.com/tvandera/HighFive/archive/v2.1.1_unlink.tar.gz && \
+    tar xzf HighFive.tar.gz && \
+    cd HighFive* && mkdir build && cd build && \
     cmake .. && \
     make -j2 && make install && \
-    cd ../../ && rm -r HighFive
+    cd ../../ && rm -r HighFive* 
 
 

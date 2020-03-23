@@ -123,7 +123,7 @@ void HDF5Group::write(const std::string& section, const std::string& tag, const 
         0,
         Eigen::InnerStride<1>> row_major(M);
 
-    dataset.write_raw(row_major.data());
+    dataset.write(row_major.data());
 }
 
 void HDF5Group::write(const std::string& section, const std::string& tag, const SparseMatrix &X)
