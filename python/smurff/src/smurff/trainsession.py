@@ -48,11 +48,7 @@ class TrainSession(PythonSession):
         - N>0: save every Nth sample
         - N==0: never save a sample
         - N==-1: save only the last sample
-
-    save_extension: { ".csv", ".ddm" }
-        - .csv: save in textual csv file format
-        - .ddm: save in binary file format
-
+        
     checkpoint_freq: int
         Save the state of the trainSession every N seconds.
 
@@ -70,7 +66,6 @@ class TrainSession(PythonSession):
         threshold        = None,
         verbose          = None,
         save_name        = None,
-        save_extension   = None,
         save_freq        = None,
         checkpoint_freq  = None,
         ):
