@@ -24,7 +24,7 @@ script:
       wget -O HighFive.tar.gz https://github.com/tvandera/HighFive/archive/v2.1.1_unlink.tar.gz && 
       tar xzf HighFive.tar.gz && 
       cd HighFive* && mkdir build && cd build && 
-      cmake .. && 
+      cmake .. -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/prefix && 
       make -j2 && make install 
 
     - cd "${TRAVIS_BUILD_DIR}"
@@ -33,7 +33,7 @@ script:
         -DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE} 
         -DHIGHFIVE_USE_BOOST=OFF
         -DENABLE_PYTHON=OFF 
-        -DCMAKE_PREFIX_PATH=${TRAVIS_BUILD_DIR}/HighFive 
+        -DCMAKE_PREFIX_PATH=${TRAVIS_BUILD_DIR}/prefix 
         -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" 
         -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/prefix 
         -DBOOST_RANDOM_VERSION=1.58
