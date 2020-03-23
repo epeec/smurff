@@ -23,13 +23,14 @@ script:
     - cd "${TRAVIS_BUILD_DIR}"
     - git clone --depth 1 https://github.com/BlueBrain/HighFive
     - cd HighFive && mkdir build && cd build
-    - cmake .. -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/prefix -DHIGHFIVE_USE_BOOST=OFF
+    - cmake .. -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/prefix
     - make -j2 && make install
 
     - cd "${TRAVIS_BUILD_DIR}"
     - mkdir build && cd build
     - cmake .. 
         -DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE} 
+        -DHIGHFIVE_USE_BOOST=OFF
         -DENABLE_PYTHON=OFF 
         -DCMAKE_PREFIX_PATH=${TRAVIS_BUILD_DIR}/HighFive 
         -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" 
