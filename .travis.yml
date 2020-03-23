@@ -21,7 +21,7 @@ addons:
 
 script:
     - cd "${TRAVIS_BUILD_DIR}"
-    - git clone --depth 1 https://github.com/tvandera/HighFive.git
+    - git clone --depth 1 https://github.com/BlueBrain/HighFive
     - cd HighFive && mkdir build && cd build
     - cmake .. -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/prefix -DHIGHFIVE_USE_BOOST=OFF
     - make -j2 && make install
