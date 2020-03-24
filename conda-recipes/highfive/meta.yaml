@@ -1,20 +1,20 @@
 package:
   name: highfive
-  version: "2.1.1_post23"
+  version: "2.1.1_unlink"
 
 source:
-  git_url: https://github.com/BlueBrain/HighFive
+  git_url: https://github.com/tvandera/HighFive
+  git_tag: v2.1.1_unlink
 
 requirements:
   build:
     - {{ compiler("cxx") }}
     - cmake
+
   host:
-    - boost
     - hdf5
 
   run:
-    - libboost
     - hdf5
 
 about:
