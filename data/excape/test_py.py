@@ -89,7 +89,6 @@ class TestExCAPE_py(unittest.TestCase):
         self.macau(side_info, True, [ 1.08, 1.0, 240. ])
 
 if __name__ == "__main__":
-    for arg in sys.argv:
-        if (arg == "-v" or arg == "--verbose"):
-            global_verbose = True
+    global_verbose += sys.argv.count("-v")
+    global_verbose += sys.argv.count("--verbose")
     unittest.main()
