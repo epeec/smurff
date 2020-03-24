@@ -31,9 +31,10 @@ requirements:
     - setuptools
     - numpy >=1.13
   run:
+    - python {{ python }}
     - intel-openmp
     - mkl
-    - libboost
+    - libboost {{ libboost }}
     - numpy
     - scipy
     - pandas
