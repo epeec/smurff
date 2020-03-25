@@ -5,6 +5,7 @@ import urllib.request
 import scipy.io as sio
 import os
 from hashlib import sha256
+import smurff
 
 urls = [
         (
@@ -40,58 +41,41 @@ for url, expected_sha, output in urls:
 
 ic50 = sio.mmread("chembl-IC50-346targets.mm")
 feat = sio.mmread("chembl-IC50-compound-feat.mm")
+ic50_100c = ic50.tocsr()[0:100,:]
+ic50_100c_train, ic50_100c_test = smurff.make_train_test(ic50_100c, 0.2)
 
-def make_ic50_sdm():
-    mio.write_matrix("chembl-IC50-346targets.sdm", ic50)
+# 0,1 binary for probit
+ic50_01 = ic50.copy()
+ic50_01.data = (ic50_01.data >= 6) * 1.
 
-def make_feat_sdm():
-    mio.write_matrix("chembl-IC50-compound-feat.sdm", feat)
+# -1,+1
+ic50_11 = ic50.copy()
+ic50_11.data = ((ic50.data >= 6) * 2.) - 1.
 
-def make_01():
-    # 0,1 binary for probit
-    ic50_01 = ic50.copy()
-    ic50_01.data = (ic50_01.data >= 6) * 1.
-    mio.write_matrix("chembl-IC50-346targets-01.sdm", ic50_01)
-
-def make_11():
-    # -1,+1
-    ic50_11 = ic50.copy()
-    ic50_11.data = ((ic50.data >= 6) * 2.) - 1.
-    mio.write_matrix("chembl-IC50-346targets-11.sdm", ic50_11)
-
-def make_100compounds():
-    ic50_100c = ic50.tocsr()[0:100,:]
-    mio.write_matrix("chembl-IC50-346targets-100compounds.sdm", ic50_100c)
-
-def feat_100():
-    feat_100 = feat.tocsr()[0:100,:]
-    feat_100 = feat_100[:,feat_100.getnnz(0)>0]
-    return feat_100
-
-def make_feat():
-    mio.write_matrix("chembl-IC50-100compounds-feat.sdm", feat_100())
-
-def make_feat_dense():
-    mio.write_matrix("chembl-IC50-100compounds-feat-dense.ddm", feat_100().todense())
+feat_100 = feat.tocsr()[0:100,:]
+feat_100 = feat_100[:,feat_100.getnnz(0)>0]
+feat_100_dense = feat_100.todense()
 
 generated_files = [
-        ( "f0d2ad6cf8173a64e12b48821e683b642b593555c552f4abf1f10ba255af78fc", "chembl-IC50-100compounds-feat-dense.ddm", make_feat_dense,),
-        ( "0dd148a0da1a11ce6c6c3847d0cc2820dc9c819868f964a653a0d42063ce5c42", "chembl-IC50-100compounds-feat.sdm", make_feat,),
-        ( "973074474497b236bf75fecfe9cc17471783fd40dbdda158b81e0ebbb408d30b", "chembl-IC50-346targets-01.sdm", make_01,),
-        ( "5d7c821cdce02b4315a98a94cba5747e82d423feb1a2158bf03a7640aa82625d", "chembl-IC50-346targets-100compounds.sdm", make_100compounds,),
-        ( "bcf5cee9702e318591b76f064859c1d0769158d0b0f5c44057392c2f9385a591", "chembl-IC50-346targets-11.sdm", make_11,),
-        ( "1defd1c82ac3243ad60a23a753287df494d3b50f2fd5ff7f4a074182b07e3318", "chembl-IC50-346targets.sdm", make_ic50_sdm, ),
-        ( "badfa23abb83e0b731e969e1117fd4269f2df16e1faf14eb54c53c60465e87f1", "chembl-IC50-compound-feat.sdm", make_feat_sdm, ),
+        ( "f0d2ad6cf8173a64e12b48821e683b642b593555c552f4abf1f10ba255af78fc", "chembl-IC50-100compounds-feat-dense.ddm", feat_100_dense,),
+        ( "0dd148a0da1a11ce6c6c3847d0cc2820dc9c819868f964a653a0d42063ce5c42", "chembl-IC50-100compounds-feat.sdm", feat_100,),
+        ( "973074474497b236bf75fecfe9cc17471783fd40dbdda158b81e0ebbb408d30b", "chembl-IC50-346targets-01.sdm", ic50_01,),
+        ( "5d7c821cdce02b4315a98a94cba5747e82d423feb1a2158bf03a7640aa82625d", "chembl-IC50-346targets-100compounds.sdm", ic50_100c,),
+        ( "66d06cc1360626be23a01250693a252c958ac41be663046544f75ad7740188d9", "chembl-IC50-346targets-100compounds-train.sdm", ic50_100c_train,),
+        ( "86f7bb38ece3435a5e1c7e06a9d929b19812614db367ff0d4f31be1fc74a8ebb", "chembl-IC50-346targets-100compounds-test.sdm", ic50_100c_test,),
+        ( "bcf5cee9702e318591b76f064859c1d0769158d0b0f5c44057392c2f9385a591", "chembl-IC50-346targets-11.sdm", ic50_11,),
+        ( "1defd1c82ac3243ad60a23a753287df494d3b50f2fd5ff7f4a074182b07e3318", "chembl-IC50-346targets.sdm", ic50, ),
+        ( "badfa23abb83e0b731e969e1117fd4269f2df16e1faf14eb54c53c60465e87f1", "chembl-IC50-compound-feat.sdm", feat, ),
         ]
 
-for expected_sha, output, func in generated_files:
+for expected_sha, output, data in generated_files:
     if os.path.isfile(output):
         actual_sha = sha256(open(output, "rb").read()).hexdigest()
         if (expected_sha == actual_sha):
             continue
 
     print("make %s" % output)
-    func()
+    mio.write_matrix(output, data)
 
     actual_sha = sha256(open(output, "rb").read()).hexdigest()
     if (expected_sha != actual_sha):
