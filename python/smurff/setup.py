@@ -16,8 +16,7 @@ def git_describe_version():
     p.stderr.close()
     line = p.stdout.readlines()[0].strip().decode()
     version, post, hash = line.split('-')
-    if version[0] == 'v':
-        version = version[1:]
+    version = version.lstrip('v')
 
     if (int(post)) != 0:
         # v0.15.0-411-gd585b05e -> 0.15.0.post411
