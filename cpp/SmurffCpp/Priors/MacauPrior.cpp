@@ -192,7 +192,7 @@ std::ostream &MacauPrior::status(std::ostream &os, std::string indent) const
    os << indent << m_name << ": " << std::endl;
    indent += "  ";
    os << indent << "mu           = " <<  mu() << std::endl;
-   os << indent << "Uhat mean    = " <<  Uhat.rowwise().mean().transpose() << std::endl;
+   os << indent << "Uhat mean    = " <<  Uhat.colwise().mean() << std::endl;
    os << indent << "blockcg iter = " << blockcg_iter << std::endl;
    os << indent << "FtF_plus_prec= " << FtF_plus_precision.norm() << std::endl;
    os << indent << "HyperU       = " << HyperU.norm() << std::endl;
