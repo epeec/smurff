@@ -5,7 +5,6 @@ import urllib.request
 import scipy.io as sio
 import os
 from hashlib import sha256
-import smurff
 
 urls = [
         (
@@ -42,7 +41,8 @@ for url, expected_sha, output in urls:
 ic50 = sio.mmread("chembl-IC50-346targets.mm")
 feat = sio.mmread("chembl-IC50-compound-feat.mm")
 ic50_100c = ic50.tocsr()[0:100,:]
-ic50_100c_train, ic50_100c_test = smurff.make_train_test(ic50_100c, 0.2)
+ic50_100c_train = ic50_100c[0:80,:]
+ic50_100c_test = ic50_100c[80:100,:]
 
 # 0,1 binary for probit
 ic50_01 = ic50.copy()
@@ -61,8 +61,8 @@ generated_files = [
         ( "0dd148a0da1a11ce6c6c3847d0cc2820dc9c819868f964a653a0d42063ce5c42", "chembl-IC50-100compounds-feat.sdm", feat_100,),
         ( "973074474497b236bf75fecfe9cc17471783fd40dbdda158b81e0ebbb408d30b", "chembl-IC50-346targets-01.sdm", ic50_01,),
         ( "5d7c821cdce02b4315a98a94cba5747e82d423feb1a2158bf03a7640aa82625d", "chembl-IC50-346targets-100compounds.sdm", ic50_100c,),
-        ( "66d06cc1360626be23a01250693a252c958ac41be663046544f75ad7740188d9", "chembl-IC50-346targets-100compounds-train.sdm", ic50_100c_train,),
-        ( "86f7bb38ece3435a5e1c7e06a9d929b19812614db367ff0d4f31be1fc74a8ebb", "chembl-IC50-346targets-100compounds-test.sdm", ic50_100c_test,),
+        ( "de1c1989b57339ef0a3dad861c6afe5f22e8a8025070a3d60e6014dd6b53ed16", "chembl-IC50-346targets-100compounds-train.sdm", ic50_100c_train,),
+        ( "efbef9ce2006366dde01608371a6000283ff2b5f37a1e17d4482fab127047a87", "chembl-IC50-346targets-100compounds-test.sdm", ic50_100c_test,),
         ( "bcf5cee9702e318591b76f064859c1d0769158d0b0f5c44057392c2f9385a591", "chembl-IC50-346targets-11.sdm", ic50_11,),
         ( "1defd1c82ac3243ad60a23a753287df494d3b50f2fd5ff7f4a074182b07e3318", "chembl-IC50-346targets.sdm", ic50, ),
         ( "badfa23abb83e0b731e969e1117fd4269f2df16e1faf14eb54c53c60465e87f1", "chembl-IC50-compound-feat.sdm", feat, ),
