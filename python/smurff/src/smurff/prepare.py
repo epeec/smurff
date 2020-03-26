@@ -6,7 +6,7 @@ import numbers
 
 from .helper import SparseTensor
 
-def make_train_test(Y, ntest):
+def make_train_test(Y, ntest, seed = None):
     """Splits a sparse matrix Y into a train and a test matrix.
 
     Parameters
@@ -34,6 +34,7 @@ def make_train_test(Y, ntest):
     if ntest < 1:
         ntest = Y.nnz * ntest
     ntest = int(round(ntest))
+    np.random.seed(seed)
     rperm = np.random.permutation(Y.nnz)
     train = rperm[ntest:]
     test  = rperm[0:ntest]
