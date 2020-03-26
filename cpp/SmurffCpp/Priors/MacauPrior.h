@@ -25,6 +25,7 @@ public:
    Matrix Uhat;             // num_latent x num_items
    Matrix Udelta;           // num_latent x num_items
    Matrix FtF_plus_precision;// num_feat   x num feat
+   Eigen::LLT<Matrix> FtF_llt; // num_feat   x num feat
    Matrix HyperU;           // num_latent x num_items
    Matrix HyperU2;          // num_latent x num_feat
    Matrix Ft_y;             // num_latent x num_feat -- RHS

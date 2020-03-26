@@ -33,6 +33,7 @@ void MacauPrior::init()
       FtF_plus_precision.resize(dim, dim);
       Features->At_mul_A(FtF_plus_precision);
       FtF_plus_precision.diagonal().array() += beta_precision;
+      FtF_llt = FtF_plus_precision.llt();
    }
 
    Uhat.resize(num_item(), num_latent());
@@ -101,6 +102,7 @@ void MacauPrior::update_prior()
         double old_beta = beta_precision;
         beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
         FtF_plus_precision.diagonal().array() += beta_precision - old_beta;
+        FtF_llt = FtF_plus_precision.llt();
    }
 }
 
@@ -112,7 +114,7 @@ void MacauPrior::sample_beta()
         // uses: FtF, Ft_y, 
         // writes: beta()
         // complexity: num_feat^3
-        beta() = FtF_plus_precision.llt().solve(Ft_y);
+        beta() = FtF_llt.solve(Ft_y);
     } 
     else
     {
