@@ -112,8 +112,8 @@ struct SmurffTest {
       : config(genConfig(train, test, priors)) {}
 
   template<class M>
-  SmurffTest &addSideInfo(int m, const M &c) {
-    config.addSideInfo(m, makeSideInfoConfig(c));
+  SmurffTest &addSideInfo(int m, const M &c, bool direct = true) {
+    config.addSideInfo(m, makeSideInfoConfig(c, direct));
     return *this;
   }
 
@@ -284,6 +284,14 @@ TEST_CASE("train_dense_matrix_test_sparse_matrix_macau_normal_row_side_info_dens
       .runAndCheck(1250);
 }
 
+TEST_CASE("train_dense_matrix_test_sparse_matrix_macau_normal_row_side_info_dense_matrix_none_cg",
+          TAG_MATRIX_TESTS) {
+
+  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::macau, PriorTypes::normal})
+      .addSideInfo(0, rowSideDenseMatrix, false)
+      .runAndCheck(1250);
+}
+
 TEST_CASE("train_dense_matrix_test_sparse_matrix_normal_macau_none_col_side_info_dense_matrix_",
           TAG_MATRIX_TESTS) {
 
@@ -292,6 +300,13 @@ TEST_CASE("train_dense_matrix_test_sparse_matrix_normal_macau_none_col_side_info
       .runAndCheck(1305);
 }
 
+TEST_CASE("train_dense_matrix_test_sparse_matrix_normal_macau_none_col_side_info_dense_matrix_cg",
+          TAG_MATRIX_TESTS) {
+
+  SmurffTest(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::macau})
+      .addSideInfo(1, colSideDenseMatrix, false)
+      .runAndCheck(1305);
+}
 // test throw - macau prior should have side info
 
 TEST_CASE("train_dense_matrix_test_sparse_matrix_macau_normal_none_none_",
