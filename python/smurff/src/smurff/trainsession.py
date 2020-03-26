@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import scipy.sparse as sp
 
-from .helper import SparseTensor, FixedNoise
+from .helper import SparseTensor, FixedNoise, SampledNoise
 from .wrapper import Config, NoiseConfig, StatusItem, PythonSession
 from .predict import PredictSession
 
@@ -114,7 +114,7 @@ class TrainSession(PythonSession):
         pos = ([0] * len(Y.shape)) # [ 0, 0, ... ]
         self.addData(pos, Y, noise, is_scarce)
        
-    def addSideInfo(self, mode, Y, noise = FixedNoise(), tol = 1e-6, direct = True):
+    def addSideInfo(self, mode, Y, noise = SampledNoise(), direct = True):
         """Adds fully known side info, for use in with the macau or macauone prior
 
         mode : int
@@ -134,11 +134,8 @@ class TrainSession(PythonSession):
 
             The direct method is only feasible for a small (< 100K) number of features.
 
-        tol : float
-            Tolerance for the CG solver.
-
         """
-        super().addSideInfo(mode, Y, noise, tol, direct)
+        super().addSideInfo(mode, Y, noise, direct)
 
     def addPropagatedPosterior(self, mode, mu, Lambda):
         """Adds mu and Lambda from propagated posterior
