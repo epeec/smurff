@@ -127,4 +127,12 @@ PYBIND11_MODULE(wrapper, m)
         .def("step", &smurff::PythonSession::step)
         .def("interrupted", &smurff::PythonSession::interrupted)
         ;
+    
+    py::register_exception_translator([](std::exception_ptr p) {
+        try {
+            if (p) std::rethrow_exception(p);
+        } catch (const std::runtime_error &e) {
+            PyErr_SetString(PyExc_RuntimeError, e.what());
+        }
+    });
 }
