@@ -32,13 +32,13 @@ inline void show_internal(const char *name, const double& variable)
 
 #define THROWERROR_BASE(msg, ssvar, except_type) { \
    std::stringstream ssvar; \
-   ssvar << "line: " << __LINE__ << " file: " << __FILE__ << " function: " << __func__ << std::endl << (msg); \
+   ssvar << __FILE__ << ":" << __LINE__ << " in function: " << __func__ << std::endl << (msg); \
    throw except_type(ssvar.str());}
 
 #define THROWERROR_BASE_COND(msg, ssvar, except_type, eval_cond) { \
    if(!(eval_cond)) { \
    std::stringstream ssvar; \
-   ssvar << "line: " << __LINE__ << " file: " << __FILE__ << " function: " << __func__ << std::endl << (msg); \
+   ssvar << __FILE__ << ":" << __LINE__ << " in function: " << __func__ << std::endl << (msg); \
    throw except_type(ssvar.str()); }}
 
 
