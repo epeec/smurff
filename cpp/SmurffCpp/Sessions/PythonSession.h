@@ -25,22 +25,20 @@ public:
        m_config.getTest().setData(data, true);
    }
 
-   void addSideInfoDense(int mode, const Matrix &data, const NoiseConfig &nc, bool direct, double tol) 
+   void addSideInfoDense(int mode, const Matrix &data, const NoiseConfig &nc, bool direct) 
    {
       auto &si = m_config.addSideInfo(mode);
       si.setData(data);
       si.setNoiseConfig(nc);
       si.setDirect(direct);
-      si.setTol(tol);
    }
 
-   void addSideInfoSparse(int mode, const SparseMatrix &data, const NoiseConfig &nc, bool direct, double tol) 
+   void addSideInfoSparse(int mode, const SparseMatrix &data, const NoiseConfig &nc, bool direct) 
    {
       auto &si = m_config.addSideInfo(mode);
       si.setData(data, false);
       si.setNoiseConfig(nc);
       si.setDirect(direct);
-      si.setTol(tol);
    }
 
    template <typename DenseType>
