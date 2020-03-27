@@ -25,6 +25,12 @@ inline void show_internal(const char *name, const double& variable)
    std::cout << name << " =\n" << variable << std::endl << std::endl;
 }
 
+template<>
+inline void show_internal(const char *name, const int& variable)
+{
+   std::cout << name << " =\n" << variable << std::endl << std::endl;
+}
+
 
 #define SHOW(M) show_internal(#M, M);
 
