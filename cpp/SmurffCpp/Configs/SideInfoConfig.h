@@ -18,9 +18,9 @@ namespace smurff
       static const double TOL_DEFAULT_VALUE;
 
    private:
-      double m_tol;
-      bool m_direct;
-      bool m_throw_on_cholesky_error;
+      double m_tol = TOL_DEFAULT_VALUE;
+      bool m_direct = DIRECT_DEFAULT_VALUE;
+      bool m_throw_on_cholesky_error = false;
 
    public:
       SideInfoConfig() {}; //empty
