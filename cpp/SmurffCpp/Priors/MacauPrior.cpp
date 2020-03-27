@@ -9,7 +9,7 @@
 namespace smurff {
 
 MacauPrior::MacauPrior(TrainSession &trainSession, uint32_t mode)
-    : NormalPrior(trainSession, mode, "MacauPrior")
+    : NormalPrior(trainSession, mode, "MacauPrior"), blockcg_iter(-1)
 {
     beta_precision = SideInfoConfig::BETA_PRECISION_DEFAULT_VALUE;
     tol = SideInfoConfig::TOL_DEFAULT_VALUE;
