@@ -100,24 +100,24 @@ inline void makeSymmetric(Matrix &A)
 /** good values for solve_blockcg are blocksize=32 an excess=8 */
 template<typename T>
 inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error) {
-  if (B.rows() <= excess + blocksize) {
+  if (B.cols() <= excess + blocksize) {
     return solve_blockcg(X, K, reg, B, tol, throw_on_cholesky_error);
   }
   // split B into blocks of size <blocksize> (+ excess if needed)
   Matrix Xblock, Bblock;
   int max_iter = 0;
-  for (int i = 0; i < B.rows(); i += blocksize) {
-    int nrows = blocksize;
-    if (i + blocksize + excess >= B.rows()) {
-      nrows = B.rows() - i;
+  for (int i = 0; i < B.cols(); i += blocksize) {
+    int ncols = blocksize;
+    if (i + ncols + excess >= B.cols()) {
+      ncols = B.cols() - i;
     }
-    Bblock.resize(nrows, B.cols());
-    Xblock.resize(nrows, X.cols());
+    Bblock.resize(B.rows(), ncols);
+    Xblock.resize(X.rows(), ncols);
 
-    Bblock = B.block(i, 0, nrows, B.cols());
+    Bblock = B.block(0, i, B.rows(), ncols);
     int niter = solve_blockcg(Xblock, K, reg, Bblock, tol, throw_on_cholesky_error);
     max_iter = std::max(niter, max_iter);
-    X.block(i, 0, nrows, X.cols()) = Xblock;
+    X.block(0, i, X.rows(), ncols) = Xblock;
   }
 
   return max_iter;
@@ -133,11 +133,11 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
 template<typename T>
 inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, bool throw_on_cholesky_error) {
   // initialize
-  const int nfeat = B.cols();
-  const int nrhs  = B.rows();
+  const int nfeat = B.rows();
+  const int nrhs  = B.cols();
   double tolsq = tol*tol;
 
-  if (nfeat != K.cols()) {THROWERROR("B.cols() must equal K.cols()");}
+  if (nfeat != K.cols()) {THROWERROR("B.rows() must equal K.cols()");}
 
   Vector norms(nrhs), inorms(nrhs); 
   norms.setZero();
@@ -148,14 +148,14 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
     double sumsq = 0.0;
     for (int feat = 0; feat < nfeat; feat++) 
     {
-      sumsq += B(rhs, feat) * B(rhs, feat);
+      sumsq += B(feat, rhs) * B(feat, rhs);
     }
     norms(rhs)  = std::sqrt(sumsq);
     inorms(rhs) = 1.0 / norms(rhs);
   }
-  Matrix R(nrhs, nfeat);
-  Matrix P(nrhs, nfeat);
-  Matrix Ptmp(nrhs, nfeat);
+  Matrix R(nfeat, nrhs);
+  Matrix P(nfeat, nrhs);
+  Matrix Ptmp(nfeat, nrhs);
   X.setZero();
   // normalize R and P:
   #pragma omp parallel for schedule(static) collapse(2)
@@ -163,22 +163,20 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
   {
     for (int rhs = 0; rhs < nrhs; rhs++) 
     {
-      R(rhs, feat) = B(rhs, feat) * inorms(rhs);
-      P(rhs, feat) = R(rhs, feat);
+      R(feat, rhs) = B(feat, rhs) * inorms(rhs);
+      P(feat, rhs) = R(feat, rhs);
     }
   }
   Matrix* RtR = new Matrix(nrhs, nrhs);
   Matrix* RtR2 = new Matrix(nrhs, nrhs);
 
-  Matrix KP(nrhs, nfeat);
-  Matrix PtKP(nrhs, nrhs);
-  //Eigen::Matrix<double, N, N> A;
-  //Eigen::Matrix<double, N, N> Psi;
+  Matrix   KP(nfeat, nrhs);
+  Matrix KPtP(nrhs, nrhs);
   Matrix A;
   Matrix Psi;
 
   //A_mul_At_combo(*RtR, R);
-  *RtR = R * R.transpose();
+  *RtR = R.transpose() * R;
   makeSymmetric(*RtR);
 
   const int nblocks = (int)ceil(nfeat / 64.0);
@@ -191,36 +189,33 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
     AtA_mul_B(KP, K, reg, P);
     ////double t2 = tick();
 
-    PtKP = P * KP.transpose();
-
-    auto chol_PtKP = PtKP.llt();
-    THROWERROR_ASSERT_MSG(!throw_on_cholesky_error || chol_PtKP.info() != Eigen::NumericalIssue, "Cholesky Decomposition failed! (Numerical Issue)");
-    THROWERROR_ASSERT_MSG(!throw_on_cholesky_error || chol_PtKP.info() != Eigen::InvalidInput, "Cholesky Decomposition failed! (Invalid Input)");
-    A = chol_PtKP.solve(*RtR);
-
-    A.transposeInPlace();
+    KPtP = KP.transpose() * P;
+    auto chol_KPtP = KPtP.llt();
+    THROWERROR_ASSERT_MSG(!throw_on_cholesky_error || chol_KPtP.info() != Eigen::NumericalIssue, "Cholesky Decomposition failed! (Numerical Issue)");
+    THROWERROR_ASSERT_MSG(!throw_on_cholesky_error || chol_KPtP.info() != Eigen::InvalidInput, "Cholesky Decomposition failed! (Invalid Input)");
+    A = chol_KPtP.solve(*RtR);
     ////double t3 = tick();
 
     
     #pragma omp parallel for schedule(guided)
     for (int block = 0; block < nblocks; block++) 
     {
-      int col = block * 64;
-      int bcols = std::min(64, nfeat - col);
+      int row = block * 64;
+      int brows = std::min(64, nfeat - row);
       // X += A' * P
-      X.block(0, col, nrhs, bcols).noalias() += A *  P.block(0, col, nrhs, bcols);
+      X.block(row, 0, brows, nrhs).noalias() += P.block(row, 0, brows, nrhs) * A;
       // R -= A' * KP
-      R.block(0, col, nrhs, bcols).noalias() -= A * KP.block(0, col, nrhs, bcols);
+      R.block(row, 0, brows, nrhs).noalias() -= KP.block(row, 0, brows, nrhs) * A;
     }
     ////double t4 = tick();
 
     // convergence check:
     //A_mul_At_combo(*RtR2, R);
-    *RtR2 = R * R.transpose();
+    *RtR2 = R.transpose() * R;
     makeSymmetric(*RtR2);
 
     Vector d = RtR2->diagonal();
-    //std::cout << "[ iter " << iter << "] " << std::scientific << d.transpose() << " (max: " << d.maxCoeff() << " > " << tolsq << ")" << std::endl;
+    std::cout << "[ iter " << iter << "] " << std::scientific << d.transpose() << " (max: " << d.maxCoeff() << " > " << tolsq << ")" << std::endl;
     //std::cout << iter << ":" << std::scientific << d.transpose() << std::endl;
     if ( (d.array() < tolsq).all()) {
       break;
@@ -231,7 +226,6 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
     THROWERROR_ASSERT_MSG(!throw_on_cholesky_error || chol_RtR.info() != Eigen::NumericalIssue, "Cholesky Decomposition failed! (Numerical Issue)");
     THROWERROR_ASSERT_MSG(!throw_on_cholesky_error || chol_RtR.info() != Eigen::InvalidInput, "Cholesky Decomposition failed! (Invalid Input)");
     Psi  = chol_RtR.solve(*RtR2);
-    Psi.transposeInPlace();
     ////double t5 = tick();
 
     // P = R + Psi' * P (P and R are already transposed)
@@ -239,10 +233,10 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
     for (int block = 0; block < nblocks; block++) 
     {
       int row = block * 64;
-      int bcols = std::min(64, nfeat - row);
-      Matrix xtmp(nrhs, bcols);
-      xtmp = Psi *  P.block(0, row, nrhs, bcols);
-      P.block(0, row, nrhs, bcols) = R.block(0, row, nrhs, bcols) + xtmp;
+      int brows = std::min(64, nfeat - row);
+      Matrix xtmp(brows, nrhs);
+      xtmp = P.block(row, 0, brows, nrhs) * Psi;
+      P.block(row, 0, brows, nrhs) = R.block(row, 0, brows, nrhs) + xtmp;
     }
 
     // R R' = R2 R2'
@@ -265,7 +259,7 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
   {
     for (int rhs = 0; rhs < nrhs; rhs++) 
     {
-      X(rhs, feat) *= norms(rhs);
+      X(feat, rhs) *= norms(rhs);
     }
   }
   delete RtR;
@@ -274,11 +268,11 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
 }
 
 inline void AtA_mul_B(Matrix & out, Matrix & A, double reg, Matrix & B) {
-	out.noalias() = (A.transpose() * (A * B.transpose())).transpose() + reg * B;
+	out.noalias() = (A.transpose() * (A * B)) + reg * B;
 }
 
 inline void AtA_mul_B(Matrix& out, SparseSideInfo& A, double reg, Matrix& B) {
-  out.noalias() = (A.Ft * (A.F * B.transpose())).transpose() + reg * B;
+  out.noalias() = (A.Ft * (A.F * B)) + reg * B;
 }
 
 }}

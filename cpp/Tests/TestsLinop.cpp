@@ -18,7 +18,7 @@ static SparseMatrix binarySideInfo = matrix_utils::sparse_to_eigen(
 TEST_CASE( "SparseSideInfo/solve_blockcg", "BlockCG solver (1rhs)" ) 
 {
    SparseSideInfo sf(DataConfig(binarySideInfo, false, fixed_ncfg));
-   Matrix B(1, 4), X(1, 4), X_true(1, 4);
+   Matrix B(4, 1), X(4, 1), X_true(4, 1);
  
    B << 0.56,  0.55,  0.3 , -1.78;
    X_true << 0.35555556,  0.40709677, -0.16444444, -0.87483871;
@@ -34,17 +34,20 @@ TEST_CASE( "SparseSideInfo/solve_blockcg", "BlockCG solver (1rhs)" )
 TEST_CASE( "SparseSideInfo/solve_blockcg_1_0", "BlockCG solver (3rhs separately)" ) 
 {
    SparseSideInfo sf(DataConfig(binarySideInfo, false, fixed_ncfg));
-   Matrix B(3, 4), X(3, 4), X_true(3, 4);
+   Matrix B(3, 4), X(4, 3), X_true(3, 4);
  
    B << 0.56,  0.55,  0.3 , -1.78,
         0.34,  0.05, -1.48,  1.11,
         0.09,  0.51, -0.63,  1.59;
+   B.transposeInPlace();
  
    X_true << 0.35555556,  0.40709677, -0.16444444, -0.87483871,
              1.69333333, -0.12709677, -1.94666667,  0.49483871,
              0.66      , -0.04064516, -0.78      ,  0.65225806;
+   X_true.transposeInPlace();
  
    linop::solve_blockcg(X, sf, 0.5, B, 1e-6, 1, 0);
+
    for (int i = 0; i < X.rows(); i++) {
      for (int j = 0; j < X.cols(); j++) {
        REQUIRE( X(i,j) == Approx(X_true(i,j)) );
@@ -56,7 +59,7 @@ TEST_CASE( "linop/solve_blockcg_dense/fail", "BlockCG solver for dense (3rhs sep
 {
    int rows[9] = { 0, 3, 3, 2, 5, 4, 1, 2, 4 };
    int cols[9] = { 1, 0, 2, 1, 3, 0, 1, 3, 2 };
-   Matrix B(3, 4), X(3, 4), X_true(3, 4), sf(6, 4);
+   Matrix B(3, 4), X(4, 3), sf(6, 4);
  
     sf = Matrix::Zero(6, 4);
     for (int i = 0; i < 9; i++) {
@@ -66,6 +69,7 @@ TEST_CASE( "linop/solve_blockcg_dense/fail", "BlockCG solver for dense (3rhs sep
    B << 0.56,  0.55,  0.3 , -1.78,
         0.34,  0.05, -1.48,  1.11,
         0.09,  0.51, -0.63,  1.59;
+   B.transposeInPlace();
  
    // this system is unsolvable
    REQUIRE_THROWS(linop::solve_blockcg(X, sf, 0.5, B, 1e-6, true));
@@ -91,12 +95,13 @@ TEST_CASE( "linop/solve_blockcg_dense/ok", "BlockCG solver for dense (3rhs separ
    X_true << 0.35555556,  0.40709677, -0.16444444, -0.87483871, -0.16444444, -0.87483871,
              1.69333333, -0.12709677, -1.94666667,  0.49483871, -1.94666667,  0.49483871,
              0.66      , -0.04064516, -0.78      ,  0.65225806, -0.78      ,  0.65225806;
+   X_true.transposeInPlace();
 
-   Matrix B = ((K.transpose() * K + Matrix::Identity(6,6) * reg) * X_true.transpose()).transpose();
-   Matrix X(3, 6);
+   Matrix B = (K.transpose() * K + Matrix::Identity(6,6) * reg) * X_true;
+   Matrix X(6, 3);
 
    //-- Solves the system (K' * K + reg * I) * X = B for X for m right-hand sides
-   linop::solve_blockcg(X, K, 0.5, B, 1e-6, true);
+   linop::solve_blockcg(X, K, 0.5, B, 1e-6, false);
 
    for (int i = 0; i < X.rows(); i++) {
      for (int j = 0; j < X.cols(); j++) {
