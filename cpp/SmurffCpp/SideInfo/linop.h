@@ -215,7 +215,7 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
     makeSymmetric(*RtR2);
 
     Vector d = RtR2->diagonal();
-    std::cout << "[ iter " << iter << "] " << std::scientific << d.transpose() << " (max: " << d.maxCoeff() << " > " << tolsq << ")" << std::endl;
+    // std::cout << "[ iter " << iter << "] " << std::scientific << d.transpose() << " (max: " << d.maxCoeff() << " > " << tolsq << ")" << std::endl;
     //std::cout << iter << ":" << std::scientific << d.transpose() << std::endl;
     if ( (d.array() < tolsq).all()) {
       break;
