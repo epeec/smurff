@@ -132,6 +132,8 @@ FILE (GLOB SIDE_INFO_FILES "SideInfo/ISideInfo.h"
                            "SideInfo/DenseSideInfo.cpp"
                            "SideInfo/SparseSideInfo.h"
                            "SideInfo/SparseSideInfo.cpp"
+                           "SideInfo/linop.h"
+                           "SideInfo/linop.cpp"
                         )
 source_group ("Side Info" FILES ${SIDE_INFO_FILES})
 

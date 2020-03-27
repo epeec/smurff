@@ -47,7 +47,7 @@ TEST_CASE( "SparseSideInfo/solve_blockcg_1_0", "BlockCG solver (3rhs separately)
              0.66      , -0.04064516, -0.78      ,  0.65225806;
    X_true.transposeInPlace();
  
-   linop::solve_blockcg_impl(X, sf, 0.5, B, 1e-6, 1, 0);
+   linop::solve_blockcg(X, sf, 0.5, B, 1e-6, 1, 0);
 
    for (int i = 0; i < X.rows(); i++) {
      for (int j = 0; j < X.cols(); j++) {
@@ -59,7 +59,7 @@ TEST_CASE( "SparseSideInfo/solve_blockcg_1_0", "BlockCG solver (3rhs separately)
 
 TEST_CASE( "Eigen::MatrixFree::1", "Test linop::AtA_mulB - 1" )
 {
-  linop::AtA A(binarySideInfo, binarySideInfoT, 0.5);
+  SparseSideInfo sf(DataConfig(binarySideInfo, false, fixed_ncfg));
 
   Matrix B(3, 4), X(4, 3), X_true(3, 4);
 
@@ -73,9 +73,7 @@ TEST_CASE( "Eigen::MatrixFree::1", "Test linop::AtA_mulB - 1" )
       0.66, -0.04064516, -0.78, 0.65225806;
   X_true.transposeInPlace();
 
-  Eigen::ConjugateGradient<linop::AtA, Eigen::Lower | Eigen::Upper, Eigen::IdentityPreconditioner> cg;
-  cg.compute(A);
-  X = cg.solve(B);
+  smurff::linop::solve_blockcg_eigen(X, sf, 0.5, B, 1e-6);
 
   for (int i = 0; i < X.rows(); i++)
   {
