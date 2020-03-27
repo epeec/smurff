@@ -1,3 +1,5 @@
+#include <Utils/Error.h>
+
 #include "DenseSideInfo.h"
 #include "linop.h"
 
@@ -46,7 +48,7 @@ Matrix DenseSideInfo::A_mul_B(Matrix& A)
 
 int DenseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
 {
-   return linop::solve_blockcg(X, m_side_info, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
+   THROWERROR_NOTIMPL();
 }
 
 Vector DenseSideInfo::col_square_sum()

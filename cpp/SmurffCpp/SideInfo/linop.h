@@ -44,17 +44,20 @@ public:
     MaxColsAtCompileTime = Eigen::Dynamic,
     IsRowMajor = true
   };
-  Index rows() const { return m_A.cols(); }
-  Index cols() const { return m_A.cols(); }
+  Index outerSize() const { return m_A.cols(); }
+  Index innerSize() const { return m_A.cols(); }
+  Index rows()      const { return m_A.cols(); }
+  Index cols()      const { return m_A.cols(); }
   template <typename Rhs>
   Eigen::Product<AtA, Rhs, Eigen::AliasFreeProduct> operator*(const Eigen::MatrixBase<Rhs> &x) const
   {
     return Eigen::Product<AtA, Rhs, Eigen::AliasFreeProduct>(*this, x.derived());
   }
   // Custom API:
-  AtA(const SparseMatrix &A, double reg) : m_A(A), m_reg(reg) {}
+  AtA(const SparseMatrix &A, const SparseMatrix &At, double reg) : m_A(A), m_At(At), m_reg(reg) {}
 
   const SparseMatrix &m_A;
+  const SparseMatrix &m_At;
   double m_reg;
 };
 
@@ -73,7 +76,7 @@ namespace internal {
     static void scaleAndAddTo(Dest& dst, const smurff::linop::AtA& lhs, const Rhs& rhs, const Scalar& alpha)
     {
       // This method should implement "dst += alpha * lhs * rhs" inplace,
-      dst += alpha * ((lhs.m_A.transpose() * (lhs.m_A * rhs)) + lhs.m_reg * rhs);
+      dst += alpha * ((lhs.m_At * (lhs.m_A * rhs)) + lhs.m_reg * rhs);
     }
   };
 }
@@ -84,43 +87,13 @@ namespace smurff
 namespace linop
 {
 
-template<typename T>
-int  solve_blockcg(Matrix & X, T & t, double reg, Matrix & B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error = false);
-template<typename T>
-int  solve_blockcg(Matrix & X, T & t, double reg, Matrix & B, double tol, bool throw_on_cholesky_error = false);
-
-inline void AtA_mul_B(Matrix & out, SparseSideInfo & A, double reg, Matrix & B);
-inline void AtA_mul_B(Matrix & out, Matrix & A, double reg, Matrix & B);
-
 inline void makeSymmetric(Matrix &A)
 {
   A = A.selfadjointView<Eigen::Lower>();
 }
 
-/** good values for solve_blockcg are blocksize=32 an excess=8 */
-template<typename T>
-inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error) {
-  if (B.cols() <= excess + blocksize) {
-    return solve_blockcg(X, K, reg, B, tol, throw_on_cholesky_error);
-  }
-  // split B into blocks of size <blocksize> (+ excess if needed)
-  Matrix Xblock, Bblock;
-  int max_iter = 0;
-  for (int i = 0; i < B.cols(); i += blocksize) {
-    int ncols = blocksize;
-    if (i + ncols + excess >= B.cols()) {
-      ncols = B.cols() - i;
-    }
-    Bblock.resize(B.rows(), ncols);
-    Xblock.resize(X.rows(), ncols);
-
-    Bblock = B.block(0, i, B.rows(), ncols);
-    int niter = solve_blockcg(Xblock, K, reg, Bblock, tol, throw_on_cholesky_error);
-    max_iter = std::max(niter, max_iter);
-    X.block(0, i, X.rows(), ncols) = Xblock;
-  }
-
-  return max_iter;
+inline void AtA_mul_B(Matrix& out, const SparseSideInfo& A, double reg, const Matrix& B) {
+  out.noalias() = (A.Ft * (A.F * B)) + reg * B;
 }
 
 //
@@ -131,7 +104,7 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
 //   B = n x m matrix
 //
 template<typename T>
-inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, bool throw_on_cholesky_error) {
+inline int solve_blockcg_1block(Matrix & X, const T & K, double reg, Matrix & B, double tol, bool throw_on_cholesky_error = false) {
   // initialize
   const int nfeat = B.rows();
   const int nrhs  = B.cols();
@@ -267,12 +240,66 @@ inline int solve_blockcg(Matrix & X, T & K, double reg, Matrix & B, double tol, 
   return iter;
 }
 
-inline void AtA_mul_B(Matrix & out, Matrix & A, double reg, Matrix & B) {
-	out.noalias() = (A.transpose() * (A * B)) + reg * B;
+
+/** good values for solve_blockcg are blocksize=32 an excess=8 */
+template<typename T>
+inline int solve_blockcg_impl(Matrix & X, const T & K, double reg, Matrix & B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error = false) {
+  if (B.cols() <= excess + blocksize) {
+    return solve_blockcg_1block(X, K, reg, B, tol, throw_on_cholesky_error);
+  }
+  // split B into blocks of size <blocksize> (+ excess if needed)
+  Matrix Xblock, Bblock;
+  int max_iter = 0;
+  for (int i = 0; i < B.cols(); i += blocksize) {
+    int ncols = blocksize;
+    if (i + ncols + excess >= B.cols()) {
+      ncols = B.cols() - i;
+    }
+    Bblock.resize(B.rows(), ncols);
+    Xblock.resize(X.rows(), ncols);
+
+    Bblock = B.block(0, i, B.rows(), ncols);
+    int niter = solve_blockcg_1block(Xblock, K, reg, Bblock, tol, throw_on_cholesky_error);
+    max_iter = std::max(niter, max_iter);
+    X.block(0, i, X.rows(), ncols) = Xblock;
+  }
+
+  return max_iter;
 }
 
-inline void AtA_mul_B(Matrix& out, SparseSideInfo& A, double reg, Matrix& B) {
-  out.noalias() = (A.Ft * (A.F * B)) + reg * B;
+template<typename T>
+inline int solve_blockcg(Matrix & X, const T & K, double reg, Matrix & B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
+{
+#if 0
+    COUNTER("solve_blockcg");
+    return linop::solve_blockcg_impl(X, K, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
+#else
+    int iter1, iter2;
+    Matrix X1 = X;
+    {
+        COUNTER("eigen_cg");
+        linop::AtA A(K.F, K.Ft, reg);
+        Eigen::ConjugateGradient<linop::AtA, Eigen::Lower | Eigen::Upper, Eigen::IdentityPreconditioner> cg;
+        cg.setTolerance(tol);
+        cg.compute(A);
+        X1 = cg.solve(B);
+        iter1 = cg.iterations();
+        SHOW(iter1);
+        SHOW((X1 - B).norm());
+    }
+
+    Matrix X2 = X;
+    {
+        COUNTER("smurff_cg");
+        iter2 = linop::solve_blockcg_impl(X2, K, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
+        SHOW(iter2);
+        SHOW((X2 - B).norm());
+    }
+
+    SHOW((X2 - X1).norm());
+
+    return iter1;
+#endif
 }
 
 }}

@@ -3,20 +3,15 @@
 import smurff
 import matrix_io as mio
 import numpy as np
+from time import time
 
 #load data
-
-
-
 ic50_train = mio.read_matrix("chembl-IC50-346targets-100compounds-train.sdm")
 ic50_test = mio.read_matrix("chembl-IC50-346targets-100compounds-test.sdm")
-ic50_threshold = 6.
+#feat = mio.read_matrix("chembl-IC50-100compounds-feat-dense.ddm")
+feat = mio.read_matrix("chembl-IC50-100compounds-feat.sdm")
 
-# feat = mio.read_matrix("chembl-IC50-100compounds-feat.sdm")
-feat = mio.read_matrix("chembl-IC50-100compounds-feat-dense.ddm")
-print("feat: ", feat.shape)
-FtF = np.matmul(feat.T, feat)
-print("FtF: ", FtF.shape)
+ic50_threshold = 6.
 
 trainSession = smurff.TrainSession(
                             verbose = 2,
@@ -31,8 +26,12 @@ trainSession = smurff.TrainSession(
 
 ## using activity threshold pIC50 > 6. to binarize train data
 trainSession.addTrainAndTest(ic50_train, ic50_test)
-trainSession.addSideInfo(0, feat, direct=True)
+trainSession.addSideInfo(0, feat, noise=smurff.SampledNoise(), direct=False)
 
+start = time()
 predictions = trainSession.run()
+stop = time()
+
+print("time = %.2f" % (stop - start))
 print("RMSE = %.2f" % smurff.calc_rmse(predictions))
 print("AUC = %.2f" % smurff.calc_auc(predictions, ic50_threshold))

@@ -60,33 +60,6 @@ int SparseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, 
 {
     COUNTER("solve_blockcg");
     return linop::solve_blockcg(X, *this, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
-#if 0
-    int iter1, iter2;
-    Matrix X1 = X;
-    {
-        COUNTER("eigen_cg");
-        linop::AtA A(F, reg);
-        Eigen::ConjugateGradient<linop::AtA, Eigen::Lower | Eigen::Upper> cg;
-        cg.setTolerance(tol);
-        cg.compute(A);
-        X1 = cg.solve(B.transpose()).transpose();
-        iter1 = cg.iterations();
-        SHOW(iter1);
-        SHOW((X1 - B).norm());
-    }
-
-    Matrix X2 = X;
-    {
-        COUNTER("smurff_cg");
-        iter2 = linop::solve_blockcg(X2, *this, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
-        SHOW(iter2);
-        SHOW((X2 - B).norm());
-    }
-
-    SHOW((X2 - X1).norm());
-
-    return iter1;
-#endif
 }
 
 Vector SparseSideInfo::col_square_sum()
