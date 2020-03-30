@@ -22,7 +22,7 @@ namespace smurff {
 
 void TrainSession::init()
 {
-    THROWERROR_ASSERT(!m_is_init);
+    THROWERROR_ASSERT_MSG(!m_is_init, "TrainSession::init called twice");
     
     getConfig().validate();
 
