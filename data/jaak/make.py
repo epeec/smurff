@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
+import matrix_io as mio
 import urllib.request
 import scipy.io as sio
 import os
 from hashlib import sha256
+import smurff
 
 urls = [
         (
@@ -39,67 +41,44 @@ for url, expected_sha, output in urls:
 
 ic50 = sio.mmread("chembl-IC50-346targets.mm")
 feat = sio.mmread("chembl-IC50-compound-feat.mm")
+ic50_100c = ic50.tocsr()[0:100,:]
+ic50_100c_train, ic50_100c_test = smurff.make_train_test(ic50_100c, 0.2, 1234)
 
-def make_01():
-    # 0,1 binary for probit
-    ic50_01 = ic50.copy()
-    ic50_01.data = (ic50_01.data >= 6) * 1.
-    sio.mmwrite(open("chembl-IC50-346targets-01.mm", "wb"), ic50_01)
+# 0,1 binary for probit
+ic50_01 = ic50.copy()
+ic50_01.data = (ic50_01.data >= 6) * 1.
 
-def make_11():
-    # -1,+1
-    ic50_11 = ic50.copy()
-    ic50_11.data = ((ic50.data >= 6) * 2.) - 1.
-    sio.mmwrite(open("chembl-IC50-346targets-11.mm", "wb"), ic50_11)
+# -1,+1
+ic50_11 = ic50.copy()
+ic50_11.data = ((ic50.data >= 6) * 2.) - 1.
 
-def make_100compounds():
-    ic50_100c = ic50.tocsr()[0:100,:]
-    sio.mmwrite(open("chembl-IC50-346targets-100compounds.mm", "wb"), ic50_100c)
-
-def feat_100():
-    feat_100 = feat.tocsr()[0:100,:]
-    feat_100 = feat_100[:,feat_100.getnnz(0)>0]
-    return feat_100
-
-def make_feat():
-    sio.mmwrite(open("chembl-IC50-100compounds-feat.mm", "wb"), feat_100())
-
-def make_feat_dense():
-    sio.mmwrite(open("chembl-IC50-100compounds-feat-dense.mm", "wb"), feat_100().todense())
+feat_100 = feat.tocsr()[0:100,:]
+feat_100 = feat_100[:,feat_100.getnnz(0)>0]
+feat_100_dense = feat_100.todense()
 
 generated_files = [
-        ( "7c3a1a381a2017a463f201100ee5b257b7ee01819f41f5737f4a817411beaef7",
-            "chembl-IC50-100compounds-feat-dense.mm",
-            make_feat_dense,
-            ),
-        ( "30253d120e06f0ab9e766185ca2991fff3a500c6c51064ed94034c057d676842",
-            "chembl-IC50-100compounds-feat.mm",
-            make_feat,
-            ),
-        ( "3114693bab82bdf7ac4b58fde0007bc2291f2c52e0de0c0a7f0e1a332010bdfe",
-            "chembl-IC50-346targets-01.mm",
-            make_01,
-            ),
-        ( "66cc294bdb13f8d6900cfd467b75f15c09e4808c93f2f8e7aeb55e37956c4df6",
-            "chembl-IC50-346targets-100compounds.mm",
-            make_100compounds,
-            ),
-        ( "2aa07a0e0aed3a1cb0bf17fed9aabcdefbd57ed0897908e9be50aa58fc082515",
-            "chembl-IC50-346targets-11.mm",
-            make_11,
-            ),
+        ( "f0d2ad6cf8173a64e12b48821e683b642b593555c552f4abf1f10ba255af78fc", "chembl-IC50-100compounds-feat-dense.ddm", feat_100_dense,),
+        ( "0dd148a0da1a11ce6c6c3847d0cc2820dc9c819868f964a653a0d42063ce5c42", "chembl-IC50-100compounds-feat.sdm", feat_100,),
+        ( "973074474497b236bf75fecfe9cc17471783fd40dbdda158b81e0ebbb408d30b", "chembl-IC50-346targets-01.sdm", ic50_01,),
+        ( "5d7c821cdce02b4315a98a94cba5747e82d423feb1a2158bf03a7640aa82625d", "chembl-IC50-346targets-100compounds.sdm", ic50_100c,),
+        ( "c70dbc990a5190d1c5d83594259abf10da409d2ba853038ad8f0e36f76ab56a8", "chembl-IC50-346targets-100compounds-train.sdm", ic50_100c_train,),
+        ( "b2d7f742f434e9b933c22dfd45fa28d9189860edd1e42a6f0a5477f6f6f7d122", "chembl-IC50-346targets-100compounds-test.sdm", ic50_100c_test,),
+        ( "bcf5cee9702e318591b76f064859c1d0769158d0b0f5c44057392c2f9385a591", "chembl-IC50-346targets-11.sdm", ic50_11,),
+        ( "1defd1c82ac3243ad60a23a753287df494d3b50f2fd5ff7f4a074182b07e3318", "chembl-IC50-346targets.sdm", ic50, ),
+        ( "badfa23abb83e0b731e969e1117fd4269f2df16e1faf14eb54c53c60465e87f1", "chembl-IC50-compound-feat.sdm", feat, ),
         ]
 
-for expected_sha, output, func in generated_files:
+for expected_sha, output, data in generated_files:
     if os.path.isfile(output):
         actual_sha = sha256(open(output, "rb").read()).hexdigest()
         if (expected_sha == actual_sha):
             continue
 
     print("make %s" % output)
-    func()
+    mio.write_matrix(output, data)
 
     actual_sha = sha256(open(output, "rb").read()).hexdigest()
-    assert (expected_sha == actual_sha)
+    if (expected_sha != actual_sha):
+        print("Checksum mismatch for %s: expected %s, got %s" % (output, expected_sha, actual_sha))
 
 

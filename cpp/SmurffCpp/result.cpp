@@ -11,49 +11,44 @@
 #include <SmurffCpp/ConstVMatrixIterator.hpp>
 
 #include <SmurffCpp/Types.h>
-#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Model.h>
 #include <SmurffCpp/result.h>
 
 #include <Utils/Error.h>
-#include <SmurffCpp/Utils/StepFile.h>
+#include <SmurffCpp/Utils/SaveState.h>
 #include <Utils/StringUtils.h>
-
-#include <SmurffCpp/IO/GenericIO.h>
-#include <SmurffCpp/IO/MatrixIO.h>
-
-#define GLOBAL_TAG "global"
-#define RMSE_AVG_TAG "rmse_avg"
-#define RMSE_1SAMPLE_TAG "rmse_1sample"
-#define AUC_AVG_TAG "auc_avg"
-#define AUC_1SAMPLE_TAG "auc_1sample"
-#define SAMPLE_ITER_TAG "sample_iter"
-#define BURNIN_ITER_TAG "burnin_iter"
 
 namespace smurff {
 
 Result::Result() {}
 
-//Y - test sparse matrix
-Result::Result(std::shared_ptr<TensorConfig> Y, int nsamples)
-    : m_dims(Y->getDims())
+Result::Result(const DataConfig &Y, int nsamples)
+    : m_dims(Y.getDims())
 {
-   if (!Y)
-   {
-      THROWERROR("test data is not initialized");
-   }
-
-   if(Y->isDense())
+   if(Y.isDense())
    {
       THROWERROR("test data should be sparse");
    }
 
-   for(std::uint64_t i = 0; i < Y->getNNZ(); i++)
-   {
-      const auto p = Y->get(i);
-      m_predictions.push_back(ResultItem(p.first, p.second, nsamples));
-   }
+   if (Y.isMatrix()) set(Y.getSparseMatrixData(), nsamples);
+   else set(Y.getSparseTensorData(), nsamples);
+}
+
+
+//Y - test sparse matrix
+Result::Result(const SparseMatrix &Y, int nsamples)
+    : m_dims({Y.rows(), Y.cols()})
+{
+    set(Y, nsamples);
+}
+
+
+//Y - test sparse tensor
+Result::Result(const SparseTensor &Y, int nsamples)
+    : m_dims(Y.getDims())
+{
+    set(Y, nsamples);
 }
 
 Result::Result(PVec<> lo, PVec<> hi, double value, int nsamples)
@@ -66,231 +61,104 @@ Result::Result(PVec<> lo, PVec<> hi, double value, int nsamples)
    }
 }
 
+void Result::set(const SparseMatrix &Y, int nsamples)
+{
+   for (int k = 0; k < Y.outerSize(); ++k)
+      for (SparseMatrix::InnerIterator it(Y,k); it; ++it)
+      {
+         PVec<> pos = {it.row(), it.col()};
+         m_predictions.push_back(ResultItem(pos, it.value(), nsamples));
+      }
+}
+
+void Result::set(const SparseTensor &Y, int nsamples)
+{
+   for(std::uint64_t i = 0; i < Y.getNNZ(); i++)
+   {
+      const auto p = Y.get(i);
+      m_predictions.push_back(ResultItem(p.first, p.second, nsamples));
+   }
+}
+
 void Result::init()
 {
    total_pos = 0;
    if (classify)
    {
-         for (const auto &p : m_predictions)
-         {
-               int is_positive = p.val > threshold;
-               total_pos += is_positive;
-         }
+      for (const auto &p : m_predictions)
+      {
+         int is_positive = p.val > threshold;
+         total_pos += is_positive;
+      }
    }
 }
 
 //--- output model to files
-void Result::save(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const
-{
-   savePred(sf, saved_avg_var);
-   savePredState(sf);
-}
-
 
 template<typename Accessor>
-std::shared_ptr<const MatrixConfig> Result::toMatrixConfig(const Accessor &acc) const
+std::shared_ptr<const SparseMatrix> Result::toMatrix(const Accessor &acc) const
 {
-   auto ret = std::make_shared<MatrixConfig>(false, false, false,     
-      m_dims.at(0), m_dims.at(1), m_predictions.size(), NoiseConfig());
-
-   std::vector<std::uint32_t> &rows = ret->getRows();
-   std::vector<std::uint32_t> &cols = ret->getCols();
-   std::vector<double> &values = ret->getValues();
+   auto ret = std::make_shared<SparseMatrix>(m_dims.at(0), m_dims.at(1));
+   
+   std::vector<Eigen::Triplet<smurff::float_type>> triplets;
 
    for (const auto &p : m_predictions)
-   {
-      rows.push_back(p.coords.at(0));
-      cols.push_back(p.coords.at(1));
-      values.push_back(acc(p));
-   }
-
+      triplets.push_back({ (int)p.coords.at(0), (int)p.coords.at(1), acc(p) });
+   
+   ret->setFromTriplets(triplets.begin(), triplets.end());
    return ret;
 }
 
-void Result::savePred(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const
+void Result::save(SaveState &sf) const
 {
-   saved_avg_var = false;
-   
    if (isEmpty())
       return;
 
-   std::string fname_pred = sf->makePredFileName();
+   if (m_dims.size() == 2)
+   {
+      auto pred_avg = toMatrix([](const ResultItem &p) { return p.pred_avg; });
+      auto pred_var = toMatrix([](const ResultItem &p) { return p.var; });
+      auto pred_1sample = toMatrix([](const ResultItem &p) { return p.pred_1sample; });
+
+      sf.putPredAvgVar(*pred_avg, *pred_var, *pred_1sample);
+   }
+
+   sf.putPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
+}
+
+void Result::toCsv(std::string filename) const
+{
    std::ofstream predFile;
+   predFile.open(filename, std::ios::out);
+   THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + filename);
 
-   if (sf->isBinary())
+   for (std::size_t d = 0; d < m_dims.size(); d++)
+      predFile << "coord" << d << ",";
+
+   predFile << "y,pred_1samp,pred_avg,var" << std::endl;
+
+   for (std::vector<ResultItem>::const_iterator it = m_predictions.begin(); it != m_predictions.end(); it++)
    {
-      predFile.open(fname_pred, std::ios::out | std::ios::binary);
-      THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + fname_pred);
-      predFile.write((const char *)(&m_predictions[0]), m_predictions.size() * sizeof(m_predictions[0]));
-
-      if (m_dims.size() == 2)
-      {
-         std::string pred_avg_path = sf->makePredAvgFileName();
-         auto pred_avg = toMatrixConfig([](const ResultItem &p) { return p.pred_avg; });
-         matrix_io::write_matrix(pred_avg_path, pred_avg);
-
-         std::string pred_var_path = sf->makePredVarFileName();
-         auto pred_var = toMatrixConfig([](const ResultItem &p) { return p.var; });
-         matrix_io::write_matrix(pred_var_path, pred_var);
-
-         saved_avg_var = true;
-      }
-   }
-   else
-   {
-
-      predFile.open(fname_pred, std::ios::out);
-      THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + fname_pred);
-
-      for (std::size_t d = 0; d < m_dims.size(); d++)
-         predFile << "coord" << d << ",";
-
-      predFile << "y,pred_1samp,pred_avg,var" << std::endl;
-
-      for (std::vector<ResultItem>::const_iterator it = m_predictions.begin(); it != m_predictions.end(); it++)
-      {
-         it->coords.save(predFile)
-             << "," << std::to_string(it->val)
-             << "," << std::to_string(it->pred_1sample)
-             << "," << std::to_string(it->pred_avg)
-             << "," << std::to_string(it->var)
-             << std::endl;
-      }
+      it->coords.save(predFile)
+          << "," << std::to_string(it->val)
+          << "," << std::to_string(it->pred_1sample)
+          << "," << std::to_string(it->pred_avg)
+          << "," << std::to_string(it->var)
+          << std::endl;
    }
 
    predFile.close();
-
 }
 
-void Result::savePredState(std::shared_ptr<const StepFile> sf) const
+void Result::restore(const SaveState &sf)
 {
-   if (isEmpty())
-      return;
-
-   std::string predStateName = sf->makePredStateFileName();
-
-   INIFile predStatefile;
-   predStatefile.create(predStateName);
-
-   predStatefile.startSection(GLOBAL_TAG);
-   predStatefile.appendItem(GLOBAL_TAG, RMSE_AVG_TAG, std::to_string(rmse_avg));
-   predStatefile.appendItem(GLOBAL_TAG, RMSE_1SAMPLE_TAG, std::to_string(rmse_1sample));
-   predStatefile.appendItem(GLOBAL_TAG, AUC_AVG_TAG, std::to_string(auc_avg));
-   predStatefile.appendItem(GLOBAL_TAG, AUC_1SAMPLE_TAG, std::to_string(auc_1sample));
-   predStatefile.appendItem(GLOBAL_TAG, SAMPLE_ITER_TAG, std::to_string(sample_iter));
-   predStatefile.appendItem(GLOBAL_TAG, BURNIN_ITER_TAG, std::to_string(burnin_iter));
-   
-   predStatefile.flush();
-}
-
-void Result::restore(std::shared_ptr<const StepFile> sf)
-{
-   restorePred(sf);
-   restoreState(sf);
-}
-
-void Result::restorePred(std::shared_ptr<const StepFile> sf)
-{
-   std::string fname_pred = sf->getPredFileName();
-
-   THROWERROR_FILE_NOT_EXIST(fname_pred);
-
-   //open file with predictions
-   std::ifstream predFile;
-
-   std::string fname_ext = fname_pred.substr(fname_pred.find_last_of("."));
-
-   if (fname_ext == ".bin") {
-      predFile.open(fname_pred, std::ios::in | std::ios::binary);
-      THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + fname_pred);
-      predFile.read((char *)(&(m_predictions)[0]), m_predictions.size() * sizeof((m_predictions)[0]));  
-   }
-   else if (fname_ext == ".csv")
-   {
-      //since predictions were set in set method - clear them
-      std::size_t oldSize = m_predictions.size();
-      m_predictions.clear();
-
-      predFile.open(fname_pred);
-      THROWERROR_ASSERT_MSG(predFile.is_open(), "Error opening file: " + fname_pred);
-
-      //parse header
-      std::string header;
-      getline(predFile, header);
-
-      std::vector<std::string> headerTokens;
-      split(header, headerTokens, ',');
-
-      //parse all lines
-      std::vector<std::string> tokens;
-      std::vector<int> coords;
-      std::string line;
-
-      while (getline(predFile, line))
-      {
-         //split line
-         split(line, tokens, ',');
-
-         //construct coordinates
-         coords.clear();
-
-         std::size_t nCoords = m_dims.size();
-
-         for (std::size_t c = 0; c < nCoords; c++)
-            coords.push_back(std::stoi(tokens[c].c_str()));
-
-         //parse other values
-         double val = std::stod(tokens.at(nCoords).c_str());
-         double pred_1sample = std::stod(tokens.at(nCoords + 1).c_str());
-         double pred_avg = std::stod(tokens.at(nCoords + 2).c_str());
-         double var = std::stod(tokens.at(nCoords + 3).c_str());
-
-         //construct result item
-         m_predictions.push_back(ResultItem(PVec<>(coords), val, pred_1sample, pred_avg, var, sample_iter));
-      }
-
-      //just a sanity check, not sure if it is needed
-      THROWERROR_ASSERT_MSG(oldSize == m_predictions.size(), "Incorrect predictions size after restore");
-   } 
-   else 
-   {
-      THROWERROR("Unknown extension: " + fname_pred);
-   }
-
-
-   predFile.close();
-}
-
-void Result::restoreState(std::shared_ptr<const StepFile> sf)
-{
-   std::string predStateName = sf->getPredStateFileName();
-
-   INIFile iniReader;
-   iniReader.open(predStateName);
-
-   auto value = iniReader.get(GLOBAL_TAG, RMSE_AVG_TAG);
-   rmse_avg = std::stod(value.c_str());
-   
-   value = iniReader.get(GLOBAL_TAG, RMSE_1SAMPLE_TAG);
-   rmse_1sample = std::stod(value.c_str());
-   
-   value = iniReader.get(GLOBAL_TAG, AUC_AVG_TAG);
-   auc_avg = std::stod(value.c_str());
-   
-   value = iniReader.get(GLOBAL_TAG, AUC_1SAMPLE_TAG);
-   auc_1sample = std::stod(value.c_str());
-   
-   value = iniReader.get(GLOBAL_TAG, SAMPLE_ITER_TAG);
-   sample_iter = std::stoi(value.c_str());
-   
-   value = iniReader.get(GLOBAL_TAG, BURNIN_ITER_TAG);
-   burnin_iter = std::stoi(value.c_str());
+   sf.getPredState(rmse_avg, rmse_1sample, auc_avg, auc_1sample, sample_iter, burnin_iter);
 }
 
 //--- update RMSE and AUC
 
 //model - holds samples (U matrices)
-void Result::update(std::shared_ptr<const Model> model, bool burnin)
+void Result::update(const Model &model, bool burnin)
 {
    if (m_predictions.empty())
       return;
@@ -305,7 +173,7 @@ void Result::update(std::shared_ptr<const Model> model, bool burnin)
       for(size_t k = 0; k < m_predictions.size(); ++k)
       {
          auto &t = m_predictions.operator[](k);
-         t.pred_1sample = model->predict(t.coords); //dot product of i'th columns in each U matrix
+         t.pred_1sample = model.predict(t.coords); //dot product of i'th columns in each U matrix
          se_1sample += std::pow(t.val - t.pred_1sample, 2);
       }
 
@@ -327,7 +195,7 @@ void Result::update(std::shared_ptr<const Model> model, bool burnin)
       for(size_t k = 0; k < m_predictions.size(); ++k)
       {
          auto &t = m_predictions.operator[](k);
-         const double pred = model->predict(t.coords); //dot product of i'th columns in each U matrix
+         const double pred = model.predict(t.coords); //dot product of i'th columns in each U matrix
          t.update(pred);
 
          se_1sample += std::pow(t.val - pred, 2);
@@ -349,7 +217,7 @@ void Result::update(std::shared_ptr<const Model> model, bool burnin)
    }
 }
 
-std::ostream &Result::info(std::ostream &os, std::string indent)
+std::ostream &Result::info(std::ostream &os, std::string indent) const
 {
    if (!m_predictions.empty())
    {

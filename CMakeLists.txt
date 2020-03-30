@@ -22,7 +22,7 @@ SET(BOOST_RANDOM_VERSION "" CACHE STRING "Enable boost::random for this specific
 OPTION(ENABLE_PYTHON "Enable Python Wrapper" ON)
 OPTION(ENABLE_MPI "Enable MPI Support" ON)
 
-OPTION(USE_FLOAT "Use 'float' instead of 'double' for internal compute" OFF)
+SET(SMURFF_FLOAT_TYPE "double" CACHE STRING "Main compute type")
 
 # INIT CMAKE
 
@@ -64,6 +64,12 @@ endif()
 
 # FETCH COMPILER
 
+set(CMAKE_CXX_STANDARD 14)
+
+# needed for PyBIND11
+# https://pybind11.readthedocs.io/en/stable/faq.html#someclass-declared-with-greater-visibility-than-the-type-of-its-field-someclass-member-wattributes
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+
 if (MSVC OR MSVC_IDE OR MSVC_VERSION OR MSVC60 OR MSVC70 OR MSVC71 OR MSVC80 OR MSVC90 OR MSVC10 OR MSVC11 OR MSVC12)
    message( STATUS "Compiler is a Microsoft variant")
    message( STATUS "MSVC: " ${MSVC} )
@@ -97,7 +103,7 @@ elseif (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
       add_definitions(-DMAC_OSX)
    endif()
 
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -Wno-parentheses -fPIC")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -Wno-parentheses -fPIC")
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas -fPIC")
 
    if (${ENABLE_ASAN})
@@ -108,7 +114,7 @@ elseif (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
 else()
    message ("Using untested/unconfigured compiler, only Microsoft and g++ toolchain has been tested/established.")
 
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -fPIC")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -fPIC")
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas -fPIC")
 
 endif()
@@ -160,7 +166,7 @@ if(NOT "${GIT_BRANCH_ERROR}" STREQUAL "0")
    set(GIT_BRANCH "Unknown")
 endif()
 
-message("GIT branch ${GIT_BRANCH}")
+message(STATUS "GIT branch ${GIT_BRANCH}")
 
 #get GIT describe
 execute_process(
@@ -187,7 +193,7 @@ message(STATUS "Cleaned version: ${SMURFF_VERSION_CLEAN}")
 
 # CONFIGURE BUILD TYPE
 
-message(STATUS "Analyzing build type...")
+message("Analyzing build type...")
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'Release' as none was specified.")
@@ -236,12 +242,12 @@ message("Checking build dependencies...")
 
 #set additional search paths for cmake scripts
 
+add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
+message(STATUS "Using '${SMURFF_FLOAT_TYPE}' as main computing type")
 include(cmake/DependenciesConfig.cmake)
 
-SET(SMURFF_FLOAT_TYPE "double" CACHE STRING "Main compute type")
-add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
-message("Using '${SMURFF_FLOAT_TYPE}' as main computing type")
 
+configure_highfive()
 configure_boost()
 configure_eigen_viennacl()
 configure_openmp()
@@ -254,7 +260,7 @@ set(ALGEBRA_LIB_FOUND OFF)
 
 if(${ENABLE_OPENBLAS})
   if(${ENABLE_MKL})
-  message(FATAL_ERROR "You cannot both enable OpenBLAS and MKL")
+    message(FATAL_ERROR "You cannot both enable OpenBLAS and MKL")
   endif()
   configure_openblas()
   set(ALGEBRA_LIBS ${BLAS_LIBRARIES})

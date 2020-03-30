@@ -1,12 +1,10 @@
 #include "NormalOnePrior.h"
-#include <SmurffCpp/IO/MatrixIO.h>
 
 namespace smurff {
 
-NormalOnePrior::NormalOnePrior(std::shared_ptr<Session> session, uint32_t mode, std::string name)
-   : ILatentPrior(session, mode, name)
+NormalOnePrior::NormalOnePrior(TrainSession &trainSession, uint32_t mode, std::string name)
+   : ILatentPrior(trainSession, mode, name)
 {
-
 }
 
 void NormalOnePrior::init()
@@ -16,8 +14,8 @@ void NormalOnePrior::init()
 
    const int K = num_latent();
 
-   m_mu = std::make_shared<Vector>(K);
-   hyperMu().setZero(); 
+   mu().resize(K);
+   mu().setZero(); 
 
    Lambda.resize(K, K);
    Lambda.setIdentity();
@@ -34,12 +32,12 @@ void NormalOnePrior::init()
 
 const Vector NormalOnePrior::fullMu(int n) const
 {
-   return hyperMu();
+   return mu();
 }
 
 void NormalOnePrior::update_prior()
 {
-    std::tie(hyperMu(), Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
+    std::tie(mu(), Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
 }
 
 void NormalOnePrior::sample_latent(int d)
@@ -52,7 +50,7 @@ void NormalOnePrior::sample_latent(int d)
    data().getMuLambda(model(), m_mode, d, yX, XX);
 
    // add hyperparams
-   yX.noalias() += Lambda * hyperMu();
+   yX.noalias() += mu() * Lambda;
    XX.noalias() += Lambda;
 
    for(int k=0;k<K;++k) sample_latent(d, k, XX, yX);
@@ -60,10 +58,10 @@ void NormalOnePrior::sample_latent(int d)
  
 std::pair<float_type,float_type> NormalOnePrior::sample_latent(int d, int k, const Matrix& XX, const Vector& yX)
 {
-    auto Ucol = U().col(d);
+    auto Urow = U().row(d);
     float_type lambda = XX(k,k);
-    float_type mu = (1/lambda) * (yX(k) - Ucol.transpose() * XX.col(k) + Ucol(k) * XX(k,k));
-    Ucol(k) = mu + randn() / sqrt(lambda);
+    float_type mu = (1/lambda) * (yX(k) - Urow * XX.row(k).transpose() + Urow(k) * XX(k,k));
+    Urow(k) = mu + rand_normal() / sqrt(lambda);
     return std::make_pair(mu, lambda);
 }
 

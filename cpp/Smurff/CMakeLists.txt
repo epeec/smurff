@@ -11,4 +11,5 @@ target_link_libraries (smurff smurff-cpp smurff-utils
                                   ${OpenMP_CXX_LIBRARIES}
                                   ${Boost_LIBRARIES}
                                   ${ALGEBRA_LIBS}
+                                  HighFive
                       )

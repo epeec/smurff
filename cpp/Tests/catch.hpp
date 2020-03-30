@@ -4619,8 +4619,8 @@ public:
         m_positive(m_step > T(0))
     {
         assert(m_current != m_end && "Range start and end cannot be equal");
-        assert(m_step != T(0) && "Step size cannot be zero");
-        assert(((m_positive && m_current <= m_end) || (!m_positive && m_current >= m_end)) && "Step moves away from end");
+        assert(m_step != T(0) && "SaveState size cannot be zero");
+        assert(((m_positive && m_current <= m_end) || (!m_positive && m_current >= m_end)) && "SaveState moves away from end");
     }
 
     RangeGenerator(T const& start, T const& end):
@@ -5940,19 +5940,19 @@ namespace Catch {
             BrightYellow = Bright | Yellow,
 
             // By intention
-            FileName = LightGrey,
-            Warning = BrightYellow,
-            ResultError = BrightRed,
-            ResultSuccess = BrightGreen,
+            FileName = Grey,
+            Warning = Yellow,
+            ResultError = Red,
+            ResultSuccess = Green,
             ResultExpectedFailure = Warning,
 
-            Error = BrightRed,
+            Error = Red,
             Success = Green,
 
             OriginalExpression = Cyan,
-            ReconstructedExpression = BrightYellow,
+            ReconstructedExpression = Yellow,
 
-            SecondaryText = LightGrey,
+            SecondaryText = Grey,
             Headers = White
         };
 
@@ -12978,11 +12978,11 @@ namespace Catch {
 
 namespace Catch {
 
-    class Session : NonCopyable {
+    class TrainSession : NonCopyable {
     public:
 
-        Session();
-        ~Session() override;
+        TrainSession();
+        ~TrainSession() override;
 
         void showHelp() const;
         void libIdentify();
@@ -13170,10 +13170,10 @@ namespace Catch {
 
     } // anon namespace
 
-    Session::Session() {
+    TrainSession::TrainSession() {
         static bool alreadyInstantiated = false;
         if( alreadyInstantiated ) {
-            CATCH_TRY { CATCH_INTERNAL_ERROR( "Only one instance of Catch::Session can ever be used" ); }
+            CATCH_TRY { CATCH_INTERNAL_ERROR( "Only one instance of Catch::TrainSession can ever be used" ); }
             CATCH_CATCH_ALL { getMutableRegistryHub().registerStartupException(); }
         }
 
@@ -13201,17 +13201,17 @@ namespace Catch {
         alreadyInstantiated = true;
         m_cli = makeCommandLineParser( m_configData );
     }
-    Session::~Session() {
+    TrainSession::~TrainSession() {
         Catch::cleanUp();
     }
 
-    void Session::showHelp() const {
+    void TrainSession::showHelp() const {
         Catch::cout()
                 << "\nCatch v" << libraryVersion() << "\n"
                 << m_cli << std::endl
                 << "For more detailed usage please see the project docs\n" << std::endl;
     }
-    void Session::libIdentify() {
+    void TrainSession::libIdentify() {
         Catch::cout()
                 << std::left << std::setw(16) << "description: " << "A Catch2 test executable\n"
                 << std::left << std::setw(16) << "category: " << "testframework\n"
@@ -13219,7 +13219,7 @@ namespace Catch {
                 << std::left << std::setw(16) << "version: " << libraryVersion() << std::endl;
     }
 
-    int Session::applyCommandLine( int argc, char const * const * argv ) {
+    int TrainSession::applyCommandLine( int argc, char const * const * argv ) {
         if( m_startupExceptions )
             return 1;
 
@@ -13245,7 +13245,7 @@ namespace Catch {
     }
 
 #if defined(CATCH_CONFIG_WCHAR) && defined(_WIN32) && defined(UNICODE)
-    int Session::applyCommandLine( int argc, wchar_t const * const * argv ) {
+    int TrainSession::applyCommandLine( int argc, wchar_t const * const * argv ) {
 
         char **utf8Argv = new char *[ argc ];
 
@@ -13268,12 +13268,12 @@ namespace Catch {
     }
 #endif
 
-    void Session::useConfigData( ConfigData const& configData ) {
+    void TrainSession::useConfigData( ConfigData const& configData ) {
         m_configData = configData;
         m_config.reset();
     }
 
-    int Session::run() {
+    int TrainSession::run() {
         if( ( m_configData.waitForKeypress & WaitForKeypress::BeforeStart ) != 0 ) {
             Catch::cout() << "...waiting for enter/ return before starting" << std::endl;
             static_cast<void>(std::getchar());
@@ -13286,22 +13286,22 @@ namespace Catch {
         return exitCode;
     }
 
-    clara::Parser const& Session::cli() const {
+    clara::Parser const& TrainSession::cli() const {
         return m_cli;
     }
-    void Session::cli( clara::Parser const& newParser ) {
+    void TrainSession::cli( clara::Parser const& newParser ) {
         m_cli = newParser;
     }
-    ConfigData& Session::configData() {
+    ConfigData& TrainSession::configData() {
         return m_configData;
     }
-    Config& Session::config() {
+    Config& TrainSession::config() {
         if( !m_config )
             m_config = std::make_shared<Config>( m_configData );
         return *m_config;
     }
 
-    int Session::runInternal() {
+    int TrainSession::runInternal() {
         if( m_startupExceptions )
             return 1;
 
@@ -17161,7 +17161,7 @@ extern "C" int wmain (int argc, wchar_t * argv[], wchar_t * []) {
 int main (int argc, char * argv[]) {
 #endif
 
-    return Catch::Session().run( argc, argv );
+    return Catch::TrainSession().run( argc, argv );
 }
 
 #else // __OBJC__
@@ -17173,7 +17173,7 @@ int main (int argc, char * const argv[]) {
 #endif
 
     Catch::registerTestMethods();
-    int result = Catch::Session().run( argc, (char**)argv );
+    int result = Catch::TrainSession().run( argc, (char**)argv );
 
 #if !CATCH_ARC_ENABLED
     [pool drain];

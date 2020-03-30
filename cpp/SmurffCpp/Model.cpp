@@ -10,7 +10,6 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/DataMatrices/Data.h>
-#include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/Utils/Distribution.h>
 
 #include <SmurffCpp/Model.h>
@@ -21,9 +20,7 @@
 #include <SmurffCpp/ConstVMatrixExprIterator.hpp>
 
 #include <Utils/Error.h>
-#include <SmurffCpp/Utils/StepFile.h>
-
-#include <SmurffCpp/IO/GenericIO.h>
+#include <SmurffCpp/Utils/SaveState.h>
 
 namespace smurff {
 
@@ -32,28 +29,35 @@ Model::Model()
 {
 }
 
-//num_latent - size of latent dimention
+//num_latent - size of latent dimension
 //dims - dimentions of train data
 //init_model_type - samples initialization type
 void Model::init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_type, bool save_model, bool aggregate)
 {
+   size_t nmodes = dims.size();
+
    m_num_latent = num_latent;
    m_dims = dims;
    m_collect_aggr = aggregate;
    m_save_model = save_model;
    m_num_aggr = std::vector<int>(dims.size(), 0);
 
-   for(size_t i = 0; i < dims.size(); ++i)
+   m_factors.resize(nmodes);
+   m_link_matrices.resize(nmodes);
+   m_mus.resize(nmodes);
+
+   for(size_t i = 0; i < nmodes; ++i)
    {
-      std::shared_ptr<Matrix> mat(new Matrix(m_num_latent, dims[i]));
+      Matrix& mat = m_factors.at(i);
+      mat.resize(dims[i], m_num_latent);
 
       switch(model_init_type)
       {
       case ModelInitTypes::random:
-         bmrandn(*mat);
+         mat = Matrix::NullaryExpr(mat.rows(), mat.cols(), RandNormalGenerator());
          break;
       case ModelInitTypes::zero:
-         mat->setZero();
+         mat.setZero();
          break;
       default:
          {
@@ -61,61 +65,63 @@ void Model::init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_t
          }
       }
 
-      m_factors.push_back(mat);
-
       if (aggregate)
       {
-         std::shared_ptr<Matrix> aggr_sum(new Matrix(m_num_latent, dims[i]));
-         aggr_sum->setZero();
-         m_aggr_sum.push_back(aggr_sum);
-         std::shared_ptr<Matrix> aggr_dot(new Matrix(m_num_latent * m_num_latent, dims[i]));
-         aggr_dot->setZero();
-         m_aggr_dot.push_back(aggr_dot);
+         m_aggr_sum.push_back(Matrix::Zero(dims[i], m_num_latent));
+         m_aggr_dot.push_back(Matrix::Zero(dims[i], m_num_latent * m_num_latent));
       }
    }
-
-   m_link_matrices.resize(nmodes());
-   m_mus.resize(nmodes());
 
    Pcache.init(Array1D::Ones(m_num_latent));
 }
 
-void Model::setLinkMatrix(int mode, 
-   std::shared_ptr<Matrix> link_matrix,
-   std::shared_ptr<Vector> mu
-   )
+Matrix &Model::getLinkMatrix(int mode)
 {
-   m_link_matrices.at(mode) = link_matrix;
-   m_mus.at(mode) = mu;
+   return m_link_matrices.at(mode);
+}
+
+Vector &Model::getMu(int mode)
+{
+   return m_mus.at(mode);
+}
+
+const Matrix &Model::getLinkMatrix(int mode) const
+{
+   return m_link_matrices.at(mode);
+}
+
+const Vector &Model::getMu(int mode) const
+{
+   return m_mus.at(mode);
 }
 
 double Model::predict(const PVec<> &pos) const
 {
    if (nmodes() == 2)
    {
-      return col(0, pos[0]).dot(col(1, pos[1]));
+      return row(0, pos[0]).dot(row(1, pos[1]));
    }
 
    auto &P = Pcache.local();
    P.setOnes();
    for(uint32_t d = 0; d < nmodes(); ++d)
-      P *= col(d, pos.at(d)).array();
+      P *= row(d, pos.at(d)).array();
    return P.sum();
 }
 
 const Matrix &Model::U(uint32_t f) const
 {
-   return *m_factors.at(f);
+   return m_factors.at(f);
 }
 
 Matrix &Model::U(uint32_t f)
 {
-   return *m_factors[f];
+   return m_factors[f];
 }
 
 VMatrixIterator<Matrix> Model::Vbegin(std::uint32_t mode)
 {
-   return VMatrixIterator<Matrix>(shared_from_this(), mode, 0);
+   return VMatrixIterator<Matrix>(this, mode, 0);
 }
 
 VMatrixIterator<Matrix> Model::Vend()
@@ -133,9 +139,9 @@ ConstVMatrixIterator<Matrix> Model::CVend() const
    return ConstVMatrixIterator<Matrix>(m_factors.size());
 }
 
-Matrix::ConstColXpr Model::col(int f, int i) const
+Matrix::ConstRowXpr Model::row(int f, int i) const
 {
-   return U(f).col(i);
+   return U(f).row(i);
 }
 
 std::uint64_t Model::nmodes() const
@@ -151,7 +157,7 @@ int Model::nlatent() const
 int Model::nsamples() const
 {
    return std::accumulate(m_factors.begin(), m_factors.end(), 0,
-      [](const int &a, const std::shared_ptr<Matrix> &b) { return a + b->cols(); });
+      [](const int &a, const Matrix &b) { return a + b.rows(); });
 }
 
 const PVec<>& Model::getDims() const
@@ -168,10 +174,10 @@ void Model::updateAggr(int m, int i)
 {
    if (!m_collect_aggr) return;
 
-   const auto &r = col(m, i);
-   Matrix cov = (r * r.transpose());
-   m_aggr_sum.at(m)->col(i) += r;
-   m_aggr_dot.at(m)->col(i) += Eigen::Map<Vector>(cov.data(), nlatent() * nlatent());
+   const auto &r = row(m, i);
+   Matrix cov = (r.transpose() * r);
+   m_aggr_sum.at(m).row(i) += r;
+   m_aggr_dot.at(m).row(i) += Eigen::Map<Vector>(cov.data(), nlatent() * nlatent());
 }
 
 void Model::updateAggr(int m)
@@ -179,80 +185,95 @@ void Model::updateAggr(int m)
    m_num_aggr.at(m)++;
 }
 
-void Model::save(std::shared_ptr<const StepFile> sf, bool saveAggr) const
+void Model::save(SaveState &sf) const
 {
-   std::uint64_t i = 0;
-   for (auto U : m_factors)
+   sf.putModel(m_factors);
+   for (std::uint64_t m = 0; m < nmodes(); ++m)
    {
-      auto path = sf->makeModelFileName(i++);
-      matrix_io::eigen::write_matrix(path, *U);
-   }
+      sf.putLinkMatrix(m, m_link_matrices.at(m));
+      sf.putMu(m, m_mus.at(m));
 
-   unsigned nmodes = sf->getNModes();
-   if (m_collect_aggr && saveAggr)
-   {
-      for (std::uint64_t m = 0; m < nmodes; ++m)
+      if (m_collect_aggr && sf.saveAggr())
       {
-         double n = m_num_aggr.at(m);
-
-         Matrix &Usum = *m_aggr_sum.at(m);
-         Matrix &Uprod = *m_aggr_dot.at(m);
-
-         Matrix mu = Matrix::Zero(Usum.rows(), Usum.cols());
-         // inverse of the covariance
-         Matrix prec = Matrix::Zero(Uprod.rows(), Uprod.cols());
-
-         // calculate real mu and Lambda
-         for (int i = 0; i < U(m).cols(); i++)
+         int n = m_num_aggr.at(m);
+         const Matrix &Usum = m_aggr_sum.at(m);
+         const Matrix &Uprod = m_aggr_dot.at(m);
+         if (sf.isCheckpoint())
+            sf.putAggr(m, n, Usum, Uprod);
+         else
          {
-            Vector sum  = Usum.col(i);
-            Matrix prod = Eigen::Map<Matrix>( Uprod.col(i).data(), nlatent(), nlatent());
-            Matrix prec_i = ((prod - (sum * sum.transpose() / n)) / (n - 1)).inverse();
+            // compute mean and precision (inverse of the covariance)
+            Matrix mu = Matrix::Zero(Usum.rows(), Usum.cols());
+            Matrix prec = Matrix::Zero(Uprod.rows(), Uprod.cols());
 
-            prec.col(i) = Eigen::Map<Vector>(prec_i.data(), nlatent() * nlatent());
-            mu.col(i) = sum / n;
+            // calculate real mu and Lambda
+            for (int i = 0; i < U(m).rows(); i++)
+            {
+               Vector sum = Usum.row(i);
+               Matrix prod = Eigen::Map<const Matrix>(Uprod.row(i).data(), nlatent(), nlatent());
+               Matrix prec_i = ((prod - (sum.transpose() * sum / n)) / (n - 1)).inverse();
+
+               prec.row(i) = Eigen::Map<Vector>(prec_i.data(), nlatent() * nlatent());
+               mu.row(i) = sum / n;
+            }
+
+            sf.putPostMuLambda(m, mu, prec);
          }
-
-         std::string mu_path = sf->makePostMuFileName(m);
-         matrix_io::eigen::write_matrix(mu_path, mu);
-
-         std::string prec_path = sf->makePostLambdaFileName(m);
-         matrix_io::eigen::write_matrix(prec_path, prec);
       }
    }
 }
 
-void Model::restore(std::shared_ptr<const StepFile> sf, int skip_mode)
+void Model::restore(const SaveState &sf, int skip_mode)
 {
-   unsigned nmodes = sf->getNModes();
+   unsigned nmodes = sf.getNModes();
    m_factors.clear();
    m_dims = PVec<>(nmodes);
-   
-   for(std::uint64_t i = 0; i<nmodes; ++i)
+   m_factors.resize(nmodes);
+
+   m_num_aggr.resize(nmodes);
+   m_aggr_sum.resize(nmodes);
+   m_aggr_dot.resize(nmodes);
+
+   for (std::uint64_t i = 0; i < nmodes; ++i)
    {
-      auto U = std::make_shared<Matrix>();
-      std::string path = sf->getModelFileName(i);
-      if ((int)i != skip_mode) {
-          THROWERROR_FILE_NOT_EXIST(path);
-          matrix_io::eigen::read_matrix(path, *U);
-          m_dims.at(i) = U->cols();
-          m_num_latent = U->rows();
+      if ((int)i != skip_mode)
+      {
+         auto &U = m_factors.at(i);
+         sf.readModel(i, U);
+         m_dims.at(i) = U.rows();
+         m_num_latent = U.cols();
+
+         if (sf.hasAggr(i))
+         {
+            int        &n = m_num_aggr.at(i);
+            Matrix  &Usum = m_aggr_sum.at(i);
+            Matrix &Uprod = m_aggr_dot.at(i);
+            sf.readAggr(i, n, Usum, Uprod);
+         }
       }
       else
       {
-          m_dims.at(i) = -1;
+         m_dims.at(i) = -1;
       }
-      m_factors.push_back(U);
    }
 
    m_link_matrices.resize(nmodes);
    m_mus.resize(nmodes);
+
+   for(unsigned i=0; i<nmodes; ++i)
+   {
+      sf.readLinkMatrix(i, m_link_matrices.at(i));
+      sf.readMu(i, m_mus.at(i));
+   }
+
    Pcache.init(Array1D::Ones(m_num_latent));
 }
 
 std::ostream& Model::info(std::ostream &os, std::string indent) const
 {
    os << indent << "Num-latents: " << m_num_latent << std::endl;
+   os << indent << "Dimensions: " << m_dims << std::endl;
+
    return os;
 }
 
@@ -261,7 +282,7 @@ std::ostream& Model::status(std::ostream &os, std::string indent) const
    os << indent << "  Umean: " << std::endl;
    for(std::uint64_t d = 0; d < nmodes(); ++d)
       os << indent << "    U(" << d << ").colwise().mean: "
-         << U(d).rowwise().mean().transpose()
+         << U(d).colwise().mean()
          << std::endl;
 
    return os;
@@ -270,7 +291,7 @@ std::ostream& Model::status(std::ostream &os, std::string indent) const
 Matrix::ConstBlockXpr SubModel::U(int f) const
 {
    const Matrix &u = m_model.U(f); //force const
-   return u.block(0, m_off.at(f), m_model.nlatent(), m_dims.at(f));
+   return u.block(m_off.at(f), 0, m_dims.at(f), m_model.nlatent());
 }
 
 ConstVMatrixExprIterator<Matrix::ConstBlockXpr> SubModel::CVbegin(std::uint32_t mode) const

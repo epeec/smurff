@@ -4,7 +4,7 @@
 
 #include <SmurffCpp/Types.h>
 
-#include <SmurffCpp/Configs/MatrixConfig.h>
+#include <SmurffCpp/Configs/DataConfig.h>
 
 #include "ISideInfo.h"
 
@@ -14,10 +14,10 @@ namespace smurff {
    class DenseSideInfo : public ISideInfo
    {
    private:
-      std::shared_ptr<Matrix> m_side_info;
+      Matrix m_side_info;
 
    public:
-      DenseSideInfo(const std::shared_ptr<MatrixConfig> &);
+      DenseSideInfo(const DataConfig &);
 
    public:
       int cols() const override;
@@ -42,13 +42,13 @@ namespace smurff {
 
       Vector col_square_sum() override;
 
-      void At_mul_Bt(Vector& Y, const int col, Matrix& B) override;
+      void At_mul_Bt(Vector& Y, const int row, Matrix& B) override;
 
-      void add_Acol_mul_bt(Matrix& Z, const int col, Vector& b) override;
+      void add_Acol_mul_bt(Matrix& Z, const int row, Vector& b) override;
 
       //only for tests
    public:
-      std::shared_ptr<Matrix> get_features();
+      const Matrix &get_features();
    };
 
 }

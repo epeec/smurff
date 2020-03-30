@@ -22,9 +22,9 @@ void ScarceMatrixData::init_pre()
    {
       auto& m = this->Y(mode);
       auto& count = num_empty[mode];
-      for (int j = 0; j < m.cols(); j++)
+      for (int j = 0; j < m.rows(); j++)
       {
-         if (m.col(j).nonZeros() == 0) 
+         if (m.row(j).nonZeros() == 0) 
             count++;
       }
    }
@@ -37,7 +37,7 @@ double ScarceMatrixData::train_rmse(const SubModel& model) const
 
 std::ostream& ScarceMatrixData::info(std::ostream& os, std::string indent)
 {
-    MatrixDataTempl<SparseMatrix >::info(os, indent);
+    MatrixDataTempl<SparseMatrix>::info(os, indent);
     if (num_empty[0]) os << indent << "  Warning: " << num_empty[0] << " empty rows\n";
     if (num_empty[1]) os << indent << "  Warning: " << num_empty[1] << " empty cols\n";
     return os;
@@ -47,7 +47,7 @@ void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, in
 {
    auto &Y = this->Y(mode);
    const int num_latent = model.nlatent();
-   const std::int64_t local_nnz = Y.col(n).nonZeros();
+   const std::int64_t local_nnz = Y.row(n).nonZeros();
    const std::int64_t total_nnz = Y.nonZeros();
    auto from = Y.outerIndexPtr()[n];
    auto to = Y.outerIndexPtr()[n+1];
@@ -62,11 +62,11 @@ void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, in
        {
            auto val = Y.valuePtr()[i];
            auto idx = Y.innerIndexPtr()[i];
-           const auto &col = Vf.col(idx);
+           const auto &row = Vf.row(idx);
            auto pos = this->pos(mode, n, idx);
            double noisy_val = ns.sample(model, pos, val);
-           rr.noalias() += col * noisy_val;
-           MM.triangularView<Eigen::Lower>() +=  ns.getAlpha() * col * col.transpose();
+           rr.noalias() += row * noisy_val;
+           MM.triangularView<Eigen::Lower>() +=  ns.getAlpha() * row.transpose() * row;
        }
 
        // make MM complete

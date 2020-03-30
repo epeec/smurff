@@ -7,7 +7,7 @@
 
 namespace smurff {
 
-class MPISession : public Session
+class MPISession : public TrainSession
 {
 public:
    int world_rank;
@@ -15,6 +15,7 @@ public:
 
 public:
    MPISession();
+   MPISession(const Config &c);
 
    void run() override;
 

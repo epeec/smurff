@@ -22,13 +22,13 @@ needed, along with these packages:
 To run the suite, these are the steps:
 
 
-### Step 1: Install one or more smurff versions
+### SaveState 1: Install one or more smurff versions
 
 For each SMURFF version installed there should be a conda evironment. The bash
 script ``install_conda_envs.sh`` installs several smurff versions from anaconda.org
 in ``conda_envs/``
 
-### Step 2: Generate the data files
+### SaveState 2: Generate the data files
 
 There are currenly tests for three datasets:
 
@@ -44,7 +44,7 @@ There are currenly tests for three datasets:
    containing chemical compound on protein target bioactivity. A download link
    to this dataset will be provided later.
 
-### Step 3: Generate the tests.
+### SaveState 3: Generate the tests.
 
 Run `./gen_tests.py`. 
 
@@ -53,7 +53,7 @@ default), for each conda environment. A link to the latest called `latest` set
 of generated tests will be in `work/`:
 
 
-### Step 4: Run the tests.
+### SaveState 4: Run the tests.
 
 Tests are run by execution the `cmd` `bash` script in every `work/latest` subdirectory. For example:
 
@@ -64,11 +64,11 @@ Tests are run by execution the `cmd` `bash` script in every `work/latest` subdir
 * Using gnu parallel, on multiple hosts:  
   `$ find . -name cmd | parallel --workdir $PWD --gnu --slf $PBS_NODEFILE --progress --eta  bash -e` 
 
-### Step 5: Collect the results
+### SaveState 5: Collect the results
 
 `collect_results.py` will collect exit_code, RMSE and AUC for all smurff tests run and store these values in `results.csv`
 
-### Step 6: Verify the results
+### SaveState 6: Verify the results
 
 `verify_results.py` will compare the `results.csv` with `expected-fail.csv` (expected failures) and `expected-pass.csv` (expected passing tests) and report.
 

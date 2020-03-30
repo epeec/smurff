@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 import pandas as pd
-import scipy.sparse
+import scipy.sparse as sp
 import smurff
 import itertools
 import collections
@@ -14,7 +14,7 @@ class TestBPMF(unittest.TestCase):
     __name__ = "TestSmurff"
 
     def test_bpmf(self):
-        Y = scipy.sparse.rand(10, 20, 0.2)
+        Y = sp.rand(10, 20, 0.2)
         Y, Ytest = smurff.make_train_test(Y, 0.5)
         predictions = smurff.bpmf(Y,
                                 Ytest=Ytest,
@@ -25,7 +25,7 @@ class TestBPMF(unittest.TestCase):
         self.assertEqual(Ytest.nnz, len(predictions))
 
     def test_bpmf_numerictest(self):
-        X = scipy.sparse.rand(15, 10, 0.2)
+        X = sp.rand(15, 10, 0.2)
         Xt = 0.3
         X, Xt = smurff.make_train_test(X, Xt)
         smurff.bpmf(X,
@@ -36,7 +36,7 @@ class TestBPMF(unittest.TestCase):
                       verbose=verbose)
 
     def test_bpmf_emptytest(self):
-        X = scipy.sparse.rand(15, 10, 0.2)
+        X = sp.rand(15, 10, 0.2)
         smurff.bpmf(X,
                       num_latent=10,
                       burnin=10,
@@ -69,24 +69,13 @@ class TestBPMF(unittest.TestCase):
         np.random.seed(1234)
 
         # Generate train matrix rows, cols and vals
-        train_shape = (5, 5)
-        train_rows = np.random.randint(0, 5, 7)
-        train_cols = np.random.randint(0, 4, 7)
-        train_vals = np.random.randn(7)
-
-        # Generate test matrix rows, cols and vals
-        test_shape = (5, 5)
-        test_rows = np.random.randint(0, 5, 5)
-        test_cols = np.random.randint(0, 4, 5)
-        test_vals = np.random.randn(5)
+        train_shape = (5, 4)
+        sparse_random = sp.random(5, 4, density=1.0)
+        train_sparse_matrix, test_sparse_matrix = smurff.make_train_test(sparse_random, 0.2)
 
         # Create train and test sparse matrices
-        train_sparse_matrix = scipy.sparse.coo_matrix((train_vals, (train_rows, train_cols)), train_shape)
-        test_sparse_matrix = scipy.sparse.coo_matrix((test_vals, (test_rows, test_cols)), test_shape)
-
-        # Force NNZ recalculation to remove duplicate coordinates because of random generation
-        train_sparse_matrix.count_nonzero()
-        test_sparse_matrix.count_nonzero()
+        train_sparse_matrix = train_sparse_matrix.tocoo()
+        test_sparse_matrix = test_sparse_matrix.tocoo()
 
         # Create train and test sparse tensors
         train_sparse_tensor = smurff.SparseTensor(pd.DataFrame({
@@ -120,31 +109,28 @@ class TestBPMF(unittest.TestCase):
                                               seed=1234)
 
         # Transfrom SMURFF results to dictionary of coords and predicted values
-        sparse_matrix_predictions_dict = collections.OrderedDict((p.coords, p.pred_1sample) for p in sparse_matrix_predictions)
-        sparse_tensor_predictions_dict = collections.OrderedDict((p.coords, p.pred_1sample) for p in sparse_tensor_predictions)
+        sparse_matrix_predictions.sort()
+        sparse_tensor_predictions.sort()
 
-        self.assertEqual(len(sparse_matrix_predictions_dict), len(sparse_tensor_predictions_dict))
-        self.assertEqual(sparse_tensor_predictions_dict.keys(), sparse_tensor_predictions_dict.keys())
-        for coords, matrix_pred_1sample in sparse_matrix_predictions_dict.items():
-            tensor_pred_1sample = sparse_tensor_predictions_dict[coords]
-            self.assertAlmostEqual(matrix_pred_1sample, tensor_pred_1sample)
+        self.assertEqual(len(sparse_matrix_predictions), len(sparse_tensor_predictions))
+        for m, t in zip(sparse_matrix_predictions, sparse_tensor_predictions):
+            self.assertEqual(m.coords, t.coords)
+            self.assertAlmostEqual(m.pred_1sample, t.pred_1sample)
 
-    def test_bpmf_dense_matrix_sparse_2d_tensor(self):
+    def test_bpmf_dense_matrix_dense_2d_tensor(self):
         np.random.seed(1234)
 
-        # Generate train dense matrix
-        train_shape = (5 ,5)
-        train_sparse_matrix = scipy.sparse.random(5, 5, density=1.0)
-        train_dense_matrix = train_sparse_matrix.todense()
+        # Generate train matrix rows, cols and vals
+        train_shape = (5, 4)
+        sparse_random = sp.random(5, 4, density=1.0)
+        train_dense_matrix = sparse_random.todense()
+        _, test_sparse_matrix = smurff.make_train_test(sparse_random, 0.2)
 
-        # Generate test sparse matrix
-        test_shape = (5, 5)
-        test_rows = np.random.randint(0, 5, 5)
-        test_cols = np.random.randint(0, 4, 5)
-        test_vals = np.random.randn(5)
-        test_sparse_matrix = scipy.sparse.coo_matrix((test_vals, (test_rows, test_cols)), test_shape)
+        # Create train and test sparse 
+        train_sparse_matrix = sp.coo_matrix(train_dense_matrix) # acutally dense
+        test_sparse_matrix = test_sparse_matrix.tocoo() 
 
-        # Create train and test sparse tensors
+        # Create train and test sparse representations of dense tensors 
         train_sparse_tensor = smurff.SparseTensor(pd.DataFrame({
             '0': train_sparse_matrix.row,
             '1': train_sparse_matrix.col,
@@ -175,15 +161,14 @@ class TestBPMF(unittest.TestCase):
                                               nsamples=50,
                                               seed=1234)
 
-        # Transfrom SMURFF predictions to dictionary of coords and predicted values
-        sparse_matrix_predictions_dict = collections.OrderedDict((p.coords, p.pred_1sample) for p in sparse_matrix_predictions)
-        sparse_tensor_predictions_dict = collections.OrderedDict((p.coords, p.pred_1sample) for p in sparse_tensor_predictions)
+        # Sort and compare coords and predicted values
+        sparse_matrix_predictions.sort()
+        sparse_tensor_predictions.sort()
 
-        self.assertEqual(len(sparse_matrix_predictions_dict), len(sparse_tensor_predictions_dict))
-        self.assertEqual(sparse_tensor_predictions_dict.keys(), sparse_tensor_predictions_dict.keys())
-        for coords, matrix_pred_1sample in sparse_matrix_predictions_dict.items():
-            tensor_pred_1sample = sparse_tensor_predictions_dict[coords]
-            self.assertAlmostEqual(matrix_pred_1sample, tensor_pred_1sample)
+        self.assertEqual(len(sparse_matrix_predictions), len(sparse_tensor_predictions))
+        for m, t in zip(sparse_matrix_predictions, sparse_tensor_predictions):
+            self.assertEqual(m.coords, t.coords)
+            self.assertAlmostEqual(m.pred_1sample, t.pred_1sample) 
 
     def test_bpmf_tensor2(self):
         A = np.random.randn(15, 2)
@@ -231,8 +216,8 @@ class TestBPMF(unittest.TestCase):
 
         Ytrain_df = Ytrain.data
         Ytest_df = Ytest.data
-        Ytrain_sp = scipy.sparse.coo_matrix( (Ytrain_df.value, (Ytrain_df.A, Ytrain_df.B) ) )
-        Ytest_sp  = scipy.sparse.coo_matrix( (Ytest_df.value,  (Ytest_df.A, Ytest_df.B) ) )
+        Ytrain_sp = sp.coo_matrix( (Ytrain_df.value, (Ytrain_df.A, Ytrain_df.B) ) )
+        Ytest_sp  = sp.coo_matrix( (Ytest_df.value,  (Ytest_df.A, Ytest_df.B) ) )
 
         results_mat = smurff.bpmf(Ytrain_sp,
                                     Ytest=Ytest_sp,

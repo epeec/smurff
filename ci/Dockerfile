@@ -16,7 +16,18 @@ RUN apt-get update && \
        libboost-all-dev \
        ca-certificates \
        wget \
+      libhdf5-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://cmake.org/files/v3.12/cmake-3.12.0-Linux-x86_64.sh && \
    sh cmake-3.12.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
+
+
+RUN wget -O HighFive.tar.gz https://github.com/tvandera/HighFive/archive/v2.1.1_unlink.tar.gz && \
+    tar xzf HighFive.tar.gz && \
+    cd HighFive* && mkdir build && cd build && \
+    cmake .. && \
+    make -j2 && make install && \
+    cd ../../ && rm -r HighFive* 
+
+

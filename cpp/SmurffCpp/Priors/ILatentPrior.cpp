@@ -3,8 +3,8 @@
 
 namespace smurff {
 
-ILatentPrior::ILatentPrior(std::shared_ptr<Session> session, uint32_t mode, std::string name)
-   : m_session(session), m_mode(mode), m_name(name)
+ILatentPrior::ILatentPrior(TrainSession &trainSession, uint32_t mode, std::string name)
+   : m_session(trainSession), m_mode(mode), m_name(name)
 {
 
 }
@@ -18,14 +18,19 @@ void ILatentPrior::init()
    init_Usum();
 }
 
+const Config &ILatentPrior::getConfig() const
+{
+   return m_session.getConfig();
+}
+
 const Model& ILatentPrior::model() const
 {
-   return getSession().model();
+   return m_session.model();
 }
 
 Model& ILatentPrior::model()
 {
-   return getSession().model();
+   return m_session.model();
 }
 
 double ILatentPrior::predict(const PVec<> &pos) const
@@ -35,7 +40,7 @@ double ILatentPrior::predict(const PVec<> &pos) const
 
 Data& ILatentPrior::data() const
 {
-   return getSession().data();
+   return m_session.data();
 }
 
 INoiseModel& ILatentPrior::noise()
@@ -81,7 +86,7 @@ int ILatentPrior::num_latent() const
 
 int ILatentPrior::num_item() const
 {
-   return model().U(m_mode).cols();
+   return model().U(m_mode).rows();
 }
 
 std::ostream &ILatentPrior::info(std::ostream &os, std::string indent)
@@ -100,37 +105,37 @@ void ILatentPrior::sample_latents()
    COUNTER("sample_latents");
    data().update_pnm(model(), m_mode);
 
-   // for effiency, we keep + update Ucol and UUcol by every thread
-   thread_vector<Vector> Ucol(Vector::Zero(num_latent()));
-   thread_vector<Matrix> UUcol(Matrix::Zero(num_latent(), num_latent()));
+   // for effiency, we keep + update Urow and UUrow by every thread
+   thread_vector<Vector> Urow(Vector::Zero(num_latent()));
+   thread_vector<Matrix> UUrow(Matrix::Zero(num_latent(), num_latent()));
 
    #pragma omp parallel for schedule(guided)
-   for(int n = 0; n < U().cols(); n++)
+   for(int n = 0; n < U().rows(); n++)
    #pragma omp task
    {
       COUNTER("sample_latent");
       sample_latent(n);
-      const auto &col = U().col(n);
-      Ucol.local().noalias() += col;
-      UUcol.local().noalias() += col * col.transpose();
+      const auto &row = U().row(n);
+      Urow.local().noalias() += row;
+      UUrow.local().noalias() += row.transpose() * row;
 
-      if (getSession().inSamplingPhase())
+      if (m_session.inSamplingPhase())
          model().updateAggr(m_mode, n);
    }
 
-   if (getSession().inSamplingPhase())
+   if (m_session.inSamplingPhase())
       model().updateAggr(m_mode);
 
-   Usum  = Ucol.combine();
-   UUsum = UUcol.combine();
+   Usum  = Urow.combine();
+   UUsum = UUrow.combine();
 }
 
-bool ILatentPrior::save(std::shared_ptr<const StepFile> sf) const
+bool ILatentPrior::save(SaveState &sf) const
 {
     return false;
 }
 
-void ILatentPrior::restore(std::shared_ptr<const StepFile> sf)
+void ILatentPrior::restore(const SaveState &sf)
 {
     init_Usum();
     update_prior();
@@ -139,6 +144,6 @@ void ILatentPrior::restore(std::shared_ptr<const StepFile> sf)
 void ILatentPrior::init_Usum()
 {
     Usum = U().rowwise().sum();
-    UUsum = U() * U().transpose(); 
+    UUsum = U().transpose() * U(); 
 }
 } // end namespace smurff

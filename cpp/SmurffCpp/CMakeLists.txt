@@ -1,47 +1,27 @@
 FILE (GLOB UTIL_FILES   
                         "Utils/Distribution.h"
                         "Utils/MatrixUtils.h"
-                        "Utils/TensorUtils.h"
                         "Utils/PVec.hpp"
-                        "Utils/RootFile.h"
-                        "Utils/StepFile.h"
+                        "Utils/StateFile.h"
+                        "Utils/SaveState.h"
+                        "Utils/HDF5Group.h"
 
                         "Utils/Distribution.cpp"
                         "Utils/MatrixUtils.cpp"
-                        "Utils/TensorUtils.cpp"
-                        "Utils/RootFile.cpp"
-                        "Utils/StepFile.cpp"
+                        "Utils/StateFile.cpp"
+                        "Utils/SaveState.cpp"
+                        "Utils/HDF5Group.cpp"
                         )
 
 source_group ("Utils" FILES ${UTIL_FILES})
 
-FILE (GLOB IO_FILES     "IO/ini.h"
-                        "IO/INIFile.h"
-                        "IO/GenericIO.h"
-                        "IO/MatrixIO.h"
-                        "IO/TensorIO.h"
-                        "IO/IDataWriter.h"
-                        "IO/DataWriter.h"
-
-                        "IO/ini.c"
-                        "IO/INIFile.cpp"
-                        "IO/GenericIO.cpp"
-                        "IO/MatrixIO.cpp"
-                        "IO/TensorIO.cpp"
-                        "IO/DataWriter.cpp"
-                        )
-
-source_group ("IO" FILES ${IO_FILES})
-
 FILE (GLOB CONFIG_FILES "Configs/Config.h"
-                        "Configs/MatrixConfig.h"
-                        "Configs/TensorConfig.h"
+                        "Configs/DataConfig.h"
                         "Configs/NoiseConfig.h"
                         "Configs/SideInfoConfig.h"
 
                         "Configs/Config.cpp"
-                        "Configs/MatrixConfig.cpp"
-                        "Configs/TensorConfig.cpp"
+                        "Configs/DataConfig.cpp"
                         "Configs/NoiseConfig.cpp"
                         "Configs/SideInfoConfig.cpp"
                         )
@@ -97,9 +77,6 @@ FILE (GLOB MATRIX_FILES "DataMatrices/Data.h"
                         "DataMatrices/MatrixDataTempl.hpp"
                         "DataMatrices/ScarceMatrixData.h"
                         "DataMatrices/SparseMatrixData.h"
-                        "DataMatrices/IDataCreator.h"
-                        "DataMatrices/DataCreator.h"
-                        "DataMatrices/DataCreatorBase.h"
 
                         "DataMatrices/Data.cpp"
                         "DataMatrices/DenseMatrixData.cpp"
@@ -107,8 +84,6 @@ FILE (GLOB MATRIX_FILES "DataMatrices/Data.h"
                         "DataMatrices/MatrixData.cpp"
                         "DataMatrices/ScarceMatrixData.cpp"
                         "DataMatrices/SparseMatrixData.cpp"
-                        "DataMatrices/DataCreator.cpp"
-                        "DataMatrices/DataCreatorBase.cpp"
                         )
 
 source_group ("DataMatrices" FILES ${MATRIX_FILES})
@@ -122,16 +97,15 @@ FILE (GLOB TENSOR_FILES "DataTensors/TensorData.h"
 source_group ("DataTensors" FILES ${TENSOR_FILES})
 
 FILE (GLOB SESSION_FILES "Sessions/ISession.h"
-                         "Sessions/Session.h"
+                         "Sessions/TrainSession.h"
                          "Sessions/CmdSession.h"
                          "Sessions/PythonSession.h"
-                         "Sessions/SessionFactory.h"
 
                          "Sessions/ISession.cpp"
-                         "Sessions/Session.cpp"
+                         "Sessions/TrainSession.cpp"
                          "Sessions/CmdSession.cpp"
                          "Sessions/PythonSession.cpp"
-                         "Sessions/SessionFactory.cpp")
+                         )
 
 source_group ("Sessions" FILES ${SESSION_FILES})
 
@@ -158,6 +132,8 @@ FILE (GLOB SIDE_INFO_FILES "SideInfo/ISideInfo.h"
                            "SideInfo/DenseSideInfo.cpp"
                            "SideInfo/SparseSideInfo.h"
                            "SideInfo/SparseSideInfo.cpp"
+                           "SideInfo/linop.h"
+                           "SideInfo/linop.cpp"
                         )
 source_group ("Side Info" FILES ${SIDE_INFO_FILES})
 
@@ -183,4 +159,5 @@ add_library (smurff-cpp STATIC ${HEADER_FILES}
                                )
 
 
+target_link_libraries(smurff-cpp HighFive)
 

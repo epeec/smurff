@@ -4,9 +4,8 @@
 #include <SmurffCpp/Types.h>
 
 #include <Utils/counters.h>
-#include <SmurffCpp/Utils/RootFile.h>
+#include <SmurffCpp/Utils/StateFile.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <SmurffCpp/IO/MatrixIO.h>
 #include <SmurffCpp/result.h>
 #include <SmurffCpp/ResultItem.h>
 
@@ -17,28 +16,26 @@
 namespace smurff
 {
 
-PredictSession::PredictSession(std::shared_ptr<RootFile> rf)
-    : m_model_rootfile(rf), m_pred_rootfile(0),
-      m_has_config(false), m_num_latent(-1),
-      m_dims(PVec<>(0)), m_is_init(false)
+PredictSession::PredictSession(const std::string &model_file)
+    : ISession(Config()) //FIXME
+    , m_model_file(StateFile(model_file))
+    , m_pred_savefile()
+    , m_has_config(false)
+    , m_num_latent(-1)
+    , m_dims(PVec<>(0))
 {
-    m_stepfiles = m_model_rootfile->openSampleStepFiles();
+    m_stepfiles = m_model_file.openSampleSteps();
 }
 
-PredictSession::PredictSession(std::shared_ptr<RootFile> rf, const Config &config)
-    : m_model_rootfile(rf), m_pred_rootfile(0),
-      m_config(config), m_has_config(true), m_num_latent(-1),
-      m_dims(PVec<>(0)), m_is_init(false)
-{
-    m_stepfiles = m_model_rootfile->openSampleStepFiles();
-}
 PredictSession::PredictSession(const Config &config)
-    : m_pred_rootfile(0), m_config(config), m_has_config(true),
-      m_num_latent(-1), m_dims(PVec<>(0)), m_is_init(false)
+    : ISession(config)
+    , m_model_file(StateFile(config.getRestoreName()))
+    , m_pred_savefile(std::make_unique<StateFile>(config.getSaveName()))
+    , m_has_config(true)
+    , m_num_latent(-1)
+    , m_dims(PVec<>(0))
 {
-    THROWERROR_ASSERT(config.getRootName().size())
-    m_model_rootfile = std::make_shared<RootFile>(config.getRootName());
-    m_stepfiles = m_model_rootfile->openSampleStepFiles();
+    m_stepfiles = m_model_file.openSampleSteps();
 }
 
 void PredictSession::run()
@@ -46,7 +43,7 @@ void PredictSession::run()
     THROWERROR_ASSERT(m_has_config);
 
 
-    if (m_config.getTest())
+    if (getConfig().getTest().hasData())
     {
         init();
         while (step())
@@ -56,33 +53,22 @@ void PredictSession::run()
     }
     else
     {
-        std::shared_ptr<MatrixConfig> side_info;
-        int mode;
+        std::pair<int, const DataConfig &> side_info =
+            (getConfig().getRowFeatures().hasData()) ?
+            std::make_pair(0, getConfig().getRowFeatures()) :
+            std::make_pair(1, getConfig().getColFeatures()) ;
 
-        if (m_config.getRowFeatures())
+        THROWERROR_ASSERT_MSG(!side_info.second.hasData(), "Need either test, row features or col features");
+
+        if (side_info.second.isDense())
         {
-            side_info = m_config.getRowFeatures();
-            mode = 0;
-        }
-        else if (m_config.getColFeatures())
-        {
-            side_info = m_config.getColFeatures();
-            mode = 1;
+            const auto &dense_matrix = side_info.second.getDenseMatrixData();
+            predict(side_info.first, dense_matrix, getConfig().getSaveFreq());
         }
         else
         {
-            THROWERROR("Need either test, row features or col features")
-        }
-
-        if (side_info->isDense())
-        {
-            auto dense_matrix = matrix_utils::dense_to_eigen(*side_info);
-            predict(mode, dense_matrix, m_config.getSaveFreq());
-        }
-        else
-        {
-            auto sparse_matrix = matrix_utils::sparse_to_eigen(*side_info);
-            predict(mode, sparse_matrix, m_config.getSaveFreq());
+            const auto &sparse_matrix = side_info.second.getSparseMatrixData();
+            predict(side_info.first, sparse_matrix, getConfig().getSaveFreq());
         }
     }
 }
@@ -90,25 +76,23 @@ void PredictSession::run()
 void PredictSession::init()
 {
     THROWERROR_ASSERT(m_has_config);
-    THROWERROR_ASSERT(m_config.getTest());
-    m_result = std::make_shared<Result>(m_config.getTest(), m_config.getNSamples());
+    THROWERROR_ASSERT(getConfig().getTest().hasData());
+    m_result = Result(getConfig().getTest(), getConfig().getNSamples());
 
     m_pos = m_stepfiles.rbegin();
     m_iter = 0;
     m_is_init = true;
 
-    THROWERROR_ASSERT_MSG(m_config.getSavePrefix() != getModelRoot()->getPrefix(),
-                          "Cannot have same prefix for model and predictions - both have " + m_config.getSavePrefix());
+    THROWERROR_ASSERT_MSG(getConfig().getSaveName() != m_model_file.getPath(),
+                          "Cannot have same output file for model and predictions - both have " + getConfig().getSaveName());
 
-    if (m_config.getSaveFreq())
+    if (getConfig().getSaveFreq())
     {
-        // create root file
-        m_pred_rootfile = std::make_shared<RootFile>(m_config.getSavePrefix(), m_config.getSaveExtension(), true);
-        m_pred_rootfile->createCsvStatusFile();
-        m_pred_rootfile->flushLast();
+        // create save file
+        m_pred_savefile = std::make_unique<StateFile>(getConfig().getSaveName(), true);
     }
 
-    if (m_config.getVerbose())
+    if (getConfig().getVerbose())
         info(std::cout, "");
 }
 
@@ -119,17 +103,18 @@ bool PredictSession::step()
     THROWERROR_ASSERT(m_pos != m_stepfiles.rend());
 
     double start = tick();
-    auto model = restoreModel(*m_pos);
-    m_result->update(model, false);
+    Model model;
+    restoreModel(model, *m_pos);
+    m_result.update(model, false);
     double stop = tick();
     m_iter++;
     m_secs_per_iter = stop - start;
     m_secs_total += m_secs_per_iter;
 
-    if (m_config.getVerbose())
-        std::cout << getStatus()->asString() << std::endl;
+    if (getConfig().getVerbose())
+        std::cout << getStatus().asString() << std::endl;
 
-    if (m_config.getSaveFreq() > 0 && (m_iter % m_config.getSaveFreq()) == 0)
+    if (getConfig().getSaveFreq() > 0 && (m_iter % getConfig().getSaveFreq()) == 0)
         save();
 
     auto next_pos = m_pos;
@@ -137,7 +122,7 @@ bool PredictSession::step()
     bool last_iter = next_pos == m_stepfiles.rend();
 
     //save last iter
-    if (last_iter && m_config.getSaveFreq() == -1)
+    if (last_iter && getConfig().getSaveFreq() == -1)
         save();
 
     m_pos++;
@@ -147,41 +132,38 @@ bool PredictSession::step()
 void PredictSession::save()
 {
     //save this iteration
-    std::shared_ptr<StepFile> stepFile = getRootFile()->createSampleStepFile(m_iter, false);
+    SaveState saveState = m_pred_savefile->createSampleStep(m_iter, false);
 
-    if (m_config.getVerbose())
+    if (getConfig().getVerbose())
     {
-        std::cout << "-- Saving predictions into '" << stepFile->getStepFileName() << "'." << std::endl;
+        std::cout << "-- Saving predictions into '" << m_pred_savefile->getPath() << "'." << std::endl;
     }
 
-    stepFile->savePred(m_result);
-
-    m_pred_rootfile->addCsvStatusLine(*getStatus());
-    m_pred_rootfile->flushLast();
+    m_result.save(saveState);
 }
 
-std::shared_ptr<StatusItem> PredictSession::getStatus() const
+StatusItem PredictSession::getStatus() const
 {
-    std::shared_ptr<StatusItem> ret = std::make_shared<StatusItem>();
-    ret->phase = "Predict";
-    ret->iter = (*m_pos)->getIsample();
-    ret->phase_iter = m_stepfiles.size();
+    StatusItem ret;
+    ret.phase = "Predict";
+    ret.iter = m_pos->getIsample();
+    ret.phase_iter = m_stepfiles.size();
 
-    ret->train_rmse = NAN;
+    ret.train_rmse = NAN;
 
-    ret->rmse_avg = m_result->rmse_avg;
-    ret->rmse_1sample = m_result->rmse_1sample;
+    ret.rmse_avg = m_result.rmse_avg;
+    ret.rmse_1sample = m_result.rmse_1sample;
 
-    ret->auc_avg = m_result->auc_avg;
-    ret->auc_1sample = m_result->auc_1sample;
+    ret.auc_avg = m_result.auc_avg;
+    ret.auc_1sample = m_result.auc_1sample;
 
-    ret->elapsed_iter = m_secs_per_iter;
-    ret->elapsed_total = m_secs_total;
+    ret.elapsed_iter = m_secs_per_iter;
+    ret.elapsed_total = m_secs_total;
 
     return ret;
 }
 
-std::shared_ptr<Result> PredictSession::getResult() const
+const Result &PredictSession::getResult() const
 {
     return m_result;
 }
@@ -190,24 +172,22 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
 {
     os << indent << "PredictSession {\n";
     os << indent << "  Model {\n";
-    os << indent << "    model root-file: " << getModelRoot()->getFullPath() << "\n";
+    os << indent << "    model-file: " << m_model_file.getPath() << "\n";
     os << indent << "    num-samples: " << getNumSteps() << "\n";
     os << indent << "    num-latent: " << getNumLatent() << "\n";
     os << indent << "    dimensions: " << getModelDims() << "\n";
     os << indent << "  }\n";
     os << indent << "  Predictions {\n";
-    m_result->info(os, indent + "    ");
-    if (m_config.getSaveFreq() > 0)
+    m_result.info(os, indent + "    ");
+    if (getConfig().getSaveFreq() > 0)
     {
-        os << indent << "    Save predictions: every " << m_config.getSaveFreq() << " iteration\n";
-        os << indent << "    Save extension: " << m_config.getSaveExtension() << "\n";
-        os << indent << "    Output root-file: " << getRootFile()->getFullPath() << "\n";
+        os << indent << "    Save predictions: every " << getConfig().getSaveFreq() << " iteration\n";
+        os << indent << "    Output file: " << getConfig().getSaveName() << "\n";
     }
-    else if (m_config.getSaveFreq() < 0)
+    else if (getConfig().getSaveFreq() < 0)
     {
         os << indent << "    Save predictions after last iteration\n";
-        os << indent << "    Save extension: " << m_config.getSaveExtension() << "\n";
-        os << indent << "    Output root-file: " << getRootFile()->getFullPath() << "\n";
+        os << indent << "    Output file: " << getConfig().getSaveName() << "\n";
     }
     else
     {
@@ -218,33 +198,31 @@ std::ostream &PredictSession::info(std::ostream &os, std::string indent) const
     return os;
 }
 
-std::shared_ptr<Model> PredictSession::restoreModel(const std::shared_ptr<StepFile> &sf, int skip_mode)
+void PredictSession::restoreModel(Model &model, const SaveState &sf, int skip_mode)
 {
-    auto model = sf->restoreModel(skip_mode);
+    model.restore(sf, skip_mode);
 
     if (m_num_latent <= 0)
     {
-        m_num_latent = model->nlatent();
-        m_dims = model->getDims();
+        m_num_latent = model.nlatent();
+        m_dims = model.getDims();
     }
     else
     {
-        THROWERROR_ASSERT(m_num_latent == model->nlatent());
-        THROWERROR_ASSERT(m_dims == model->getDims());
+        THROWERROR_ASSERT(m_num_latent == model.nlatent());
+        THROWERROR_ASSERT(m_dims == model.getDims());
     }
 
     THROWERROR_ASSERT(m_num_latent > 0);
-
-    return model;
 }
 
-std::shared_ptr<Model> PredictSession::restoreModel(int i, int skip_mode)
+void PredictSession::restoreModel(Model &model, int i, int skip_mode)
 {
-    return restoreModel(m_stepfiles.at(i), skip_mode);
+    restoreModel(model, m_stepfiles.at(i), skip_mode);
 }
 
 // predict one element
-ResultItem PredictSession::predict(PVec<> pos, const StepFile &sf)
+ResultItem PredictSession::predict(PVec<> pos, const SaveState &sf)
 {
     ResultItem ret{pos};
     predict(ret, sf);
@@ -252,20 +230,21 @@ ResultItem PredictSession::predict(PVec<> pos, const StepFile &sf)
 }
 
 // predict one element
-void PredictSession::predict(ResultItem &res, const StepFile &sf)
+void PredictSession::predict(ResultItem &res, const SaveState &sf)
 {
-    auto model = sf.restoreModel();
-    auto pred = model->predict(res.coords);
+    Model model;
+    model.restore(sf);
+    auto pred = model.predict(res.coords);
     res.update(pred);
 }
 
 // predict one element
 void PredictSession::predict(ResultItem &res)
 {
-    auto stepfiles = getModelRoot()->openSampleStepFiles();
+    auto stepfiles = m_model_file.openSampleSteps();
 
     for (const auto &sf : stepfiles)
-        predict(res, *sf);
+        predict(res, sf);
 }
 
 ResultItem PredictSession::predict(PVec<> pos)
@@ -276,13 +255,14 @@ ResultItem PredictSession::predict(PVec<> pos)
 }
 
 // predict all elements in Ytest
-std::shared_ptr<Result> PredictSession::predict(std::shared_ptr<TensorConfig> Y)
+std::shared_ptr<Result> PredictSession::predict(const DataConfig &Y)
 {
     auto res = std::make_shared<Result>(Y);
 
     for (const auto s : m_stepfiles)
     {
-        auto model = restoreModel(s);
+        Model model;
+        restoreModel(model, s);
         res->update(model, false);
     }
 

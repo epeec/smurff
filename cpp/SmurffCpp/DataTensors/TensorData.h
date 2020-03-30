@@ -9,7 +9,6 @@
 #include <SmurffCpp/Types.h>
 
 #include "SparseMode.h"
-#include <SmurffCpp/Configs/TensorConfig.h>
 #include <SmurffCpp/DataMatrices/Data.h>
 #include <SmurffCpp/Utils/PVec.hpp>
 
@@ -18,12 +17,13 @@ namespace smurff {
 class TensorData : public Data
 {
 private:
-   std::vector<std::uint64_t> m_dims; //vector of dimention sizes
+   std::vector<std::uint64_t> m_dims; //vector of dimension sizes
    std::uint64_t m_nnz;
    std::shared_ptr<std::vector<std::shared_ptr<SparseMode> > > m_Y; // this is a vector of tensor rotations
 
 public:
-   TensorData(const smurff::TensorConfig& tc);
+   TensorData(const smurff::DenseTensor& ts);
+   TensorData(const smurff::SparseTensor& ts);
 
    std::shared_ptr<SparseMode> Y(std::uint64_t mode) const;
 

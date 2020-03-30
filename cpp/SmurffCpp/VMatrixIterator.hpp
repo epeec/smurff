@@ -21,20 +21,20 @@ class VMatrixIterator : public std::iterator<
 >
 {
 private:
-	std::shared_ptr<Model> m_model;
+	const Model *m_model;
 	std::uint32_t m_mode;
 	std::uint32_t m_num;
 
 public:
 	//begin constructor
-   VMatrixIterator(std::shared_ptr<Model> model, std::uint32_t mode, std::uint32_t num)
+   VMatrixIterator(const Model *model, std::uint32_t mode, std::uint32_t num)
       : m_model(model), m_mode(mode), m_num(num == mode ? num + 1 : num)
    {
    }
 
 	//end constructor
    VMatrixIterator(std::uint32_t num)
-      : m_model(std::shared_ptr<Model>()), m_mode(-1), m_num(num)
+      : m_model(0), m_mode(-1), m_num(num)
    {
    }
 

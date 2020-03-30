@@ -1,8 +1,8 @@
 Structure of main loops:
 
-Session::run() {
+TrainSession::run() {
    for(i=1; i<iter; i++)
-        Session::step() {
+        TrainSession::step() {
           for all matrices U, V:
              ILatenPrior::sample_latents() { // for  
                 for(all rows r in U) // or all cols of V

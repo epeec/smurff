@@ -12,15 +12,14 @@ namespace smurff
    class MatrixDataTempl : public MatrixData
    {
    private:
-      // eigen matrices with the data
-      std::shared_ptr<std::vector<YType> > m_Yv;
+      // matrices with the data
+      std::vector<YType> m_Yv;
 
    public:
       MatrixDataTempl(YType Y)
       {
-         m_Yv = std::shared_ptr<std::vector<YType> >(new std::vector<YType>());
-         m_Yv->push_back(Y.transpose());
-         m_Yv->push_back(Y);
+         m_Yv.push_back(Y);
+         m_Yv.push_back(Y.transpose());
       }
 
       void init_pre() override
@@ -44,9 +43,9 @@ namespace smurff
       }
 
    public:
-      const YType& Y(int mode = 1) const
+      const YType& Y(int mode = 0) const
       {
-         return m_Yv->operator[](mode);
+         return m_Yv.at(mode);
       }
    };
 }

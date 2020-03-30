@@ -1,27 +1,69 @@
 #pragma once
 
-#include <SmurffCpp/Sessions/Session.h>
+#include <SmurffCpp/Sessions/TrainSession.h>
 
 namespace smurff {
 
-class SessionFactory;
-
-class PythonSession : public Session
+class PythonSession : public TrainSession
 {
-   friend class SessionFactory;
 
 private:
    static bool keepRunning;
    static bool keepRunningVerbose;
 
-protected:
-   PythonSession()
+public:
+   PythonSession(const Config &c)
+   : TrainSession(c)
    {
       name = "PythonSession";
       keepRunning = true;
    }
+   
+   template <typename SparseType>
+   void setTest(const SparseType &data)
+   {
+       m_config.getTest().setData(data, true);
+   }
 
-protected:
+   void addSideInfoDense(int mode, const Matrix &data, const NoiseConfig &nc, bool direct) 
+   {
+      auto &si = m_config.addSideInfo(mode);
+      si.setData(data);
+      si.setNoiseConfig(nc);
+      si.setDirect(direct);
+   }
+
+   void addSideInfoSparse(int mode, const SparseMatrix &data, const NoiseConfig &nc, bool direct) 
+   {
+      auto &si = m_config.addSideInfo(mode);
+      si.setData(data, false);
+      si.setNoiseConfig(nc);
+      si.setDirect(direct);
+   }
+
+   template <typename DenseType>
+   void addDataDense(std::vector<int> pos, const DenseType &data, const NoiseConfig &nc)
+   {
+      auto &data_config = m_config.addData();
+      data_config.setPos(pos);
+      data_config.setData(data);
+      data_config.setNoiseConfig(nc);
+   }
+ 
+   template <typename SparseType>
+   void addDataSparse(std::vector<int> pos, const SparseType &data, const NoiseConfig &nc, bool is_scarce)
+   {
+      auto &data_config = m_config.addData();
+      data_config.setPos(pos);
+      data_config.setData(data, is_scarce);
+      data_config.setNoiseConfig(nc);
+   }
+
+   void addPropagatedPosterior(int mode, const Matrix &mu, const Matrix &Lambda)
+   {
+      m_config.addPropagatedPosterior(mode, mu, Lambda);
+   }
+
    bool interrupted() override
    {
        return !keepRunning;

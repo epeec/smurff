@@ -6,6 +6,10 @@
 
 namespace smurff {
 
+struct ResultItem;
+
+std::ostream &operator<<(std::ostream& os, const ResultItem& r);
+
 struct ResultItem
 {
    ResultItem(const PVec<> &c, double v, double p1s, double pa, double var, int n = 0)
@@ -52,6 +56,19 @@ struct ResultItem
       }
       pred_1sample = pred;
    }
+
+   bool operator<(const ResultItem &other) const
+   {
+      return coords.as_vector() < other.coords.as_vector();
+   }
+
+   std::string to_string() const
+   {
+      std::stringstream ss;
+      ss << *this;
+      return ss.str();
+   }
+
 };
 
 inline std::ostream &operator<<(std::ostream& os, const ResultItem& r)

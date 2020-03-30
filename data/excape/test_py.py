@@ -26,7 +26,7 @@ class TestExCAPE_py(unittest.TestCase):
         return smurff.FixedNoise(1.0)
 
     def get_side_noise(self):
-        return smurff.FixedNoise(10.)
+        return smurff.SampledNoise(10.)
 
     @classmethod
     def setUpClass(cls):
@@ -47,20 +47,20 @@ class TestExCAPE_py(unittest.TestCase):
             if side_info[d] != None:
                 args["priors"][d] = 'macau'
 
-        session = smurff.TrainSession(**args)
+        trainSession = smurff.TrainSession(**args)
         Ytrain = TestExCAPE_py.data["train.sdm"]
         Ytest = TestExCAPE_py.data["test.sdm"]
-        session.addTrainAndTest(Ytrain, Ytest, self.get_train_noise())
+        trainSession.addTrainAndTest(Ytrain, Ytest, self.get_train_noise())
 
         for d in range(2):
             if side_info[d] != None:
-                session.addSideInfo(d, TestExCAPE_py.data[side_info[d]], self.get_side_noise(), direct = direct)
+                trainSession.addSideInfo(d, TestExCAPE_py.data[side_info[d]], self.get_side_noise(), direct = direct)
 
-        session.init()
+        trainSession.init()
 
         start = time()
-        while session.step(): pass
-        rmse = session.getRmseAvg()
+        while trainSession.step(): pass
+        rmse = trainSession.getRmseAvg()
         stop = time()
         elapsed = stop - start
 
@@ -68,28 +68,27 @@ class TestExCAPE_py(unittest.TestCase):
         self.assertGreater(rmse, expected[1])
         self.assertLess(elapsed, expected[2])
 
-    def test_bpmf(self):
-        side_info = [ None, None ]
-        self.macau(side_info, True, [ 1.22, 1.10, 120. ])
+    # def test_bpmf(self):
+    #     side_info = [ None, None ]
+    #     self.macau(side_info, True, [ 1.22, 1.10, 120. ])
 
-    def test_macau_c2v(self):
-        side_info = [ "side_c2v.ddm", None ]
-        self.macau(side_info, True, [1.1, 1.0, 240. ])
+    # def test_macau_c2v(self):
+    #     side_info = [ "side_c2v.ddm", None ]
+    #     self.macau(side_info, True, [1.1, 1.0, 240. ])
 
-    def test_macau_ecfp_sparse_direct(self):
-        side_info = [ "side_ecfp6_counts_var005.sdm", None ]
-        self.macau(side_info, True, [1.19, 1.0, 1500. ])
+    # def test_macau_ecfp_sparse_direct(self):
+    #     side_info = [ "side_ecfp6_counts_var005.sdm", None ]
+    #     self.macau(side_info, True, [1.19, 1.0, 1500. ])
 
     def test_macau_ecfp_sparse_cg(self):
         side_info = [ "side_ecfp6_counts_var005.sdm", None ]
         self.macau(side_info, False, [1.19, 1.0, 480. ])
 
-    def test_macau_ecfp_dense(self):
-        side_info = [ "side_ecfp6_folded_dense.ddm", None ]
-        self.macau(side_info, True, [ 1.08, 1.0, 240. ])
+    # def test_macau_ecfp_dense(self):
+    #     side_info = [ "side_ecfp6_folded_dense.ddm", None ]
+    #     self.macau(side_info, True, [ 1.08, 1.0, 240. ])
 
 if __name__ == "__main__":
-    for arg in sys.argv:
-        if (arg == "-v" or arg == "--verbose"):
-            global_verbose = True
+    global_verbose += sys.argv.count("-v")
+    global_verbose += sys.argv.count("--verbose")
     unittest.main()

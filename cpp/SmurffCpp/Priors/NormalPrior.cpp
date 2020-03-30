@@ -3,10 +3,8 @@
 #include <iomanip>
 
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <SmurffCpp/IO/MatrixIO.h>
 #include <Utils/counters.h>
 
-#include <SmurffCpp/Types.h>
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/Distribution.h>
@@ -16,11 +14,9 @@ namespace smurff {
 
 //  base class NormalPrior
 
-NormalPrior::NormalPrior(std::shared_ptr<Session> session, uint32_t mode, std::string name)
-   : ILatentPrior(session, mode, name)
-{
-
-}
+NormalPrior::NormalPrior(TrainSession &trainSession, uint32_t mode, std::string name)
+   : ILatentPrior(trainSession, mode, name)
+{}
 
 void NormalPrior::init()
 {
@@ -28,8 +24,8 @@ void NormalPrior::init()
    ILatentPrior::init();
 
    const int K = num_latent();
-   m_mu = std::make_shared<Vector>(K);
-   hyperMu().setZero();
+   mu().resize(K);
+   mu().setZero();
 
    Lambda.resize(K, K);
    Lambda.setIdentity();
@@ -43,37 +39,36 @@ void NormalPrior::init()
    b0 = 2;
    df = K;
 
-   const auto &config = getSession().getConfig();
+   const auto &config = getConfig();
    if (config.hasPropagatedPosterior(getMode()))
    {
-      mu_pp = std::make_shared<Matrix>(matrix_utils::dense_to_eigen(*config.getMuPropagatedPosterior(getMode())));
-      Lambda_pp = std::make_shared<Matrix>(matrix_utils::dense_to_eigen(*config.getLambdaPropagatedPosterior(getMode())));
       m_name += " with posterior propagation";
    }
 }
 
 const Vector NormalPrior::fullMu(int n) const
 {
-   if (getSession().getConfig().hasPropagatedPosterior(getMode()))
+   if (getConfig().hasPropagatedPosterior(getMode()))
    {
-      return mu_pp->col(n);
+      return getConfig().getMuPropagatedPosterior(getMode()).getDenseMatrixData().row(n);
    }
    //else
-   return hyperMu();
+   return mu();
 }
 
 const Matrix NormalPrior::getLambda(int n) const
 {
-   if (getSession().getConfig().hasPropagatedPosterior(getMode()))
+   if (getConfig().hasPropagatedPosterior(getMode()))
    {
-      return Eigen::Map<Matrix>(Lambda_pp->col(n).data(), num_latent(), num_latent());
+      const auto &Lambda_pp = getConfig().getLambdaPropagatedPosterior(getMode()).getDenseMatrixData();
+      return Eigen::Map<const Matrix>(Lambda_pp.row(n).data(), num_latent(), num_latent());
    }
    //else
    return Lambda;
 }
 void NormalPrior::update_prior()
 {
-   std::tie(hyperMu(), Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
+   std::tie(mu(), Lambda) = CondNormalWishart(num_item(), getUUsum(), getUsum(), mu0, b0, WI, df);
 }
 
 //n is an index of column in U matrix
@@ -92,7 +87,7 @@ void  NormalPrior::sample_latent(int n)
    data().getMuLambda(model(), m_mode, n, rr, MM);
 
    // add hyperparams
-   rr.noalias() += Lambda_u * mu_u;
+   rr.noalias() += mu_u * Lambda_u;
    MM.noalias() += Lambda_u;
 
    //Solve system of linear equations for x: MM * x = rr - not exactly correct  because we have random part
@@ -107,17 +102,17 @@ void  NormalPrior::sample_latent(int n)
       }
    }
 
-   chol.matrixL().solveInPlace(rr); // solve for y: y = L^-1 * b
-   rr.noalias() += nrandn(num_latent());
-   chol.matrixU().solveInPlace(rr); // solve for x: x = U^-1 * y
+   chol.matrixL().solveInPlace(rr.transpose()); // solve for y: y = L^-1 * b
+   rr.noalias() += Vector::NullaryExpr(num_latent(), RandNormalGenerator());
+   chol.matrixU().solveInPlace(rr.transpose()); // solve for x: x = U^-1 * y
    
-   U().col(n).noalias() = rr; // rr is equal to x
+   U().row(n).noalias() = rr; // rr is equal to x
 }
 
 std::ostream &NormalPrior::status(std::ostream &os, std::string indent) const
 {
    os << indent << m_name << std::endl;
-   os << indent << "  mu: " <<  hyperMu().transpose() << std::endl;
+   os << indent << "  mu: " <<  mu() << std::endl;
    return os;
 }
 } // end namespace smurff

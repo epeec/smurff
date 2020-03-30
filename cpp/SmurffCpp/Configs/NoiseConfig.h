@@ -28,16 +28,9 @@ namespace smurff
       static double ADAPTIVE_SN_MAX_DEFAULT_VALUE;
       static double PROBIT_DEFAULT_VALUE;
 
-      static std::string get_default_string()
-      {
-         return noiseTypeToString(NoiseConfig::NOISE_TYPE_DEFAULT_VALUE) +
-            "," + std::to_string(NoiseConfig::PRECISION_DEFAULT_VALUE) +
-            "," + std::to_string(NoiseConfig::ADAPTIVE_SN_INIT_DEFAULT_VALUE) +
-            "," + std::to_string(NoiseConfig::ADAPTIVE_SN_MAX_DEFAULT_VALUE) +
-            "," + std::to_string(NoiseConfig::PROBIT_DEFAULT_VALUE);
-      }
-
    private:
+      NoiseTypes m_noise_type;
+
       // for fixed gaussian noise
       double m_precision;
    
@@ -48,11 +41,9 @@ namespace smurff
       // for probit
       double m_threshold;
 
-   private:
-      NoiseTypes m_noise_type;
-
    public:
       NoiseConfig(NoiseTypes nt = NoiseTypes::unset);
+      NoiseConfig(const std::string, double precision, double sn_init, double sn_max, double threshold);
 
    public:
       bool validate() const;

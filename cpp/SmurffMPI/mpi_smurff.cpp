@@ -65,8 +65,8 @@ int main(int argc, char** argv)
     int name_len;
     MPI_Get_processor_name(processor_name, &name_len);
 
-    auto session = smurff::create_mpi_session(argc, argv);
-    session->run();
+    auto trainSession = smurff::create_mpi_session(argc, argv);
+    trainSession->run();
 
     // Finalize the MPI environment.
     MPI_Finalize();

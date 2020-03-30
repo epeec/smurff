@@ -2,80 +2,69 @@
 #include <fstream>
 #include <memory>
 
+#include <SmurffCpp/Utils/HDF5Group.h>
+#include <Utils/StringUtils.h>
+
 #include "SideInfoConfig.h"
-
-#include "TensorConfig.h"
-
-#define MACAU_PRIOR_CONFIG_PREFIX_TAG "macau_prior_config"
-#define MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG "macau_prior_config_item"
-
-#define NUM_SIDE_INFO_TAG "num_side_info"
-
-#define TOL_TAG "tol"
-#define DIRECT_TAG "direct"
-#define THROW_ON_CHOLESKY_ERROR_TAG "throw_on_cholesky_error"
-#define SIDE_INFO_PREFIX "side_info"
 
 namespace smurff {
 
-double SideInfoConfig::BETA_PRECISION_DEFAULT_VALUE = 10.0;
-double SideInfoConfig::TOL_DEFAULT_VALUE = 1e-6;
+static const std::string SIDE_INFO_PREFIX = "side_info";
+static const std::string TOL_TAG = "tol";
+static const std::string DIRECT_TAG = "direct";
+static const std::string THROW_ON_CHOLESKY_ERROR_TAG = "throw_on_cholesky_error";
+static const std::string NUMBER_TAG = "nr";
 
-SideInfoConfig::SideInfoConfig()
+const bool   SideInfoConfig::DIRECT_DEFAULT_VALUE = true;
+const double SideInfoConfig::BETA_PRECISION_DEFAULT_VALUE = 10.0;
+const double SideInfoConfig::TOL_DEFAULT_VALUE = 1e-6;
+
+SideInfoConfig::SideInfoConfig(const Matrix &data, const NoiseConfig &ncfg)
+   : DataConfig(data, ncfg)
 {
    m_tol = SideInfoConfig::TOL_DEFAULT_VALUE;
-   m_direct = false;
+   m_direct = SideInfoConfig::DIRECT_DEFAULT_VALUE;
    m_throw_on_cholesky_error = false;
 }
 
-void SideInfoConfig::save(INIFile& writer, std::size_t prior_index, std::size_t config_item_index) const
+SideInfoConfig::SideInfoConfig(const SparseMatrix &data, const NoiseConfig &ncfg)
+   : DataConfig(data, false, ncfg)
 {
-   std::string sectionName = std::string(MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG) + "_" + std::to_string(prior_index) + "_" + std::to_string(config_item_index);
-
-   //macau prior config item section
-   writer.startSection(sectionName);
-
-   //config item data
-   writer.appendItem(sectionName, TOL_TAG, std::to_string(m_tol));
-   writer.appendItem(sectionName, DIRECT_TAG, std::to_string(m_direct));
-   writer.appendItem(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, std::to_string(m_throw_on_cholesky_error));
-
-   writer.endSection();
-
-   std::string sideInfoName = std::string(SIDE_INFO_PREFIX) + "_" + std::to_string(prior_index);
-   
-   //config item side info
-   TensorConfig::save_tensor_config(writer, sideInfoName, config_item_index, m_sideInfo);
+   m_tol = SideInfoConfig::TOL_DEFAULT_VALUE;
+   m_direct = SideInfoConfig::DIRECT_DEFAULT_VALUE;
+   m_throw_on_cholesky_error = false;
 }
 
-bool SideInfoConfig::restore(const INIFile& reader, std::size_t prior_index, std::size_t config_item_index)
+void SideInfoConfig::save(HDF5Group& cfg_file, std::size_t prior_index) const
 {
-   auto add_index = [](const std::string name, int idx = -1) -> std::string
-   {
-      if (idx >= 0)
-         return name + "_" + std::to_string(idx);
-      return name;
-   };
+   std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
 
-   std::stringstream section;
-   section << MACAU_PRIOR_CONFIG_ITEM_PREFIX_TAG << "_" << prior_index << "_" << config_item_index;
+   //macau config params
+   cfg_file.put(sectionName, TOL_TAG, m_tol);
+   cfg_file.put(sectionName, DIRECT_TAG, m_direct);
+   cfg_file.put(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, m_throw_on_cholesky_error);
 
-   if (!reader.hasSection(section.str()))
+   //data
+   DataConfig::save(cfg_file, sectionName);
+}
+
+bool SideInfoConfig::restore(const HDF5Group& cfg_file, std::size_t prior_index)
+{
+   std::string sectionName = addIndex(SIDE_INFO_PREFIX, prior_index);
+
+   if (!cfg_file.hasSection(sectionName))
    {
        return false;
    }
 
    //restore side info properties
-   m_tol = reader.getReal(section.str(), TOL_TAG, SideInfoConfig::TOL_DEFAULT_VALUE);
-   m_direct = reader.getBoolean(section.str(), DIRECT_TAG, false);
-   m_throw_on_cholesky_error = reader.getBoolean(section.str(), THROW_ON_CHOLESKY_ERROR_TAG, false);
+   m_tol = cfg_file.get(sectionName, TOL_TAG, SideInfoConfig::TOL_DEFAULT_VALUE);
+   m_direct = cfg_file.get(sectionName, DIRECT_TAG, false);
+   m_throw_on_cholesky_error = cfg_file.get(sectionName, THROW_ON_CHOLESKY_ERROR_TAG, false);
 
-   std::stringstream ss;
-   ss << SIDE_INFO_PREFIX << "_" << prior_index;
-
-   auto tensor_cfg = TensorConfig::restore_tensor_config(reader, add_index(ss.str(), config_item_index));
-   m_sideInfo = std::dynamic_pointer_cast<MatrixConfig>(tensor_cfg);
+   DataConfig::restore(cfg_file, sectionName);
 
    return true;
 }
+
 } // end namespace smurff

@@ -19,17 +19,17 @@ namespace smurff {
 
 //-------
 
-std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(std::shared_ptr<Session> session, PriorTypes prior_type,
-   const std::vector<std::shared_ptr<ISideInfo> >& side_infos,
-   const std::vector<std::shared_ptr<SideInfoConfig> >& config_items)
+std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(TrainSession &trainSession, PriorTypes prior_type,
+   const std::shared_ptr<ISideInfo>& side_info,
+   const SideInfoConfig& config_item)
 {
    if(prior_type == PriorTypes::macau || prior_type == PriorTypes::default_prior)
    {
-      return create_macau_prior<MacauPrior>(session, side_infos, config_items);
+      return create_macau_prior<MacauPrior>(trainSession, side_info, config_item);
    }
    else if(prior_type == PriorTypes::macauone)
    {
-      return create_macau_prior<MacauOnePrior>(session, side_infos, config_items);
+      return create_macau_prior<MacauOnePrior>(trainSession, side_info, config_item);
    }
    else
    {
@@ -37,22 +37,22 @@ std::shared_ptr<ILatentPrior> PriorFactory::create_macau_prior(std::shared_ptr<S
    }
 }
 
-std::shared_ptr<ILatentPrior> PriorFactory::create_prior(std::shared_ptr<Session> session, int mode)
+std::shared_ptr<ILatentPrior> PriorFactory::create_prior(TrainSession &trainSession, int mode)
 {
-   PriorTypes priorType = session->getConfig().getPriorTypes().at(mode);
+   PriorTypes priorType = trainSession.getConfig().getPriorTypes().at(mode);
 
    switch(priorType)
    {
    case PriorTypes::normal:
    case PriorTypes::default_prior:
-      return std::shared_ptr<NormalPrior>(new NormalPrior(session, -1));
+      return std::shared_ptr<NormalPrior>(new NormalPrior(trainSession, -1));
    case PriorTypes::spikeandslab:
-      return std::shared_ptr<SpikeAndSlabPrior>(new SpikeAndSlabPrior(session, -1));
+      return std::shared_ptr<SpikeAndSlabPrior>(new SpikeAndSlabPrior(trainSession, -1));
    case PriorTypes::normalone:
-      return std::shared_ptr<NormalOnePrior>(new NormalOnePrior(session, -1));
+      return std::shared_ptr<NormalOnePrior>(new NormalOnePrior(trainSession, -1));
    case PriorTypes::macau:
    case PriorTypes::macauone:
-      return create_macau_prior<PriorFactory>(session, mode, priorType, session->getConfig().getSideInfoConfigs(mode));
+      return create_macau_prior<PriorFactory>(trainSession, mode, priorType, trainSession.getConfig().getSideInfoConfig(mode));
    default:
       {
          THROWERROR("Unknown prior: " + priorTypeToString(priorType));
