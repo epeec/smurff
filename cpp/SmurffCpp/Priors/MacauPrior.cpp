@@ -128,11 +128,11 @@ void MacauPrior::sample_beta()
 
             //allocate
             matrix<float_type> vcl_FtF(FtF_plus_precision.rows(), FtF_plus_precision.cols());
-            matrix<float_type> vcl_Ft_y_t(Ft_y.cols(), Ft_y.rows());
+            matrix<float_type> vcl_Ft_y_t(Ft_y.rows(), Ft_y.cols());
 
             //map
-            Eigen::Map<EigenRowMajor> map_beta(beta().data(), beta().cols(), beta().rows());
-            Eigen::Map<EigenRowMajor> map_Ft_y(Ft_y.data(), Ft_y.cols(), Ft_y.rows());
+            Eigen::Map<EigenRowMajor> map_beta(beta().data(), beta().rows(), beta().cols());
+            Eigen::Map<EigenRowMajor> map_Ft_y(Ft_y.data(), Ft_y.rows(), Ft_y.cols());
             viennacl::backend::finish(); 
 
             {
