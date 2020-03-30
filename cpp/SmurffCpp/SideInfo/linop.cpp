@@ -212,7 +212,10 @@ int solve_blockcg_1block(Matrix & X, const SparseSideInfo& K, double reg, Matrix
     // R R' = R2 R2'
     std::swap(RtR, RtR2);
     ////double t6 = tick();
+    ////double t_total = 0.01 * (t6-t1);
     ////printf("t2-t1 = %.3f, t3-t2 = %.3f, t4-t3 = %.3f, t5-t4 = %.3f, t6-t5 = %.3f\n", t2-t1, t3-t2, t4-t3, t5-t4, t6-t5);
+    ////printf("t2-t1 = %.3f, t3-t2 = %.3f, t4-t3 = %.3f, t5-t4 = %.3f, t6-t5 = %.3f\n", 
+    ////  (t2-t1)/(t_total), (t3-t2)/(t_total), (t4-t3)/(t_total), (t5-t4)/(t_total), (t6-t5)/(t_total));
   }
   
   if (iter == 1000)
