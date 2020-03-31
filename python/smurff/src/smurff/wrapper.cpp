@@ -4,7 +4,6 @@
 #include <pybind11/eigen.h>
 #include <pybind11/operators.h>
 
-
 #include <SmurffCpp/Types.h>
 #include <SmurffCpp/Configs/Config.h>
 #include <SmurffCpp/Configs/NoiseConfig.h>
@@ -23,21 +22,7 @@ PYBIND11_MODULE(wrapper, m)
 {
     m.doc() = "SMURFF Python Interface";
 
-    py::class_<smurff::Config>(m, "Config")
-        .def(py::init<>())
-        .def("setPriorTypes", py::overload_cast<std::vector<std::string>>(&smurff::Config::setPriorTypes))
-        .def("setModelInitType", py::overload_cast<std::string>(&smurff::Config::setModelInitType))
-        .def("setSaveName", &smurff::Config::setSaveName)
-        .def("setSaveFreq", &smurff::Config::setSaveFreq)
-        .def("setCheckpointFreq", &smurff::Config::setCheckpointFreq)
-        .def("setRandomSeed", &smurff::Config::setRandomSeed)
-        .def("setVerbose", &smurff::Config::setVerbose)
-        .def("setBurnin", &smurff::Config::setBurnin)
-        .def("setNSamples", &smurff::Config::setNSamples)
-        .def("setNumLatent", &smurff::Config::setNumLatent)
-        .def("setNumThreads", &smurff::Config::setNumThreads)
-        .def("setThreshold", &smurff::Config::setThreshold)
-        ;
+    m.attr("version") = SMURFF_VERSION;
 
     py::class_<smurff::NoiseConfig>(m, "NoiseConfig")
         .def(py::init<const std::string, double, double, double, double>(),
@@ -101,8 +86,21 @@ PYBIND11_MODULE(wrapper, m)
         ;
 
     py::class_<smurff::PythonSession>(m, "PythonSession")
-        .def(py::init<const smurff::Config &>())
+        .def(py::init<>())
         .def("__str__", &smurff::ISession::infoAsString)
+
+        .def("setPriorTypes", &smurff::PythonSession::setPriorTypes)
+        .def("setRestoreName", &smurff::PythonSession::setRestoreName)
+        .def("setSaveName", &smurff::PythonSession::setSaveName)
+        .def("setSaveFreq", &smurff::PythonSession::setSaveFreq)
+        .def("setCheckpointFreq", &smurff::PythonSession::setCheckpointFreq)
+        .def("setRandomSeed", &smurff::PythonSession::setRandomSeed)
+        .def("setVerbose", &smurff::PythonSession::setVerbose)
+        .def("setBurnin", &smurff::PythonSession::setBurnin)
+        .def("setNSamples", &smurff::PythonSession::setNSamples)
+        .def("setNumLatent", &smurff::PythonSession::setNumLatent)
+        .def("setNumThreads", &smurff::PythonSession::setNumThreads)
+        .def("setThreshold", &smurff::PythonSession::setThreshold)
 
         .def("setTest", &smurff::PythonSession::setTest<smurff::SparseMatrix>)
         .def("setTest", &smurff::PythonSession::setTest<smurff::SparseTensor>)

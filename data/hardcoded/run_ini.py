@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import matrix_io as mio
 import smurff
 
@@ -64,6 +65,77 @@ def read_ini(fname):
             data, matrix_type, noise, pos, direct, tol = read_data(cfg, section) 
             session.addSideInfo(mode, data, noise, direct)
 
-    session.init()
+    return session
 
-session = read_ini("macau.ini")
+parser = argparse.ArgumentParser(description='pySMURFF - command line utility to the SMURFF Python module')
+
+group = parser.add_argument_group("General parameters")
+group.add_argument("--version", action="store_true", help="print version info (and exit)")
+group.add_argument("--verbose", metavar= "NUM", type=int, default=1, help="verbose output (default = 1}")
+group.add_argument("--ini", metavar="FILE", type=str,  help="read options from this .ini file")
+group.add_argument("--num-threads", metavar= "NUM", type=int,  help="number of threads (0 = default by OpenMP")
+group.add_argument("--seed", metavar= "NUM", type=int,  help="random number generator seed")
+
+group = parser.add_argument_group("Used during training")
+group.add_argument("--train", metavar="FILE", type=str, help="train data file")
+group.add_argument("--test", metavar="FILE", type=str, help="test data")
+group.add_argument("--row-features", metavar="FILE", type=str, help="sparse/dense row features")
+group.add_argument("--col-features", metavar="FILE", type=str, help="sparse/dense column features")
+group.add_argument("--prior", metavar="NAME", nargs=2, type=str, help="provide a prior-type for each dimension of train; prior-types:  <normal|normalone|spikeandslab|macau|macauone>")
+group.add_argument("--burnin", metavar="NUM", type=int,  help="number of samples to discard")
+group.add_argument("--nsamples", metavar="NUM", type=int, help="number of samples to collect")
+group.add_argument("--num-latent", metavar="NUM", type=int,  help="number of latent dimensions")
+group.add_argument("--threshold", metavar="NUM", type=float, help="threshold for binary classification and AUC calculation")
+
+group = parser.add_argument_group("Storing models and predictions")
+group.add_argument("--restore-from", metavar="FILE", type=str, help="restore trainSession from a saved .h5 file")
+group.add_argument("--save-name", metavar="FILE", type=str, help="save model and/or predictions to this .h5 file")
+group.add_argument("--save-freq", metavar="NUM", type=int, help="save every n iterations (0 == never, -1 == final model)")
+group.add_argument("--checkpoint-freq", metavar="NUM", type=int, help="save state every n seconds, only one checkpointing state is kept")
+
+args = parser.parse_args()
+print(args)
+
+if args.version:
+    print("SMURFF %s" % smurff.version)
+    exit
+
+session = smurff.TrainSession()
+
+if args.ini is not None:
+    session = read_ini(args.ini)
+
+file_options = {
+    "train" : session.setTrain,
+    "test" : session.setTest,
+    "row-features" : lambda x: session.addSideInfo(0, x),
+    "col-features" : lambda x: session.addSideInfo(1, x),
+}
+
+for opt, func in file_options.items():
+    if opt in vars(args) and vars(args)[opt] is not None:
+        fname = vars(args)[opt]
+        data = mio.read_matrix(fname)
+        func(data)
+
+other_options = {
+    "verbose" : session.setVerbose,
+    "num-threads" : session.setNumThreads,
+    "seed" : session.setRandomSeed,
+    "prior" : session.setPriorTypes,
+    "burnin" : session.setBurnin,
+    "nsamples" : session.setNSamples,
+    "num-latent" : session.setNumLatent,
+    "threshold" : session.setThreshold,
+    "restore-from" : session.setRestoreName,
+    "save-name" : session.setSaveName,
+    "save-freq" : session.setSaveFreq,
+    "checkpoint-freq" : session.setCheckpointFreq,
+}
+
+for opt, func in other_options.items():
+    if opt in vars(args) and vars(args)[opt] is not None:
+        value = vars(args)[opt]
+        func(value)
+
+# session = read_ini("macau.ini")

@@ -4,7 +4,7 @@ import numpy as np
 import scipy.sparse as sp
 
 from .helper import SparseTensor, FixedNoise, SampledNoise
-from .wrapper import Config, NoiseConfig, StatusItem, PythonSession
+from .wrapper import NoiseConfig, StatusItem, PythonSession
 from .predict import PredictSession
 
 
@@ -70,21 +70,20 @@ class TrainSession(PythonSession):
         checkpoint_freq  = None,
         ):
 
-        config = Config()
+        super().__init__()
 
-        if priors is not None:          config.setPriorTypes(priors)
-        if num_latent is not None:      config.setNumLatent(num_latent)
-        if num_threads is not None:     config.setNumThreads(num_threads)
-        if burnin is not None:          config.setBurnin(burnin)
-        if nsamples is not None:        config.setNSamples(nsamples)
-        if seed is not None:            config.setRandomSeed(seed)
-        if threshold is not None:       config.setThreshold(threshold)
-        if verbose is not None:         config.setVerbose(verbose)
-        if save_name is not None:       config.setSaveName(save_name)
-        if save_freq is not None:       config.setSaveFreq(save_freq)
-        if checkpoint_freq is not None: config.setCheckpointFreq(checkpoint_freq)
+        if priors is not None:          self.setPriorTypes(priors)
+        if num_latent is not None:      self.setNumLatent(num_latent)
+        if num_threads is not None:     self.setNumThreads(num_threads)
+        if burnin is not None:          self.setBurnin(burnin)
+        if nsamples is not None:        self.setNSamples(nsamples)
+        if seed is not None:            self.setRandomSeed(seed)
+        if threshold is not None:       self.setThreshold(threshold)
+        if verbose is not None:         self.setVerbose(verbose)
+        if save_name is not None:       self.setSaveName(save_name)
+        if save_freq is not None:       self.setSaveFreq(save_freq)
+        if checkpoint_freq is not None: self.setCheckpointFreq(checkpoint_freq)
 
-        super().__init__(config)
 
     def addTrainAndTest(self, Y, Ytest = None, noise = FixedNoise(), is_scarce = True):
         self.setTrain(Y, noise, is_scarce)

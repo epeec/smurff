@@ -12,13 +12,26 @@ private:
    static bool keepRunningVerbose;
 
 public:
-   PythonSession(const Config &c)
-   : TrainSession(c)
+   PythonSession()
    {
       name = "PythonSession";
       keepRunning = true;
    }
-   
+  
+   void setPriorTypes(std::vector<std::string> values) { m_config.setPriorTypes(values); }   
+   void setRestoreName(std::string value) { m_config.setRestoreName(value); } 
+   void setSaveName(std::string value) { m_config.setSaveName(value); } 
+   void setSaveFreq(int value) { m_config.setSaveFreq(value); } 
+   void setSavePred(bool value) { m_config.setSavePred(value); } 
+   void setCheckpointFreq(int value) { m_config.setCheckpointFreq(value); } 
+   void setRandomSeed(int value) { m_config.setRandomSeed(value); } 
+   void setVerbose(int value) { m_config.setVerbose(value); } 
+   void setBurnin(int value) { m_config.setBurnin(value); } 
+   void setNSamples(int value) { m_config.setNSamples(value); } 
+   void setNumLatent(int value) { m_config.setNumLatent(value); } 
+   void setThreshold(double value) { m_config.setThreshold(value); } 
+   void setNumThreads(int value) { m_config.setNumThreads(value); }
+
    template <typename SparseType>
    void setTest(const SparseType &data)
    {
