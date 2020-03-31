@@ -47,7 +47,7 @@ def read_ini(fname):
         seed, 
         threshold,
         cfg.getint("global", "verbose"),
-        cfg.get   ("global", "save_name", fallback=None),
+        cfg.get   ("global", "save_name", fallback=smurff.temp_savename()),
         cfg.getint("global", "save_freq", fallback=None),
         cfg.getint("global", "checkpoint_freq", fallback=None),
     )
@@ -64,6 +64,6 @@ def read_ini(fname):
             data, matrix_type, noise, pos, direct, tol = read_data(cfg, section) 
             session.addSideInfo(mode, data, noise, direct)
 
-    session.run()
+    session.init()
 
 session = read_ini("macau.ini")
