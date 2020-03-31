@@ -138,4 +138,4 @@ for opt, func in other_options.items():
         value = vars(args)[opt]
         func(value)
 
-# session = read_ini("macau.ini")
+session.init()
