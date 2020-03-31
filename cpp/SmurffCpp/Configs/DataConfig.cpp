@@ -10,11 +10,11 @@
 namespace smurff {
 
 static const std::string POS_TAG = "pos";
-static const std::string FILE_TAG = "file";
 static const std::string DATA_TAG = "data";
 static const std::string DENSE_TAG = "dense";
 static const std::string SCARCE_TAG = "scarce";
 static const std::string SPARSE_TAG = "sparse";
+static const std::string MATRIX_TAG = "matrix";
 static const std::string TYPE_TAG = "type";
 
 static const std::string NONE_VALUE("none");
@@ -24,6 +24,9 @@ static const std::string PRECISION_TAG = "precision";
 static const std::string SN_INIT_TAG = "sn_init";
 static const std::string SN_MAX_TAG = "sn_max";
 static const std::string NOISE_THRESHOLD_TAG = "noise_threshold";
+
+DataConfig::DataConfig () 
+   : m_hasData(false) {}
 
 DataConfig::DataConfig ( const Matrix &m
                        , const NoiseConfig& noiseConfig
@@ -74,11 +77,12 @@ DataConfig::~DataConfig()
 
 void DataConfig::check() const
 {
-   THROWERROR_ASSERT(m_dims.size() > 0);
+   THROWERROR_ASSERT(hasData());
 
    if (isDense())
    {
-       THROWERROR_ASSERT(m_nnz == std::accumulate(m_dims.begin(), m_dims.end(), 1ULL, std::multiplies<std::uint64_t>()));
+      const auto dims = getDims();
+      THROWERROR_ASSERT(getNNZ() == std::accumulate(dims.begin(), dims.end(), 1ULL, std::multiplies<std::uint64_t>()));
    }
 }
 
@@ -89,87 +93,92 @@ void DataConfig::check() const
 void DataConfig::setData(const Matrix &m)
 {
    m_dense_matrix_data = m;
+   m_hasData = true;
    m_isDense = true;
    m_isScarce = false;
    m_isMatrix = true;
-   m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
-   m_nnz = m.nonZeros();
    check();
 }
 
 void DataConfig::setData(const SparseMatrix &m, bool isScarce)
 {
    m_sparse_matrix_data = m;
+   m_hasData = true;
    m_isDense = false;
    m_isScarce = isScarce;
    m_isMatrix = true;
-   m_dims = { (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
-   m_nnz = m.nonZeros();
    check();
 }
 
 void DataConfig::setData(const DenseTensor &m)
 {
    m_dense_tensor_data = m;
+   m_hasData = true;
    m_isDense = true;
    m_isMatrix = false;
-   m_dims = m.getDims();
-   m_nnz = m.getNNZ();
 }
 
 void DataConfig::setData(const SparseTensor &m, bool isScarce)
 {
    m_sparse_tensor_data = m;
+   m_hasData = true;
    m_isDense = false;
    m_isScarce = isScarce;
    m_isMatrix = false;
-   m_dims = m.getDims();
-   m_nnz = m.getNNZ();
    check();
 }
 
 const Matrix &DataConfig::getDenseMatrixData() const
 {
-   THROWERROR_ASSERT(isDense() && isMatrix());
+   THROWERROR_ASSERT(hasData() && isDense() && isMatrix());
    return m_dense_matrix_data;
 }
 
 const SparseMatrix &DataConfig::getSparseMatrixData() const
 {
-   THROWERROR_ASSERT(!isDense() && isMatrix());
+   THROWERROR_ASSERT(hasData() && !isDense() && isMatrix());
    return m_sparse_matrix_data;
 }
 
 const SparseTensor &DataConfig::getSparseTensorData() const
 {
-   THROWERROR_ASSERT(!isDense() && !isMatrix());
+   THROWERROR_ASSERT(hasData() && !isDense() && !isMatrix());
    return m_sparse_tensor_data;
 }
 
 const DenseTensor &DataConfig::getDenseTensorData() const
 {
-   THROWERROR_ASSERT(isDense() && !isMatrix());
+   THROWERROR_ASSERT(hasData() && isDense() && !isMatrix());
    return m_dense_tensor_data;
 }
 
 Matrix &DataConfig::getDenseMatrixData()
 {
+   THROWERROR_ASSERT(!hasData());
    return m_dense_matrix_data;
 }
 
 SparseMatrix &DataConfig::getSparseMatrixData()
 {
+   THROWERROR_ASSERT(!hasData());
    return m_sparse_matrix_data;
 }
 
 SparseTensor &DataConfig::getSparseTensorData() 
 {
+   THROWERROR_ASSERT(!hasData());
    return m_sparse_tensor_data;
 }
 
 DenseTensor &DataConfig::getDenseTensorData() 
 {
+   THROWERROR_ASSERT(!hasData());
    return m_dense_tensor_data;
+}
+
+bool DataConfig::hasData() const
+{
+   return m_hasData;
 }
 
 bool DataConfig::isDense() const
@@ -189,18 +198,49 @@ bool DataConfig::isMatrix() const
 
 std::uint64_t DataConfig::getNNZ() const
 {
-   return m_nnz;
+   THROWERROR_ASSERT(hasData());
+
+        if (isMatrix() && isDense())        return getDenseMatrixData().nonZeros();
+   else if (isMatrix() && !isDense())  return getSparseMatrixData().nonZeros();
+   else if (!isMatrix() && !isDense()) return getSparseTensorData().getNNZ();
+   else if (!isMatrix() && isDense())  return getDenseTensorData().getNNZ();
+   else THROWERROR_NOTIMPL();
 }
 
 std::uint64_t DataConfig::getNModes() const
 {
-   return m_dims.size();
+   return getDims().size();
 }
 
-const std::vector<std::uint64_t>& DataConfig::getDims() const
+const std::vector<std::uint64_t> DataConfig::getDims() const
 {
-   return m_dims;
+   THROWERROR_ASSERT(hasData());
+
+   if (isMatrix() && isDense())
+   {
+      const auto &m = getDenseMatrixData();
+      return std::vector<std::uint64_t>{ (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
+   }
+   else if (isMatrix() && !isDense()) 
+   {
+      const auto &m = getSparseMatrixData();
+      return std::vector<std::uint64_t>{ (std::uint64_t)m.rows(), (std::uint64_t)m.cols() };
+   }
+   else if (!isMatrix() && !isDense())
+   {
+      const auto &m = getSparseTensorData();
+      return m.getDims();
+   }
+   else if (!isMatrix() && isDense())
+   {
+      const auto &m = getDenseTensorData();
+      return m.getDims();
+   }
+   else 
+      THROWERROR_NOTIMPL();
 }
+
+
 
 const NoiseConfig& DataConfig::getNoiseConfig() const
 {
@@ -240,15 +280,15 @@ const PVec<>& DataConfig::getPos() const
 
 std::ostream& DataConfig::info(std::ostream& os) const
 {
-   if (!m_dims.size())
+   if (!hasData())
    {
       os << "0";
    }
    else
    {
-      os << m_dims.operator[](0);
-      for (std::size_t i = 1; i < m_dims.size(); i++)
-         os << " x " << m_dims.operator[](i);
+      os << getDims().operator[](0);
+      for (std::size_t i = 1; i < getDims().size(); i++)
+         os << " x " << getDims().operator[](i);
    }
    if (getFilename().size())
    {
@@ -270,6 +310,9 @@ std::string DataConfig::info() const
 
 void DataConfig::save(HDF5Group& cfg_file, const std::string& sectionName) const
 {
+   if (!hasData())
+      return;
+
    //write tensor config position
    if (hasPos())
    {
@@ -292,6 +335,7 @@ void DataConfig::save(HDF5Group& cfg_file, const std::string& sectionName) const
    //write tensor config type
    std::string type_str = isDense() ? DENSE_TAG : isScarce() ? SCARCE_TAG : SPARSE_TAG;
    cfg_file.put(sectionName, TYPE_TAG, type_str);
+   cfg_file.put(sectionName, MATRIX_TAG, isMatrix());
 
    //write noise config
    auto &noise_config = getNoiseConfig();
@@ -308,6 +352,9 @@ void DataConfig::save(HDF5Group& cfg_file, const std::string& sectionName) const
 
 bool DataConfig::restore(const HDF5Group& cfg_file, const std::string& sectionName)
 {
+   if (!cfg_file.hasSection(sectionName))
+      return false;
+
    //restore position
    std::string pos_str = cfg_file.get(sectionName, POS_TAG, NONE_VALUE);
    if (pos_str != NONE_VALUE)
@@ -322,9 +369,7 @@ bool DataConfig::restore(const HDF5Group& cfg_file, const std::string& sectionNa
    //restore type
    m_isDense = cfg_file.get(sectionName, TYPE_TAG, DENSE_TAG) == DENSE_TAG;
    m_isScarce = cfg_file.get(sectionName, TYPE_TAG, SCARCE_TAG) == SCARCE_TAG;
-
-   //restore filename and content
-   std::string filename = cfg_file.get(sectionName, FILE_TAG, NONE_VALUE);
+   m_isMatrix = cfg_file.get(sectionName, MATRIX_TAG, true);
 
    if (isMatrix() && isDense())
       cfg_file.read(sectionName, DATA_TAG, getDenseMatrixData());
@@ -352,6 +397,10 @@ bool DataConfig::restore(const HDF5Group& cfg_file, const std::string& sectionNa
 
    //assign noise model
    setNoiseConfig(noise);
+
+   m_hasData = true;
+
+   check();
 
    return true;
 }

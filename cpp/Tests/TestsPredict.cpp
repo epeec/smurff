@@ -151,9 +151,10 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
     rowSideInfoConfig.setNoiseConfig(nc);
     rowSideInfoConfig.setDirect(true);
   }
+  const SideInfoConfig &si = rowSideInfoConfig;
 
   Config config = genConfig(trainMatrix, testMatrix, {PriorTypes::macau, PriorTypes::normal});
-  config.addSideInfo(0, rowSideInfoConfig);
+  config.addSideInfo(0, si);
   NoiseConfig trainNoise(NoiseTypes::fixed);
   trainNoise.setPrecision(1.);
   config.getTrain().setNoiseConfig(trainNoise);
@@ -167,7 +168,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   auto in_matrix_predictions = predict_session_in.predict(config.getTest())->m_predictions;
 
   PredictSession predict_session_out(model_file);
-  const auto &sideInfoMatrix = rowSideInfoConfig.getSparseMatrixData();
+  const auto &sideInfoMatrix = si.getSparseMatrixData();
   int d = config.getTrain().getDims()[0];
   for (int r = 0; r < d; r++) {
     auto feat = sideInfoMatrix.row(r).transpose();

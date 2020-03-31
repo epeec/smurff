@@ -448,10 +448,10 @@ bool Config::restore(const HDF5Group &cfg_file)
 
 
    //restore save data
-   m_restore_name = cfg_file.get(OPTIONS_SECTION_TAG, RESTORE_NAME_TAG, "");
-   m_save_name = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_NAME_TAG, "");
-   m_save_freq = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
-   m_save_pred = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
+   m_restore_name = cfg_file.get(OPTIONS_SECTION_TAG, RESTORE_NAME_TAG, std::string());
+   m_save_name  = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_NAME_TAG, std::string());
+   m_save_freq  = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_FREQ_TAG, Config::SAVE_FREQ_DEFAULT_VALUE);
+   m_save_pred  = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_PRED_TAG, Config::SAVE_PRED_DEFAULT_VALUE);
    m_save_model = cfg_file.get(OPTIONS_SECTION_TAG, SAVE_MODEL_TAG, Config::SAVE_MODEL_DEFAULT_VALUE);
    m_checkpoint_freq = cfg_file.get(OPTIONS_SECTION_TAG, CHECKPOINT_FREQ_TAG, Config::CHECKPOINT_FREQ_DEFAULT_VALUE);
 
