@@ -211,11 +211,7 @@ private:
 template <size_t MaxSize>
 std::ostream &operator<<(std::ostream &os, const PVec<MaxSize> &vec)
 {
-   for (std::uint64_t m = 0; m < vec.size(); m++)
-   {
-      os << vec[m] << ", ";
-   }
-
+   vec.save(os);
    return os;
 }
 
