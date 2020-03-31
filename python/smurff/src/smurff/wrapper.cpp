@@ -76,15 +76,6 @@ PYBIND11_MODULE(wrapper, m)
         >())
         ;
 
-    py::class_<smurff::DataConfig>(m, "DataConfig")
-        .def(py::init<>())
-        .def("setData", py::overload_cast<const smurff::Matrix &>(&smurff::DataConfig::setData))
-        .def("setData", py::overload_cast<const smurff::SparseMatrix &, bool>(&smurff::DataConfig::setData))
-        .def("setData", py::overload_cast<const smurff::DenseTensor &>(&smurff::DataConfig::setData))
-        .def("setData", py::overload_cast<const smurff::SparseTensor &, bool>(&smurff::DataConfig::setData))
-        .def("setNoiseConfig", &smurff::DataConfig::setNoiseConfig)
-        ;
-
     py::class_<smurff::PythonSession>(m, "PythonSession")
         .def(py::init<>())
         .def("__str__", &smurff::ISession::infoAsString)

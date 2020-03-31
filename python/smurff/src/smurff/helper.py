@@ -4,7 +4,7 @@ import math
 import tempfile
 import os
 
-from .wrapper import NoiseConfig, DataConfig
+from .wrapper import NoiseConfig
 from . import wrapper
 
 def temp_savename():
