@@ -38,6 +38,14 @@ public:
        m_config.getTest().setData(data, true);
    }
 
+   template <typename SparseType>
+   void setTrain(const SparseType &data, const NoiseConfig &nc, bool is_scarce)
+   {
+       auto &train = m_config.getTrain();
+       train.setData(data, is_scarce);
+       train.setNoiseConfig(nc);
+   }
+
    void addSideInfoDense(int mode, const Matrix &data, const NoiseConfig &nc, bool direct) 
    {
       auto &si = m_config.addSideInfo(mode);

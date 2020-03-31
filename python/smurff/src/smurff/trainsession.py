@@ -110,8 +110,7 @@ class TrainSession(PythonSession):
 
         """
         
-        pos = ([0] * len(Y.shape)) # [ 0, 0, ... ]
-        self.addData(pos, Y, noise, is_scarce)
+        super().setTrain(Y, noise, is_scarce)
        
     def addSideInfo(self, mode, Y, noise = SampledNoise(), direct = True):
         """Adds fully known side info, for use in with the macau or macauone prior

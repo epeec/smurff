@@ -95,6 +95,9 @@ PYBIND11_MODULE(wrapper, m)
 
         .def("setTest", &smurff::PythonSession::setTest<smurff::SparseMatrix>)
         .def("setTest", &smurff::PythonSession::setTest<smurff::SparseTensor>)
+
+        .def("setTrain", &smurff::PythonSession::setTrain<smurff::SparseMatrix>)
+        .def("setTrain", &smurff::PythonSession::setTrain<smurff::SparseTensor>)
         
         .def("addSideInfo", &smurff::PythonSession::addSideInfoDense)
         .def("addSideInfo", &smurff::PythonSession::addSideInfoSparse)
