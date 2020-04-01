@@ -69,6 +69,8 @@ def read_ini(fname):
 
 parser = argparse.ArgumentParser(description='pySMURFF - command line utility to the SMURFF Python module')
 
+parser.add_argument("command", help="Do full 'run' or only 'save' to .h5", choices=['run', 'save'])
+
 group = parser.add_argument_group("General parameters")
 group.add_argument("--version", action="store_true", help="print version info (and exit)")
 group.add_argument("--verbose", metavar= "NUM", type=int, default=1, help="verbose output (default = 1}")
@@ -120,22 +122,28 @@ for opt, func in file_options.items():
 
 other_options = {
     "verbose" : session.setVerbose,
-    "num-threads" : session.setNumThreads,
+    "num_threads" : session.setNumThreads,
     "seed" : session.setRandomSeed,
     "prior" : session.setPriorTypes,
     "burnin" : session.setBurnin,
     "nsamples" : session.setNSamples,
-    "num-latent" : session.setNumLatent,
+    "num_latent" : session.setNumLatent,
     "threshold" : session.setThreshold,
-    "restore-from" : session.setRestoreName,
-    "save-name" : session.setSaveName,
-    "save-freq" : session.setSaveFreq,
+    "restore_from" : session.setRestoreName,
+    "save_name" : session.setSaveName,
+    "save_freq" : session.setSaveFreq,
     "checkpoint-freq" : session.setCheckpointFreq,
 }
 
+print(vars(args))
 for opt, func in other_options.items():
     if opt in vars(args) and vars(args)[opt] is not None:
         value = vars(args)[opt]
+        print("processing opt:", opt, "with value", value)
         func(value)
 
-session.init()
+if args.command == "run":
+    session.run()
+else:
+    session.init() # init will validate and save
+
