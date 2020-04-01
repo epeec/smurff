@@ -50,6 +50,18 @@ static Config& prepareResultDir(Config &config, const std::string &dir)
   return config;
 }
 
+TEST_CASE("OverwriteHDF5")
+{
+  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
+  prepareResultDir(config, Catch::getResultCapture().getCurrentTestName() + "_train");
+
+  // this one should work just fine
+  TrainSession(config).run();
+
+  // the second run should complain -- trying to create th HDF5 file that already exists
+  TrainSession(config).run();
+}
+
 TEST_CASE("PredictSession/BPMF")
 {
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
