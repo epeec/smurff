@@ -7,6 +7,8 @@ RUN apt-get update && \
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
        git g++ python3 \
+       gdb \
+       vim \
        libblas-dev \
        liblapack-dev \
        liblapacke-dev \
@@ -23,7 +25,7 @@ RUN wget https://cmake.org/files/v3.12/cmake-3.12.0-Linux-x86_64.sh && \
    sh cmake-3.12.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
 
 
-RUN wget -O HighFive.tar.gz https://github.com/tvandera/HighFive/archive/v2.1.1_unlink.tar.gz && \
+RUN wget -O HighFive.tar.gz https://github.com/BlueBrain/HighFive/archive/v2.2.tar.gz && \
     tar xzf HighFive.tar.gz && \
     cd HighFive* && mkdir build && cd build && \
     cmake .. && \
