@@ -13,6 +13,6 @@ cd /smurff/build
 rm -rf docker1604
 mkdir docker1604
 cd docker1604
-cmake ../..  -DHIGHFIVE_USE_BOOST=OFF -DENABLE_PYTHON=OFF -DBOOST_RANDOM_VERSION=1.58
+cmake ../..  -DENABLE_PYTHON=OFF -DBOOST_RANDOM_VERSION=1.58
 make -j2
 ./bin/tests

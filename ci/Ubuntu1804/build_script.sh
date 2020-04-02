@@ -12,6 +12,6 @@ set -x
 
 cd /smurff/build
 rm -rf docker1804 && mkdir docker1804 && cd docker1804
-cmake ../..  -DHIGHFIVE_USE_BOOST=OFF
+cmake ../..
 make -j2
 ./bin/tests '~[random]'

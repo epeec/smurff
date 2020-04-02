@@ -101,6 +101,7 @@ endmacro(configure_eigen)
 
 macro(configure_highfive)
   message ("Dependency check for HighFive...")
+  SET(HIGHFIVE_USE_BOOST OFF CACHE BOOL "Disable BOOST support in HighFive")
   find_package(HighFive REQUIRED)
 endmacro(configure_highfive)
 

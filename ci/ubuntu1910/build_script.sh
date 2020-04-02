@@ -12,6 +12,6 @@ set -x
 
 cd /smurff/build
 rm -rf docker1910 && mkdir docker1910 && cd docker1910
-cmake ../.. 
+cmake ../..
 make -j2
 ./bin/tests '~[random]'
