@@ -50,6 +50,18 @@ static Config& prepareResultDir(Config &config, const std::string &dir)
   return config;
 }
 
+TEST_CASE("OverwriteHDF5")
+{
+  Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
+  prepareResultDir(config, Catch::getResultCapture().getCurrentTestName() + "_train");
+
+  // this one should work just fine
+  TrainSession(config).run();
+
+  // the second run should complain -- trying to create th HDF5 file that already exists
+  TrainSession(config).run();
+}
+
 TEST_CASE("PredictSession/BPMF")
 {
   Config config = genConfig(trainDenseMatrix, testSparseMatrix, {PriorTypes::normal, PriorTypes::normal});
@@ -151,9 +163,10 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
     rowSideInfoConfig.setNoiseConfig(nc);
     rowSideInfoConfig.setDirect(true);
   }
+  const SideInfoConfig &si = rowSideInfoConfig;
 
   Config config = genConfig(trainMatrix, testMatrix, {PriorTypes::macau, PriorTypes::normal});
-  config.addSideInfo(0, rowSideInfoConfig);
+  config.addSideInfo(0, si);
   NoiseConfig trainNoise(NoiseTypes::fixed);
   trainNoise.setPrecision(1.);
   config.getTrain().setNoiseConfig(trainNoise);
@@ -167,7 +180,7 @@ TEST_CASE("PredictSession/Features/2", TAG_MATRIX_TESTS) {
   auto in_matrix_predictions = predict_session_in.predict(config.getTest())->m_predictions;
 
   PredictSession predict_session_out(model_file);
-  const auto &sideInfoMatrix = rowSideInfoConfig.getSparseMatrixData();
+  const auto &sideInfoMatrix = si.getSparseMatrixData();
   int d = config.getTrain().getDims()[0];
   for (int r = 0; r < d; r++) {
     auto feat = sideInfoMatrix.row(r).transpose();

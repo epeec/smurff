@@ -23,7 +23,7 @@ const std::string SAMPLE_PREFIX = "sample_";
 
 StateFile::StateFile(std::string path, bool create)
    : m_path(path)
-   , m_h5(path, create ? h5::File::Create : h5::File::ReadWrite)
+   , m_h5(path, create ? h5::File::Overwrite : h5::File::ReadWrite)
 {
    if (create)
    {

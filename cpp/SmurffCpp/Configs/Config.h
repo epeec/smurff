@@ -240,7 +240,7 @@ public:
 
    bool hasPropagatedPosterior(int mode) const
    {
-       return m_mu_postprop.find(mode) != m_mu_postprop.end() && !getMuPropagatedPosterior(mode).hasData();
+       return m_mu_postprop.find(mode) != m_mu_postprop.end() && getMuPropagatedPosterior(mode).hasData();
    }
 
    void addPropagatedPosterior(int mode, const Matrix &mu, const Matrix &Lambda) 

@@ -21,12 +21,10 @@ namespace smurff
       NoiseConfig m_noiseConfig;
 
    protected:
+      bool m_hasData;
       bool m_isDense;
       bool m_isScarce;
       bool m_isMatrix;
-
-      std::vector<std::uint64_t> m_dims;
-      std::uint64_t m_nnz;
 
    private:
       PVec<>      m_pos;
@@ -40,7 +38,7 @@ namespace smurff
    public:
       virtual ~DataConfig();
 
-      DataConfig() {}
+      DataConfig();
 
       DataConfig(const Matrix &, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
       DataConfig(const SparseMatrix &, bool isScarce = true, const NoiseConfig& noiseConfig = NoiseConfig(), PVec<> pos = PVec<>());
@@ -66,7 +64,7 @@ namespace smurff
       const NoiseConfig& getNoiseConfig() const;
       void setNoiseConfig(const NoiseConfig& value);
      
-      bool hasData() const { return !getDims().empty(); }
+      bool hasData() const;
       bool isMatrix() const;
       bool isDense() const;
       bool isScarce() const;
@@ -74,7 +72,7 @@ namespace smurff
       std::uint64_t getNModes() const;
       std::uint64_t getNNZ() const;
 
-      const std::vector<std::uint64_t>& getDims() const;
+      const std::vector<std::uint64_t> getDims() const;
       std::uint64_t getNRow() const { return getDims().at(0); }
       std::uint64_t getNCol() const { return getDims().at(1); }
 

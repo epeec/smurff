@@ -22,7 +22,7 @@ addons:
 
 script:
     - cd "${TRAVIS_BUILD_DIR}" &&
-      wget -O HighFive.tar.gz https://github.com/tvandera/HighFive/archive/v2.1.1_unlink.tar.gz && 
+      wget -O HighFive.tar.gz https://github.com/BlueBrain/HighFive/archive/v2.2.tar.gz && 
       tar xzf HighFive.tar.gz && 
       cd HighFive* && mkdir build && cd build && 
       cmake .. -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/prefix && 

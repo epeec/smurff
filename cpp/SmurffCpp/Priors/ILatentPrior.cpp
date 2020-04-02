@@ -143,7 +143,7 @@ void ILatentPrior::restore(const SaveState &sf)
 
 void ILatentPrior::init_Usum()
 {
-    Usum = U().rowwise().sum();
+    Usum = U().colwise().sum();
     UUsum = U().transpose() * U(); 
 }
 } // end namespace smurff
