@@ -2,7 +2,7 @@ from .trainsession import TrainSession
 from .helper import FixedNoise
 
 class SmurffSession(TrainSession):
-    def __init__(self, Ytrain, priors, is_scarce = True, Ytest=None, side_info=None, direct=False, *args, **kwargs):
+    def __init__(self, Ytrain, priors, is_scarce = True, Ytest=None, side_info=None, direct=True, *args, **kwargs):
         TrainSession.__init__(self, priors=priors, *args, **kwargs)
         self.addTrainAndTest(Ytrain, Ytest, is_scarce = is_scarce)
 
@@ -40,7 +40,7 @@ class MacauSession(SmurffSession):
              Extra arguments are passed to the :class:`TrainSession`
     """
 
-    def __init__(self,  Ytrain, is_scarce = True, Ytest=None, side_info=None, univariate=False, direct=False, *args, **kwargs):
+    def __init__(self,  Ytrain, is_scarce = True, Ytest=None, side_info=None, univariate=False, direct=True, *args, **kwargs):
         nmodes = len(Ytrain.shape)
         priors = ['normal'] * nmodes
 
