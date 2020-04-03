@@ -10,8 +10,9 @@
 set -e
 set -x
 
-cd /smurff/build
-rm -rf docker1910 && mkdir docker1910 && cd docker1910
-cmake ../..
-make -j2
-./bin/tests '~[random]'
+rm -rf /build  && mkdir /build && cd /build
+git clone /smurff 
+cd smurff/python/smurff
+python3 setup.py install --install-binaries --extra-build-args -j
+/usr/local/libexec/tests '~[random]'
+python3 -m unittest discover test

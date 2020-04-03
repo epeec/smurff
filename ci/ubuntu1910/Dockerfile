@@ -1,7 +1,7 @@
 FROM ubuntu:19.10
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
        cmake \
        git g++ python3 \
        libblas-dev \
@@ -15,7 +15,9 @@ RUN apt-get update && \
        libhdf5-dev \
        gdb vim wget\
        libhdf5-dev \
-       python3-numpy python3-pybind11 \
+       python3-numpy python3-pybind11 python3-setuptools \
+       python3-scipy python3-pandas \
+       python3-joblib python3-sklearn\
     && rm -rf /var/lib/apt/lists/*
 
 RUN wget -O HighFive.tar.gz https://github.com/BlueBrain/HighFive/archive/v2.2.tar.gz && \
