@@ -17,7 +17,8 @@ RUN apt-get update && \
        libhdf5-dev \
        python3-numpy python3-pybind11 python3-setuptools \
        python3-scipy python3-pandas \
-       python3-joblib python3-sklearn\
+       python3-joblib python3-sklearn \
+       python3-h5py \
     && rm -rf /var/lib/apt/lists/*
 
 RUN wget -O HighFive.tar.gz https://github.com/BlueBrain/HighFive/archive/v2.2.tar.gz && \
