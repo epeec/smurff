@@ -43,8 +43,8 @@ class SparseTensor(wrapper.SparseTensor):
                 self.shape = [data[c].max() + 1 for c in idx_column_names]
 
             self.data = data
-            self.columns = [ data[c].to_numpy() for c in idx_column_names ]
-            self.values = data[val_column_names[0]].to_numpy()
+            self.columns = [ data[c].values for c in idx_column_names ]
+            self.values = data[val_column_names[0]].values
         else:
             error_msg = "Unsupported sparse tensor data type: {}".format(data)
             raise ValueError(error_msg)
