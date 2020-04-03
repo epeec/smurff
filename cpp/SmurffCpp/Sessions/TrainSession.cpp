@@ -213,6 +213,9 @@ void TrainSession::save()
             saveInternal(isample, false);
         }
     }
+
+    // close after final step
+    if (m_iter == niter - 1) m_stateFile.reset();
 }
 
 void TrainSession::saveInternal(int iteration, bool checkpoint)
