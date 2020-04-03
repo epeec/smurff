@@ -6,7 +6,7 @@ import scipy.io as sio
 import argparse
 import os
 import itertools
-import matrix_io as mio
+import smurff.matrix_io as mio
 from sklearn import preprocessing
 
 #parser = argparse.ArgumentParser(description='SMURFF tests')

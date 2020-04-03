@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import matrix_io as mio
+import smurff.matrix_io as mio
 import urllib.request
 import scipy.io as sio
 import os

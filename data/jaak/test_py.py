@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import smurff
-import matrix_io as mio
+import smurff.matrix_io as mio
 import numpy as np
 from time import time
 
@@ -14,7 +14,7 @@ feat = mio.read_matrix("chembl-IC50-100compounds-feat.sdm")
 ic50_threshold = 6.
 
 trainSession = smurff.TrainSession(
-                            verbose = 2,
+                            verbose = 1,
                             priors = ['macau', 'normal'],
                             num_latent=32,
                             num_threads=1,
@@ -26,7 +26,7 @@ trainSession = smurff.TrainSession(
 
 ## using activity threshold pIC50 > 6. to binarize train data
 trainSession.addTrainAndTest(ic50_train, ic50_test)
-trainSession.addSideInfo(0, feat, noise=smurff.SampledNoise(), direct=False)
+trainSession.addSideInfo(0, feat, noise=smurff.SampledNoise(), direct=True)
 
 start = time()
 predictions = trainSession.run()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-import matrix_io as mio
+import smurff.matrix_io as mio
 import smurff
 
 def read_list(cfg, prefix):
