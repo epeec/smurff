@@ -10,8 +10,7 @@
 set -e
 set -x
 
-cd /smurff/build
-rm -rf docker1804 && mkdir docker1804 && cd docker1804
-cmake ../..
-make -j2
+rm -rf /build  && mkdir /build && cd /build
+cmake /smurff
+make -j${CPU_COUNT}
 ./bin/tests '~[random]'

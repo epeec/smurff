@@ -8,11 +8,9 @@
 
 
 set -e
+set -x
 
-cd /smurff/build
-rm -rf docker1604
-mkdir docker1604
-cd docker1604
-cmake ../..  -DENABLE_PYTHON=OFF -DBOOST_RANDOM_VERSION=1.58
-make -j2
+rm -rf /build  && mkdir /build && cd /build
+cmake /smurff  -DENABLE_PYTHON=OFF -DBOOST_RANDOM_VERSION=1.58
+make -j${CPU_COUNT}
 ./bin/tests
