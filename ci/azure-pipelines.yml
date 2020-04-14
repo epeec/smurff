@@ -1,5 +1,8 @@
-jobs:
+trigger:
+  - master
+  - releases/*
 
+jobs:
 - job: 'Ubuntu_1604_Apt'
   pool:
     vmImage: 'Ubuntu 16.04'
@@ -24,25 +27,25 @@ jobs:
     - task: CMake@1
       inputs:
         workingDirectory: 'build.$(build.type)'
-        cmakeArgs: '-G Ninja -DCMAKE_BUILD_TYPE=$(build.type) ../lib/smurff-cpp/cmake -DENABLE_PYTHON=OFF -DENABLE_BOOST_RANDOM=ON -DBOOST_ROOT=/usr'
+        cmakeArgs: '-G Ninja -DCMAKE_BUILD_TYPE=$(build.type) .. -DENABLE_PYTHON=OFF -DBOOST_RANDOM_VERSION=1.58 -DBOOST_ROOT=/usr'
     - script: |
         cd build.$(build.type)
         ninja
       displayName: 'Run ninja'
     - script: |
-        cd build.$(build.type)/$(build.type)
-        OMP_NUM_THREADS=1 ./tests
+        cd build.$(build.type)/bin
+        ./tests
       displayName: 'Run tests'
 
 - job: 'Conda_Linux'
   pool:
     vmImage: 'Ubuntu 16.04'
   steps:
-    - template: ci/conda-steps.yml
+    - template: conda-steps.yml
 
 - job: 'Conda_macOS'
   pool:
-    vmImage: 'macOS-10.13'
+    vmImage: 'macOS-10.14'
   variables:
     macOS_sdk_url: 'https://github.com/tvandera/MacOSX_SDKs/releases/download/v10.11.0.1/MacOSX10.9.sdk.tar.gz'
     macOS_sdk_filename: '$(Agent.TempDirectory)/MacOSX10.9.sdk.tar.gz'
@@ -58,18 +61,18 @@ jobs:
   # We need to take ownership if we want to update conda or install packages globally
   - bash: sudo chown -R $USER $CONDA
     displayName: Take ownership of conda installation
-  - template: ci/conda-steps.yml
+  - template: conda-steps.yml
 
-# - job: 'Conda_Windows'
-#   pool:
-#     vmImage: 'vs2017-win2016	'
-#   steps:
-#     - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-#       displayName: Add conda to PATH
-#     - script: conda create --yes --quiet --name buildEnv conda-build
-#       displayName: Create Anaconda environment and install conda-build
-#     - script: |
-#         call activate buildEnv
-#         cd conda-recipes
-#         conda build --no-test  -c vanderaa smurff-latest
-#       displayName: Build using "conda build"
+- job: 'Conda_Windows'
+  variables:
+    VS140COMNTOOLS: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\'
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+    - script: |
+        rd /s /q "C:\Program Files (x86)\Windows Kits\10\include\wdf"
+      displayName: Remove 'wdf' SDK
+    - script: |
+         choco install microsoft-visual-cpp-build-tools
+      displayName: Install Visual Studio 2015 CPP Build Tools
+    - template: conda-steps.yml

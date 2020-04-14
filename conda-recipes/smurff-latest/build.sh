@@ -12,11 +12,11 @@ else
 fi
 
 
-cmake ../lib/smurff-cpp/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX \
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DENABLE_MKL=ON $OPENMP_FLAGS
 
 make -j$CPU_COUNT
 make install
-cd python/Smurff
+cd python/smurff
 
 $PYTHON setup.py install --single-version-externally-managed --record=record.txt

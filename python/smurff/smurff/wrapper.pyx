@@ -66,39 +66,20 @@ cdef MatrixConfig* prepare_sparse_matrix(X, NoiseConfig noise_config, is_scarce)
 
     cdef np.ndarray[uint32_t] irows = X.row.astype(np.uint32, copy=False)
     cdef np.ndarray[uint32_t] icols = X.col.astype(np.uint32, copy=False)
-    cdef np.ndarray[double] vals = X.data.astype(np.double, copy=False)
+    cdef np.ndarray[double]   vals  = X.data.astype(np.double, copy=False)
 
-    # Get begin and end pointers from numpy arrays
-    cdef uint32_t* irows_begin = &irows[0]
-    cdef uint32_t* irows_end = irows_begin + irows.shape[0]
-    cdef uint32_t* icols_begin = &icols[0]
-    cdef uint32_t* icols_end = icols_begin + icols.shape[0]
-    cdef double* vals_begin = &vals[0]
-    cdef double* vals_end = vals_begin + vals.shape[0]
+    # Get begin pointers from numpy arrays
+    cdef uint32_t* irows_ptr = &irows[0]
+    cdef uint32_t* icols_ptr = &icols[0]
+    cdef double*   vals_ptr  = &vals[0]
 
-    # Create vectors from pointers
-    cdef vector[uint32_t]* rows_vector_ptr = new vector[uint32_t]()
-    rows_vector_ptr.assign(irows_begin, irows_end)
-    cdef vector[uint32_t]* cols_vector_ptr = new vector[uint32_t]()
-    cols_vector_ptr.assign(icols_begin, icols_end)
-    cdef vector[double]* vals_vector_ptr = new vector[double]()
-    vals_vector_ptr.assign(vals_begin, vals_end)
-
-    cdef shared_ptr[vector[uint32_t]] rows_vector_shared_ptr = shared_ptr[vector[uint32_t]](rows_vector_ptr)
-    cdef shared_ptr[vector[uint32_t]] cols_vector_shared_ptr = shared_ptr[vector[uint32_t]](cols_vector_ptr)
-    cdef shared_ptr[vector[double]] vals_vector_shared_ptr = shared_ptr[vector[double]](vals_vector_ptr)
-
-    cdef MatrixConfig* matrix_config_ptr = new MatrixConfig(<uint64_t>(X.shape[0]), <uint64_t>(X.shape[1]), rows_vector_shared_ptr, cols_vector_shared_ptr, vals_vector_shared_ptr, noise_config, is_scarce)
+    cdef MatrixConfig* matrix_config_ptr = new MatrixConfig(<uint64_t>(X.shape[0]), <uint64_t>(X.shape[1]), len(vals), irows_ptr, icols_ptr, vals_ptr, noise_config, is_scarce)
     return matrix_config_ptr
 
 cdef MatrixConfig* prepare_dense_matrix(X, NoiseConfig noise_config) except +:
     cdef np.ndarray[np.double_t] vals = np.squeeze(np.asarray(X.flatten(order='F')))
-    cdef double* vals_begin = &vals[0]
-    cdef double* vals_end = vals_begin + vals.shape[0]
-    cdef vector[double]* vals_vector_ptr = new vector[double]()
-    vals_vector_ptr.assign(vals_begin, vals_end)
-    cdef shared_ptr[vector[double]] vals_vector_shared_ptr = shared_ptr[vector[double]](vals_vector_ptr)
-    cdef MatrixConfig* matrix_config_ptr = new MatrixConfig(<uint64_t>(X.shape[0]), <uint64_t>(X.shape[1]), vals_vector_shared_ptr, noise_config)
+    cdef double* vals_ptr = &vals[0]
+    cdef MatrixConfig* matrix_config_ptr = new MatrixConfig(<uint64_t>(X.shape[0]), <uint64_t>(X.shape[1]), vals_ptr, noise_config)
     return matrix_config_ptr
 
 cdef shared_ptr[SideInfoConfig] prepare_sideinfo(side_info, NoiseConfig noise_config, tol, direct) except +:
@@ -126,10 +107,6 @@ cdef TensorConfig* prepare_sparse_tensor(tensor, NoiseConfig noise_config, is_sc
     shape = tensor.shape
     df = tensor.data
 
-    cdef vector[uint64_t] cpp_dims_vector
-    cdef vector[uint32_t] cpp_columns_vector
-    cdef vector[double] cpp_values_vector
-
     idx_column_names = list(filter(lambda c: df[c].dtype==np.int64 or df[c].dtype==np.int32, df.columns))
     val_column_names = list(filter(lambda c: df[c].dtype==np.float32 or df[c].dtype==np.float64, df.columns))
 
@@ -137,19 +114,14 @@ cdef TensorConfig* prepare_sparse_tensor(tensor, NoiseConfig noise_config, is_sc
         error_msg = "tensor has {} float columns but must have exactly 1 value column.".format(len(val_column_names))
         raise ValueError(error_msg)
 
-    idx = [i for c in idx_column_names for i in np.array(df[c], dtype=np.int32)]
+    idx = [ [ i for i in np.array(df[c], dtype=np.int32) ] for c in idx_column_names ]
     val = np.array(df[val_column_names[0]],dtype=np.float64)
 
-    cpp_dims_vector = shape
-    cpp_columns_vector = idx
-    cpp_values_vector = val
+    cdef vector[uint64_t] cpp_dims_vector = shape
+    cdef vector[vector[uint32_t]] cpp_columns_vector = idx
+    cdef vector[double] cpp_values_vector = val
 
-    return new TensorConfig(
-            make_shared[vector[uint64_t]](cpp_dims_vector),
-            make_shared[vector[uint32_t]](cpp_columns_vector),
-            make_shared[vector[double]](cpp_values_vector),
-            noise_config,
-            is_scarse)
+    return new TensorConfig(cpp_dims_vector, cpp_columns_vector, cpp_values_vector, noise_config, is_scarse)
 
 cdef shared_ptr[TensorConfig] prepare_auxdata(data, pos, is_scarce, NoiseConfig noise_config) except +:
     cdef TensorConfig* aux_data_config

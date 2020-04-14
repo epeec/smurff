@@ -7,7 +7,6 @@ pipeline {
 
     environment {
         MAKEFLAGS = "-j 2"
-        OMP_NUM_THREADS = "1"
     }
 
     stages {
@@ -15,9 +14,9 @@ pipeline {
             steps {
                 sh '''
                     rm -rf release_build && mkdir release_build && cd release_build
-                    cmake ../lib/smurff-cpp/cmake -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE=Release -DENABLE_BOOST_RANDOM=ON
+                    cmake .. -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE=Release -DBOOST_RANDOM_VERSION=1.58
                     make 
-                   ./Release/tests
+                   ./bin/tests
             '''
             }
         }
@@ -25,9 +24,9 @@ pipeline {
             steps {
                 sh '''
                     rm -rf debug_build && mkdir debug_build && cd debug_build
-                    cmake ../lib/smurff-cpp/cmake -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE=Debug -DENABLE_BOOST_RANDOM=ON
+                    cmake .. -DENABLE_PYTHON=OFF -DCMAKE_BUILD_TYPE=Debug -DBOOST_RANDOM_VERSION=1.58
                     make 
-                   ./Debug/tests
+                   ./bin/tests
             '''
             }
         }

@@ -1,10 +1,18 @@
 CONDA_BUILD_SYSROOT:
   - /opt/MacOSX10.9.sdk        # [osx]
 
+c_compiler:
+  - vs2015                     # [win]
+
+cxx_compiler:
+  - vs2015                     # [win]
+
 python:
     - 3.6
     - 3.7
 
+libboost: 1.67
+
 pin_run_as_build:
-  boost: x.x
+  libboost: x.x
   numpy: x.x
