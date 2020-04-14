@@ -13,7 +13,7 @@ namespace smurff {
 
 typedef Eigen::Matrix<std::uint32_t, Eigen::Dynamic, Eigen::Dynamic > MatrixXui32;
 
-//this is a tensor rotation where one dimention is fixed (excluded)
+//this is a tensor rotation where one dimension is fixed (excluded)
 class SparseMode
 {
 private:

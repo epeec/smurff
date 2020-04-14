@@ -3,7 +3,6 @@
 #include <memory>
 
 #include <SmurffCpp/Types.h>
-#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Priors/NormalOnePrior.h>
 
@@ -21,22 +20,11 @@ public:
 
    Vector F_colsq;   // sum-of-squares for every feature (column)
 
-   Matrix beta;      // link matrix
+   Matrix &beta() { return model().getLinkMatrix(getMode()); }
+   const Matrix &beta() const { return model().getLinkMatrix(getMode()); }
    
    double beta_precision_a0; // Hyper-prior for beta_precision
    double beta_precision_b0; // Hyper-prior for beta_precision
-
-   //FIXME: these must be used
-
-   //new values
-
-   std::vector<std::shared_ptr<ISideInfo> > side_info_values;
-   std::vector<double> beta_precision_values;
-   std::vector<bool> enable_beta_precision_sampling_values;
-
-   //FIXME: these must be removed
-
-   //old values
 
    std::shared_ptr<ISideInfo> Features;  // side information
    Vector beta_precision;
@@ -44,7 +32,7 @@ public:
    bool enable_beta_precision_sampling;
 
 public:
-   MacauOnePrior(std::shared_ptr<Session> session, uint32_t mode);
+   MacauOnePrior(TrainSession &trainSession, uint32_t mode);
 
    void init() override;
 
@@ -52,11 +40,13 @@ public:
     
    const Vector fullMu(int n) const override;
 
+   int num_feat() const { return Features->cols(); }
+   
 public:
    //FIXME: tolerance_a and direct_a are not really used. 
    //should remove later after PriorFactory is properly implemented. 
    //No reason generalizing addSideInfo between priors
-   void addSideInfo(const std::shared_ptr<ISideInfo>& side_info_a, double beta_precision_a, double tolerance_a, bool direct_a, bool enable_beta_precision_sampling_a, bool throw_on_cholesky_error_a);
+   void addSideInfo(const std::shared_ptr<ISideInfo>& side, double bp, double tol, bool direct, bool enable_beta_precision_sampling, bool throw_on_cholesky_error);
 
 public:
 
@@ -73,11 +63,6 @@ public:
    void sample_beta_precision();
 
 public:
-
-   bool save(std::shared_ptr<const StepFile> sf) const override;
-
-   void restore(std::shared_ptr<const StepFile> sf) override;
-
    std::ostream& status(std::ostream &os, std::string indent) const override;
 };
 

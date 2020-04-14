@@ -5,18 +5,18 @@ from hashlib import sha256
 def download_file_from_google_drive(id, destination):
     URL = "https://docs.google.com/uc?export=download"
 
-    session = requests.Session()
+    trainSession = requests.TrainSession()
 
-    response = session.get(URL, params = { 'id' : id }, stream = True)
+    response = trainSession.get(URL, params = { 'id' : id }, stream = True)
     token = get_confirm_token(response)
 
     if token:
         params = { 'id' : id, 'confirm' : token }
-        response = session.get(URL, params = params, stream = True)
+        response = trainSession.get(URL, params = params, stream = True)
 
     save_response_content(response, destination)    
 
-    session.close()
+    trainSession.close()
 
 def get_confirm_token(response):
     for key, value in response.cookies.items():

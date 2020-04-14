@@ -4,8 +4,8 @@
 
 namespace smurff {
 
-MPIMacauPrior::MPIMacauPrior(std::shared_ptr<Session> session, int mode)
-   : MacauPrior(session, mode)
+MPIMacauPrior::MPIMacauPrior(TrainSession &trainSession, int mode)
+   : MacauPrior(trainSession, mode)
 {
    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
@@ -26,7 +26,7 @@ void MPIMacauPrior::init()
    displs = new int[world_size];
    int sum = 0;
    for (int n = 0; n < world_size; n++) {
-      sendcounts[n] = rhs_for_rank[n] * this->Features->cols();
+      sendcounts[n] = rhs_for_rank[n] * this->Features->rows();
       displs[n] = sum;
       sum += sendcounts[n];
    }
@@ -45,8 +45,8 @@ std::ostream& MPIMacauPrior::info(std::ostream &os, std::string indent)
 
 void MPIMacauPrior::sample_beta()
 {
-   const int num_latent = this->m_beta->rows();
-   const int num_feat = this->m_beta->cols();
+   const int num_latent = this->beta().rows();
+   const int num_feat = this->beta().cols();
 
    if (world_rank == 0) {
       this->compute_Ft_y(this->Ft_y);
@@ -81,7 +81,7 @@ void MPIMacauPrior::sample_beta()
       {
          for (int d = 0; d < num_latent; d++)
          {
-            (*m_beta)(d, f) = this->Ft_y(f, d);
+            beta()(d, f) = this->Ft_y(f, d);
          }
       }
    }

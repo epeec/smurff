@@ -1,23 +1,37 @@
 #!/usr/bin/env python
 
 import smurff
-import matrix_io as mio
+import smurff.matrix_io as mio
+import numpy as np
+from time import time
 
 #load data
-ic50 = mio.read_matrix("chembl-IC50-346targets.mm")
-ic50_train, ic50_test = smurff.make_train_test(ic50, 0.2)
+ic50_train = mio.read_matrix("chembl-IC50-346targets-100compounds-train.sdm")
+ic50_test = mio.read_matrix("chembl-IC50-346targets-100compounds-test.sdm")
+#feat = mio.read_matrix("chembl-IC50-100compounds-feat-dense.ddm")
+feat = mio.read_matrix("chembl-IC50-100compounds-feat.sdm")
+
 ic50_threshold = 6.
 
-session = smurff.TrainSession(
-                            priors = ['normal', 'normal'],
+trainSession = smurff.TrainSession(
+                            verbose = 1,
+                            priors = ['macau', 'normal'],
                             num_latent=32,
-                            burnin=10,
-                            nsamples=10,
+                            num_threads=1,
+                            seed=1234,
+                            burnin=400,
+                            nsamples=200,
                             # Using threshold of 6. to calculate AUC on test data
                             threshold=ic50_threshold)
 
 ## using activity threshold pIC50 > 6. to binarize train data
-session.addTrainAndTest(ic50_train, ic50_test, smurff.ProbitNoise(ic50_threshold))
-predictions = session.run()
+trainSession.addTrainAndTest(ic50_train, ic50_test)
+trainSession.addSideInfo(0, feat, noise=smurff.SampledNoise(), direct=True)
+
+start = time()
+predictions = trainSession.run()
+stop = time()
+
+print("time = %.2f" % (stop - start))
 print("RMSE = %.2f" % smurff.calc_rmse(predictions))
 print("AUC = %.2f" % smurff.calc_auc(predictions, ic50_threshold))

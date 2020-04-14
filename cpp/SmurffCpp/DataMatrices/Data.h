@@ -41,7 +41,7 @@ namespace smurff
    public:
       virtual double sum() const = 0;
 
-   //#### dimention functions ####
+   //#### dimension functions ####
    public:
       virtual std::uint64_t nmode() const = 0; // number of dimensions
       virtual std::uint64_t nnz() const = 0; // number of non zero elements
@@ -62,7 +62,7 @@ namespace smurff
    //#### noise, precision, mean functions ####
 
    private:
-      std::shared_ptr<INoiseModel> noise_ptr; // noise model for this data
+      std::unique_ptr<INoiseModel> noise_ptr; // noise model for this data
 
    public:
       virtual double train_rmse(const SubModel& model) const = 0;
@@ -75,11 +75,17 @@ namespace smurff
 
    public:
       INoiseModel &noise() const;
-      void setNoiseModel(std::shared_ptr<INoiseModel> nm);
+      void setNoiseModel(std::unique_ptr<INoiseModel> &&nm);
 
    //#### info functions ####
    public:
       virtual std::ostream& info(std::ostream& os, std::string indent);
       virtual std::ostream& status(std::ostream& os, std::string indent) const;
+
+   /// ### create
+   public:
+      static std::shared_ptr<Data> create(const std::vector<DataConfig> &dc); // multiple
+   private:
+      static std::shared_ptr<Data> create(const DataConfig &dc); // single matrix/tensor
    };
 }

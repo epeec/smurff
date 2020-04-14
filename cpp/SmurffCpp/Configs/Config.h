@@ -3,23 +3,16 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <map>
 
 #include <SmurffCpp/Utils/PVec.hpp>
 #include <Utils/Error.h>
-#include "MatrixConfig.h"
+#include "DataConfig.h"
 #include "SideInfoConfig.h"
 
-#define PRIOR_NAME_DEFAULT "default"
-#define PRIOR_NAME_MACAU "macau"
-#define PRIOR_NAME_MACAU_ONE "macauone"
-#define PRIOR_NAME_SPIKE_AND_SLAB "spikeandslab"
-#define PRIOR_NAME_NORMAL "normal"
-#define PRIOR_NAME_NORMALONE "normalone"
-
-#define MODEL_INIT_NAME_RANDOM "random"
-#define MODEL_INIT_NAME_ZERO "zero"
-
 namespace smurff {
+
+class HDF5Group;
 
 enum class PriorTypes
 {
@@ -38,12 +31,6 @@ enum class ModelInitTypes
    zero
 };
 
-enum class ActionTypes
-{
-   train,
-   predict,
-   none
-};
 
 PriorTypes stringToPriorType(std::string name);
 
@@ -58,53 +45,46 @@ struct Config
 public:
 
    //config
-   static ActionTypes ACTION_DEFAULT_VALUE;
    static int BURNIN_DEFAULT_VALUE;
    static int NSAMPLES_DEFAULT_VALUE;
    static int NUM_LATENT_DEFAULT_VALUE;
    static int NUM_THREADS_DEFAULT_VALUE;
    static bool POSTPROP_DEFAULT_VALUE;
    static ModelInitTypes INIT_MODEL_DEFAULT_VALUE;
-   static const char* SAVE_PREFIX_DEFAULT_VALUE;
-   static const char* SAVE_EXTENSION_DEFAULT_VALUE;
+   static std::string SAVE_NAME_DEFAULT_VALUE;
    static int SAVE_FREQ_DEFAULT_VALUE;
    static bool SAVE_PRED_DEFAULT_VALUE;
    static bool SAVE_MODEL_DEFAULT_VALUE;
    static int CHECKPOINT_FREQ_DEFAULT_VALUE;
    static int VERBOSE_DEFAULT_VALUE;
-   static const char* STATUS_DEFAULT_VALUE;
+   static const std::string STATUS_DEFAULT_VALUE;
    static bool ENABLE_BETA_PRECISION_SAMPLING_DEFAULT_VALUE;
    static double THRESHOLD_DEFAULT_VALUE;
    static int RANDOM_SEED_DEFAULT_VALUE;
 
 private:
-   ActionTypes m_action;
-
    //-- train and test
-   std::shared_ptr<TensorConfig> m_train;
-   std::shared_ptr<TensorConfig> m_test;
-   std::shared_ptr<MatrixConfig> m_row_features;
-   std::shared_ptr<MatrixConfig> m_col_features;
+   DataConfig m_test;
+   DataConfig m_row_features;
+   DataConfig m_col_features;
 
-   //-- aux_data (contains pos)
-   std::vector<std::shared_ptr<TensorConfig> > m_auxData; //set of aux data matrices for normal and spikeandslab priors
+   //-- all train data (including train and aux)
+   std::vector<DataConfig> m_data;
 
    //-- sideinfo per mode
-   std::map<int, std::vector<std::shared_ptr<SideInfoConfig> > > m_sideInfoConfigs;
+   std::map<int, SideInfoConfig> m_sideInfoConfigs;
 
    // -- priors
    std::vector<PriorTypes> m_prior_types;
 
    // -- posterior propagation
-   std::map<int, std::shared_ptr<MatrixConfig> > m_mu_postprop;
-   std::map<int, std::shared_ptr<MatrixConfig> > m_lambda_postprop;
+   std::map<int, DataConfig> m_mu_postprop;
+   std::map<int, DataConfig> m_lambda_postprop;
 
    //-- init model
    ModelInitTypes m_model_init_type;
 
    //-- save
-   mutable std::string m_save_prefix;
-   std::string m_save_extension;
    int m_save_freq;
    bool m_save_pred;
    bool m_save_model;
@@ -124,8 +104,14 @@ private:
    double m_threshold;
 
    //-- meta
-   std::string m_root_name;
+   std::string m_restore_name;
+   std::string m_save_name;
    std::string m_ini_name;
+
+   const PVec<> getTrainPos() const
+   {
+      return PVec<>(getNModes());
+   }
 
  public:
    Config();
@@ -133,158 +119,155 @@ private:
 public:
    bool validate() const;
 
-   void save(std::string fname) const;
-
-   bool restore(std::string fname);
-
-   static bool restoreSaveInfo(std::string fname, std::string& save_prefix, std::string& save_extension);
+   HDF5Group &save(HDF5Group &) const;
+   bool restore(const HDF5Group &);
 
    std::ostream& info(std::ostream &os, std::string indent) const;
 
 public:
    bool isActionTrain()
    {
-       return m_action == ActionTypes::train;
+       return getTrain().hasData();
    }
 
    bool isActionPredict()
    {
-       return m_action == ActionTypes::predict;
+       return !getTrain().hasData();
    }
 
-   std::shared_ptr<TensorConfig> getTrain() const
+   const DataConfig& getTrain() const
    {
-      return m_train;
+      return m_data.at(0);
    }
 
-   void setTrain(std::shared_ptr<TensorConfig> value)
+   DataConfig& getTrain() 
    {
-      m_train = value;
-      m_action = ActionTypes::train;
-   }
+      if (m_data.size() == 0) m_data.resize(1);
 
-   std::shared_ptr<TensorConfig> getTest() const
+      auto &train_config = m_data.at(0);
+
+      if (!train_config.hasPos()) 
+         train_config.setPos(PVec<>{0,0});
+      else 
+         THROWERROR_ASSERT((train_config.getPos().as_vector() == std::vector<std::int64_t>{0,0}));
+
+      return train_config;
+   }
+   
+   const DataConfig &getTest() const
    {
       return m_test;
    }
 
-   void setTest(std::shared_ptr<TensorConfig> value)
+   DataConfig &getTest() 
    {
-      m_test = value;
+      return m_test;
    }
-
-   std::shared_ptr<MatrixConfig> getRowFeatures() const
+   
+   const DataConfig &getRowFeatures() const
    {
       return m_row_features;
    }
 
-   void setRowFeatures(std::shared_ptr<MatrixConfig> value)
-   {
-      m_row_features = value;
-      m_action = ActionTypes::predict;
-   }
 
-   std::shared_ptr<MatrixConfig> getColFeatures() const
+   const DataConfig &getColFeatures() const
    {
       return m_col_features;
    }
 
-   void setColFeatures(std::shared_ptr<MatrixConfig> value)
+   DataConfig &getRowFeatures()
    {
-      m_col_features = value;
-      m_action = ActionTypes::predict;
+      return m_row_features;
    }
 
-
-   void setPredict(std::shared_ptr<TensorConfig> value)
+   DataConfig &getColFeatures() 
    {
-      m_test = value;
-      m_action = ActionTypes::predict;
+      return m_col_features;
    }
 
-   const std::vector< std::shared_ptr<TensorConfig> >& getAuxData() const
+   DataConfig &getPredict()
    {
-      return m_auxData;
+      return m_test;
    }
 
-   Config& addAuxData(std::shared_ptr<TensorConfig> c)
-   {
-      m_auxData.push_back(c);
-      return *this;
-   }
-
-   const std::map<int, std::vector<std::shared_ptr<SideInfoConfig> > >& getSideInfoConfigs() const
+   const std::map<int, SideInfoConfig>& getSideInfoConfigs() const
    {
       return m_sideInfoConfigs;
    }
 
-   const std::vector<std::shared_ptr<SideInfoConfig> >& getSideInfoConfigs(int mode) const;
+   const SideInfoConfig& getSideInfoConfig(int mode) const;
 
-   Config& addSideInfoConfig(int mode, std::shared_ptr<SideInfoConfig> c);
+   SideInfoConfig& addSideInfo(int mode, const SideInfoConfig & = SideInfoConfig());
 
    bool hasSideInfo(int mode) const
    {
        return m_sideInfoConfigs.find(mode) != m_sideInfoConfigs.end();
    }
 
-   std::vector< std::shared_ptr<TensorConfig> > getData() const
+   const std::vector<DataConfig> &getData() const
    {
-       auto data = m_auxData;
-       data.push_back(m_train);
-       return data;
+      return m_data;
+   }
+   
+   DataConfig &addData(const DataConfig & = DataConfig())
+   {
+      m_data.push_back(DataConfig());
+      return m_data.back();
+   }
+
+   unsigned getNModes() const
+   {
+      THROWERROR_ASSERT(!m_prior_types.empty());
+      return m_prior_types.size();
    }
 
    const std::vector<PriorTypes> getPriorTypes() const
    {
-      if (m_prior_types.empty())
-      {
-          THROWERROR_ASSERT(getTrain())
-          return std::vector<PriorTypes>(getTrain()->getNModes(), PriorTypes::default_prior);
-      }
       return m_prior_types;
    }
 
-   const std::vector<PriorTypes>& setPriorTypes(std::vector<PriorTypes> values)
+   void setPriorTypes(std::vector<PriorTypes> values)
    {
       m_prior_types = values;
-      return m_prior_types;
    }
 
-   const std::vector<PriorTypes>& setPriorTypes(std::vector<std::string> values)
+   void setPriorTypes(std::vector<std::string> values)
    {
       m_prior_types.clear();
       for(auto &value : values)
-      {
           m_prior_types.push_back(stringToPriorType(value));
-      }
-      return m_prior_types;
    }
 
    bool hasPropagatedPosterior(int mode) const
    {
-       return m_mu_postprop.find(mode) != m_mu_postprop.end();
+       return m_mu_postprop.find(mode) != m_mu_postprop.end() && getMuPropagatedPosterior(mode).hasData();
    }
 
-   void addPropagatedPosterior(int mode,
-                         std::shared_ptr<MatrixConfig> mu,
-                         std::shared_ptr<MatrixConfig> lambda)
+   void addPropagatedPosterior(int mode, const Matrix &mu, const Matrix &Lambda) 
    {
-       m_mu_postprop[mode] = mu;
-       m_lambda_postprop[mode] = lambda;
+      getMuPropagatedPosterior(mode).setData(mu);
+      getLambdaPropagatedPosterior(mode).setData(Lambda);
    }
 
-   std::shared_ptr<MatrixConfig> getMuPropagatedPosterior(int mode) const
+   const DataConfig& getMuPropagatedPosterior(int mode) const
    {
        return m_mu_postprop.find(mode)->second;
    }
 
-
-   std::shared_ptr<MatrixConfig> getLambdaPropagatedPosterior(int mode) const
+   const DataConfig& getLambdaPropagatedPosterior(int mode) const
    {
        return m_lambda_postprop.find(mode)->second;
    }
 
+   DataConfig& getMuPropagatedPosterior(int mode) 
+   {
+       return m_mu_postprop[mode];
+   }
 
+   DataConfig& getLambdaPropagatedPosterior(int mode) 
+   {
+       return m_lambda_postprop[mode];
+   }
 
    ModelInitTypes getModelInitType() const
    {
@@ -306,21 +289,24 @@ public:
       m_model_init_type = stringToModelInitType(value);
    }
 
-   std::string getSavePrefix() const;
-
-   void setSavePrefix(std::string value)
+   std::string getRestoreName() const 
    {
-      m_save_prefix = value;
+      return m_restore_name;
    }
 
-   std::string getSaveExtension() const
+   void setRestoreName(std::string value)
    {
-      return m_save_extension;
+      m_restore_name = value;
    }
 
-   void setSaveExtension(std::string value)
+   std::string getSaveName() const 
    {
-      m_save_extension = value;
+      return m_save_name;
+   }
+
+   void setSaveName(std::string value)
+   {
+      m_save_name = value;
    }
 
    int getSaveFreq() const
@@ -445,18 +431,6 @@ public:
    void setNumThreads(int value)
    {
        m_num_threads = value;
-   }
-
-   std::string getRootName() const
-   {
-       return m_root_name;
-   }
-
-   std::string getRootPrefix() const;
-
-   void setRootName(std::string value)
-   {
-       m_root_name = value;
    }
 
    std::string getIniName() const

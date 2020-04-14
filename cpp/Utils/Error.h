@@ -3,20 +3,48 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <iostream>
 
-#define SHOW(M) std::cout << #M << " =\n" << M << std::endl << std::endl;
+#include <Eigen/Core>
+
+template<typename Matrix>
+inline void show_internal(const char *name, const Matrix& variable)
+{
+
+   if (variable.cols()==1)
+      std::cout << name << ".T (" << variable.rows() << "," << variable.cols() << ") =\n" << variable.transpose() << std::endl << std::endl;
+   else
+      std::cout << name << " (" << variable.rows() << "," << variable.cols() << ") =\n" << variable << std::endl << std::endl;
+}
+
+
+template<>
+inline void show_internal(const char *name, const double& variable)
+{
+
+   std::cout << name << " =\n" << variable << std::endl << std::endl;
+}
+
+template<>
+inline void show_internal(const char *name, const int& variable)
+{
+   std::cout << name << " =\n" << variable << std::endl << std::endl;
+}
+
+
+#define SHOW(M) show_internal(#M, M);
 
 #define CONCAT_VAR(n1, n2) n1 ## n2
 
 #define THROWERROR_BASE(msg, ssvar, except_type) { \
    std::stringstream ssvar; \
-   ssvar << "line: " << __LINE__ << " file: " << __FILE__ << " function: " << __func__ << std::endl << (msg); \
+   ssvar << __FILE__ << ":" << __LINE__ << " in function: " << __func__ << std::endl << (msg); \
    throw except_type(ssvar.str());}
 
 #define THROWERROR_BASE_COND(msg, ssvar, except_type, eval_cond) { \
    if(!(eval_cond)) { \
    std::stringstream ssvar; \
-   ssvar << "line: " << __LINE__ << " file: " << __FILE__ << " function: " << __func__ << std::endl << (msg); \
+   ssvar << __FILE__ << ":" << __LINE__ << " in function: " << __func__ << std::endl << (msg); \
    throw except_type(ssvar.str()); }}
 
 

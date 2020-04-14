@@ -30,11 +30,11 @@ public:
    const double prior_beta_0 = 1.; //for alpha
 
 public:
-   SpikeAndSlabPrior(std::shared_ptr<Session> session, uint32_t mode);
+   SpikeAndSlabPrior(TrainSession &trainSession, uint32_t mode);
    virtual ~SpikeAndSlabPrior() {}
    void init() override;
 
-   void restore(std::shared_ptr<const StepFile> sf) override;
+   void restore(const SaveState &sf) override;
 
    std::pair<float_type,float_type> sample_latent(int d, int k, const Matrix& XX, const Vector& yX) override;
 

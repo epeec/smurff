@@ -7,8 +7,8 @@
 
 namespace smurff {
 
-SparseSideInfo::SparseSideInfo(const std::shared_ptr<MatrixConfig> &mc) {
-    F = matrix_utils::sparse_to_eigen(*mc);
+SparseSideInfo::SparseSideInfo(const DataConfig &mc) {
+    F = mc.getSparseMatrixData();
     Ft = F.transpose();
 }
 
@@ -41,7 +41,7 @@ bool SparseSideInfo::is_dense() const
 void SparseSideInfo::compute_uhat(Matrix& uhat, Matrix& beta)
 {
     COUNTER("compute_uhat");
-    uhat = beta * (Ft);
+    uhat = F * beta;
 }
 
 void SparseSideInfo::At_mul_A(Matrix& out)
@@ -53,40 +53,13 @@ void SparseSideInfo::At_mul_A(Matrix& out)
 Matrix SparseSideInfo::A_mul_B(Matrix& A)
 {
     COUNTER("A_mul_B");
-    return (A * F);
+    return F.transpose() * A;
 }
 
 int SparseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
 {
     COUNTER("solve_blockcg");
     return linop::solve_blockcg(X, *this, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
-#if 0
-    int iter1, iter2;
-    Matrix X1 = X;
-    {
-        COUNTER("eigen_cg");
-        linop::AtA A(F, reg);
-        Eigen::ConjugateGradient<linop::AtA, Eigen::Lower | Eigen::Upper> cg;
-        cg.setTolerance(tol);
-        cg.compute(A);
-        X1 = cg.solve(B.transpose()).transpose();
-        iter1 = cg.iterations();
-        SHOW(iter1);
-        SHOW((X1 - B).norm());
-    }
-
-    Matrix X2 = X;
-    {
-        COUNTER("smurff_cg");
-        iter2 = linop::solve_blockcg(X2, *this, reg, B, tol, blocksize, excess, throw_on_cholesky_error);
-        SHOW(iter2);
-        SHOW((X2 - B).norm());
-    }
-
-    SHOW((X2 - X1).norm());
-
-    return iter1;
-#endif
 }
 
 Vector SparseSideInfo::col_square_sum()
@@ -95,21 +68,20 @@ Vector SparseSideInfo::col_square_sum()
     // component-wise square
     auto E = F.unaryExpr([](const float_type &d) { return d * d; });
     // col-wise sum
-    return E.transpose() * Vector::Ones(E.rows());
+    return E.transpose() * Vector::Ones(E.rows()).transpose();
 }
 
-// Y = X[:,col]' * B'
-void SparseSideInfo::At_mul_Bt(Vector& Y, const int col, Matrix& B)
+// Y = X[:,row]' * B'
+void SparseSideInfo::At_mul_Bt(Vector& Y, const int row, Matrix& B)
 {
     COUNTER("At_mul_Bt");
-    auto out = Ft.block(col, 0, col + 1, Ft.cols()) * B.transpose();
-    Y = out.transpose();
+    Y = Ft.row(row) * B;
 }
 
-// computes Z += A[:,col] * b', where a and b are vectors
+// computes Z += A[:,row] * b', where a and b are vectors
 void SparseSideInfo::add_Acol_mul_bt(Matrix& Z, const int col, Vector& b)
 {
     COUNTER("add_Acol_mul_bt");
-    Z += (F.col(col) * b.transpose()).transpose();
+    Z += F.col(col) * b;
 }
 } // end namespace smurff

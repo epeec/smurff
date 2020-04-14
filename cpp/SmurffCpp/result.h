@@ -3,13 +3,14 @@
 #include <memory>
 
 #include <SmurffCpp/ResultItem.h>
-#include <SmurffCpp/Configs/MatrixConfig.h>
-#include <SmurffCpp/DataTensors/SparseMode.h>
+#include <SmurffCpp/Types.h>
 
 namespace smurff {
 
-class StepFile;
-class RootFile;
+class DataConfig;
+
+class SaveState;
+class StateFile;
 
 class Model;
 class Data;
@@ -49,14 +50,21 @@ double calc_auc(const std::vector<Item> &predictions, double threshold)
 class Result
 {
 public:
-   //c'tor with sparse TensorConfig
-   Result(std::shared_ptr<TensorConfig> Y, int nsamples = 0);
+   //c'tor with sparse matrix or tensor
+   Result(const DataConfig   &Y, int nsamples = 0);
+   Result(const SparseMatrix &Y, int nsamples = 0);
+   Result(const SparseTensor &Y, int nsamples = 0);
 
    //fill with dense value
    Result(PVec<> lo, PVec<> hi, double value, int nsamples = 0);
 
    //empty c'tor
    Result();
+
+private:
+   //-- c'tor helpers
+   void set(const SparseMatrix &Y, int nsamples);
+   void set(const SparseTensor &Y, int nsamples);
 
 public:
    //sparse representation of test matrix
@@ -66,7 +74,7 @@ public:
    PVec<> m_dims;
 
    //-- prediction metrics
-   void update(std::shared_ptr<const Model> model, bool burnin);
+   void update(const Model &model, bool burnin);
 
 public:
    double rmse_avg = NAN;
@@ -79,24 +87,19 @@ public:
    // general
 
 public:
-   void save(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const;
-   void restore(std::shared_ptr<const StepFile> sf);
+   void save(SaveState &sf) const;
+   void restore(const SaveState &sf);
 
 private:
-   void savePred(std::shared_ptr<const StepFile> sf, bool &saved_avg_var) const;
-   void savePredState(std::shared_ptr<const StepFile> sf) const;
-
-   void restorePred(std::shared_ptr<const StepFile> sf);
-   void restoreState(std::shared_ptr<const StepFile> sf);
-
    template<typename Accessor>
-   std::shared_ptr<const MatrixConfig> toMatrixConfig(const Accessor &acc) const;
+   std::shared_ptr<const SparseMatrix> toMatrix(const Accessor &acc) const;
 
 public:
    void init();
 
 public:
-   std::ostream &info(std::ostream &os, std::string indent);
+   void toCsv(std::string filename) const;
+   std::ostream &info(std::ostream &os, std::string indent) const;
 
    //-- for binary classification
    int total_pos = -1;

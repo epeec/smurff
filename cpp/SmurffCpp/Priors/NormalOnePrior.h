@@ -3,7 +3,6 @@
 #include <memory>
 
 #include <SmurffCpp/Types.h>
-#include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/Distribution.h>
 
@@ -16,8 +15,9 @@ class NormalOnePrior : public ILatentPrior
 {
 public:
   // hyperparams
-  std::shared_ptr<Vector> m_mu; 
-  Vector& hyperMu() const { return *m_mu; }
+  Vector &mu() { return model().getMu(getMode()); } 
+  const Vector &mu() const { return model().getMu(getMode()); } 
+
   Matrix Lambda;
   Matrix WI;
   Vector mu0;
@@ -26,18 +26,14 @@ public:
   int b0;
   int df;
 
-private:
-   NormalOnePrior()
-      : ILatentPrior(){}
-
 public:
-   NormalOnePrior(std::shared_ptr<Session> session, uint32_t mode, std::string name = "NormalOnePrior");
+   NormalOnePrior(TrainSession &trainSession, uint32_t mode, std::string name = "NormalOnePrior");
    virtual ~NormalOnePrior() {}
    void init() override;
 
    //mu in NormalPrior does not depend on column index
    //however successors of this class can override this method
-   //for example in MacauPrior mu depends on Uhat.col(n)
+   //for example in MacauPrior mu depends on Uhat.row(n)
    virtual const Vector fullMu(int n) const;
 
    void sample_latent(int n) override;

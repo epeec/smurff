@@ -5,7 +5,7 @@
 #include <SmurffCpp/Types.h>
 #include <SmurffCpp/Types.h>
 
-#include <SmurffCpp/Sessions/Session.h>
+#include <SmurffCpp/Sessions/TrainSession.h>
 #include <SmurffCpp/Noises/INoiseModel.h>
 #include <SmurffCpp/DataMatrices/Data.h>
 #include <SmurffCpp/Utils/Distribution.h>
@@ -18,31 +18,26 @@
 
 namespace smurff {
 
-class StepFile;
+class SaveState;
 
 class ILatentPrior
 {
-   
-private:
-   std::weak_ptr<Session> m_session;
-
 public:
-   Session &getSession() const { return *m_session.lock(); }
+   TrainSession &m_session;
    std::uint32_t m_mode;
    std::string m_name = "xxxx";
 
    thread_vector<Vector> rrs;
    thread_vector<Matrix> MMs;
 
-protected:
-   ILatentPrior(){}
-
 public:
-   ILatentPrior(std::shared_ptr<Session> session, uint32_t mode, std::string name = "xxxx");
+   ILatentPrior(TrainSession &trainSession, uint32_t mode, std::string name = "xxxx");
    virtual ~ILatentPrior() {}
    virtual void init();
 
    // utility
+   const Config &getConfig() const;
+
    const Model& model() const;
    Model& model();
 
@@ -69,8 +64,8 @@ public:
    const Vector& getUsum() { return Usum; } 
    const Matrix& getUUsum()  { return UUsum; }
 
-   virtual bool save(std::shared_ptr<const StepFile> sf) const;
-   virtual void restore(std::shared_ptr<const StepFile> sf);
+   virtual bool save(SaveState &sf) const;
+   virtual void restore(const SaveState &sf);
    virtual std::ostream &info(std::ostream &os, std::string indent);
    virtual std::ostream &status(std::ostream &os, std::string indent) const = 0;
 

@@ -10,6 +10,6 @@ namespace smurff {
    class NoiseFactory
    {
    public:
-      static std::shared_ptr<INoiseModel> create_noise_model(const NoiseConfig& config);
+      static std::unique_ptr<INoiseModel> create_noise_model(const NoiseConfig& config);
    };
 }

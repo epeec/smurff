@@ -3,7 +3,7 @@
 from scipy import sparse
 import numpy as np
 import smurff
-import matrix_io as mio
+import smurff.matrix_io as mio
 import unittest
 import sys
 import os
@@ -18,7 +18,7 @@ def train_session(root, train, test, sideinfo = None):
     shutil.rmtree(root, ignore_errors=True)
     os.makedirs(root)
     print("save prefix = ", root)
-    session = smurff.TrainSession(
+    trainSession = smurff.TrainSession(
                                 num_latent=4,
                                 burnin=800,
                                 nsamples=100,
@@ -26,11 +26,11 @@ def train_session(root, train, test, sideinfo = None):
                                 save_freq=1,
                                 save_prefix = root,
                                 )
-    session.addTrainAndTest(train, test, smurff.FixedNoise(1.0))
+    trainSession.addTrainAndTest(train, test, smurff.FixedNoise(1.0))
     if sideinfo is not None:
-        session.addSideInfo(0, sideinfo, smurff.FixedNoise(10.), direct=True)
+        trainSession.addSideInfo(0, sideinfo, smurff.FixedNoise(10.), direct=True)
 
-    predictions = session.run()
+    predictions = trainSession.run()
     rmse = smurff.calc_rmse(predictions)
 
     #print("RMSE = %.2f%s" % (rmse, "" if sideinfo is None else " (with sideinfo)" ))

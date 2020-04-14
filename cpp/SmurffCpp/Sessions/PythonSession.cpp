@@ -13,7 +13,7 @@ bool PythonSession::step()
 {
     
     keepRunning = true;
-    keepRunningVerbose = m_config.getVerbose();
+    keepRunningVerbose = getConfig().getVerbose();
 
 #ifdef _WINDOWS
     signal(SIGINT, intHandler);
@@ -28,7 +28,7 @@ bool PythonSession::step()
 #endif
 
     // run step
-    bool not_done = Session::step();
+    bool not_done = TrainSession::step();
 
 #ifdef _WINDOWS
     // can't do this on windows

@@ -4,38 +4,30 @@
 #include <memory>
 #include <string>
 
-#include <SmurffCpp/IO/INIFile.h>
-
-#include "MatrixConfig.h"
+#include "DataConfig.h"
 
 namespace smurff
 {
-   class SideInfoConfig
+   class HDF5Group;
+
+   class SideInfoConfig : public DataConfig
    {
    public:
-      static double BETA_PRECISION_DEFAULT_VALUE;
-      static double TOL_DEFAULT_VALUE;
+      static const bool DIRECT_DEFAULT_VALUE;
+      static const double BETA_PRECISION_DEFAULT_VALUE;
+      static const double TOL_DEFAULT_VALUE;
+
    private:
-      double m_tol;
-      bool m_direct;
-      bool m_throw_on_cholesky_error;
-
-      std::shared_ptr<MatrixConfig> m_sideInfo; //side info matrix for macau and macauone prior
+      double m_tol = TOL_DEFAULT_VALUE;
+      bool m_direct = DIRECT_DEFAULT_VALUE;
+      bool m_throw_on_cholesky_error = false;
 
    public:
-      SideInfoConfig();
+      SideInfoConfig() {}; //empty
+      SideInfoConfig(const Matrix &, const NoiseConfig &);
+      SideInfoConfig(const SparseMatrix &, const NoiseConfig &);
 
    public:
-      std::shared_ptr<MatrixConfig> getSideInfo() const
-      {
-         return m_sideInfo;
-      }
-
-      void setSideInfo(std::shared_ptr<MatrixConfig> value)
-      {
-         m_sideInfo = value;
-      }
-
       double getTol() const
       {
          return m_tol;
@@ -67,8 +59,8 @@ namespace smurff
       }
 
    public:
-      void save(INIFile& writer, std::size_t prior_index, std::size_t config_item_index) const;
+      void save(HDF5Group& writer, std::size_t prior_index) const;
+      bool restore(const HDF5Group& reader, std::size_t prior_index);
 
-      bool restore(const INIFile& reader, std::size_t prior_index, std::size_t config_item_index);
    };
 }

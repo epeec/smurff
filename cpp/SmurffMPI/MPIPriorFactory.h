@@ -7,15 +7,15 @@
 namespace smurff {
 
    class ILatentPrior;
-   class Session;
+   class TrainSession;
 
    class MPIPriorFactory : public PriorFactory
    {
    public:
-      std::shared_ptr<ILatentPrior> create_macau_prior(std::shared_ptr<Session> session, PriorTypes prior_type,
-                                                       const std::vector<std::shared_ptr<ISideInfo> >& side_infos,
-                                                       const std::vector<std::shared_ptr<SideInfoConfig> >& config_items);
+      std::shared_ptr<ILatentPrior> create_macau_prior(TrainSession &trainSession, PriorTypes prior_type,
+                                                       const std::shared_ptr<ISideInfo>& side_info,
+                                                       const SideInfoConfig& config_item);
 
-      std::shared_ptr<ILatentPrior> create_prior(std::shared_ptr<Session> session, int mode) override;
+      std::shared_ptr<ILatentPrior> create_prior(TrainSession &trainSession, int mode) override;
    };
 }

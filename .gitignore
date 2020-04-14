@@ -3,6 +3,7 @@ dist/
 tmp/
 lib/eigen3*/
 .*.swp
+*.log
 MANIFEST
 *.pyc
 dist
@@ -12,3 +13,4 @@ dist
 *.csv
 .vscode
 SMURFF.code-workspace
+tests_output

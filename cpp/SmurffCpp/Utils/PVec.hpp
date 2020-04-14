@@ -125,10 +125,7 @@ class PVec
 
    PVec operator-(const PVec &other) const
    {
-      if (m_size != other.m_size)
-      {
-         THROWERROR_SPEC(std::length_error, "Both PVec intances must have the same size");
-      }
+      assert_same_size(other);
 
       PVec ret(*this);
       std::transform(m_v.begin(), m_v.begin() + m_size, other.m_v.begin(), ret.m_v.begin(), std::minus<std::int64_t>());
@@ -151,25 +148,20 @@ class PVec
 
    bool operator<(const PVec &other) const
    {
+      assert_same_size(other);
       return in(*this, other);
    }
 
    bool operator>=(const PVec &other) const
    {
+      assert_same_size(other);
       return in(other, *this);
    }
 
    bool in(const PVec &start, const PVec &end) const
    {
-      if (m_size != start.m_size)
-      {
-         THROWERROR_SPEC(std::length_error, "All PVec intances must have the same size");
-      }
-
-      if (m_size != end.m_size)
-      {
-         THROWERROR_SPEC(std::length_error, "All PVec intances must have the same size");
-      }
+      assert_same_size(start);
+      assert_same_size(end);
 
       for (size_t i = 0; i < m_size; ++i)
       {
@@ -206,16 +198,20 @@ class PVec
    {
       return std::vector<std::int64_t>(m_v.begin(), m_v.begin() + m_size);
    }
+
+private:
+   void assert_same_size(const PVec &other) const
+   {
+      if (this->size() != other.size())
+         THROWERROR_SPEC(std::length_error, "All PVec intances must have the same size");
+   }
+
 };
 
 template <size_t MaxSize>
 std::ostream &operator<<(std::ostream &os, const PVec<MaxSize> &vec)
 {
-   for (std::uint64_t m = 0; m < vec.size(); m++)
-   {
-      os << vec[m] << ", ";
-   }
-
+   vec.save(os);
    return os;
 }
 

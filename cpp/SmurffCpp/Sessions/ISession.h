@@ -3,18 +3,21 @@
 #include <vector>
 #include <memory>
 
+#include <Utils/Error.h>
+
 #include <SmurffCpp/StatusItem.h>
 #include <SmurffCpp/ResultItem.h>
-#include <SmurffCpp/Configs/MatrixConfig.h>
+#include <SmurffCpp/Configs/Config.h>
 
 namespace smurff {
-   class RootFile;
+   class StateFile;
    class Result;
 
    class ISession
    {
    protected:
-      ISession(){};
+      ISession() {};
+      ISession(const Config &c) : m_config(c) {};
 
    public:
       virtual ~ISession(){}
@@ -25,11 +28,12 @@ namespace smurff {
       virtual bool interrupted() { return false; }
       virtual void init() = 0;
 
-      virtual std::shared_ptr<StatusItem> getStatus() const = 0;
-      virtual std::shared_ptr<Result> getResult() const = 0;
-      virtual std::shared_ptr<RootFile> getRootFile() const = 0;
+      const Config &getConfig() const { return m_config; }
 
-      double getRmseAvg() { return getStatus()->rmse_avg; }
+      virtual StatusItem getStatus() const = 0;
+      virtual const Result &getResult() const = 0;
+
+      double getRmseAvg() { return getStatus().rmse_avg; }
       const std::vector<ResultItem> & getResultItems() const;
 
     public:
@@ -40,6 +44,10 @@ namespace smurff {
           info(ss, "");
           return ss.str();
       }
+
+   protected:
+      Config m_config;
+      bool m_is_init = false;
    };
 
 }

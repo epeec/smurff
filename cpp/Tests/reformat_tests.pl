@@ -45,7 +45,7 @@ while (<>) {
         $printline = 0;
     }
 
-    if ($in_testcase && $line =~ /(.addSideInfoConfig.+);/) {
+    if ($in_testcase && $line =~ /(.addSideInfo.+);/) {
         $sideconfig = $1;
     }
 

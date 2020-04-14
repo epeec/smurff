@@ -1,53 +1,69 @@
 #include <vector>
 
+#include <SmurffCpp/Types.h>
+
 namespace smurff {
 
-class MatrixConfig;
-class TensorConfig;
 struct ResultItem;
+class DataConfig;
 
 namespace test {
 
+// noise
+extern smurff::NoiseConfig fixed_ncfg;
+
 // dense train data
-extern smurff::MatrixConfig trainDenseMatrix;
-extern smurff::TensorConfig trainDenseTensor2d;
-extern smurff::TensorConfig trainDenseTensor3d;
+extern smurff::Matrix trainDenseMatrix;
+extern smurff::DenseTensor trainDenseTensor2d;
+extern smurff::DenseTensor trainDenseTensor3d;
 
 // sparse train data
-extern smurff::MatrixConfig trainSparseMatrix;
-extern smurff::TensorConfig trainSparseTensor2d;
+extern smurff::SparseMatrix trainSparseMatrix;
+extern smurff::SparseTensor trainSparseTensor2d;
 
 // sparse test data
-extern smurff::MatrixConfig testSparseMatrix;
-extern smurff::TensorConfig testSparseTensor2d;
-extern smurff::TensorConfig testSparseTensor3d;
+extern smurff::SparseMatrix testSparseMatrix;
+extern smurff::SparseTensor testSparseTensor2d;
+extern smurff::SparseTensor testSparseTensor3d;
 
 // aux data
-extern smurff::MatrixConfig rowAuxDense;
-extern smurff::MatrixConfig colAuxDense;
+extern smurff::DataConfig rowAuxDense;
+extern smurff::DataConfig colAuxDense;
 
 // side info
-extern smurff::MatrixConfig rowSideDenseMatrix;
-extern smurff::MatrixConfig colSideDenseMatrix;
-extern smurff::MatrixConfig rowSideSparseMatrix;
-extern smurff::MatrixConfig colSideSparseMatrix;
-extern smurff::MatrixConfig rowSideDenseMatrix3d;
+extern smurff::Matrix rowSideDenseMatrix;
+extern smurff::Matrix colSideDenseMatrix;
+extern smurff::Matrix rowSideDenseMatrix3d;
+
+extern smurff::SparseMatrix rowSideSparseMatrix;
+extern smurff::SparseMatrix colSideSparseMatrix;
 
 void REQUIRE_RESULT_ITEMS(const std::vector<smurff::ResultItem> &actualResultItems,
                           const std::vector<smurff::ResultItem> &expectedResultItems);
-std::shared_ptr<SideInfoConfig> makeSideInfoConfig(const MatrixConfig &mcfg, bool direct = true, double tol = 1e-6);
 
-template <class C> Config genConfig(const C &train, const C &test, std::vector<PriorTypes> priors) {
+template<class M>
+SideInfoConfig makeSideInfoConfig(const M &data, bool direct = true) {
+  smurff::NoiseConfig sampled_ncfg(NoiseTypes::sampled);
+  sampled_ncfg.setPrecision(10.0);
+  SideInfoConfig picfg(data, sampled_ncfg);
+  picfg.setDirect(direct);
+  return picfg;
+}
+
+template <class Train, class Test> Config genConfig(const Train &train, const Test &test, std::vector<PriorTypes> priors) {
   Config config;
+  config.setPriorTypes(priors);
   config.setBurnin(50);
   config.setNSamples(50);
-  config.setVerbose(false);
+  config.setVerbose(0);
   config.setRandomSeed(1234);
   config.setNumThreads(1);
   config.setNumLatent(4);
-  config.setTrain(std::make_shared<C>(train));
-  config.setTest(std::make_shared<C>(test));
-  config.setPriorTypes(priors);
+
+  config.getTrain().setData(train);
+  config.getTrain().setNoiseConfig(fixed_ncfg);
+  config.getTest().setData(test);
+
   return config;
 }
 } // namespace test

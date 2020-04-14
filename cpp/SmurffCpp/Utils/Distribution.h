@@ -7,30 +7,28 @@
 
 namespace smurff
 {
-   double randn0();
-   double randn(double = .0);
-   
-   void bmrandn(float_type* x, long n);
-   void bmrandn(Matrix & X);
-   
-   double bmrandn_single_thread();
-   void bmrandn_single_thread(float_type* x, long n);
-   void bmrandn_single_thread(Vector & x);
-   void bmrandn_single_thread(Matrix & X);
    
    void init_bmrng();
    void init_bmrng(int seed);
-   
-   double rand_unif();
-   double rand_unif(double low, double high);
-   
-   double rgamma(double shape, double scale);
-   
-   // return a random matrix of size n, m
-   
-   auto nrandn(int n) -> decltype(Vector::NullaryExpr(n, std::cref(randn)) ); 
-   auto nrandn(int n, int m) -> decltype(Array2D::NullaryExpr(n, m, std::cref(randn)) );
-   
+
+   // Generate single numbers 
+
+   double rand_normal();
+   double rand_unif(double low = 0.0, double high = 1.);
+   double rand_gamma(double shape, double scale);
+
+   // Generate stream of random numbers
+
+   struct RandNormalGenerator
+   {
+      mutable unsigned c = 0;
+      mutable double x[2];
+
+      double operator()(double) const;
+   };
+  
+#define RandomVectorExpr(n) (Vector::NullaryExpr(n, RandNormalGenerator())) 
+
    // Wishart distribution
    
    std::pair<Vector, Matrix> NormalWishart(const Vector & mu, double kappa, const Matrix & T, double nu);
@@ -39,7 +37,6 @@ namespace smurff
    
    // Multivariate normal gaussian
 
-   Matrix MvNormal_prec(const Matrix & Lambda, int nn = 1);
-   Matrix MvNormal_prec(const Matrix & Lambda, const Vector & mean, int nn = 1);
-   Matrix MvNormal(const Matrix covar, const Vector mean, int nn = 1);
+   Matrix MvNormal(const Matrix & Lambda, int nn = 1);
+   Matrix MvNormal(const Matrix & Lambda, const Vector & mean, int nn = 1);
 }

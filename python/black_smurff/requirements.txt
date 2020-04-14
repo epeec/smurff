@@ -1,5 +1,0 @@
-numpy
-scipy
-pandas
-macau
-matrix_io

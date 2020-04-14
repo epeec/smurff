@@ -14,8 +14,8 @@ SparseMode::SparseMode()
 
 // idx - [nnz x nmodes] matrix of coordinates
 // vals - vector of values
-// m - index of dimention to fix
-// mode_size - size of dimention to fix
+// m - index of dimension to fix
+// mode_size - size of dimension to fix
 SparseMode::SparseMode(const MatrixXui32& idx, const std::vector<double>& vals, std::uint64_t mode, std::uint64_t mode_size) 
 {
    if ((size_t)idx.rows() != vals.size())

@@ -7,7 +7,7 @@ import argparse
 import os
 import os.path
 import itertools
-import matrix_io as mio
+import smurff.matrix_io as mio
 
 parser = argparse.ArgumentParser(description='Remove duplicates from sbm/sdm')
 parser.add_argument('input', help='Input file')

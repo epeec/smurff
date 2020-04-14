@@ -13,7 +13,7 @@
 
 namespace smurff {
 
-class StepFile;
+class SaveState;
 
 class Data;
 
@@ -31,19 +31,19 @@ class VMatrixIterator;
 template<class T>
 class ConstVMatrixIterator;
 
-class Model : public std::enable_shared_from_this<Model>
+class Model
 {
 private:
-   std::vector<std::shared_ptr<Matrix>> m_factors; //vector of U matrices
-   std::vector<std::shared_ptr<Matrix>> m_link_matrices; //vector of U matrices
-   std::vector<std::shared_ptr<Vector>> m_mus; //vector of mu vectors
+   std::vector<Matrix> m_factors; //vector of U matrices
+   std::vector<Matrix> m_link_matrices; //vector of ß matrices
+   std::vector<Vector> m_mus; //vector of mu vectors
 
    bool m_collect_aggr;
-   std::vector<std::shared_ptr<Matrix>> m_aggr_sum; //vector of aggr summed m_factors matrices
-   std::vector<std::shared_ptr<Matrix>> m_aggr_dot; //vector of aggr dot m_factors matrices
+   std::vector<Matrix> m_aggr_sum; //vector of aggr summed m_factors matrices
+   std::vector<Matrix> m_aggr_dot; //vector of aggr dot m_factors matrices
    std::vector<int> m_num_aggr; //number of aggregated samples in above vectors
 
-   int m_num_latent; //size of latent dimention for U matrices
+   int m_num_latent; //size of latent dimension for U matrices
    PVec<> m_dims; //dimensions of train data
 
    // to make predictions faster
@@ -56,7 +56,12 @@ public:
    //initialize U matrices in the model (random/zero)
    void init(int num_latent, const PVec<>& dims, ModelInitTypes model_init_type, bool save_model, bool collect_aggr = true);
 
-   void setLinkMatrix(int mode, std::shared_ptr<Matrix>, std::shared_ptr<Vector>);
+public:
+   Matrix &getLinkMatrix(int mode);
+   Vector &getMu(int mode);
+
+   const Matrix &getLinkMatrix(int mode) const;
+   const Vector &getMu(int mode) const;
 
 public:
    //dot product of i'th columns in each U matrix
@@ -87,20 +92,20 @@ public:
    ConstVMatrixIterator<Matrix> CVend() const;
 
    //return i'th column of f'th U matrix in the model
-   Matrix::ConstColXpr col(int f, int i) const;
+   Matrix::ConstRowXpr row(int f, int i) const;
 
 public:
    //number of dimentions in train data
    std::uint64_t nmodes() const;
 
-   //size of latent dimention
+   //size of latent dimension
    int nlatent() const;
 
    //sum of number of columns in each U matrix in the model
    int nsamples() const;
 
 public:
-   //vector if dimention sizes of train data
+   //vector if dimension sizes of train data
    const PVec<>& getDims() const;
 
 public:
@@ -113,9 +118,9 @@ public:
 
 public:
    // output to file
-   void save(std::shared_ptr<const StepFile> sf, bool saveAggr) const;
+   void save(SaveState &sf) const;
    bool m_save_model = true;
-   void restore(std::shared_ptr<const StepFile> sf, int skip_mode = -1);
+   void restore(const SaveState &sf, int skip_mode = -1);
 
    std::ostream& info(std::ostream &os, std::string indent) const;
    std::ostream& status(std::ostream &os, std::string indent) const;
@@ -155,7 +160,7 @@ public:
       return m_model.predict(m_off + pos);
    }
 
-   //size of latent dimention
+   //size of latent dimension
    int nlatent() const
    {
       return m_model.nlatent();
@@ -172,20 +177,20 @@ public:
 template<typename FeatMatrix>
 std::shared_ptr<Matrix> Model::predict_latent(int mode, const FeatMatrix& f)
 {
-   THROWERROR_ASSERT_MSG(m_link_matrices.at(mode),
+   THROWERROR_ASSERT_MSG(m_link_matrices.at(mode).nonZeros(),
       "No link matrix available in mode " + std::to_string(mode));
 
-   const auto &beta = *m_link_matrices.at(mode);
-   const auto &mu = *m_mus.at(mode);
+   const auto &beta = m_link_matrices.at(mode);
+   const auto &mu = m_mus.at(mode);
 
-   auto ret = std::make_shared<Matrix>(nlatent(), f.rows());
-   *ret = beta * f.transpose();
-   ret->colwise() += mu;
+   auto ret = std::make_shared<Matrix>(f.rows(), nlatent());
+   *ret = f * beta;
+   ret->rowwise() += mu;
    #if 0
    std::cout << "beta =\n" << beta.transpose() << std::endl;
    std::cout << "f =\n" << f << std::endl;
-   std::cout << "beta * f.transpose() =\n" << beta * f.transpose() << std::endl;
-   std::cout << "Umean: " << Umean << std::endl;
+   std::cout << "f * beta.transpose() =\n" << f * beta << std::endl;
+   std::cout << "mu: " << mu << std::endl;
    std::cout << "U: " << U(mode) << std::endl;
    std::cout << "ret: " << *ret << std::endl;
    #endif
@@ -203,13 +208,16 @@ const Matrix Model::predict(int mode, const FeatMatrix& f)
 
    int othermode = (mode+1) % 2;
 
+   auto result = *latent * U(othermode).transpose();
+
    #if 0
    std::cout << "predicted latent: " << *latent << std::endl;
    std::cout << "other U: " << U(othermode) << std::endl;
-   std::cout << "ret: " << latent->transpose() * U(othermode) << std::endl;
+   std::cout << "result: " << result << std::endl;
    #endif
 
-   return latent->transpose() * U(othermode);
+   return result;
+
 }
 
 };

@@ -72,6 +72,13 @@ std::string smurff::fileName(const std::string& str)
    return str.substr(pos+1);
 }
 
+std::string smurff::fileExtension(const std::string& str)
+{
+   std::size_t dotIndex = str.find_last_of(".");
+   if (dotIndex == std::string::npos) return std::string();
+   return str.substr(dotIndex);
+}
+
 std::string smurff::dirName(const std::string& str)
 {
    auto pos = str.find_last_of("/");
@@ -89,5 +96,9 @@ std::string smurff::addDirName(const std::string& str,  const std::string& dirna
    return dirname + str;
 }
 
+std::string smurff::addIndex(const std::string& str, int idx)
+{
+   return str + "_" + std::to_string(idx);
+}
 
 

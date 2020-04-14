@@ -2,13 +2,9 @@ FILE (GLOB HEADER_FILES "catch.hpp" "Tests.h")
 source_group ("Header Files" FILES ${HEADER_FILES})
 
 FILE (GLOB SOURCE_FILES "tests.cpp"
-                        "TestsMatrixIO.cpp"
-                        "TestsTensorIO.cpp"
-                        "TestsMatrixConfig.cpp"
-                        "TestsTensorConfig.cpp"
+                        "TestsDistribution.cpp"
                         "TestsPVec.cpp"
-                        "TestsTensor.cpp"
-                        "TestsMatrixUtils.cpp"
+                        "TestsTensorData.cpp"
                         "TestsLinop.cpp"
                         "TestsInputData.cpp"
                         "TestsSmurff.cpp"
@@ -28,6 +24,7 @@ target_link_libraries (tests smurff-cpp smurff-utils
                                   ${OpenMP_CXX_LIBRARIES}
                                   ${Boost_LIBRARIES}
                                   ${ALGEBRA_LIBS}
+                                  HighFive
                       )
 
 if("${SMURFF_FLOAT_TYPE}" STREQUAL "float")

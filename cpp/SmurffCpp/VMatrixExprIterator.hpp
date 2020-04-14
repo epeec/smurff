@@ -77,7 +77,7 @@ public:
 
    T operator*()
    {
-      return m_model->U(m_num).block(0, m_off[m_num], m_model->nlatent(), m_dims[m_num]);
+      return m_model->U(m_num).block(m_off[m_num], 0, m_dims[m_num], m_model->nlatent());
    }
 
    T operator->()
