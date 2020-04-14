@@ -31,7 +31,6 @@ script:
     - mkdir build && cd build
     - cmake .. 
         -DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE} 
-        -DHIGHFIVE_USE_BOOST=OFF
         -DENABLE_PYTHON=OFF 
         -DCMAKE_PREFIX_PATH=${TRAVIS_BUILD_DIR}/prefix 
         -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" 
