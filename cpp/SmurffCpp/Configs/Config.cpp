@@ -499,6 +499,10 @@ std::ostream& Config::info(std::ostream &os, std::string indent) const
       os << indent << "  Save model: never\n";
    }
 
+
+   if (!getRestoreName().empty())
+      os << indent << "  Input file: " << getRestoreName() << "\n";
+
    return os;
 }
 
