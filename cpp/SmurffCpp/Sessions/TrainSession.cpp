@@ -26,14 +26,17 @@ void TrainSession::init()
     
     getConfig().validate();
 
-    if (getConfig().getSaveFreq() || getConfig().getCheckpointFreq())
+    if (!getConfig().getSaveName().empty())
     {
-
         // create state file
         m_stateFile = std::make_shared<StateFile>(getConfig().getSaveName(), true);
 
         //save config
         m_stateFile->saveConfig(getConfig());
+
+        // close stateFile is we do not need it anymore
+        if (!getConfig().getSaveFreq() && !getConfig().getCheckpointFreq())
+            m_stateFile.reset();
     }
 
     // initialize pred
