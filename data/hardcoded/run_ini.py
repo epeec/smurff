@@ -110,8 +110,8 @@ if args.ini is not None:
 file_options = {
     "train" : session.setTrain,
     "test" : session.setTest,
-    "row-features" : lambda x: session.addSideInfo(0, x),
-    "col-features" : lambda x: session.addSideInfo(1, x),
+    "row_features" : lambda x: session.addSideInfo(0, x),
+    "col_features" : lambda x: session.addSideInfo(1, x),
 }
 
 for opt, func in file_options.items():
