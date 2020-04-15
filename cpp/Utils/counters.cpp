@@ -18,8 +18,8 @@
 #include "counters.h"
 #include "Utils/omp_util.h"
 
-static smurff::thread_vector<Counter *> active_counters(0);
-smurff::thread_vector<TotalsCounter> perf_data;
+static thread_vector<Counter *> active_counters(0);
+thread_vector<TotalsCounter> perf_data;
 
 void perf_data_init()
 {
