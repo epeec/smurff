@@ -20,10 +20,9 @@ macro(configure_openmp)
   if(${OPENMP_FOUND})
       message(STATUS "OpenMP found")
       set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
-      set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${OpenMP_C_FLAGS}")
+      set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${OpenMP_CXX_FLAGS}")
 
       include_directories(${OpenMP_CXX_INCLUDE_DIRS})
-      include_directories(${OpenMP_C_INCLUDE_DIRS})
 
       message(STATUS "OpenMP_CXX_LIB_NAMES ${OpenMP_CXX_LIB_NAMES}")
       message(STATUS "OpenMP_CXX_LIBRARY ${OpenMP_CXX_LIBRARY}")
