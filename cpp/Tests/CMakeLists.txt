@@ -15,7 +15,7 @@ FILE (GLOB SOURCE_FILES "tests.cpp"
 
 if(${BOOST_RANDOM_VERSION})
     include_directories("expected_${SMURFF_FLOAT_TYPE}_boost${BOOST_SHORT_VERSION}")
-    FILE (GLOB MORE_SOURCE_FILES "TestsSmurff.cpp")
+    FILE (GLOB MORE_SOURCE_FILES "TestsSmurff.cpp" "TestsRandom.cpp")
 endif()
                         
 source_group ("Source Files" FILES ${SOURCE_FILES} ${MORE_SOURCE_FILES})

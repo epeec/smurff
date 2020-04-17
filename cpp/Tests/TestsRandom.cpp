@@ -1,4 +1,3 @@
-#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include "catch.hpp"
 
 #include <cmath>
@@ -10,10 +9,12 @@
 
 #include <boost/version.hpp>
 
-TEST_CASE("Test random number generation", "[random]")
+#include <SmurffCpp/Utils/Distribution.h>
+
+TEST_CASE("Test random number generation - BOOST version", "[random]")
 {
 #if defined(USE_BOOST_RANDOM)
-  static_assert ( (BOOST_VERSION / 1000) == EXPECTED_BOOST_SHORT_VERSION, "Wrong BOOST version");
+  static_assert((BOOST_VERSION / 1000) == EXPECTED_BOOST_SHORT_VERSION, "Wrong BOOST version");
   // Describes the boost version number in XYYYZZ format such that:
   // (BOOST_VERSION % 100) is the sub-minor version, ((BOOST_VERSION / 100) %
   // 1000) is the minor version, and (BOOST_VERSION / 100000) is the major
@@ -24,79 +25,47 @@ TEST_CASE("Test random number generation", "[random]")
             << BOOST_VERSION % 100               // patch level
             << std::endl;
 #else
-   WARN("Testing with std random - expect many failures\n");
+  WARN("Testing with std random - expect many failures\n");
+#endif
+}
+
+#if defined(USE_BOOST_RANDOM)
+template <typename Func>
+void testRandFunc(const Func generator, const std::string &name, const double expected[10])
+{
+  std::vector<double> rnd(10);
+
+  smurff::init_bmrng(1234);
+
+  for (int i = 0; i < 10; i++) rnd[i] = generator();
+
+#if 0
+  std::cout << " // generated random: " << name << std::endl;
+  for (int i = 0; i < 10; i++) std::cout << rnd[i] << ",";
+  std::cout << std::endl;
 #endif
 
-#if defined(USE_BOOST_RANDOM) 
-   init_bmrng(1234);
+  for (int i = 0; i < 10; i++)
+    CHECK(rnd[i] == Approx(expected[i]).epsilon(APPROX_EPSILON));
+}
 
-   double rnd = 0.0;
-   rnd = rand_normal();
-   REQUIRE(rnd == Approx(-1.38981).epsilon(APPROX_EPSILON));
+TEST_CASE("Test rand_normal number generation", "[random]")
+{
+  const double expected_rand_normal[10] = {
+#include "TestsRandom_ExpectedRandNormal.h"
+  };
 
-   rnd = rand_normal();
-   REQUIRE(rnd == Approx(0.444601).epsilon(APPROX_EPSILON));
-
-   rnd = rand_normal();
-   REQUIRE(rnd == Approx(-1.13281).epsilon(APPROX_EPSILON));
-
-   rnd = rand_normal();
-   REQUIRE(rnd == Approx(0.708248).epsilon(APPROX_EPSILON));
-
-   rnd = rand_normal();
-   REQUIRE(rnd == Approx(0.369621).epsilon(APPROX_EPSILON));
-
-   rnd = rand_normal();
-   REQUIRE(rnd == Approx(-0.465294).epsilon(APPROX_EPSILON));
-
-   rnd = rand_normal();
-   REQUIRE(rnd == Approx(-0.637987).epsilon(APPROX_EPSILON));
-
-   rnd = rand_normal();
-   REQUIRE(rnd == Approx(0.510229).epsilon(APPROX_EPSILON));
-
-   rnd = rand_normal();
-   REQUIRE(rnd == Approx(0.28734).epsilon(APPROX_EPSILON));
-
-   rnd = rand_normal();
-   REQUIRE(rnd == Approx(1.22677).epsilon(APPROX_EPSILON));
-   #endif
+  testRandFunc(smurff::rand_normal, "rand_normal", expected_rand_normal);
 }
 
 TEST_CASE("rand_gamma", " [random]")
 {
-   #ifdef USE_BOOST_RANDOM
-   init_bmrng(1234);
+  const double expected_rand_gamma[10] = {
+#include "TestsRandom_ExpectedRandGamma.h"
+  };
 
-   double rnd = 0.0;
-   rnd = rand_gamma(1, 2);
-   REQUIRE(rnd == Approx(0.425197).epsilon(APPROX_EPSILON));
 
-   rnd = rand_gamma(1, 2);
-   REQUIRE(rnd == Approx(1.37697).epsilon(APPROX_EPSILON));
-
-   rnd = rand_gamma(1, 2);
-   REQUIRE(rnd == Approx(1.9463).epsilon(APPROX_EPSILON));
-
-   rnd = rand_gamma(1, 2);
-   REQUIRE(rnd == Approx(3.40572).epsilon(APPROX_EPSILON));
-
-   rnd = rand_gamma(1, 2);
-   REQUIRE(rnd == Approx(1.15154).epsilon(APPROX_EPSILON));
-
-   rnd = rand_gamma(1, 2);
-   REQUIRE(rnd == Approx(1.89408).epsilon(APPROX_EPSILON));
-
-   rnd = rand_gamma(1, 2);
-   REQUIRE(rnd == Approx(3.07757).epsilon(APPROX_EPSILON));
-
-   rnd = rand_gamma(1, 2);
-   REQUIRE(rnd == Approx(2.95121).epsilon(APPROX_EPSILON));
-
-   rnd = rand_gamma(1, 2);
-   REQUIRE(rnd == Approx(3.02804).epsilon(APPROX_EPSILON));
-
-   rnd = rand_gamma(1, 2);
-   REQUIRE(rnd == Approx(3.94182).epsilon(APPROX_EPSILON));
-#endif  
+  testRandFunc([]() -> double { return smurff::rand_gamma(1.,2.); }, "rand_gamma", expected_rand_gamma);
 }
+
+#endif
