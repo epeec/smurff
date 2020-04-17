@@ -123,6 +123,7 @@ macro(configure_boost)
 
       # 1.5x.y -> 105
       math(EXPR BOOST_SHORT_VERSION "${Boost_VERSION_MACRO} / 1000")
+      add_definitions(-DEXPECTED_BOOST_SHORT_VERSION=${BOOST_SHORT_VERSION})
 
       message("-- Found Boost_VERSION: ${Boost_VERSION} (short version: ${BOOST_SHORT_VERSION})")
       message("-- Found Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
