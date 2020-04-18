@@ -1,14 +1,14 @@
 #!/bin/sh
 
-set -e
+set -ex
 
-rm -f *.h5
+rm -f *.h5 *.log
 
 # export DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.3/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
 
 python ../hardcoded/run_ini.py --verbose 1 \
     --seed 1234 --num-threads 1 \
-    --burnin 2 --nsamples 2 \
+    --burnin 20 --nsamples 20 \
     --train chembl-IC50-346targets-100compounds-train.sdm \
     --test chembl-IC50-346targets-100compounds-test.sdm \
     --row-features chembl-IC50-100compounds-feat-dense.ddm \
@@ -16,7 +16,7 @@ python ../hardcoded/run_ini.py --verbose 1 \
 
 python ../hardcoded/run_ini.py --verbose 1 \
     --seed 1234 --num-threads 1 \
-    --burnin 2 --nsamples 2 \
+    --burnin 20 --nsamples 20 \
     --train chembl-IC50-346targets-100compounds-train.sdm \
     --test chembl-IC50-346targets-100compounds-test.sdm \
     --row-features chembl-IC50-100compounds-feat-dense.ddm \
