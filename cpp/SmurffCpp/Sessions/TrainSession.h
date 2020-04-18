@@ -18,8 +18,8 @@ namespace smurff {
 class TrainSession : public ISession
 {
 public:
-   TrainSession() {};
-   TrainSession(const Config &c) : ISession(c) {}
+   TrainSession() : name("TrainSession") { };
+   TrainSession(const Config &c) : ISession(c), name("TrainSession") {}
 
 protected:
    Model m_model;
