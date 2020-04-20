@@ -102,8 +102,6 @@ bool ILatentPrior::run_slave()
 
 void ILatentPrior::sample_latents()
 {
-#pragma omp parallel
-#pragma omp single
    {
       COUNTER("sample_latents");
       data().update_pnm(model(), m_mode);
