@@ -102,30 +102,28 @@ bool ILatentPrior::run_slave()
 
 void ILatentPrior::sample_latents()
 {
-   {
-      COUNTER("sample_latents");
-      data().update_pnm(model(), m_mode);
+   COUNTER("sample_latents");
+   data().update_pnm(model(), m_mode);
 
-      for (int n = 0; n < U().rows(); n++)
+   for (int n = 0; n < U().rows(); n++)
 #pragma omp task
-      {
-         COUNTER("sample_latent");
-         sample_latent(n);
-         const auto &row = U().row(n);
-         Urow.local().noalias() += row;
-         UUrow.local().noalias() += row.transpose() * row;
-
-         if (m_session.inSamplingPhase())
-            model().updateAggr(m_mode, n);
-      }
-#pragma omp taskwait
+   {
+      COUNTER("sample_latent");
+      sample_latent(n);
+      const auto &row = U().row(n);
+      Urow.local().noalias() += row;
+      UUrow.local().noalias() += row.transpose() * row;
 
       if (m_session.inSamplingPhase())
-         model().updateAggr(m_mode);
-
-      Usum = Urow.combine_and_reset();
-      UUsum = UUrow.combine_and_reset();
+         model().updateAggr(m_mode, n);
    }
+#pragma omp taskwait
+
+   if (m_session.inSamplingPhase())
+      model().updateAggr(m_mode);
+
+   Usum = Urow.combine_and_reset();
+   UUsum = UUrow.combine_and_reset();
 }
 
 bool ILatentPrior::save(SaveState &sf) const
