@@ -82,6 +82,10 @@ private:
    Vector Usum;
    Matrix UUsum;
 
+   // for effiency, we keep + update Urow and UUrow by every thread
+   thread_vector<Vector> Urow;
+   thread_vector<Matrix> UUrow;
+   
 public:
    void setMode(std::uint32_t value)
    {
