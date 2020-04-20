@@ -109,9 +109,9 @@ void ILatentPrior::sample_latents()
    thread_vector<Vector> Urow(Vector::Zero(num_latent()));
    thread_vector<Matrix> UUrow(Matrix::Zero(num_latent(), num_latent()));
 
-   #pragma omp parallel for schedule(guided)
+   #pragma omp parallel 
+   #pragma omp taskloop
    for(int n = 0; n < U().rows(); n++)
-   #pragma omp task
    {
       COUNTER("sample_latent");
       sample_latent(n);
