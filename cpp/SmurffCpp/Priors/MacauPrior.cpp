@@ -65,17 +65,24 @@ void MacauPrior::update_prior()
 
     sample_beta();
 
+    double old_beta = beta_precision;
     if (enable_beta_precision_sampling)
     {
-        // uses: beta
+        // uses: BtB
+        {
+            COUNTER("sample_beta_precision");
+            beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
+        }
+
         // writes: FtF
-        COUNTER("sample_beta_precision");
-        double old_beta = beta_precision;
-        beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
-        FtF_plus_precision.diagonal().array() += beta_precision - old_beta;
-        FtF_llt = FtF_plus_precision.llt();
+        if (use_FtF)
+        {
+            COUNTER("FtF llt");
+            FtF_plus_precision.diagonal().array() += beta_precision - old_beta;
+            FtF_llt = FtF_plus_precision.llt();
+        }
     }
-   
+
     {
         COUNTER("compute_uhat");
         // Uhat = beta * F
