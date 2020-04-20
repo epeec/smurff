@@ -117,7 +117,7 @@ bool TrainSession::step()
     {
         auto starti = tick();
         #pragma omp parallel 
-        #pragma omp single 
+        #pragma omp master 
         for (auto &p : m_priors)
         {
             p->sample_latents();
