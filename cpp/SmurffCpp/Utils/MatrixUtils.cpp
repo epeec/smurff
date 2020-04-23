@@ -14,7 +14,7 @@ Matrix matrix_utils::dense_to_eigen(const DenseTensor& matrixAsTensor)
    THROWERROR_ASSERT_MSG(matrixAsTensor.getNModes() == 2, "Invalid number of dimensions. Tensor can not be converted to matrix.");
 
    std::vector<float_type> float_values(matrixAsTensor.getValues().begin(), matrixAsTensor.getValues().end());
-   return Eigen::Map<const Matrix>(matrixAsTensor.getValues().data(), matrixAsTensor.getNRow(), matrixAsTensor.getNCol());
+   return Eigen::Map<const Matrix>(float_values.data(), matrixAsTensor.getNRow(), matrixAsTensor.getNCol());
 }
 
 Matrix matrix_utils::make_dense(
