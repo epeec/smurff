@@ -121,8 +121,6 @@ void MacauPrior::sample_beta()
         // complexity: num_feat^3
         if (use_ViennaCL)
         {
-            typedef Eigen::Matrix<float_type, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> EigenRowMajor;
-
             using namespace viennacl;
             using namespace viennacl::linalg;
 
@@ -130,16 +128,11 @@ void MacauPrior::sample_beta()
             matrix<float_type> vcl_FtF(FtF_plus_precision.rows(), FtF_plus_precision.cols());
             matrix<float_type> vcl_Ft_y_t(Ft_y.rows(), Ft_y.cols());
 
-            //map
-            Eigen::Map<EigenRowMajor> map_beta(beta().data(), beta().rows(), beta().cols());
-            Eigen::Map<EigenRowMajor> map_Ft_y(Ft_y.data(), Ft_y.rows(), Ft_y.cols());
-            viennacl::backend::finish(); 
-
             {
                 COUNTER("cpu-gpu-copy");
                 //copy
                 copy(FtF_plus_precision, vcl_FtF);
-                copy(map_Ft_y, vcl_Ft_y_t);
+                copy(Ft_y, vcl_Ft_y_t);
                 viennacl::backend::finish(); 
             }
 
@@ -154,7 +147,7 @@ void MacauPrior::sample_beta()
             {
                 COUNTER("gpu-cpu-copy");
                 //copy back
-                copy(vcl_Ft_y_t, map_beta);
+                copy(vcl_Ft_y_t, beta());
                 viennacl::backend::finish(); 
             }
 
