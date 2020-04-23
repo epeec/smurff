@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import smurff
-import matrix_io as mio
+import smurff.matrix_io as mio
 import pandas as pd
 import unittest
 import os

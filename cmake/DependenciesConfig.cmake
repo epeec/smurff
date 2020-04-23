@@ -20,10 +20,11 @@ macro(configure_openmp)
   if(${OPENMP_FOUND})
       message(STATUS "OpenMP found")
       set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
-      set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${OpenMP_C_FLAGS}")
+      set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${OpenMP_CXX_FLAGS}")
+      
       add_definitions(-DVIENNACL_WITH_OPENMP)
+
       include_directories(${OpenMP_CXX_INCLUDE_DIRS})
-      include_directories(${OpenMP_C_INCLUDE_DIRS})
 
       message(STATUS "OpenMP_CXX_LIB_NAMES ${OpenMP_CXX_LIB_NAMES}")
       message(STATUS "OpenMP_CXX_LIBRARY ${OpenMP_CXX_LIBRARY}")
@@ -107,6 +108,7 @@ endmacro(configure_eigen_viennacl)
 
 macro(configure_highfive)
   message ("Dependency check for HighFive...")
+  SET(HIGHFIVE_USE_BOOST OFF CACHE BOOL "Disable BOOST support in HighFive")
   find_package(HighFive REQUIRED)
 endmacro(configure_highfive)
 
@@ -126,7 +128,11 @@ macro(configure_boost)
         FIND_PACKAGE(Boost COMPONENTS ${SMURFF_BOOST_COMPONENTS} REQUIRED)
       endif()
 
-      message("-- Found Boost_VERSION: ${Boost_VERSION}")
+      # 1.5x.y -> 105
+      math(EXPR BOOST_SHORT_VERSION "${Boost_VERSION_MACRO} / 1000")
+      add_definitions(-DEXPECTED_BOOST_SHORT_VERSION=${BOOST_SHORT_VERSION})
+
+      message("-- Found Boost_VERSION: ${Boost_VERSION} (short version: ${BOOST_SHORT_VERSION})")
       message("-- Found Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
       message("-- Found Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
       add_definitions(-DHAVE_BOOST)

@@ -3,7 +3,7 @@
 from scipy import sparse
 import numpy as np
 import smurff
-import matrix_io as mio
+import smurff.matrix_io as mio
 import unittest
 import sys
 import os

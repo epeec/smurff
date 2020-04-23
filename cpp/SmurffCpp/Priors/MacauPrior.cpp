@@ -50,43 +50,41 @@ void MacauPrior::init()
 
 void MacauPrior::update_prior()
 {
-    /*
->> compute_uhat:                     0.5012     (12%) in        110
->> main:                             4.1396     (100%) in       1
->> rest of update_prior:             0.1684     (4%) in 110
->> sample hyper mu/Lambda:           0.3804     (9%) in 110
->> sample_beta:                      1.4927     (36%) in        110
->> sample_latents:                   3.8824     (94%) in        220
->> step:                             3.9824     (96%) in        111
->> update_prior:                     2.5436     (61%) in        110
-*/
     COUNTER("update_prior");
-    {
-        COUNTER("rest of update_prior");
 
-
-    }
-
-    // sampling Gaussian
+    // sampling Hyper Params
     {
         COUNTER("sample hyper mu/Lambda");
-        //uses: U, Uhat
-        // writes: Udelta
+        // uses: U, Uhat
+        // writes: mu and Lambda
         // complexity: num_latent x num_items
-        Udelta = U() - Uhat;
-        // uses: Udelta
-        // complexity: num_latent x num_items
-        std::tie(mu(), Lambda) = CondNormalWishart(Udelta, mu0, b0, WI + beta_precision * BtB, df + num_feat());
+        std::tie(mu(), Lambda) = CondNormalWishart(U() - Uhat, mu0, b0, WI + beta_precision * BtB, df + num_feat());
     }
 
-    // uses: U, F
-    // writes: Ft_y
     // uses: U, F
     // writes: Ft_y
     // complexity: num_latent x num_feat x num_item
     compute_Ft_y(Ft_y);
 
     sample_beta();
+
+    double old_beta = beta_precision;
+    if (enable_beta_precision_sampling)
+    {
+        // uses: BtB
+        {
+            COUNTER("sample_beta_precision");
+            beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
+        }
+
+        // writes: FtF
+        if (use_FtF)
+        {
+            COUNTER("FtF llt");
+            FtF_plus_precision.diagonal().array() += beta_precision - old_beta;
+            FtF_llt = FtF_plus_precision.llt();
+        }
+    }
 
     {
         COUNTER("compute_uhat");
@@ -96,17 +94,6 @@ void MacauPrior::update_prior()
         // complexity: num_feat x num_latent x num_item
         Features->compute_uhat(Uhat, beta());
     }
-
-    if (enable_beta_precision_sampling)
-    {
-        // uses: beta
-        // writes: FtF
-        COUNTER("sample_beta_precision");
-        double old_beta = beta_precision;
-        beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
-        FtF_plus_precision.diagonal().array() += beta_precision - old_beta;
-        FtF_llt = FtF_plus_precision.llt();
-   }
 }
 
 void MacauPrior::sample_beta()

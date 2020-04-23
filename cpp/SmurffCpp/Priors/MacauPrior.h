@@ -23,7 +23,6 @@ public:
    const Matrix &beta() const { return model().getLinkMatrix(getMode()); }
                                // num_latent x num_feat -- link matrix
    Matrix Uhat;                // num_latent x num_items
-   Matrix Udelta;              // num_latent x num_items
    Matrix FtF_plus_precision;  // num_feat   x num feat
    Eigen::LLT<Matrix> FtF_llt; // num_feat   x num feat
    Matrix HyperU;              // num_latent x num_items

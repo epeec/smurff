@@ -15,7 +15,6 @@ needed, along with these packages:
 * scipy
 * pandas
 * scikit-learn
-* matrix_io (available on anaconda, and in ../matrix_io)
 
 ## Running
 

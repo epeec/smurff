@@ -12,11 +12,16 @@ FILE (GLOB SOURCE_FILES "tests.cpp"
                         "TestsPredict.cpp"
                         "TestsSparseSideInfo.cpp"
                         )
+
+if(${BOOST_RANDOM_VERSION})
+    include_directories("expected_${SMURFF_FLOAT_TYPE}_boost${BOOST_SHORT_VERSION}")
+    FILE (GLOB MORE_SOURCE_FILES "TestsSmurff.cpp" "TestsRandom.cpp")
+endif()
                         
-source_group ("Source Files" FILES ${SOURCE_FILES})
+source_group ("Source Files" FILES ${SOURCE_FILES} ${MORE_SOURCE_FILES})
 
 #SETUP OUTPUT
-add_executable (tests ${HEADER_FILES} ${SOURCE_FILES})
+add_executable (tests ${HEADER_FILES} ${SOURCE_FILES} ${MORE_SOURCE_FILES})
 install(TARGETS tests RUNTIME DESTINATION libexec)
 
 #LINK LIBRARIES
@@ -26,11 +31,3 @@ target_link_libraries (tests smurff-cpp smurff-utils
                                   ${ALGEBRA_LIBS}
                                   HighFive
                       )
-
-if("${SMURFF_FLOAT_TYPE}" STREQUAL "float")
-    include_directories("expected_float_results")
-elseif("${SMURFF_FLOAT_TYPE}" STREQUAL "double")
-    include_directories("expected_double_results")
-else()
-    message(FATAL_ERROR "Unknown float type (${SMURFF_FLOAT_TYPE}) for tests - only 'double' and 'float' supported")
-endif()

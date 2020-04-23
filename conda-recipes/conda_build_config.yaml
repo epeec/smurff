@@ -10,6 +10,7 @@ cxx_compiler:
 python:
     - 3.6
     - 3.7
+    - 3.8
 
 libboost: 1.67
 

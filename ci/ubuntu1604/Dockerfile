@@ -7,6 +7,8 @@ RUN apt-get update && \
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
        git g++ python3 \
+       gdb \
+       vim \
        libblas-dev \
        liblapack-dev \
        liblapacke-dev \
@@ -16,14 +18,17 @@ RUN apt-get update && \
        libboost-all-dev \
        ca-certificates \
        wget \
-      libhdf5-dev \
+       libhdf5-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN wget https://cmake.org/files/v3.12/cmake-3.12.0-Linux-x86_64.sh && \
-   sh cmake-3.12.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
+ARG CMAKE_VERSION=3.17.0
+
+RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh  && \
+   sh cmake-${CMAKE_VERSION}-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir && \
+   rm cmake-${CMAKE_VERSION}-Linux-x86_64.sh
 
 
-RUN wget -O HighFive.tar.gz https://github.com/tvandera/HighFive/archive/v2.1.1_unlink.tar.gz && \
+RUN wget -O HighFive.tar.gz https://github.com/BlueBrain/HighFive/archive/v2.2.tar.gz && \
     tar xzf HighFive.tar.gz && \
     cd HighFive* && mkdir build && cd build && \
     cmake .. && \

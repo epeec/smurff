@@ -105,13 +105,8 @@ void ILatentPrior::sample_latents()
    COUNTER("sample_latents");
    data().update_pnm(model(), m_mode);
 
-   // for effiency, we keep + update Urow and UUrow by every thread
-   thread_vector<Vector> Urow(Vector::Zero(num_latent()));
-   thread_vector<Matrix> UUrow(Matrix::Zero(num_latent(), num_latent()));
-
-   #pragma omp parallel for schedule(guided)
-   for(int n = 0; n < U().rows(); n++)
-   #pragma omp task
+   for (int n = 0; n < U().rows(); n++)
+#pragma omp task
    {
       COUNTER("sample_latent");
       sample_latent(n);
@@ -122,12 +117,13 @@ void ILatentPrior::sample_latents()
       if (m_session.inSamplingPhase())
          model().updateAggr(m_mode, n);
    }
+#pragma omp taskwait
 
    if (m_session.inSamplingPhase())
       model().updateAggr(m_mode);
 
-   Usum  = Urow.combine();
-   UUsum = UUrow.combine();
+   Usum = Urow.combine_and_reset();
+   UUsum = UUrow.combine_and_reset();
 }
 
 bool ILatentPrior::save(SaveState &sf) const
@@ -143,7 +139,10 @@ void ILatentPrior::restore(const SaveState &sf)
 
 void ILatentPrior::init_Usum()
 {
-    Usum = U().colwise().sum();
-    UUsum = U().transpose() * U(); 
+   Usum = U().colwise().sum();
+   UUsum = U().transpose() * U();
+
+   Urow.init(Vector::Zero(num_latent()));
+   UUrow.init(Matrix::Zero(num_latent(), num_latent()));
 }
 } // end namespace smurff

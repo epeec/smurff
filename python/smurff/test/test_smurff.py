@@ -298,7 +298,7 @@ class TestSmurff(unittest.TestCase):
 
         predictions = smurff.MacauSession(Ytrain = Ytrain, Ytest = Ytest, 
                                 side_info =[ Acoo, None, None ], univariate = True,
-                                num_latent = 4, verbose = 0, burnin = 100, nsamples = 200).run()
+                                num_latent = 4, verbose = 0, burnin = 200, nsamples = 400).run()
 
         rmse = smurff.calc_rmse(predictions)
 

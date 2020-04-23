@@ -13,12 +13,15 @@ RUN apt-get update && \
        libboost-all-dev \
        ca-certificates \
        libhdf5-dev \
+       gdb vim wget\
+       libhdf5-dev \
+       python3-numpy python3-pybind11 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone --depth 1 https://github.com/tvandera/HighFive.git && \
-    cd HighFive && mkdir build && cd build && \
+RUN wget -O HighFive.tar.gz https://github.com/BlueBrain/HighFive/archive/v2.2.tar.gz && \
+    tar xzf HighFive.tar.gz && \
+    cd HighFive* && mkdir build && cd build && \
     cmake .. && \
     make -j2 && make install && \
-    cd ../../ && rm -r HighFive
-
+    cd ../../ && rm -r HighFive*
 

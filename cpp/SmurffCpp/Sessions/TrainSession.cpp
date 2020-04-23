@@ -26,19 +26,17 @@ void TrainSession::init()
     
     getConfig().validate();
 
-    if (!getConfig().getRestoreName().empty())
+    if (!getConfig().getSaveName().empty())
     {
-        // open state file
-        m_stateFile = std::make_shared<StateFile>(getConfig().getRestoreName());
-    }
-    else if (getConfig().getSaveFreq() || getConfig().getCheckpointFreq())
-    {
-
         // create state file
         m_stateFile = std::make_shared<StateFile>(getConfig().getSaveName(), true);
 
         //save config
         m_stateFile->saveConfig(getConfig());
+
+        // close stateFile is we do not need it anymore
+        if (!getConfig().getSaveFreq() && !getConfig().getCheckpointFreq())
+            m_stateFile.reset();
     }
 
     // initialize pred
@@ -119,9 +117,12 @@ bool TrainSession::step()
     if (isStep)
     {
         auto starti = tick();
+        #pragma omp parallel 
+        #pragma omp master 
         for (auto &p : m_priors)
         {
             p->sample_latents();
+            #pragma omp task
             p->update_prior();
         }
         
@@ -214,6 +215,9 @@ void TrainSession::save()
             saveInternal(isample, false);
         }
     }
+
+    // close after final step
+    if (m_iter == niter - 1) m_stateFile.reset();
 }
 
 void TrainSession::saveInternal(int iteration, bool checkpoint)
@@ -240,48 +244,50 @@ void TrainSession::saveInternal(int iteration, bool checkpoint)
 
 bool TrainSession::restore(int &iteration)
 {
-    if (!m_stateFile || !m_stateFile->hasCheckpoint())
+    //if there is nothing to restore - start from initial iteration
+    iteration = -1;
+
+    //to keep track at what time we last checkpointed
+    m_lastCheckpointTime = tick();
+    m_lastCheckpointIter = -1;
+
+    if (getConfig().getRestoreName().empty())
+        return false;
+
+    // open state file
+    StateFile restoreFile(getConfig().getRestoreName());
+
+    if (!restoreFile.hasCheckpoint())
+        return false;
+
+    SaveState saveState = restoreFile.openCheckpoint();
+    if (getConfig().getVerbose())
+        std::cout << "-- Restoring model, predictions,... from '" << restoreFile.getPath() << "'." << std::endl;
+
+    m_model.restore(saveState);
+    m_pred.restore(saveState);
+    for (auto &p : m_priors)
+        p->restore(saveState);
+
+    //restore last iteration index
+    if (saveState.isCheckpoint())
     {
-        //if there is nothing to restore - start from initial iteration
-        iteration = -1;
+        iteration = saveState.getIsample() - 1; //restore original state
 
         //to keep track at what time we last checkpointed
         m_lastCheckpointTime = tick();
-        m_lastCheckpointIter = -1;
-        return false;
+        m_lastCheckpointIter = iteration;
     }
     else
     {
-        SaveState saveState = m_stateFile->openCheckpoint();
-        if (getConfig().getVerbose())
-        {
-            std::cout << "-- Restoring model, predictions,... from '" << m_stateFile->getPath() << "'." << std::endl;
-        }
+        iteration = saveState.getIsample() + getConfig().getBurnin() - 1; //restore original state
 
-        m_model.restore(saveState);
-        m_pred.restore(saveState);
-        for (auto &p : m_priors) p->restore(saveState);
-
-        //restore last iteration index
-        if (saveState.isCheckpoint())
-        {
-            iteration = saveState.getIsample() - 1; //restore original state
-
-            //to keep track at what time we last checkpointed
-            m_lastCheckpointTime = tick();
-            m_lastCheckpointIter = iteration;
-        }
-        else
-        {
-            iteration = saveState.getIsample() + getConfig().getBurnin() - 1; //restore original state
-
-            //to keep track at what time we last checkpointed
-            m_lastCheckpointTime = tick();
-            m_lastCheckpointIter = iteration;
-        }
-
-        return true;
+        //to keep track at what time we last checkpointed
+        m_lastCheckpointTime = tick();
+        m_lastCheckpointIter = iteration;
     }
+
+    return true;
 }
 
 const Result &TrainSession::getResult() const

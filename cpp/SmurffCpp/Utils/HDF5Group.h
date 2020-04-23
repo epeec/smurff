@@ -60,7 +60,10 @@ namespace smurff {
       { return getInternal(section, tag, default_value); }
 
       bool        get(const std::string &section, const std::string& tag, const bool        &default_value) const
-      { return getInternal(section, tag, default_value); }
+      {
+          int default_as_int = default_value;
+          return getInternal(section, tag, default_as_int);
+      }
 
       std::string get(const std::string &section, const std::string& tag, const std::string &default_value) const
       { return getInternal(section, tag, default_value); }
@@ -81,7 +84,10 @@ namespace smurff {
       { putInternal(section, tag, value); }
 
       void put(const std::string &section, const std::string& tag, const bool        &value)
-      { putInternal(section, tag, value); }
+      {
+          int int_value = value;
+          putInternal(section, tag, int_value);
+      }
 
       void put(const std::string &section, const std::string& tag, const std::string &value)
       { putInternal(section, tag, value); }
