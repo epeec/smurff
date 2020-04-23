@@ -53,10 +53,10 @@ SideInfoConfig makeSideInfoConfig(const M &data, bool direct = true) {
 template <class Train, class Test> Config genConfig(const Train &train, const Test &test, std::vector<PriorTypes> priors) {
   Config config;
   config.setPriorTypes(priors);
-  config.setBurnin(50);
-  config.setNSamples(50);
-  config.setVerbose(0);
-  config.setRandomSeed(1234);
+  config.setBurnin(100);
+  config.setNSamples(200);
+  config.setVerbose(1);
+  config.setRandomSeed(0xdeadbeef);
   config.setNumThreads(1);
   config.setNumLatent(4);
 

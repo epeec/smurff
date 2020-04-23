@@ -14,15 +14,9 @@
 
 #include "Tests.h"
 
-#ifdef USE_BOOST_RANDOM
 #define TAG_MATRIX_TESTS "[matrix][random]"
 #define TAG_TWO_DIMENTIONAL_TENSOR_TESTS "[tensor2d][random]"
 #define TAG_THREE_DIMENTIONAL_TENSOR_TESTS "[tensor3d][random]"
-#else
-#define TAG_MATRIX_TESTS "[matrix][random][!mayfail]"
-#define TAG_TWO_DIMENTIONAL_TENSOR_TESTS "[tensor2d][random][!mayfail]"
-#define TAG_THREE_DIMENTIONAL_TENSOR_TESTS "[tensor3d][random][!mayfail]"
-#endif
 
 namespace smurff {
 namespace test {

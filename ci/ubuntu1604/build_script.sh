@@ -11,6 +11,6 @@ set -e
 set -x
 
 rm -rf /build  && mkdir /build && cd /build
-cmake /smurff  -DENABLE_PYTHON=OFF -DBOOST_RANDOM_VERSION=1.58
+cmake /smurff  -DENABLE_PYTHON=OFF 
 make -j${CPU_COUNT}
 ./bin/tests

@@ -11,29 +11,10 @@
 
 #include <SmurffCpp/Utils/Distribution.h>
 
-TEST_CASE("Test random number generation - BOOST version", "[random]")
+template <typename Func, typename T>
+void testRandFunc(const Func generator, const std::string &name, const T expected[10])
 {
-#if defined(USE_BOOST_RANDOM)
-  static_assert((BOOST_VERSION / 1000) == EXPECTED_BOOST_SHORT_VERSION, "Wrong BOOST version");
-  // Describes the boost version number in XYYYZZ format such that:
-  // (BOOST_VERSION % 100) is the sub-minor version, ((BOOST_VERSION / 100) %
-  // 1000) is the minor version, and (BOOST_VERSION / 100000) is the major
-  // version.
-  std::cout << "Using Boost "
-            << BOOST_VERSION / 100000 << "."     // major version
-            << BOOST_VERSION / 100 % 1000 << "." // minor version
-            << BOOST_VERSION % 100               // patch level
-            << std::endl;
-#else
-  WARN("Testing with std random - expect many failures\n");
-#endif
-}
-
-#if defined(USE_BOOST_RANDOM)
-template <typename Func>
-void testRandFunc(const Func generator, const std::string &name, const double expected[10])
-{
-  std::vector<double> rnd(10);
+  std::vector<T> rnd(10);
 
   smurff::init_bmrng(1234);
 
@@ -49,7 +30,27 @@ void testRandFunc(const Func generator, const std::string &name, const double ex
     CHECK(rnd[i] == Approx(expected[i]).epsilon(APPROX_EPSILON));
 }
 
-TEST_CASE("Test rand_normal number generation", "[random]")
+
+TEST_CASE("rand", "[random]")
+{
+  const unsigned expected_rand[10] = {
+      1812433295,
+      3624866548,
+      1142332505,
+      2954765758,
+      472231715,
+      2284664968,
+      4097098221,
+      1614564178,
+      3426997431,
+      944463388,
+  };
+
+  testRandFunc(smurff::rand, "rand", expected_rand);
+}
+
+
+TEST_CASE("rand_normal", "[random]")
 {
   const double expected_rand_normal[10] = {
 #include "TestsRandom_ExpectedRandNormal.h"
@@ -57,6 +58,7 @@ TEST_CASE("Test rand_normal number generation", "[random]")
 
   testRandFunc(smurff::rand_normal, "rand_normal", expected_rand_normal);
 }
+
 
 TEST_CASE("rand_gamma", " [random]")
 {
@@ -67,5 +69,3 @@ TEST_CASE("rand_gamma", " [random]")
 
   testRandFunc([]() -> double { return smurff::rand_gamma(1.,2.); }, "rand_gamma", expected_rand_gamma);
 }
-
-#endif

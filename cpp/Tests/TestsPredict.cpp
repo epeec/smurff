@@ -16,11 +16,7 @@
 
 #include "Tests.h"
 
-#ifdef USE_BOOST_RANDOM
 #define TAG_MATRIX_TESTS "[matrix][random]"
-#else
-#define TAG_MATRIX_TESTS "[matrix][random][!mayfail]"
-#endif
 
 namespace fs = boost::filesystem;
 

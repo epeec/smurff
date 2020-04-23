@@ -111,18 +111,8 @@ macro(configure_boost)
       set (Boost_USE_MULTITHREADED ON)
       set (SMURFF_BOOST_COMPONENTS system program_options filesystem)
 
-      # find boost random library - optional
-      if(${BOOST_RANDOM_VERSION})
-        FIND_PACKAGE(Boost ${BOOST_RANDOM_VERSION} EXACT COMPONENTS random ${SMURFF_BOOST_COMPONENTS} REQUIRED)
-        message(STATUS "Found Boost random library")
-        add_definitions(-DUSE_BOOST_RANDOM)
-      else()
-        FIND_PACKAGE(Boost COMPONENTS ${SMURFF_BOOST_COMPONENTS} REQUIRED)
-      endif()
+      FIND_PACKAGE(Boost COMPONENTS ${SMURFF_BOOST_COMPONENTS} REQUIRED)
 
-      # 1.5x.y -> 105
-      math(EXPR BOOST_SHORT_VERSION "${Boost_VERSION_MACRO} / 1000")
-      add_definitions(-DEXPECTED_BOOST_SHORT_VERSION=${BOOST_SHORT_VERSION})
 
       message("-- Found Boost_VERSION: ${Boost_VERSION} (short version: ${BOOST_SHORT_VERSION})")
       message("-- Found Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")

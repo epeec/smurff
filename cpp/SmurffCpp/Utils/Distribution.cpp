@@ -2,24 +2,24 @@
 // From:
 // http://stackoverflow.com/questions/6142576/sample-from-multivariate-normal-gaussian-distribution-in-c
  
+#include <limits>
 #include <iostream>
 #include <chrono>
 #include <functional>
+#include <random>
 
 #include "Utils/ThreadVector.hpp"
 #include "Utils/omp_util.h"
 
-#ifdef USE_BOOST_RANDOM
-#include <boost/random.hpp>
-#define MERSENNE_TWISTER boost::random::mt19937
-#define UNIFORM_REAL_DISTRIBUTION boost::random::uniform_real_distribution<double>
-#define GAMMA_DISTRIBUTION boost::random::gamma_distribution<double>
-#else
-#include <random>
-#define MERSENNE_TWISTER std::mt19937
-#define UNIFORM_REAL_DISTRIBUTION std::uniform_real_distribution<double>
-#define GAMMA_DISTRIBUTION std::gamma_distribution<double>
-#endif
+struct NonRandomGenerator
+{
+   const unsigned int f = 1812433253;
+   mutable unsigned int state;
+   NonRandomGenerator(int s = 42) : state(s) {}
+   double operator()() const { return state += f; }
+   static constexpr unsigned int max() { return std::numeric_limits<unsigned>::max(); }
+   static constexpr unsigned int min() { return std::numeric_limits<unsigned>::min(); }
+};
 
 #include <SmurffCpp/Types.h>
 
@@ -31,7 +31,9 @@ namespace smurff {
  *  Init functions
  */
  
-static thread_vector<MERSENNE_TWISTER> bmrngs;
+static thread_vector<std::mt19937> real_rngs;
+static NonRandomGenerator fake_rng;
+static bool use_fake_rngs = false;
 
 void init_bmrng() 
 {
@@ -42,15 +44,32 @@ void init_bmrng()
 
 void init_bmrng(int seed) 
 {
-    std::vector<MERSENNE_TWISTER> v;
-    for (int i = 0; i < threads::get_max_threads(); i++)
+   if (seed == 0xdeadbeef)
+   {
+      use_fake_rngs = true;
+   }
+   else
     {
-        v.push_back(MERSENNE_TWISTER(seed + i * 1999));
+      std::vector<std::mt19937> v;
+      for (int i = 0; i < threads::get_max_threads(); i++)
+         v.push_back(std::mt19937(seed + i * 1999));
+      real_rngs.init(v);
     }
-
-    bmrngs.init(v);
 }
 
+template<typename Distribution>
+double generate(Distribution &d)
+{
+   if (use_fake_rngs)
+      return d(fake_rng);
+   else
+      return d(real_rngs.local());
+}
+
+unsigned rand()
+{
+   return fake_rng(); 
+}
 
 /*
  *  Normal distribution random numbers
@@ -58,8 +77,7 @@ void init_bmrng(int seed)
  
 static void rand_normal(float_type* x, long n) 
 {
-   UNIFORM_REAL_DISTRIBUTION unif(-1.0, 1.0);
-   auto& bmrng = bmrngs.local();
+   std::uniform_real_distribution<double> unif(-1.0, 1.0);
 
    for (long i = 0; i < n; i += 2) 
    {
@@ -67,8 +85,8 @@ static void rand_normal(float_type* x, long n)
 
       do 
       {
-         x1 = unif(bmrng);
-         x2 = unif(bmrng);
+         x1 = generate(unif);
+         x2 = generate(unif);
          w = x1 * x1 + x2 * x2;
       } while ( w >= 1.0 );
  
@@ -106,19 +124,19 @@ void rand_normal(Matrix & X)
 }
 
    
+
 double rand_unif(double low, double high) 
 {
-   UNIFORM_REAL_DISTRIBUTION unif(low, high);
-   auto& bmrng = bmrngs.local();
-   return unif(bmrng);
+   std::uniform_real_distribution<double> unif(low, high);
+   return generate(unif);
 }
 
 // returns random number according to Gamma distribution
 // with the given shape (k) and scale (theta). See wiki.
 double rand_gamma(double shape, double scale) 
 {
-   GAMMA_DISTRIBUTION gamma(shape, scale);
-   return gamma(bmrngs.local());
+   std::gamma_distribution<double> gamma(shape, scale);
+   return generate(gamma);
 }
 
 
@@ -128,12 +146,11 @@ Matrix WishartUnit(int m, int df)
 {
    Matrix c(m,m);
    c.setZero();
-   auto& rng = bmrngs.local();
 
    for ( int i = 0; i < m; i++ ) 
    {
-      GAMMA_DISTRIBUTION gam(0.5*(df - i));
-      c(i,i) = std::sqrt(2.0 * gam(rng));
+      std::gamma_distribution<double> gam(0.5*(df - i));
+      c(i,i) = std::sqrt(2.0 * generate(gam));
       c.block(i,i+1,1,m-i-1) = RandomVectorExpr(m-i-1);
    }
 
