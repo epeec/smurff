@@ -84,12 +84,12 @@ static void rand_normal(float_type* x, long n)
 
 double rand_normal() 
 {
-   double x;
+   float_type x;
    rand_normal(&x, 1);
    return x;
 }
 
-double RandNormalGenerator::operator()(double) const
+float_type RandNormalGenerator::operator()(float_type) const
 {
    if ((c % 2) == 0) rand_normal(x, 2);
    return x[(c++)%2];
