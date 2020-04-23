@@ -22,9 +22,9 @@ namespace smurff
    struct RandNormalGenerator
    {
       mutable unsigned c = 0;
-      mutable double x[2];
+      mutable float_type x[2];
 
-      double operator()(double) const;
+      float_type operator()(float_type) const;
    };
   
 #define RandomVectorExpr(n) (Vector::NullaryExpr(n, RandNormalGenerator())) 
