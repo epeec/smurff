@@ -10,7 +10,8 @@
 #include <trng/yarn2.hpp>
 #include <trng/normal_dist.hpp>
 #include <trng/uniform_dist.hpp>
-#include <trng/gamma_dist.hpp>
+//#include <trng/gamma_dist.hpp>
+#include <random>
 
 #include "Utils/ThreadVector.hpp"
 #include "Utils/omp_util.h"
@@ -23,7 +24,8 @@ namespace smurff {
 typedef trng::yarn2 rng;
 typedef trng::normal_dist<double> normal_dist;
 typedef trng::uniform_dist<double> uniform_dist;
-typedef trng::gamma_dist<double> gamma_dist;
+//typedef trng::gamma_dist<double> gamma_dist;
+typedef std::gamma_distribution<double> gamma_dist;
 
 /*
  *  Init functions
@@ -119,7 +121,7 @@ double rand_unif(double low, double high)
 // with the given shape (k) and scale (theta). See wiki.
 double rand_gamma(double shape, double scale) 
 {
-   gamma_dist gamma(shape, 1/scale);
+   gamma_dist gamma(shape, scale);
    return generate(gamma);
 }
 
