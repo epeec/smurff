@@ -6,34 +6,30 @@
 #include <iostream>
 #include <chrono>
 #include <functional>
-#include <random>
+
+#include <trng/yarn2.hpp>
+#include <trng/normal_dist.hpp>
+#include <trng/uniform_dist.hpp>
+#include <trng/gamma_dist.hpp>
 
 #include "Utils/ThreadVector.hpp"
 #include "Utils/omp_util.h"
-
-struct NonRandomGenerator
-{
-   const unsigned int f = 1812433253;
-   mutable unsigned int state;
-   NonRandomGenerator(int s = 42) : state(s) {}
-   double operator()() const { return state += f; }
-   static constexpr unsigned int max() { return std::numeric_limits<unsigned>::max(); }
-   static constexpr unsigned int min() { return std::numeric_limits<unsigned>::min(); }
-};
-
 #include <SmurffCpp/Types.h>
 
 #include "Distribution.h"
 
 namespace smurff {
 
+typedef trng::yarn2 rng;
+typedef trng::normal_dist<double> normal_dist;
+typedef trng::uniform_dist<double> uniform_dist;
+typedef trng::gamma_dist<double> gamma_dist;
+
 /*
  *  Init functions
  */
  
-static thread_vector<std::mt19937> real_rngs;
-static NonRandomGenerator fake_rng;
-static bool use_fake_rngs = false;
+static thread_vector<rng> rngs;
 
 void init_bmrng() 
 {
@@ -42,33 +38,23 @@ void init_bmrng()
    init_bmrng(ms);
 }
 
-void init_bmrng(int seed) 
+void init_bmrng(int seed)
 {
-   if (seed == 0xdeadbeef)
-   {
-      use_fake_rngs = true;
-   }
-   else
-    {
-      std::vector<std::mt19937> v;
-      for (int i = 0; i < threads::get_max_threads(); i++)
-         v.push_back(std::mt19937(seed + i * 1999));
-      real_rngs.init(v);
-    }
+   std::vector<rng> v;
+   for (int i = 0; i < threads::get_max_threads(); i++)
+      v.push_back(rng(seed + i * 1999));
+   rngs.init(v);
 }
 
-template<typename Distribution>
+template <typename Distribution>
 double generate(Distribution &d)
 {
-   if (use_fake_rngs)
-      return d(fake_rng);
-   else
-      return d(real_rngs.local());
+   return d(rngs.local());
 }
 
 unsigned rand()
 {
-   return fake_rng(); 
+   return rngs.local()(); 
 }
 
 /*
@@ -77,7 +63,7 @@ unsigned rand()
  
 static void rand_normal(float_type* x, long n) 
 {
-   std::uniform_real_distribution<double> unif(-1.0, 1.0);
+   uniform_dist unif(-1.0, 1.0);
 
    for (long i = 0; i < n; i += 2) 
    {
@@ -123,11 +109,9 @@ void rand_normal(Matrix & X)
    rand_normal(X.data(), X.size());
 }
 
-   
-
 double rand_unif(double low, double high) 
 {
-   std::uniform_real_distribution<double> unif(low, high);
+   uniform_dist unif(low, high);
    return generate(unif);
 }
 
@@ -135,7 +119,7 @@ double rand_unif(double low, double high)
 // with the given shape (k) and scale (theta). See wiki.
 double rand_gamma(double shape, double scale) 
 {
-   std::gamma_distribution<double> gamma(shape, scale);
+   gamma_dist gamma(shape, 1/scale);
    return generate(gamma);
 }
 
@@ -149,7 +133,7 @@ Matrix WishartUnit(int m, int df)
 
    for ( int i = 0; i < m; i++ ) 
    {
-      std::gamma_distribution<double> gam(0.5*(df - i));
+      gamma_dist gam(0.5*(df - i), 1.0);
       c(i,i) = std::sqrt(2.0 * generate(gam));
       c.block(i,i+1,1,m-i-1) = RandomVectorExpr(m-i-1);
    }

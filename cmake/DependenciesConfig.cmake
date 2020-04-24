@@ -85,6 +85,13 @@ macro(configure_mkl)
   message(STATUS MKL: ${MKL_LIBRARIES} )
 endmacro(configure_mkl)
 
+macro(configure_trng)
+  message ("Dependency check for TRNG...")
+  find_package(TRNG REQUIRED)
+
+  include_directories(${TRNG_INCLUDE_DIRS})
+endmacro(configure_trng)
+
 macro(configure_eigen)
   message ("Dependency check for eigen...")
   
