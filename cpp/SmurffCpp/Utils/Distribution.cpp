@@ -6,7 +6,6 @@
 #include <iostream>
 #include <chrono>
 #include <functional>
-
 #include <random>
 
 #include "Utils/ThreadVector.hpp"

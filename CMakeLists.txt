@@ -244,7 +244,6 @@ add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
 message(STATUS "Using '${SMURFF_FLOAT_TYPE}' as main computing type")
 include(cmake/DependenciesConfig.cmake)
 
-configure_trng()
 configure_eigen()
 configure_highfive()
 configure_boost()
