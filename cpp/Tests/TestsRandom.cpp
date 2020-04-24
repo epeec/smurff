@@ -34,16 +34,7 @@ void testRandFunc(const Func generator, const std::string &name, const T expecte
 TEST_CASE("rand", "[random]")
 {
   const unsigned expected_rand[10] = {
-      1812433295,
-      3624866548,
-      1142332505,
-      2954765758,
-      472231715,
-      2284664968,
-      4097098221,
-      1614564178,
-      3426997431,
-      944463388,
+    387998143,910169995,2025160654,697139026,2038031161,1860560113,1004299869,2129921185,1039831747,1011153800,
   };
 
   testRandFunc(smurff::rand, "rand", expected_rand);
@@ -53,7 +44,7 @@ TEST_CASE("rand", "[random]")
 TEST_CASE("rand_normal", "[random]")
 {
   const double expected_rand_normal[10] = {
-#include "TestsRandom_ExpectedRandNormal.h"
+    -1.26188,0.40815,-0.0157099,-1.56947,-1.1652,0.359155,1.34183,-1.16604,0.350437,0.373344,
   };
 
   testRandFunc(smurff::rand_normal, "rand_normal", expected_rand_normal);
@@ -63,9 +54,9 @@ TEST_CASE("rand_normal", "[random]")
 TEST_CASE("rand_gamma", " [random]")
 {
   const double expected_rand_gamma[10] = {
-#include "TestsRandom_ExpectedRandGamma.h"
+    0.465871,0.466284,0.463154,0.468155,0.462303,0.469327,0.466011,0.466946,0.465556,0.470684,
   };
 
 
-  testRandFunc([]() -> double { return smurff::rand_gamma(1.,2.); }, "rand_gamma", expected_rand_gamma);
+  testRandFunc([]() -> double { return smurff::rand_gamma(35000.,0.00001333); }, "rand_gamma", expected_rand_gamma);
 }
