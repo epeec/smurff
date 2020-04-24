@@ -7,10 +7,6 @@
 #include <chrono>
 #include <functional>
 
-#include <trng/yarn2.hpp>
-#include <trng/normal_dist.hpp>
-#include <trng/uniform_dist.hpp>
-//#include <trng/gamma_dist.hpp>
 #include <random>
 
 #include "Utils/ThreadVector.hpp"
@@ -21,11 +17,31 @@
 
 namespace smurff {
 
-typedef trng::yarn2 rng;
-typedef trng::normal_dist<double> normal_dist;
-typedef trng::uniform_dist<double> uniform_dist;
-//typedef trng::gamma_dist<double> gamma_dist;
+struct xorshift_rng
+{
+   typedef std::uint64_t result_type;
+
+   mutable result_type s[2]; // state
+
+   xorshift_rng(result_type _s = 1234) : s{_s, _s} {}
+
+   result_type operator()() const
+   {
+      result_type s1 = s[0];
+      const result_type s0 = s[1];
+      const result_type result = s0 + s1;
+      s[0] = s0;
+      s1 ^= s1 << 23;                          // a
+      s[1] = s1 ^ s0 ^ (s1 >> 18) ^ (s0 >> 5); // b, c
+      return result;
+   }
+   static constexpr result_type max() { return std::numeric_limits<result_type>::max(); }
+   static constexpr result_type min() { return std::numeric_limits<result_type>::min(); }
+};
+
+typedef xorshift_rng rng;
 typedef std::gamma_distribution<double> gamma_dist;
+typedef std::uniform_real_distribution<double> uniform_dist;
 
 /*
  *  Init functions
