@@ -40,6 +40,17 @@ TEST_CASE("rand", "[random]")
   testRandFunc(smurff::rand, "rand", expected_rand);
 }
 
+TEST_CASE("rand_unif", "[random]")
+{
+  const double expected_rand_unif[10] = {
+    1.33791e-16,5.6116e-10,5.78697e-10,0.00470734,0.00941467,0.00954846,0.00498688,0.262682,0.230149,0.315679,
+  };
+
+  testRandFunc(
+    []() -> double { return smurff::rand_unif(.0,1.); },
+    "rand_unif", expected_rand_unif);
+}
+
 
 TEST_CASE("rand_normal", "[random]")
 {
