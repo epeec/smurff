@@ -10,6 +10,8 @@
 
 #include "Utils/ThreadVector.hpp"
 #include "Utils/omp_util.h"
+#include "Utils/gamma_distribution.hpp"
+
 #include <SmurffCpp/Types.h>
 
 #include "Distribution.h"
@@ -39,7 +41,7 @@ struct xorshift_rng
 };
 
 typedef xorshift_rng rng;
-typedef std::gamma_distribution<double> gamma_dist;
+typedef smurff::gamma_distribution<double> gamma_dist;
 typedef std::uniform_real_distribution<double> uniform_dist;
 
 /*
