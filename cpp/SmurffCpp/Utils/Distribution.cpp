@@ -8,9 +8,9 @@
 #include <functional>
 #include <random>
 
-#include "Utils/ThreadVector.hpp"
-#include "Utils/omp_util.h"
-#include "Utils/gamma_distribution.hpp"
+#include "SmurffCpp/Utils/ThreadVector.hpp"
+#include "SmurffCpp/Utils/omp_util.h"
+#include "SmurffCpp/Utils/gamma_distribution.hpp"
 
 #include <SmurffCpp/Types.h>
 

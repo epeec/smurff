@@ -3,12 +3,12 @@
 #include <iomanip>
 
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <Utils/counters.h>
+#include <SmurffCpp/Utils/counters.h>
 
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/Distribution.h>
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 namespace smurff {
 

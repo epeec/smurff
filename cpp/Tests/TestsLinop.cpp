@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 #include <SmurffCpp/SideInfo/linop.h>
 #include <SmurffCpp/Utils/Distribution.h>
 

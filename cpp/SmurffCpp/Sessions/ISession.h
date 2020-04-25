@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 #include <SmurffCpp/StatusItem.h>
 #include <SmurffCpp/ResultItem.h>

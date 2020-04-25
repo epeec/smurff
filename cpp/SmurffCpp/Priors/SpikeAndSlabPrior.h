@@ -6,7 +6,7 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/Distribution.h>
-#include <Utils/ThreadVector.hpp>
+#include <SmurffCpp/Utils/ThreadVector.hpp>
 
 #include <SmurffCpp/Priors/NormalOnePrior.h>
 

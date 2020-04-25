@@ -1,6 +1,6 @@
 #include "SpikeAndSlabPrior.h"
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 namespace smurff {
 

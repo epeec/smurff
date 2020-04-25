@@ -3,7 +3,7 @@
 #include <iostream>
 #include <memory>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 #include <SmurffCpp/Configs/Config.h>
 #include <SmurffCpp/Priors/IPriorFactory.h>
 #include <SmurffCpp/Utils/StateFile.h>

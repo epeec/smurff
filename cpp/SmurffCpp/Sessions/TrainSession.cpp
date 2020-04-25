@@ -5,12 +5,12 @@
 #include <string>
 #include <iomanip>
 
-#include <Utils/omp_util.h>
+#include <SmurffCpp/Utils/omp_util.h>
 #include <SmurffCpp/Utils/Distribution.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <Utils/counters.h>
-#include <Utils/Error.h>
-#include <Utils/StringUtils.h>
+#include <SmurffCpp/Utils/counters.h>
+#include <SmurffCpp/Utils/Error.h>
+#include <SmurffCpp/Utils/StringUtils.h>
 #include <SmurffCpp/Configs/Config.h>
 
 #include <SmurffCpp/Priors/PriorFactory.h>

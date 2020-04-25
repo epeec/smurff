@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 namespace threads
 {

@@ -2,7 +2,7 @@
 
 #include <SmurffCpp/Types.h>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 #include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/Utils/Distribution.h>

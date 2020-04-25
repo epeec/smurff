@@ -5,7 +5,7 @@
 #include <vector>
 #include <iterator>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 namespace smurff {
 

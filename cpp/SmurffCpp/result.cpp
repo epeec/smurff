@@ -15,9 +15,9 @@
 #include <SmurffCpp/Model.h>
 #include <SmurffCpp/result.h>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 #include <SmurffCpp/Utils/SaveState.h>
-#include <Utils/StringUtils.h>
+#include <SmurffCpp/Utils/StringUtils.h>
 
 namespace smurff {
 

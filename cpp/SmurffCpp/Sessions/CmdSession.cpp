@@ -10,10 +10,10 @@
 #include <SmurffCpp/Predict/PredictSession.h>
 
 #include <SmurffCpp/Configs/Config.h>
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 #include <SmurffCpp/Utils/StateFile.h>
-#include <Utils/StringUtils.h>
+#include <SmurffCpp/Utils/StringUtils.h>
 
 namespace smurff {
 

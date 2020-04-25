@@ -12,10 +12,10 @@
 
 #include <SmurffCpp/result.h>
 
-#include <Utils/TruncNorm.h>
-#include <Utils/InvNormCdf.h>
+#include <SmurffCpp/Utils/TruncNorm.h>
+#include <SmurffCpp/Utils/InvNormCdf.h>
 #include <SmurffCpp/Utils/Distribution.h>
-#include <Utils/counters.h>
+#include <SmurffCpp/Utils/counters.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 
 #include <SmurffCpp/Configs/DataConfig.h>

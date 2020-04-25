@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Utils/Tensor.h>
+#include <SmurffCpp/Utils/Tensor.h>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 

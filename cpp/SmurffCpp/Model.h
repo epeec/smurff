@@ -6,8 +6,8 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Utils/PVec.hpp>
-#include <Utils/ThreadVector.hpp>
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/ThreadVector.hpp>
+#include <SmurffCpp/Utils/Error.h>
 
 #include <SmurffCpp/Configs/Config.h>
 

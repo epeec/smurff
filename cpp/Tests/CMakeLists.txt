@@ -19,14 +19,25 @@ include_directories("expected_${SMURFF_FLOAT_TYPE}")
                         
 source_group ("Source Files" FILES ${SOURCE_FILES} )
 
-#SETUP OUTPUT
-add_executable (tests ${HEADER_FILES} ${SOURCE_FILES})
-install(TARGETS tests RUNTIME DESTINATION libexec)
+if (${OPEMP_FOUND})
+add_executable (tests-mt ${HEADER_FILES} ${SOURCE_FILES})
+install(TARGETS tests-mt RUNTIME DESTINATION libexec)
 
-#LINK LIBRARIES
-target_link_libraries (tests smurff-cpp smurff-utils
+target_link_libraries (tests-mt smurff-cpp-mt
                                   ${OpenMP_CXX_LIBRARIES}
                                   ${Boost_LIBRARIES}
                                   ${ALGEBRA_LIBS}
                                   HighFive
                       )
+set_target_properties(tests-mt PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+endif()
+
+add_executable (tests-st ${HEADER_FILES} ${SOURCE_FILES})
+install(TARGETS tests-st RUNTIME DESTINATION libexec)
+
+target_link_libraries (tests-st smurff-cpp-st
+                                  ${Boost_LIBRARIES}
+                                  ${ALGEBRA_LIBS}
+                                  HighFive
+                      )
+ 

@@ -5,12 +5,26 @@ FILE (GLOB UTIL_FILES
                         "Utils/StateFile.h"
                         "Utils/SaveState.h"
                         "Utils/HDF5Group.h"
-
+                        "Utils/TruncNorm.h"
+                        "Utils/InvNormCdf.h"
+                        "Utils/counters.h"
+                        "Utils/linop.h"
+                        "Utils/omp_util.h"
+                        "Utils/Error.h"
+                        "Utils/ThreadVector.hpp"
+                        "Utils/StringUtils.h"
+                        "Utils/Tensor.h"
                         "Utils/Distribution.cpp"
                         "Utils/MatrixUtils.cpp"
                         "Utils/StateFile.cpp"
                         "Utils/SaveState.cpp"
                         "Utils/HDF5Group.cpp"
+                        "Utils/TruncNorm.cpp"
+                        "Utils/InvNormCdf.cpp"
+                        "Utils/counters.cpp"
+                        "Utils/omp_util.cpp"
+                        "Utils/StringUtils.cpp"
+                        "Utils/Tensor.cpp"
                         )
 
 source_group ("Utils" FILES ${UTIL_FILES})
@@ -143,21 +157,25 @@ FILE (GLOB PREDICT_FILES "Predict/PredictSession.h"
                         
 source_group ("Prediction" FILES ${PREDICT_FILES})
 
+set(SMURFF_CPP_FILES ${HEADER_FILES}
+                     ${SOURCE_FILES}
+                     ${UTIL_FILES}
+                     ${IO_FILES}
+                     ${CONFIG_FILES}
+                     ${NOISE_FILES}
+                     ${PRIOR_FILES}
+                     ${MATRIX_FILES}
+                     ${TENSOR_FILES}
+                     ${SESSION_FILES}
+                     ${SIDE_INFO_FILES}
+                     ${PREDICT_FILES})
+
 #SETUP OUTPUT
-add_library (smurff-cpp STATIC ${HEADER_FILES}
-                               ${SOURCE_FILES}
-                               ${UTIL_FILES}
-                               ${IO_FILES}
-                               ${CONFIG_FILES}
-                               ${NOISE_FILES}
-                               ${PRIOR_FILES}
-                               ${MATRIX_FILES}
-                               ${TENSOR_FILES}
-                               ${SESSION_FILES}
-                               ${SIDE_INFO_FILES}
-                               ${PREDICT_FILES}
-                               )
+if(${OPENMP_FOUND})
+   add_library (smurff-cpp-mt STATIC ${SMURFF_CPP_FILES})
+   set_target_properties (smurff-cpp-mt PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+endif()
 
-
-target_link_libraries(smurff-cpp HighFive)
+add_library (smurff-cpp-st STATIC ${SMURFF_CPP_FILES})
+target_link_libraries(smurff-cpp-st HighFive)
 

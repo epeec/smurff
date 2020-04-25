@@ -3,7 +3,7 @@
 #include <SmurffCpp/Types.h>
 #include <SmurffCpp/Types.h>
 
-#include <Utils/counters.h>
+#include <SmurffCpp/Utils/counters.h>
 #include <SmurffCpp/Utils/StateFile.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/result.h>

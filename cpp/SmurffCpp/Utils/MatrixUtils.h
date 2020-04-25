@@ -5,7 +5,7 @@
 #include <SmurffCpp/Types.h>
 #include <SmurffCpp/Types.h>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 namespace smurff { namespace matrix_utils {
    struct sparse_vec_iterator
