@@ -137,11 +137,8 @@ elseif (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
    endif()
 
 else()
-   message ("Using untested/unconfigured compiler, only Microsoft and g++ toolchain has been tested/established.")
-
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -fPIC")
-   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas -fPIC")
-
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor")
+   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas")
 endif()
 
 # INIT VERSIONING
