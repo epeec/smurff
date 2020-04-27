@@ -5,6 +5,7 @@ dist: xenial
 env:
   - SMURFF_FLOAT_TYPE=double ALLOWED_FAILURES=0  BUILD_TYPE=Debug
   - SMURFF_FLOAT_TYPE=double ALLOWED_FAILURES=0  BUILD_TYPE=Release
+  - SMURFF_FLOAT_TYPE=double ALLOWED_FAILURES=0  BUILD_TYPE=RelNoOpenMP
 
 addons:
   apt:
