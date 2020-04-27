@@ -17,14 +17,9 @@ source_group ("Source Files" FILES ${SOURCE_FILES})
 add_executable (mpi_smurff ${HEADER_FILES} ${SOURCE_FILES})
 install(TARGETS mpi_smurff RUNTIME DESTINATION bin)
 
-if (${OPENMP_FOUND})
-    target_link_libraries (mpi_smurff smurff-cpp-mt ${OpenMP_CXX_LIBRARIES})
-    set_target_properties(mpi_smurff PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-else()
-    target_link_libraries (mpi_smurff smurff-cpp-st)
-endif()
-
-target_link_libraries (mpi_smurff ${Boost_LIBRARIES}
+target_link_libraries (mpi_smurff smurff-cpp
+                                  ${OpenMP_CXX_LIBRARIES}
+                                  ${Boost_LIBRARIES}
                                   ${ALGEBRA_LIBS}
                                   HighFive
                                   ${MPI_LIBRARIES})

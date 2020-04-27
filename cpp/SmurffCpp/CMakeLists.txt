@@ -171,11 +171,7 @@ set(SMURFF_CPP_FILES ${HEADER_FILES}
                      ${PREDICT_FILES})
 
 #SETUP OUTPUT
-if(${OPENMP_FOUND})
-   add_library (smurff-cpp-mt STATIC ${SMURFF_CPP_FILES})
-   set_target_properties (smurff-cpp-mt PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-endif()
 
-add_library (smurff-cpp-st STATIC ${SMURFF_CPP_FILES})
-target_link_libraries(smurff-cpp-st HighFive)
+add_library (smurff-cpp STATIC ${SMURFF_CPP_FILES})
+target_link_libraries(smurff-cpp HighFive)
 

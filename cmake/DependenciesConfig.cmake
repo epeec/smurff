@@ -20,7 +20,8 @@ macro(configure_openmp)
     find_package(OpenMP)
     if(${OPENMP_FOUND})
         message(STATUS "OpenMP found")
-
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
+        
         include_directories(${OpenMP_CXX_INCLUDE_DIRS})
 
         message(STATUS "OpenMP_CXX_LIB_NAMES ${OpenMP_CXX_LIB_NAMES}")
@@ -32,7 +33,7 @@ macro(configure_openmp)
         message(STATUS "OpenMP not found")
     endif()
   else()
-    message ("Skipped check for OpenMP (Debug build)")
+    message ("Skipped check for OpenMP (Debug/NoOpenMP build)")
     set(OPENMP_FOUND FALSE)
   endif()   
 endmacro(configure_openmp)
