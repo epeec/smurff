@@ -79,7 +79,7 @@ TEST_CASE("PredictSession/BPMF")
 
     // std::cout << "Prediction from StateFile RMSE: " << result->rmse_avg <<
     // std::endl;
-    REQUIRE(trainSession->getRmseAvg() == Approx(result->rmse_avg).epsilon(APPROX_EPSILON));
+    checkValue(trainSession->getRmseAvg(), result->rmse_avg, rmse_epsilon);
   }
 }
 

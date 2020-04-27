@@ -29,7 +29,7 @@ void testRandFunc(const Func generator, const std::string &name, const T expecte
 #endif
 
   for (int i = 0; i < N; i++)
-    CHECK(rnd[i] == Approx(expected[i]).epsilon(APPROX_EPSILON));
+    CHECK(rnd[i] == Approx(expected[i]).epsilon(smurff::approx_epsilon<smurff::float_type>()));
 }
 
 

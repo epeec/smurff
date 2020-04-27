@@ -44,8 +44,8 @@ struct CompareTest {
     matrixSession->run();
     tensorSession->run();
 
-    REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-    REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+    checkValue(matrixSession->getRmseAvg(), tensorSession->getRmseAvg(), rmse_epsilon);
+    checkResultItems(matrixSession->getResultItems(), tensorSession->getResultItems());
   }
 };
 

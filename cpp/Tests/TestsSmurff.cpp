@@ -67,11 +67,18 @@ std::map<int, ExpectedResult> expectedResults = {
 
 
 // result comparison
+void checkValue(double actualValue, double expectedValue, double epsilon)
+{
+#ifdef _OPENMP
+   CHECK((std::abs(actualValue - expectedValue) / std::max(actualValue, expectedValue)) < 10.);
+#else
+  CHECK(actualValue == Approx(expectedValue).epsilon(epsilon));
+#endif
+}
 
-void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem> &actualResultItems,
+void checkResultItems(const std::vector<ResultItem> &actualResultItems,
                           const std::vector<ResultItem> &expectedResultItems) {
-  REQUIRE(actualResultItems.size() == expectedResultItems.size());
-  double single_item_epsilon = APPROX_EPSILON * 10;
+  CHECK(actualResultItems.size() == expectedResultItems.size());
 
   auto sortedActualResultItems = actualResultItems;
   std::sort(sortedActualResultItems.begin(), sortedActualResultItems.end());
@@ -82,11 +89,13 @@ void REQUIRE_RESULT_ITEMS(const std::vector<ResultItem> &actualResultItems,
   {
           const ResultItem &actualResultItem = sortedActualResultItems[i];
           const ResultItem &expectedResultItem = sortedExpectedResultItems[i];
-          REQUIRE(actualResultItem.coords == expectedResultItem.coords);
-          REQUIRE(actualResultItem.val == expectedResultItem.val);
-          REQUIRE(actualResultItem.pred_1sample == Approx(expectedResultItem.pred_1sample).epsilon(single_item_epsilon));
-          REQUIRE(actualResultItem.pred_avg == Approx(expectedResultItem.pred_avg).epsilon(single_item_epsilon));
-          REQUIRE(actualResultItem.var == Approx(expectedResultItem.var).epsilon(single_item_epsilon));
+
+          CHECK(actualResultItem.coords == expectedResultItem.coords);
+          CHECK(actualResultItem.val == expectedResultItem.val);
+
+          checkValue(actualResultItem.pred_1sample,expectedResultItem.pred_1sample, single_item_epsilon);
+          checkValue(actualResultItem.pred_avg, expectedResultItem.pred_avg, single_item_epsilon);
+          checkValue(actualResultItem.var, expectedResultItem.var, single_item_epsilon);
   }
 }
 
@@ -116,13 +125,10 @@ struct SmurffTest {
     return *this;
   }
 
+
   void runAndCheck(int nr) {
     std::shared_ptr<ISession> trainSession = std::make_shared<TrainSession>(config);
     trainSession->run();
-
-#ifdef _OPENMP
-    return;
-#endif
 
     double actualRmseAvg = trainSession->getRmseAvg();
     const std::vector<ResultItem> &actualResults = trainSession->getResultItems();
@@ -131,8 +137,8 @@ struct SmurffTest {
     double &expectedRmseAvg = expectedResults[nr].rmseAvg;
     auto &expectedResultItems = expectedResults[nr].resultItems;
 
-    REQUIRE(actualRmseAvg == Approx(expectedRmseAvg).epsilon(APPROX_EPSILON));
-    REQUIRE_RESULT_ITEMS(actualResults, expectedResultItems);
+    checkValue(actualRmseAvg, expectedRmseAvg, rmse_epsilon);
+    checkResultItems(actualResults, expectedResultItems);
   }
 };
 
