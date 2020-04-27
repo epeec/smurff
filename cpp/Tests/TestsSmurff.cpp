@@ -70,7 +70,12 @@ std::map<int, ExpectedResult> expectedResults = {
 void checkValue(double actualValue, double expectedValue, double epsilon)
 {
 #ifdef _OPENMP
-   CHECK((std::abs(actualValue - expectedValue) / std::max(actualValue, expectedValue)) < 10.);
+   double abs_max = std::max(std::abs(actualValue), std::abs(expectedValue));
+
+   if (abs_max > 0)
+        CHECK((std::abs(actualValue - expectedValue) / abs_max) < 10.);
+   else
+        CHECK(std::abs(actualValue - expectedValue) < 10.);
 #else
   CHECK(actualValue == Approx(expectedValue).epsilon(epsilon));
 #endif
