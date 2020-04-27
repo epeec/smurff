@@ -33,6 +33,32 @@ MESSAGE( STATUS "CMAKE_SYSTEM_VERSION: " ${CMAKE_SYSTEM_VERSION} )
 # the processor name (e.g. "Intel(R) Pentium(R) M processor 2.00GHz")
 MESSAGE( STATUS "CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR} )
 
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g -fstrict-aliasing")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -g -fstrict-aliasing")
+
+# Add new build types
+SET(CMAKE_CXX_FLAGS_RELNOOPENMP
+    "${GCC_RELEASE_FLAGS}"
+    CACHE STRING "Flags used by the C++ compiler for release-without-OpenMP builds."
+    )
+SET(CMAKE_C_FLAGS_RELNOOPENMP
+    "${GCC_RELEASE_FLAGS}"
+    CACHE STRING "Flags used by the C compiler for release-without-OpenMP builds."
+    )
+SET(CMAKE_EXE_LINKER_FLAGS_RELNOOPENMP
+    ""
+    CACHE STRING "Flags used for linking binaries for release-without-OpenMP builds."
+    )
+SET(CMAKE_SHARED_LINKER_FLAGS_RELNOOPENMP
+    ""
+    CACHE STRING "Flags used by the shared libraries for release-without-OpenMP builds."
+    )
+MARK_AS_ADVANCED(
+    CMAKE_CXX_FLAGS_RELNOOPENMP
+    CMAKE_C_FLAGS_RELNOOPENMP
+    CMAKE_EXE_LINKER_FLAGS_RELNOOPENMP
+    CMAKE_SHARED_LINKER_FLAGS_RELNOOPENMP )
+
 # FETCH OS
 
 message("Fetching os and compiler ...")
@@ -206,13 +232,8 @@ if(NOT MSVC)
     add_definitions(-D_DEBUG)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
-
-    #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O1")
-    #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O1")
   elseif(CMAKE_BUILD_TYPE MATCHES Release)
     message(STATUS "Release build.")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g -fstrict-aliasing")
-    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -g -fstrict-aliasing")
   else()
     message(STATUS "Unknown build type...")
   endif()
