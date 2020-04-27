@@ -12,10 +12,10 @@ namespace smurff
    void init_bmrng(int seed);
 
    // Generate single numbers 
-
+   unsigned rand();
    double rand_normal();
    double rand_unif(double low = 0.0, double high = 1.);
-   double rand_gamma(double shape, double scale);
+   double rand_gamma(double shape, double scale = 1.0);
 
    // Generate stream of random numbers
 

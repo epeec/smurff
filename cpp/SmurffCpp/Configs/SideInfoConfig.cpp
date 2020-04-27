@@ -3,7 +3,7 @@
 #include <memory>
 
 #include <SmurffCpp/Utils/HDF5Group.h>
-#include <Utils/StringUtils.h>
+#include <SmurffCpp/Utils/StringUtils.h>
 
 #include "SideInfoConfig.h"
 

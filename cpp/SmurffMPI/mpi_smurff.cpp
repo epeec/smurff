@@ -12,7 +12,7 @@
 #include <cmath>
 #include <stdlib.h>
 
-#include <Utils/omp_util.h>
+#include <SmurffCpp/Utils/omp_util.h>
 #include <SmurffCpp/Priors/ILatentPrior.h>
 
 #include "MPISession.h"

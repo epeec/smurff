@@ -2,24 +2,15 @@
 // From:
 // http://stackoverflow.com/questions/6142576/sample-from-multivariate-normal-gaussian-distribution-in-c
  
+#include <limits>
 #include <iostream>
 #include <chrono>
 #include <functional>
-
-#include "Utils/ThreadVector.hpp"
-#include "Utils/omp_util.h"
-
-#ifdef USE_BOOST_RANDOM
-#include <boost/random.hpp>
-#define MERSENNE_TWISTER boost::random::mt19937
-#define UNIFORM_REAL_DISTRIBUTION boost::random::uniform_real_distribution<double>
-#define GAMMA_DISTRIBUTION boost::random::gamma_distribution<double>
-#else
 #include <random>
-#define MERSENNE_TWISTER std::mt19937
-#define UNIFORM_REAL_DISTRIBUTION std::uniform_real_distribution<double>
-#define GAMMA_DISTRIBUTION std::gamma_distribution<double>
-#endif
+
+#include "SmurffCpp/Utils/ThreadVector.hpp"
+#include "SmurffCpp/Utils/omp_util.h"
+#include "SmurffCpp/Utils/gamma_distribution.hpp"
 
 #include <SmurffCpp/Types.h>
 
@@ -27,11 +18,37 @@
 
 namespace smurff {
 
+struct xorshift_rng
+{
+   typedef std::uint64_t result_type;
+
+   mutable result_type s[2]; // state
+
+   xorshift_rng(result_type _s = 1234) : s{_s, _s} {}
+
+   result_type operator()() const
+   {
+      result_type s1 = s[0];
+      const result_type s0 = s[1];
+      const result_type result = s0 + s1;
+      s[0] = s0;
+      s1 ^= s1 << 23;                          // a
+      s[1] = s1 ^ s0 ^ (s1 >> 18) ^ (s0 >> 5); // b, c
+      return result;
+   }
+   static constexpr result_type max() { return std::numeric_limits<result_type>::max(); }
+   static constexpr result_type min() { return std::numeric_limits<result_type>::min(); }
+};
+
+typedef std::mt19937 rng;
+typedef smurff::gamma_distribution<double> gamma_dist;
+typedef std::uniform_real_distribution<double> uniform_dist;
+
 /*
  *  Init functions
  */
  
-static thread_vector<MERSENNE_TWISTER> bmrngs;
+static thread_vector<rng> rngs;
 
 void init_bmrng() 
 {
@@ -40,17 +57,24 @@ void init_bmrng()
    init_bmrng(ms);
 }
 
-void init_bmrng(int seed) 
+void init_bmrng(int seed)
 {
-    std::vector<MERSENNE_TWISTER> v;
-    for (int i = 0; i < threads::get_max_threads(); i++)
-    {
-        v.push_back(MERSENNE_TWISTER(seed + i * 1999));
-    }
-
-    bmrngs.init(v);
+   std::vector<rng> v;
+   for (int i = 0; i < threads::get_max_threads(); i++)
+      v.push_back(rng(seed + i * 1999));
+   rngs.init(v);
 }
 
+template <typename Distribution>
+double generate(Distribution &d)
+{
+   return d(rngs.local());
+}
+
+unsigned rand()
+{
+   return rngs.local()(); 
+}
 
 /*
  *  Normal distribution random numbers
@@ -58,8 +82,7 @@ void init_bmrng(int seed)
  
 static void rand_normal(float_type* x, long n) 
 {
-   UNIFORM_REAL_DISTRIBUTION unif(-1.0, 1.0);
-   auto& bmrng = bmrngs.local();
+   uniform_dist unif(-1.0, 1.0);
 
    for (long i = 0; i < n; i += 2) 
    {
@@ -67,8 +90,8 @@ static void rand_normal(float_type* x, long n)
 
       do 
       {
-         x1 = unif(bmrng);
-         x2 = unif(bmrng);
+         x1 = generate(unif);
+         x2 = generate(unif);
          w = x1 * x1 + x2 * x2;
       } while ( w >= 1.0 );
  
@@ -105,20 +128,18 @@ void rand_normal(Matrix & X)
    rand_normal(X.data(), X.size());
 }
 
-   
 double rand_unif(double low, double high) 
 {
-   UNIFORM_REAL_DISTRIBUTION unif(low, high);
-   auto& bmrng = bmrngs.local();
-   return unif(bmrng);
+   uniform_dist unif(low, high);
+   return generate(unif);
 }
 
 // returns random number according to Gamma distribution
 // with the given shape (k) and scale (theta). See wiki.
 double rand_gamma(double shape, double scale) 
 {
-   GAMMA_DISTRIBUTION gamma(shape, scale);
-   return gamma(bmrngs.local());
+   gamma_dist gamma(shape, scale);
+   return generate(gamma);
 }
 
 
@@ -128,12 +149,11 @@ Matrix WishartUnit(int m, int df)
 {
    Matrix c(m,m);
    c.setZero();
-   auto& rng = bmrngs.local();
 
    for ( int i = 0; i < m; i++ ) 
    {
-      GAMMA_DISTRIBUTION gam(0.5*(df - i));
-      c(i,i) = std::sqrt(2.0 * gam(rng));
+      gamma_dist gam(0.5*(df - i), 1.0);
+      c(i,i) = std::sqrt(2.0 * generate(gam));
       c.block(i,i+1,1,m-i-1) = RandomVectorExpr(m-i-1);
    }
 

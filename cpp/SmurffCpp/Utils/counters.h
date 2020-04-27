@@ -9,7 +9,7 @@
 
 #include <string>
 #include <map>
-#include <Utils/ThreadVector.hpp>
+#include <SmurffCpp/Utils/ThreadVector.hpp>
 
 #define COUNTER(name) Counter c(name)
 

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 namespace smurff {
 

@@ -6,7 +6,7 @@
 #include <SmurffCpp/Priors/NormalOnePrior.h>
 #include <SmurffCpp/Priors/SpikeAndSlabPrior.h>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 #include <SmurffCpp/SideInfo/DenseSideInfo.h>
 #include <SmurffCpp/SideInfo/SparseSideInfo.h>

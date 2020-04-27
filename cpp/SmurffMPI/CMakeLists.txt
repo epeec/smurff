@@ -17,8 +17,7 @@ source_group ("Source Files" FILES ${SOURCE_FILES})
 add_executable (mpi_smurff ${HEADER_FILES} ${SOURCE_FILES})
 install(TARGETS mpi_smurff RUNTIME DESTINATION bin)
 
-#LINK LIBRARIES
-target_link_libraries (mpi_smurff smurff-cpp smurff-utils
+target_link_libraries (mpi_smurff smurff-cpp
                                   ${OpenMP_CXX_LIBRARIES}
                                   ${Boost_LIBRARIES}
                                   ${ALGEBRA_LIBS}

@@ -16,7 +16,7 @@
 #include <cmath>
 
 #include "counters.h"
-#include "Utils/omp_util.h"
+#include "SmurffCpp/Utils/omp_util.h"
 
 static thread_vector<Counter *> active_counters(0);
 thread_vector<TotalsCounter> perf_data;

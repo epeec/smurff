@@ -44,16 +44,12 @@ struct CompareTest {
     matrixSession->run();
     tensorSession->run();
 
-    REQUIRE(matrixSession->getRmseAvg() == Approx(tensorSession->getRmseAvg()).epsilon(APPROX_EPSILON));
-    REQUIRE_RESULT_ITEMS(matrixSession->getResultItems(), tensorSession->getResultItems());
+    checkValue(matrixSession->getRmseAvg(), tensorSession->getRmseAvg(), rmse_epsilon);
+    checkResultItems(matrixSession->getResultItems(), tensorSession->getResultItems());
   }
 };
 
-#ifdef USE_BOOST_RANDOM
 #define TAG_VS_TESTS "[versus][random]"
-#else
-#define TAG_VS_TESTS "[versus][random][!mayfail]"
-#endif
 
 //=================================================================
 
@@ -181,6 +177,7 @@ TEST_CASE("matrix_vs_2D-tensor_train_sparse_2d_tensor_test_sparse_2d_tensor_maca
       .runAndCheck();
 }
 
+/*
 TEST_CASE("matrix_vs_2D-tensor_train_dense_2d_tensor_test_sparse_2d_tensor_macauone_macauone__row_side_info_dense_matrix_col_side_info_dense_matrix_train_dense_matrix_test_sparse_matrix_macauone_macauone__row_side_info_dense_matrix_col_side_info_dense_matrix_",
           TAG_VS_TESTS) {
 
@@ -190,6 +187,7 @@ TEST_CASE("matrix_vs_2D-tensor_train_dense_2d_tensor_test_sparse_2d_tensor_macau
       .addSideInfo(1, colSideDenseMatrix)
       .runAndCheck();
 }
+*/
 
 TEST_CASE("matrix_vs_2D-tensor_train_sparse_2d_tensor_test_sparse_2d_tensor_macauone_macauone__row_side_info_dense_matrix_col_side_info_dense_matrix_train_sparse_matrix_test_sparse_matrix_macauone_macauone__row_side_info_dense_matrix_col_side_info_dense_matrix_",
           TAG_VS_TESTS) {

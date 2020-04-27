@@ -1,7 +1,7 @@
 #include <memory>
 
 #include "Data.h"
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 //matrix classes
 #include <SmurffCpp/DataMatrices/SparseMatrixData.h>

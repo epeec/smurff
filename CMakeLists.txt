@@ -17,7 +17,6 @@ OPTION(ENABLE_VERBOSE_COMPILER_LOG "Enable verbose compilation log" OFF)
 OPTION(ENABLE_VERBOSE_LINKER_LOG "Enable verbose linker log" OFF)
 
 OPTION(ENABLE_BOOST "Enable usage of Boost for program options" ON)
-SET(BOOST_RANDOM_VERSION "" CACHE STRING "Enable boost::random for this specific BOOST version")
 
 OPTION(ENABLE_PYTHON "Enable Python Wrapper" ON)
 OPTION(ENABLE_MPI "Enable MPI Support" ON)
@@ -34,6 +33,32 @@ MESSAGE( STATUS "CMAKE_SYSTEM_NAME: " ${CMAKE_SYSTEM_NAME} )
 MESSAGE( STATUS "CMAKE_SYSTEM_VERSION: " ${CMAKE_SYSTEM_VERSION} )
 # the processor name (e.g. "Intel(R) Pentium(R) M processor 2.00GHz")
 MESSAGE( STATUS "CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR} )
+
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g -fstrict-aliasing")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -g -fstrict-aliasing")
+
+# Add new build types
+SET(CMAKE_CXX_FLAGS_RELNOOPENMP
+    "${GCC_RELEASE_FLAGS}"
+    CACHE STRING "Flags used by the C++ compiler for release-without-OpenMP builds."
+    )
+SET(CMAKE_C_FLAGS_RELNOOPENMP
+    "${GCC_RELEASE_FLAGS}"
+    CACHE STRING "Flags used by the C compiler for release-without-OpenMP builds."
+    )
+SET(CMAKE_EXE_LINKER_FLAGS_RELNOOPENMP
+    ""
+    CACHE STRING "Flags used for linking binaries for release-without-OpenMP builds."
+    )
+SET(CMAKE_SHARED_LINKER_FLAGS_RELNOOPENMP
+    ""
+    CACHE STRING "Flags used by the shared libraries for release-without-OpenMP builds."
+    )
+MARK_AS_ADVANCED(
+    CMAKE_CXX_FLAGS_RELNOOPENMP
+    CMAKE_C_FLAGS_RELNOOPENMP
+    CMAKE_EXE_LINKER_FLAGS_RELNOOPENMP
+    CMAKE_SHARED_LINKER_FLAGS_RELNOOPENMP )
 
 # FETCH OS
 
@@ -65,6 +90,7 @@ endif()
 # FETCH COMPILER
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # needed for PyBIND11
 # https://pybind11.readthedocs.io/en/stable/faq.html#someclass-declared-with-greater-visibility-than-the-type-of-its-field-someclass-member-wattributes
@@ -112,11 +138,8 @@ elseif (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
    endif()
 
 else()
-   message ("Using untested/unconfigured compiler, only Microsoft and g++ toolchain has been tested/established.")
-
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -fPIC")
-   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas -fPIC")
-
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor")
+   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas")
 endif()
 
 # INIT VERSIONING
@@ -208,13 +231,8 @@ if(NOT MSVC)
     add_definitions(-D_DEBUG)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
-
-    #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O1")
-    #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O1")
   elseif(CMAKE_BUILD_TYPE MATCHES Release)
     message(STATUS "Release build.")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g -fstrict-aliasing")
-    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -g -fstrict-aliasing")
   else()
     message(STATUS "Unknown build type...")
   endif()
@@ -245,7 +263,6 @@ message("Checking build dependencies...")
 add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
 message(STATUS "Using '${SMURFF_FLOAT_TYPE}' as main computing type")
 include(cmake/DependenciesConfig.cmake)
-
 
 configure_highfive()
 configure_boost()
@@ -339,7 +356,6 @@ message(STATUS "Creating folder structure...")
 SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
 
 # libraries
-add_subdirectory (cpp/Utils)
 add_subdirectory (cpp/SmurffCpp)
 
 # main executable

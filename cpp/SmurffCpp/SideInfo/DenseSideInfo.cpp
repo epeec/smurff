@@ -1,4 +1,4 @@
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
 #include "DenseSideInfo.h"
 #include "linop.h"

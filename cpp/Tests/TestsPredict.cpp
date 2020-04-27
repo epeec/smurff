@@ -16,11 +16,7 @@
 
 #include "Tests.h"
 
-#ifdef USE_BOOST_RANDOM
 #define TAG_MATRIX_TESTS "[matrix][random]"
-#else
-#define TAG_MATRIX_TESTS "[matrix][random][!mayfail]"
-#endif
 
 namespace fs = boost::filesystem;
 
@@ -83,7 +79,7 @@ TEST_CASE("PredictSession/BPMF")
 
     // std::cout << "Prediction from StateFile RMSE: " << result->rmse_avg <<
     // std::endl;
-    REQUIRE(trainSession->getRmseAvg() == Approx(result->rmse_avg).epsilon(APPROX_EPSILON));
+    checkValue(trainSession->getRmseAvg(), result->rmse_avg, rmse_epsilon);
   }
 }
 

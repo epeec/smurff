@@ -1,5 +1,5 @@
 #include "ILatentPrior.h"
-#include <Utils/counters.h>
+#include <SmurffCpp/Utils/counters.h>
 
 namespace smurff {
 

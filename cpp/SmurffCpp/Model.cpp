@@ -19,7 +19,7 @@
 #include <SmurffCpp/VMatrixExprIterator.hpp>
 #include <SmurffCpp/ConstVMatrixExprIterator.hpp>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 #include <SmurffCpp/Utils/SaveState.h>
 
 namespace smurff {

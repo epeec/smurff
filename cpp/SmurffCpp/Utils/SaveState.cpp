@@ -6,8 +6,8 @@
 #include <SmurffCpp/result.h>
 #include <SmurffCpp/Priors/ILatentPrior.h>
 
-#include <Utils/Error.h>
-#include <Utils/StringUtils.h>
+#include <SmurffCpp/Utils/Error.h>
+#include <SmurffCpp/Utils/StringUtils.h>
 
 
 #define LATENTS_SEC_TAG "latents"

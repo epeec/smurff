@@ -6,7 +6,7 @@
 #include <map>
 
 #include <SmurffCpp/Utils/PVec.hpp>
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 #include "DataConfig.h"
 #include "SideInfoConfig.h"
 

@@ -15,10 +15,10 @@
 #include <string>
 #include <memory>
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 #include <SmurffCpp/Utils/HDF5Group.h>
 #include <SmurffCpp/DataMatrices/Data.h>
-#include <Utils/StringUtils.h>
+#include <SmurffCpp/Utils/StringUtils.h>
 
 namespace smurff {
 

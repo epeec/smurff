@@ -2,8 +2,8 @@
 
 #include <SmurffCpp/Utils/HDF5Group.h>
 
-#include <Utils/Error.h>
-#include <Utils/StringUtils.h>
+#include <SmurffCpp/Utils/Error.h>
+#include <SmurffCpp/Utils/StringUtils.h>
 
 
 namespace smurff {

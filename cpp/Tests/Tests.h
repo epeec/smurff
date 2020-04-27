@@ -2,12 +2,17 @@
 
 #include <SmurffCpp/Types.h>
 
-namespace smurff {
+namespace smurff
+{
 
 struct ResultItem;
 class DataConfig;
 
-namespace test {
+namespace test
+{
+
+const double rmse_epsilon = smurff::approx_epsilon<smurff::float_type>();
+const double single_item_epsilon = rmse_epsilon * 10;
 
 // noise
 extern smurff::NoiseConfig fixed_ncfg;
@@ -38,11 +43,12 @@ extern smurff::Matrix rowSideDenseMatrix3d;
 extern smurff::SparseMatrix rowSideSparseMatrix;
 extern smurff::SparseMatrix colSideSparseMatrix;
 
-void REQUIRE_RESULT_ITEMS(const std::vector<smurff::ResultItem> &actualResultItems,
+void checkResultItems(const std::vector<smurff::ResultItem> &actualResultItems,
                           const std::vector<smurff::ResultItem> &expectedResultItems);
 
-template<class M>
-SideInfoConfig makeSideInfoConfig(const M &data, bool direct = true) {
+template <class M>
+SideInfoConfig makeSideInfoConfig(const M &data, bool direct = true)
+{
   smurff::NoiseConfig sampled_ncfg(NoiseTypes::sampled);
   sampled_ncfg.setPrecision(10.0);
   SideInfoConfig picfg(data, sampled_ncfg);
@@ -50,14 +56,15 @@ SideInfoConfig makeSideInfoConfig(const M &data, bool direct = true) {
   return picfg;
 }
 
-template <class Train, class Test> Config genConfig(const Train &train, const Test &test, std::vector<PriorTypes> priors) {
+template <class Train, class Test>
+Config genConfig(const Train &train, const Test &test, std::vector<PriorTypes> priors)
+{
   Config config;
   config.setPriorTypes(priors);
   config.setBurnin(50);
   config.setNSamples(50);
   config.setVerbose(0);
   config.setRandomSeed(1234);
-  config.setNumThreads(1);
   config.setNumLatent(4);
 
   config.getTrain().setData(train);
@@ -66,5 +73,8 @@ template <class Train, class Test> Config genConfig(const Train &train, const Te
 
   return config;
 }
+
+void checkValue(double actualValue, double expectedValue, double epsilon);
+
 } // namespace test
 } // namespace smurff

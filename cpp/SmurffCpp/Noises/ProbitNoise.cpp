@@ -1,8 +1,8 @@
 #include "ProbitNoise.h"
 
-#include <Utils/Error.h>
+#include <SmurffCpp/Utils/Error.h>
 
-#include <Utils/TruncNorm.h>
+#include <SmurffCpp/Utils/TruncNorm.h>
 #include <SmurffCpp/Model.h>
 
 namespace smurff {

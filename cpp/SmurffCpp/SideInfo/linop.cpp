@@ -2,8 +2,8 @@
 #include <Eigen/IterativeLinearSolvers>
 
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <Utils/Error.h>
-#include <Utils/counters.h>
+#include <SmurffCpp/Utils/Error.h>
+#include <SmurffCpp/Utils/counters.h>
 
 #include <SmurffCpp/SideInfo/SparseSideInfo.h>
 #include "linop.h"

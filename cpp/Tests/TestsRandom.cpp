@@ -2,70 +2,78 @@
 
 #include <cmath>
 #include <cstdio>
+#include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <vector>
 #include <limits>
 
-#include <boost/version.hpp>
-
 #include <SmurffCpp/Utils/Distribution.h>
 
-TEST_CASE("Test random number generation - BOOST version", "[random]")
-{
-#if defined(USE_BOOST_RANDOM)
-  static_assert((BOOST_VERSION / 1000) == EXPECTED_BOOST_SHORT_VERSION, "Wrong BOOST version");
-  // Describes the boost version number in XYYYZZ format such that:
-  // (BOOST_VERSION % 100) is the sub-minor version, ((BOOST_VERSION / 100) %
-  // 1000) is the minor version, and (BOOST_VERSION / 100000) is the major
-  // version.
-  std::cout << "Using Boost "
-            << BOOST_VERSION / 100000 << "."     // major version
-            << BOOST_VERSION / 100 % 1000 << "." // minor version
-            << BOOST_VERSION % 100               // patch level
-            << std::endl;
-#else
-  WARN("Testing with std random - expect many failures\n");
-#endif
+static const int N = 10;
+static bool cleanup = true;
+static const char *fname = "TestsRandom_ExpectedResults.h";
+
+#include "TestsRandom_ExpectedResults.h"
+
+template<typename T> std::string type_name();
+template<>           std::string type_name<double>() { return "double"; }
+template<>           std::string type_name<std::uint64_t>() { return "std::uint64_t"; }
+
+template <typename T>
+void printActualResults(std::string name, const T actualResults[N]) {
+  if (cleanup) {
+    std::remove(fname);
+    cleanup = false;
+  }
+
+  std::ofstream os(fname, std::ofstream::app);
+
+  os << std::endl << "static " << type_name<T>() << " expected_" << name << "[N] = { " << std::endl << "  ";
+
+  for (int i = 0; i < N; i++)
+    os << std::fixed << std::setprecision(16) << actualResults[i] << ",";
+
+  os << std::endl << "};" << std::endl;
 }
 
-#if defined(USE_BOOST_RANDOM)
-template <typename Func>
-void testRandFunc(const Func generator, const std::string &name, const double expected[10])
+template <typename Func, typename T>
+void testRandFunc(const Func generator, const std::string &name, const T expected[N])
 {
-  std::vector<double> rnd(10);
+  T rnd[N];
 
   smurff::init_bmrng(1234);
 
-  for (int i = 0; i < 10; i++) rnd[i] = generator();
+  for (int i = 0; i < N; i++) rnd[i] = generator();
 
-#if 0
-  std::cout << " // generated random: " << name << std::endl;
-  for (int i = 0; i < 10; i++) std::cout << rnd[i] << ",";
-  std::cout << std::endl;
-#endif
+  printActualResults(name, rnd);
 
-  for (int i = 0; i < 10; i++)
-    CHECK(rnd[i] == Approx(expected[i]).epsilon(APPROX_EPSILON));
+  for (int i = 0; i < N; i++)
+    CHECK(rnd[i] == Approx(expected[i]).epsilon(smurff::approx_epsilon<smurff::float_type>()));
 }
 
-TEST_CASE("Test rand_normal number generation", "[random]")
-{
-  const double expected_rand_normal[10] = {
-#include "TestsRandom_ExpectedRandNormal.h"
-  };
 
+TEST_CASE("rand", "[random]")
+{
+  testRandFunc(smurff::rand, "rand", expected_rand);
+}
+
+TEST_CASE("rand_unif", "[random]")
+{
+  testRandFunc(
+    []() -> double { return smurff::rand_unif(.0,1.); },
+    "rand_unif", expected_rand_unif);
+}
+
+
+TEST_CASE("rand_normal", "[random]")
+{
   testRandFunc(smurff::rand_normal, "rand_normal", expected_rand_normal);
 }
 
+
 TEST_CASE("rand_gamma", " [random]")
 {
-  const double expected_rand_gamma[10] = {
-#include "TestsRandom_ExpectedRandGamma.h"
-  };
-
-
-  testRandFunc([]() -> double { return smurff::rand_gamma(1.,2.); }, "rand_gamma", expected_rand_gamma);
+  testRandFunc([]() -> double { return smurff::rand_gamma(35000.,0.00001333); }, "rand_gamma", expected_rand_gamma);
 }
-
-#endif

@@ -4,8 +4,8 @@
 #include "MacauPrior.h"
 
 #include <SmurffCpp/Utils/Distribution.h>
-#include <Utils/Error.h>
-#include <Utils/counters.h>
+#include <SmurffCpp/Utils/Error.h>
+#include <SmurffCpp/Utils/counters.h>
 
 #include <ios>
 

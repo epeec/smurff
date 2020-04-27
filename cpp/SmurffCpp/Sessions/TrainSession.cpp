@@ -5,12 +5,12 @@
 #include <string>
 #include <iomanip>
 
-#include <Utils/omp_util.h>
+#include <SmurffCpp/Utils/omp_util.h>
 #include <SmurffCpp/Utils/Distribution.h>
 #include <SmurffCpp/Utils/MatrixUtils.h>
-#include <Utils/counters.h>
-#include <Utils/Error.h>
-#include <Utils/StringUtils.h>
+#include <SmurffCpp/Utils/counters.h>
+#include <SmurffCpp/Utils/Error.h>
+#include <SmurffCpp/Utils/StringUtils.h>
 #include <SmurffCpp/Configs/Config.h>
 
 #include <SmurffCpp/Priors/PriorFactory.h>
@@ -119,7 +119,7 @@ bool TrainSession::step()
         auto starti = tick();
         #pragma omp parallel 
         #pragma omp master 
-        for (auto &p : m_priors)
+        for (auto p : m_priors)
         {
             p->sample_latents();
             #pragma omp task
