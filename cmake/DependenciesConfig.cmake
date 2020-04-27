@@ -117,7 +117,7 @@ macro(configure_boost)
       FIND_PACKAGE(Boost COMPONENTS ${SMURFF_BOOST_COMPONENTS} REQUIRED)
 
 
-      message("-- Found Boost_VERSION: ${Boost_VERSION} (short version: ${BOOST_SHORT_VERSION})")
+      message("-- Found Boost_VERSION: ${Boost_VERSION}")
       message("-- Found Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
       message("-- Found Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
       add_definitions(-DHAVE_BOOST)
