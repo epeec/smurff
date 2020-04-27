@@ -40,7 +40,7 @@ struct xorshift_rng
    static constexpr result_type min() { return std::numeric_limits<result_type>::min(); }
 };
 
-typedef xorshift_rng rng;
+typedef std::mt19937 rng;
 typedef smurff::gamma_distribution<double> gamma_dist;
 typedef std::uniform_real_distribution<double> uniform_dist;
 
