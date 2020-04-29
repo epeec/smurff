@@ -177,11 +177,13 @@ void TrainSession::save()
     std::int32_t niter = getConfig().getBurnin() + getConfig().getNSamples();
 
     //save if checkpoint threshold overdue
-    if (getConfig().getCheckpointFreq() && 
-       (
-           (tick() - m_lastCheckpointTime) >= getConfig().getCheckpointFreq()) ||
-           (m_iter == niter - 1) // also save checkpoint in last iteration
-        ) 
+    if (
+         getConfig().getCheckpointFreq() && 
+         (
+             ((tick() - m_lastCheckpointTime) >= getConfig().getCheckpointFreq()) ||
+             (m_iter == niter - 1) // also save checkpoint in last iteration
+         )
+       )
     {
         std::int32_t icheckpoint = m_iter + 1;
 
