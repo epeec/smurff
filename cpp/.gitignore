@@ -1,0 +1,12 @@
+*.o
+*.d
+*.dSYM/
+test_synthetic
+smurff
+mpi_smurff
+*.a
+cmake/CMakeCache.txt
+cmake/CMakeFiles
+cmake/Makefile
+cmake/cmake_install.cmake
+cmake/_output

@@ -1,0 +1,10 @@
+steps:
+  - task: CondaEnvironment@1
+    inputs:
+        packageSpecs: 'python=3.6 conda-build conda'
+        updateConda: false
+    displayName: Install conda-build and activate environment
+  - script: |
+      cd conda-recipes
+      conda build -c vanderaa smurff-latest
+    displayName: Build

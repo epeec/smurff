@@ -1,0 +1,24 @@
+package:
+  name: highfive
+  version: 2.2
+
+source:
+  git_url: https://github.com/BlueBrain/HighFive
+  git_tag: v2.2
+
+requirements:
+  build:
+    - {{ compiler("cxx") }}
+    - cmake
+
+  host:
+    - hdf5
+    - boost
+
+  run:
+    - hdf5
+
+about:
+  home: https://bluebrain.github.io/HighFive/
+  license: BSL-1.0
+  summary: 'HighFive - Header-only C++ HDF5 interface'

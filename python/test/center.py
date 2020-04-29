@@ -7,7 +7,7 @@ import argparse
 import os
 import os.path
 import itertools
-import matrix_io as mio
+import smurff.matrix_io as mio
 
 parser = argparse.ArgumentParser(description='Center sbm/sdm/ddm')
 parser.add_argument('--mode',  metavar='MODE', dest='mode', action='store', help='global|rows|cols', default='global')
