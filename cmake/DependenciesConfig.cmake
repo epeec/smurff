@@ -103,7 +103,7 @@ macro(configure_eigen)
   include_directories(${SMURFF_INCLUDE_DIRS})
 
   message(STATUS "Eigen include dirs: ${SMURFF_INCLUDE_DIRS}")
-endmacro(configure_eigen_viennacl)
+endmacro(configure_eigen)
 
 macro(configure_highfive)
   message ("Dependency check for HighFive...")
