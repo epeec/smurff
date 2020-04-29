@@ -1,4 +1,3 @@
-#include <viennacl/matrix.hpp>
 #include <viennacl/linalg/lu.hpp>
 
 #include "MacauPrior.h"
@@ -32,11 +31,18 @@ void MacauPrior::init()
 
    if (use_FtF)
    {
-      std::uint64_t dim = num_feat();
-      FtF_plus_precision.resize(dim, dim);
-      Features->At_mul_A(FtF_plus_precision);
-      FtF_plus_precision.diagonal().array() += beta_precision;
-      FtF_llt = FtF_plus_precision.llt();
+       std::uint64_t dim = num_feat();
+       FtF_plus_precision.resize(dim, dim);
+       Features->At_mul_A(FtF_plus_precision);
+       FtF_plus_precision.diagonal().array() += beta_precision;
+       FtF_llt = FtF_plus_precision.llt();
+
+       if (use_ViennaCL)
+       {
+           vcl_FtF.resize(num_feat(), num_feat());
+           vcl_Ft_y_t.resize(num_feat(), num_latent());
+           copy(FtF_plus_precision, vcl_FtF);
+       }
    }
 
    Uhat.resize(num_item(), num_latent());
@@ -68,7 +74,7 @@ void MacauPrior::update_prior()
 
     sample_beta();
 
-    double old_beta = beta_precision;
+    prev_beta_precision = beta_precision;
     if (enable_beta_precision_sampling)
     {
         // uses: BtB
@@ -78,10 +84,10 @@ void MacauPrior::update_prior()
         }
 
         // writes: FtF
-        if (use_FtF)
+        if (use_FtF && !use_ViennaCL)
         {
             COUNTER("FtF llt");
-            FtF_plus_precision.diagonal().array() += beta_precision - old_beta;
+            FtF_plus_precision.diagonal().array() += beta_precision - prev_beta_precision;
             FtF_llt = FtF_plus_precision.llt();
         }
     }
@@ -98,8 +104,6 @@ void MacauPrior::update_prior()
 
 void MacauPrior::sample_beta()
 {
-    bool use_ViennaCL = true;
-
     COUNTER("sample_beta");
     if (use_FtF)
     {
@@ -108,26 +112,25 @@ void MacauPrior::sample_beta()
         // complexity: num_feat^3
         if (use_ViennaCL)
         {
-            using namespace viennacl;
-            using namespace viennacl::linalg;
-
-            //allocate
-            matrix<float_type> vcl_FtF(FtF_plus_precision.rows(), FtF_plus_precision.cols());
-            matrix<float_type> vcl_Ft_y_t(Ft_y.rows(), Ft_y.cols());
-
             {
                 COUNTER("cpu-gpu-copy");
                 //copy
-                copy(FtF_plus_precision, vcl_FtF);
                 copy(Ft_y, vcl_Ft_y_t);
                 viennacl::backend::finish(); 
             }
 
             {
                 COUNTER("gpu-calc");
-                // calculate
-                lu_factorize(vcl_FtF);
-                lu_substitute(vcl_FtF, vcl_Ft_y_t);
+                // update FtF
+                viennacl::vector<float_type> new_diag = viennacl::diag(vcl_FtF) + viennacl::scalar_vector<float_type>(num_feat(), beta_precision - prev_beta_precision);
+                viennacl::diag(vcl_FtF) = new_diag;
+
+                // update llt(FtF)
+                viennacl::matrix<float_type> vcl_FtF_llt(vcl_FtF);
+                viennacl::linalg::lu_factorize(vcl_FtF_llt);
+
+                // compute beta() inplace
+                viennacl::linalg::lu_substitute(vcl_FtF_llt, vcl_Ft_y_t);
                 viennacl::backend::finish(); 
             }
 

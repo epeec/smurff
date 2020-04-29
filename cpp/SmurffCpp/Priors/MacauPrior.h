@@ -2,7 +2,8 @@
 
 #include <memory>
 
-#include <SmurffCpp/Types.h>
+#include <viennacl/matrix.hpp>
+
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Priors/NormalPrior.h>
@@ -30,6 +31,10 @@ public:
    Matrix Ft_y;                // num_latent x num_feat -- RHS
    Matrix BtB;                 // num_latent x num_latent
 
+   // gpu versions
+   viennacl::matrix<float_type> vcl_FtF;    // num_feat x num_feat
+   viennacl::matrix<float_type> vcl_Ft_y_t; // num_feat x num_latent
+
    int blockcg_iter;
    
    double beta_precision_mu0; // Hyper-prior for beta_precision
@@ -37,10 +42,12 @@ public:
 
    std::shared_ptr<ISideInfo> Features;  // side information
    double beta_precision;
+   double prev_beta_precision;
    double tol = 1e-6;
    bool use_FtF;
    bool enable_beta_precision_sampling;
    bool throw_on_cholesky_error;
+   bool use_ViennaCL = true;
 
 public:
    MacauPrior(TrainSession &trainSession, uint32_t mode);
