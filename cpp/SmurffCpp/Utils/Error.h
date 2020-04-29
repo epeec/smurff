@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 
+#include <arrayfire.h>
 #include <Eigen/Core>
 
 template<typename Matrix>
@@ -17,6 +18,13 @@ inline void show_internal(const char *name, const Matrix& variable)
       std::cout << name << " (" << variable.rows() << "," << variable.cols() << ") =\n" << variable << std::endl << std::endl;
 }
 
+
+template<>
+inline void show_internal(const char *name, const af::array& arr)
+{
+   af::print(name, arr);
+
+}
 
 template<>
 inline void show_internal(const char *name, const double& variable)
