@@ -36,7 +36,6 @@ void MacauPrior::init()
        FtF_plus_precision.diagonal().array() += beta_precision;
 
        gpu_FtF = af::array(num_feat(), num_feat(), FtF_plus_precision.data());
-       gpu_Ft_y = af::array(num_feat(), num_latent(), af_type);
    }
 
    Uhat.resize(num_item(), num_latent());
@@ -73,8 +72,11 @@ void MacauPrior::update_prior()
     {
         // uses: BtB
         // writes: FtF
-            COUNTER("sample_beta_precision");
-            beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
+        COUNTER("sample_beta_precision");
+        beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
+        #ifdef COMPARE_CPU_GPU
+        FtF_plus_precision.diagonal().array() += beta_precision - prev_beta_precision;
+        #endif
     }
 
     {
@@ -89,20 +91,18 @@ void MacauPrior::update_prior()
 
 void MacauPrior::sample_beta()
 {
-    bool use_gpu = true;
     COUNTER("sample_beta");
     if (use_FtF)
     {
-        if (use_gpu)
-        {
             // uses: FtF, Ft_y,
             // writes: beta()
             // complexity: num_feat^3
 
             // update diagonal of FtD with new beta_precision
-            auto gpu_Ft_y = af::array(Ft_y.rows(), Ft_y.cols(), Ft_y.data());
+            af::array gpu_Ft_y = af::array(Ft_y.rows(), Ft_y.cols(), Ft_y.data());
             float_type update_beta = beta_precision - prev_beta_precision;
-            auto new_diag = af::diag(af::constant(num_feat(), update_beta), 0, false);
+            af::array new_diag = af::diag(af::constant(update_beta, num_feat()), 0, false);
+            gpu_FtF += new_diag;
 
             // update llt(FtF)
             af::array gpu_FtF_lu, gpu_FtF_pivot;
@@ -111,11 +111,13 @@ void MacauPrior::sample_beta()
 
             //copy back
             gpu_beta.host(beta().data());
-        }
-        else
-        {
-            beta() = FtF_plus_precision.llt().solve(Ft_y);
-        }
+
+        #ifdef COMPARE_CPU_GPU
+            // for verification
+            SHOW(beta());
+            Matrix cpu_beta = FtF_plus_precision.llt().solve(Ft_y);
+            SHOW(cpu_beta);
+        #endif
     }
 
     else

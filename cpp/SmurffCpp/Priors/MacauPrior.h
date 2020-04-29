@@ -31,7 +31,6 @@ public:
 
    // gpu versions
    af::array gpu_FtF;    // num_feat x num_feat
-   af::array gpu_Ft_y; // num_feat x num_latent
 
    int blockcg_iter;
    

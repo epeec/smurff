@@ -25,6 +25,7 @@ namespace test {
 // expected results
 static void printActualResults(int nr, double actualRmseAvg, const std::vector<smurff::ResultItem> &actualResults) {
 
+#if 0
   static const char *fname = "TestsSmurff_ExpectedResults.h";
   static bool cleanup = true;
 
@@ -52,10 +53,10 @@ static void printActualResults(int nr, double actualRmseAvg, const std::vector<s
   os << "      }\n"
      << "  }\n"
      << "},\n";
+#endif
 }
 
-#define PRINT_ACTUAL_RESULTS(nr)
-//#define PRINT_ACTUAL_RESULTS(nr) printActualResults(nr, actualRmseAvg, actualResults);
+#define PRINT_ACTUAL_RESULTS(nr) printActualResults(nr, actualRmseAvg, actualResults);
 
 struct ExpectedResult {
   double rmseAvg;
@@ -69,7 +70,7 @@ std::map<int, ExpectedResult> expectedResults = {
 // result comparison
 void checkValue(double actualValue, double expectedValue, double epsilon)
 {
-#ifdef _OPENMP
+#if 1
    double abs_max = std::max(std::abs(actualValue), std::abs(expectedValue));
 
    if (abs_max > 0)

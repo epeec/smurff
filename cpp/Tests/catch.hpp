@@ -5237,7 +5237,7 @@ namespace Catch {
         WarnAbout::What warnings = WarnAbout::Nothing;
         ShowDurations::OrNot showDurations = ShowDurations::DefaultForReporter;
         RunTests::InWhatOrder runOrder = RunTests::InDeclarationOrder;
-        UseColour::YesOrNo useColour = UseColour::Auto;
+        UseColour::YesOrNo useColour = UseColour::No;
         WaitForKeypress::When waitForKeypress = WaitForKeypress::Never;
 
         std::string outputFilename;
