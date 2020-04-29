@@ -89,8 +89,8 @@ macro(configure_mkl)
   message(STATUS MKL: ${MKL_LIBRARIES} )
 endmacro(configure_mkl)
 
-macro(configure_eigen_viennacl)
-  message ("Dependency check for Eigen and ViennaCL...")
+macro(configure_eigen)
+  message ("Dependency check for Eigen...")
   
   if(DEFINED ENV{SMURFF_INCLUDE_DIRS})
     SET(EIGEN3_INCLUDE_DIR $ENV{SMURFF_INCLUDE_DIRS})
@@ -98,14 +98,11 @@ macro(configure_eigen_viennacl)
     find_package(Eigen3 REQUIRED)
   endif()
 
-  find_package(ViennaCL REQUIRED)
-  add_definitions(-DVIENNACL_WITH_EIGEN)
-  
-  SET(SMURFF_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR} ${VIENNACL_INCLUDE_DIR})
+  SET(SMURFF_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
 
   include_directories(${SMURFF_INCLUDE_DIRS})
 
-  message(STATUS "Eigen/ViennaCL include dirs: ${SMURFF_INCLUDE_DIRS}")
+  message(STATUS "Eigen include dirs: ${SMURFF_INCLUDE_DIRS}")
 endmacro(configure_eigen_viennacl)
 
 macro(configure_highfive)
