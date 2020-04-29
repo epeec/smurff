@@ -28,11 +28,15 @@ void perf_data_init()
 }
 
 void perf_data_print() {
+    TotalsCounter sum_all_threads;
     int threadid = 0;
     for(auto &p : perf_data)
     {
         p.print(threadid++);
+        sum_all_threads += p;
     }
+
+    sum_all_threads.print(-1);
 }
 
 Counter::Counter(std::string name)
@@ -90,11 +94,21 @@ std::string Counter::as_string() const
 
 TotalsCounter::TotalsCounter(int p) : procid(p) {}
 
+void TotalsCounter::operator+=(const TotalsCounter &other)
+{
+    for(auto &t : other.data) data[t.first] += t.second;
+}
+
 void TotalsCounter::print(int threadid) const {
     if (data.empty()) return;
     char hostname[1024];
     gethostname(hostname, 1024);
-    std::cout << "\nTotals on " << hostname << " (" << procid << ") / thread " << threadid << ":\n";
+    std::cout << "\nTotals on " << hostname << " (" << procid << ") / ";
+    if (threadid < 0)
+        std::cout << "sum of all threads\n";
+    else
+        std::cout << "thread " << threadid << ":\n";
+
     const auto total = data.find("main");
     for(auto &t : data)
         if (total != data.end())

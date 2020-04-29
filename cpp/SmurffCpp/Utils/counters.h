@@ -41,6 +41,8 @@ struct TotalsCounter {
         //c-tor starts PAPI
         TotalsCounter(int = 0);
 
+        void operator+=(const TotalsCounter &other);
+
         //prints results
         void print(int) const;
 
