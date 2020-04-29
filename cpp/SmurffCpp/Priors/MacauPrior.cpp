@@ -7,6 +7,8 @@
 
 #include <ios>
 
+#define COMPARE_CPU_GPU
+
 namespace smurff {
 
 MacauPrior::MacauPrior(TrainSession &trainSession, uint32_t mode)
@@ -114,9 +116,13 @@ void MacauPrior::sample_beta()
 
         #ifdef COMPARE_CPU_GPU
             // for verification
-            SHOW(beta());
+            SHOW(beta().norm());
             Matrix cpu_beta = FtF_plus_precision.llt().solve(Ft_y);
-            SHOW(cpu_beta);
+            SHOW(cpu_beta.norm());
+            Matrix cpu_diff = (FtF_plus_precision * cpu_beta) - Ft_y;
+            SHOW(cpu_diff.norm());
+            Matrix gpu_diff = (FtF_plus_precision * beta()) - Ft_y;
+            SHOW(gpu_diff.norm());
         #endif
     }
 
