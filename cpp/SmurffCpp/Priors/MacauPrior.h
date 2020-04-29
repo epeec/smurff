@@ -2,7 +2,6 @@
 
 #include <memory>
 
-#include <viennacl/matrix.hpp>
 
 #include <SmurffCpp/Types.h>
 
@@ -25,15 +24,14 @@ public:
                                // num_latent x num_feat -- link matrix
    Matrix Uhat;                // num_latent x num_items
    Matrix FtF_plus_precision;  // num_feat   x num feat
-   Eigen::LLT<Matrix> FtF_llt; // num_feat   x num feat
    Matrix HyperU;              // num_latent x num_items
    Matrix HyperU2;             // num_latent x num_feat
    Matrix Ft_y;                // num_latent x num_feat -- RHS
    Matrix BtB;                 // num_latent x num_latent
 
    // gpu versions
-   viennacl::matrix<float_type> vcl_FtF;    // num_feat x num_feat
-   viennacl::matrix<float_type> vcl_Ft_y_t; // num_feat x num_latent
+   af::array gpu_FtF;    // num_feat x num_feat
+   af::array gpu_Ft_y; // num_feat x num_latent
 
    int blockcg_iter;
    

@@ -1,4 +1,3 @@
-#include <viennacl/linalg/lu.hpp>
 
 #include "MacauPrior.h"
 
@@ -35,14 +34,9 @@ void MacauPrior::init()
        FtF_plus_precision.resize(dim, dim);
        Features->At_mul_A(FtF_plus_precision);
        FtF_plus_precision.diagonal().array() += beta_precision;
-       FtF_llt = FtF_plus_precision.llt();
 
-       if (use_ViennaCL)
-       {
-           vcl_FtF.resize(num_feat(), num_feat());
-           vcl_Ft_y_t.resize(num_feat(), num_latent());
-           copy(FtF_plus_precision, vcl_FtF);
-       }
+       gpu_FtF = af::array(num_feat(), num_feat(), FtF_plus_precision.data());
+       gpu_Ft_y = af::array(num_feat(), num_latent(), af_type);
    }
 
    Uhat.resize(num_item(), num_latent());
@@ -78,18 +72,9 @@ void MacauPrior::update_prior()
     if (enable_beta_precision_sampling)
     {
         // uses: BtB
-        {
+        // writes: FtF
             COUNTER("sample_beta_precision");
             beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
-        }
-
-        // writes: FtF
-        if (use_FtF && !use_ViennaCL)
-        {
-            COUNTER("FtF llt");
-            FtF_plus_precision.diagonal().array() += beta_precision - prev_beta_precision;
-            FtF_llt = FtF_plus_precision.llt();
-        }
     }
 
     {
@@ -104,53 +89,38 @@ void MacauPrior::update_prior()
 
 void MacauPrior::sample_beta()
 {
+    bool use_gpu = true;
     COUNTER("sample_beta");
     if (use_FtF)
     {
-        // uses: FtF, Ft_y, 
-        // writes: beta()
-        // complexity: num_feat^3
-        if (use_ViennaCL)
+        if (use_gpu)
         {
-            {
-                COUNTER("cpu-gpu-copy");
-                //copy
-                copy(Ft_y, vcl_Ft_y_t);
-                viennacl::backend::finish(); 
-            }
+            // uses: FtF, Ft_y,
+            // writes: beta()
+            // complexity: num_feat^3
 
-            {
-                COUNTER("gpu-calc");
-                // update FtF
-                viennacl::vector<float_type> new_diag = viennacl::diag(vcl_FtF) + viennacl::scalar_vector<float_type>(num_feat(), beta_precision - prev_beta_precision);
-                viennacl::diag(vcl_FtF) = new_diag;
+            // update diagonal of FtD with new beta_precision
+            auto gpu_Ft_y = af::array(Ft_y.rows(), Ft_y.cols(), Ft_y.data());
+            float_type update_beta = beta_precision - prev_beta_precision;
+            auto new_diag = af::diag(af::constant(num_feat(), update_beta), 0, false);
 
-                // update llt(FtF)
-                viennacl::matrix<float_type> vcl_FtF_llt(vcl_FtF);
-                viennacl::linalg::lu_factorize(vcl_FtF_llt);
+            // update llt(FtF)
+            af::array gpu_FtF_lu, gpu_FtF_pivot;
+            af::lu(gpu_FtF_lu, gpu_FtF_pivot, gpu_FtF);
+            af::array gpu_beta = af::solveLU(gpu_FtF_lu, gpu_FtF_pivot, gpu_Ft_y);
 
-                // compute beta() inplace
-                viennacl::linalg::lu_substitute(vcl_FtF_llt, vcl_Ft_y_t);
-                viennacl::backend::finish(); 
-            }
-
-            {
-                COUNTER("gpu-cpu-copy");
-                //copy back
-                copy(vcl_Ft_y_t, beta());
-                viennacl::backend::finish(); 
-            }
-
+            //copy back
+            gpu_beta.host(beta().data());
         }
         else
         {
-            beta() = FtF_llt.solve(Ft_y);
+            beta() = FtF_plus_precision.llt().solve(Ft_y);
         }
+    }
 
-    } 
     else
     {
-        // uses: Features, beta_precision, Ft_y, 
+        // uses: Features, beta_precision, Ft_y,
         // writes: beta
         // complexity: num_feat x num_feat x num_iter
         blockcg_iter = Features->solve_blockcg(beta(), beta_precision, Ft_y, tol, 32, 8, throw_on_cholesky_error);

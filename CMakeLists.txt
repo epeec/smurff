@@ -292,16 +292,6 @@ else()
   set(ALGEBRA_LIB_NAME LAPACK)
 endif()
 
-if(ENABLE_OPENCL)
-  find_package(OpenCL REQUIRED)
-  set(ALGEBRA_LIBS ${ALGEBRA_LIBS} ${OpenCL_LIBRARIES})
-  include_directories(${OpenCL_INCLUDE_DIRS})
-  add_definitions(-DVIENNACL_WITH_OPENCL)
-  if (APPLE)
-    add_definitions(-DCL_SILENCE_DEPRECATION)
-  endif()
-endif()
-
 FIND_PACKAGE(ArrayFire REQUIRED)
 INCLUDE_DIRECTORIES(${ArrayFire_INCLUDE_DIRS})
 
