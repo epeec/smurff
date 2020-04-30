@@ -70,7 +70,7 @@ std::map<int, ExpectedResult> expectedResults = {
 // result comparison
 void checkValue(double actualValue, double expectedValue, double epsilon)
 {
-#if 1
+#if defined(_OPENMP) || defined(USE_AF_CUDA) || defined(USE_AF_OPENCL)
    double abs_max = std::max(std::abs(actualValue), std::abs(expectedValue));
 
    if (abs_max > 0)

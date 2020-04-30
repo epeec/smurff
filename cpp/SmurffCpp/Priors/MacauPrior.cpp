@@ -7,7 +7,7 @@
 
 #include <ios>
 
-#define COMPARE_CPU_GPU
+//#define COMPARE_CPU_GPU
 
 namespace smurff {
 
@@ -35,9 +35,12 @@ void MacauPrior::init()
        std::uint64_t dim = num_feat();
        FtF_plus_precision.resize(dim, dim);
        Features->At_mul_A(FtF_plus_precision);
-       FtF_plus_precision.diagonal().array() += beta_precision;
 
        gpu_FtF = af::array(num_feat(), num_feat(), FtF_plus_precision.data());
+
+       #ifdef COMPARE_CPU_GPU
+           FtF_plus_precision.diagonal().array() += beta_precision;
+       #endif
    }
 
    Uhat.resize(num_item(), num_latent());
@@ -106,18 +109,39 @@ void MacauPrior::sample_beta()
             af::array new_diag = af::diag(af::constant(update_beta, num_feat()), 0, false);
             gpu_FtF += new_diag;
 
+        #ifdef COMPARE_CPU_GPU
+            SHOW(FtF_plus_precision.norm());
+            SHOW(af::norm(gpu_FtF));
+
+            SHOW(Ft_y.norm());
+            SHOW(af::norm(gpu_Ft_y));
+        #endif
+
+            /*
             // update llt(FtF)
             af::array gpu_FtF_lu, gpu_FtF_pivot;
             af::lu(gpu_FtF_lu, gpu_FtF_pivot, gpu_FtF);
             af::array gpu_beta = af::solveLU(gpu_FtF_lu, gpu_FtF_pivot, gpu_Ft_y);
+            */
+
+            af::array gpu_beta = af::solve(gpu_FtF, gpu_Ft_y);
 
             //copy back
             gpu_beta.host(beta().data());
 
         #ifdef COMPARE_CPU_GPU
+            SHOW(gpu_Ft_y);
+            SHOW(gpu_FtF);
+            af::array B1 = af::matmul(gpu_FtF, gpu_beta);
+            SHOW(B1);
+        #endif
+
+        #ifdef COMPARE_CPU_GPU
             // for verification
-            SHOW(beta().norm());
-            Matrix cpu_beta = FtF_plus_precision.llt().solve(Ft_y);
+            SHOW(af::norm(gpu_beta));
+            auto FtF_llt = FtF_plus_precision.llt();
+            SHOW(Matrix(FtF_llt.matrixU()));
+            Matrix cpu_beta = FtF_llt.solve(Ft_y);
             SHOW(cpu_beta.norm());
             Matrix cpu_diff = (FtF_plus_precision * cpu_beta) - Ft_y;
             SHOW(cpu_diff.norm());
