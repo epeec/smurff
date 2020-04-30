@@ -10,7 +10,6 @@ source:
 requirements:
   build:
     - {{ compiler("cxx") }}
-    - {{ compiler("fortran") }} # [not win]
     - cmake
   host:
     - mkl-devel

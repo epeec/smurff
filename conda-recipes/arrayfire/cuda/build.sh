@@ -19,5 +19,8 @@ cmake \
     ..
 make -j
 make install
+
 rm -r $PREFIX/share/ArrayFire/examples
 rm -r $PREFIX/LICENSES
+rm    $PREFIX/include/cublas_v2.h
+rm    $PREFIX/include/GL
