@@ -1,7 +1,7 @@
 #!/bin/sh
 mkdir build && cd build
 
-export CXXFLAGS=$(echo $CXXFLAGS | sed -e s/std=c++17/std=c++11/g)
+export CXXFLAGS=$(echo $CXXFLAGS | sed -e s/std=c++17/std=c++14/g)
 
 ln -s /usr/include/cublas_v2.h $PREFIX/include/
 ln -s /usr/include/GL $PREFIX/include/
@@ -14,6 +14,7 @@ cmake \
     -DAF_BUILD_CPU=OFF \
     -DAF_BUILD_CUDA=ON \
     -DAF_BUILD_OPENCL=OFF \
+    -DAF_BUILD_UNIFIED=OFF \
     -DAF_BUILD_EXAMPLES=OFF \
     -DBUILD_TESTING=OFF \
     ..
