@@ -104,21 +104,6 @@ void MacauPrior::sample_beta()
             af::array diag_mat = af::diag(diag_vec, 0, false);
             auto gpu_FtF_beta = gpu_FtF.local() + diag_mat;
 
-        #ifdef COMPARE_CPU_GPU
-
-            Matrix FtF_plus_precision = FtF;
-            FtF_plus_precision.diagonal().array() += beta_precision;
-
-            SHOW(FtF_plus_precision.norm());
-            SHOW(af::norm(gpu_FtF_beta));
-
-
-            SHOW(FtF.norm());
-            SHOW(af::norm(gpu_FtF.local()));
-
-            SHOW(Ft_y.norm());
-            SHOW(af::norm(gpu_Ft_y));
-        #endif
 
             /*
             // update llt(FtF)
@@ -133,22 +118,14 @@ void MacauPrior::sample_beta()
             gpu_beta.host(beta().data());
 
         #ifdef COMPARE_CPU_GPU
-            SHOW(gpu_Ft_y);
-            SHOW(gpu_FtF_beta);
-            af::array B1 = af::matmul(gpu_FtF_beta, gpu_beta);
-            SHOW(B1);
-        #endif
-
-        #ifdef COMPARE_CPU_GPU
             // for verification
-            SHOW(af::norm(gpu_beta));
+            Matrix FtF_plus_precision = FtF;
+            FtF_plus_precision.diagonal().array() += beta_precision;
             auto FtF_llt = FtF_plus_precision.llt();
-            SHOW(Matrix(FtF_llt.matrixU()));
             Matrix cpu_beta = FtF_llt.solve(Ft_y);
-            SHOW(cpu_beta.norm());
             Matrix cpu_diff = (FtF_plus_precision * cpu_beta) - Ft_y;
-            SHOW(cpu_diff.norm());
             Matrix gpu_diff = (FtF_plus_precision * beta()) - Ft_y;
+            SHOW(cpu_diff.norm());
             SHOW(gpu_diff.norm());
         #endif
         #else
