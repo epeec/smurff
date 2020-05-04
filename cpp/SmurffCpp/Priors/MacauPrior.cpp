@@ -32,15 +32,8 @@ void MacauPrior::init()
 
    if (use_FtF)
    {
-       std::uint64_t dim = num_feat();
-       FtF_plus_precision.resize(dim, dim);
-       Features->At_mul_A(FtF_plus_precision);
-
-       gpu_FtF = af::array(num_feat(), num_feat(), FtF_plus_precision.data());
-
-       #ifdef COMPARE_CPU_GPU
-           FtF_plus_precision.diagonal().array() += beta_precision;
-       #endif
+       FtF.resize(num_feat(), num_feat());
+       Features->At_mul_A(FtF);
    }
 
    Uhat.resize(num_item(), num_latent());
@@ -72,16 +65,12 @@ void MacauPrior::update_prior()
 
     sample_beta();
 
-    prev_beta_precision = beta_precision;
     if (enable_beta_precision_sampling)
     {
         // uses: BtB
         // writes: FtF
         COUNTER("sample_beta_precision");
         beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
-        #ifdef COMPARE_CPU_GPU
-        FtF_plus_precision.diagonal().array() += beta_precision - prev_beta_precision;
-        #endif
     }
 
     {
@@ -99,19 +88,33 @@ void MacauPrior::sample_beta()
     COUNTER("sample_beta");
     if (use_FtF)
     {
+        #if 1
             // uses: FtF, Ft_y,
             // writes: beta()
             // complexity: num_feat^3
 
-            // update diagonal of FtD with new beta_precision
+            // copy if needed
+            if (gpu_FtF.local().isempty())
+                gpu_FtF.local() = af::array(num_feat(), num_feat(), FtF.data());
+
             af::array gpu_Ft_y = af::array(Ft_y.rows(), Ft_y.cols(), Ft_y.data());
-            float_type update_beta = beta_precision - prev_beta_precision;
-            af::array new_diag = af::diag(af::constant(update_beta, num_feat()), 0, false);
-            gpu_FtF += new_diag;
+
+            // update diagonal of FtF with new beta_precision
+            af::array diag_vec = af::constant(beta_precision, num_feat());
+            af::array diag_mat = af::diag(diag_vec, 0, false);
+            auto gpu_FtF_beta = gpu_FtF.local() + diag_mat;
 
         #ifdef COMPARE_CPU_GPU
+
+            Matrix FtF_plus_precision = FtF;
+            FtF_plus_precision.diagonal().array() += beta_precision;
+
             SHOW(FtF_plus_precision.norm());
-            SHOW(af::norm(gpu_FtF));
+            SHOW(af::norm(gpu_FtF_beta));
+
+
+            SHOW(FtF.norm());
+            SHOW(af::norm(gpu_FtF.local()));
 
             SHOW(Ft_y.norm());
             SHOW(af::norm(gpu_Ft_y));
@@ -120,19 +123,19 @@ void MacauPrior::sample_beta()
             /*
             // update llt(FtF)
             af::array gpu_FtF_lu, gpu_FtF_pivot;
-            af::lu(gpu_FtF_lu, gpu_FtF_pivot, gpu_FtF);
+            af::lu(gpu_FtF_lu, gpu_FtF_pivot, gpu_FtF.local());
             af::array gpu_beta = af::solveLU(gpu_FtF_lu, gpu_FtF_pivot, gpu_Ft_y);
             */
 
-            af::array gpu_beta = af::solve(gpu_FtF, gpu_Ft_y);
+            af::array gpu_beta = af::solve(gpu_FtF_beta, gpu_Ft_y);
 
             //copy back
             gpu_beta.host(beta().data());
 
         #ifdef COMPARE_CPU_GPU
             SHOW(gpu_Ft_y);
-            SHOW(gpu_FtF);
-            af::array B1 = af::matmul(gpu_FtF, gpu_beta);
+            SHOW(gpu_FtF_beta);
+            af::array B1 = af::matmul(gpu_FtF_beta, gpu_beta);
             SHOW(B1);
         #endif
 
@@ -147,6 +150,12 @@ void MacauPrior::sample_beta()
             SHOW(cpu_diff.norm());
             Matrix gpu_diff = (FtF_plus_precision * beta()) - Ft_y;
             SHOW(gpu_diff.norm());
+        #endif
+        #else
+            Matrix FtF_plus_precision = FtF;
+            FtF_plus_precision.diagonal().array() += beta_precision;
+            auto FtF_llt = FtF_plus_precision.llt();
+            beta() = FtF_llt.solve(Ft_y);
         #endif
     }
 
@@ -230,7 +239,7 @@ std::ostream &MacauPrior::status(std::ostream &os, std::string indent) const
    os << indent << "mu           = " <<  mu() << std::endl;
    os << indent << "Uhat mean    = " <<  Uhat.colwise().mean() << std::endl;
    os << indent << "blockcg iter = " << blockcg_iter << std::endl;
-   os << indent << "FtF_plus_prec= " << FtF_plus_precision.norm() << std::endl;
+   os << indent << "FtF .        = " << FtF.norm() << std::endl;
    os << indent << "HyperU       = " << HyperU.norm() << std::endl;
    os << indent << "HyperU2      = " << HyperU2.norm() << std::endl;
    os << indent << "Beta         = " << beta().norm() << std::endl;

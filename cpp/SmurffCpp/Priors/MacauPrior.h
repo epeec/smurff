@@ -21,16 +21,16 @@ class MacauPrior : public NormalPrior
 public:
    Matrix &beta() { return model().getLinkMatrix(getMode()); }
    const Matrix &beta() const { return model().getLinkMatrix(getMode()); }
-                               // num_latent x num_feat -- link matrix
-   Matrix Uhat;                // num_latent x num_items
-   Matrix FtF_plus_precision;  // num_feat   x num feat
-   Matrix HyperU;              // num_latent x num_items
-   Matrix HyperU2;             // num_latent x num_feat
-   Matrix Ft_y;                // num_latent x num_feat -- RHS
-   Matrix BtB;                 // num_latent x num_latent
+                   // num_latent x num_feat -- link matrix
+   Matrix Uhat;    // num_latent x num_items
+   Matrix FtF;     // num_feat   x num feat
+   Matrix HyperU;  // num_latent x num_items
+   Matrix HyperU2; // num_latent x num_feat
+   Matrix Ft_y;    // num_latent x num_feat -- RHS
+   Matrix BtB;     // num_latent x num_latent
 
    // gpu versions
-   af::array gpu_FtF;    // num_feat x num_feat
+   thread_vector<af::array> gpu_FtF;    // num_feat x num_feat
 
    int blockcg_iter;
    
@@ -38,8 +38,7 @@ public:
    double beta_precision_nu0; // Hyper-prior for beta_precision
 
    std::shared_ptr<ISideInfo> Features;  // side information
-   double beta_precision;
-   double prev_beta_precision;
+   float_type beta_precision;
    double tol = 1e-6;
    bool use_FtF;
    bool enable_beta_precision_sampling;
