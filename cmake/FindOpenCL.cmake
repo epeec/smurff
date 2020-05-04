@@ -40,7 +40,9 @@ if(ENV_OPENCLROOT)
     if(CMAKE_SIZEOF_VOID_P EQUAL 4)
       set(OPENCL_LIB_SEARCH_PATH
           "${OPENCL_LIB_SEARCH_PATH}"
-          "${ENV_OPENCLROOT}/lib/x86")
+          "${ENV_OPENCLROOT}/lib/x86"
+          "${ENV_OPENCLROOT}/lib64"
+          )
     else(CMAKE_SIZEOF_VOID_P EQUAL 4)
       set(OPENCL_LIB_SEARCH_PATH
           "${OPENCL_LIB_SEARCH_PATH}"
