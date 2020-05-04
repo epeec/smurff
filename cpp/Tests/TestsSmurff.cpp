@@ -445,6 +445,7 @@ TEST_CASE("train_dense_3d_tensor_test_sparse_3d_tensor_spikeandslab_spikeandslab
 
 //=================================================================
 
+#if 0
 // not sure if this test produces correct results
 
 TEST_CASE("train_dense_3d_tensor_test_sparse_3d_tensor_macau_normal_row_dense_side_info_none",
@@ -464,6 +465,7 @@ TEST_CASE("train_dense_3d_tensor_test_sparse_3d_tensor_macauone_normal_row_dense
       .addSideInfo(0, rowSideDenseMatrix3d)
       .runAndCheck(2280);
 }
+#endif
 
 } // namespace test
 } // namespace smurff
