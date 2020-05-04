@@ -97,22 +97,31 @@ void MacauPrior::sample_beta()
             if (gpu_FtF.local().isempty())
                 gpu_FtF.local() = af::array(num_feat(), num_feat(), FtF.data());
 
-            af::array gpu_Ft_y = af::array(Ft_y.rows(), Ft_y.cols(), Ft_y.data());
+            af::array gpu_Ft_y = af::array(Ft_y.cols(), Ft_y.rows(), Ft_y.data());
+
+            //SHOW(FtF.norm());
+            //SHOW(af::norm(gpu_FtF.local()));
+            //SHOW(Ft_y.norm());
+            //SHOW(af::norm(gpu_Ft_y));
 
             // update diagonal of FtF with new beta_precision
             af::array diag_vec = af::constant(beta_precision, num_feat());
             af::array diag_mat = af::diag(diag_vec, 0, false);
             auto gpu_FtF_beta = gpu_FtF.local() + diag_mat;
+            //SHOW(af::norm(gpu_FtF_beta));
 
 
             /*
             // update llt(FtF)
             af::array gpu_FtF_lu, gpu_FtF_pivot;
             af::lu(gpu_FtF_lu, gpu_FtF_pivot, gpu_FtF.local());
-            af::array gpu_beta = af::solveLU(gpu_FtF_lu, gpu_FtF_pivot, gpu_Ft_y);
+            af::array gpu_beta = af::solveLU(gpu_FtF_lu, gpu_FtF_pivot, gpu_Ft_y.T());
             */
 
-            af::array gpu_beta = af::solve(gpu_FtF_beta, gpu_Ft_y);
+            af::array gpu_beta = af::solve(gpu_FtF_beta, gpu_Ft_y.T()).T();
+            //af::array gpu_Ft_y_check = af::matmul(gpu_FtF_beta, gpu_beta.T());
+            //SHOW(af::norm(gpu_Ft_y_check));
+            //SHOW(af::norm(gpu_beta));
 
             //copy back
             gpu_beta.host(beta().data());
@@ -121,10 +130,13 @@ void MacauPrior::sample_beta()
             // for verification
             Matrix FtF_plus_precision = FtF;
             FtF_plus_precision.diagonal().array() += beta_precision;
+            SHOW(FtF_plus_precision.norm());
             auto FtF_llt = FtF_plus_precision.llt();
             Matrix cpu_beta = FtF_llt.solve(Ft_y);
             Matrix cpu_diff = (FtF_plus_precision * cpu_beta) - Ft_y;
             Matrix gpu_diff = (FtF_plus_precision * beta()) - Ft_y;
+            SHOW(beta().norm());
+            SHOW(cpu_beta.norm());
             SHOW(cpu_diff.norm());
             SHOW(gpu_diff.norm());
         #endif
