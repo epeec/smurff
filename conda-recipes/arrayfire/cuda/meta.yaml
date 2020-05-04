@@ -11,8 +11,6 @@ requirements:
     - {{ compiler("cxx") }}
     - cmake
   host:
-    - mkl-devel
-    - fftw
     - boost
     - cudnn
   run:
