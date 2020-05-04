@@ -91,6 +91,7 @@ setup(
     name = 'smurff',
     packages = find_packages('src'),
     package_dir={'':'src'},
+    scripts={'src/py_smurff'},
     version = git_describe_version(),
     url = "http://github.com/ExaScience/smurff",
     ext_modules=[CMakeExtension('smurff/wrapper', '../..', extra_cmake_args, extra_build_args)],
