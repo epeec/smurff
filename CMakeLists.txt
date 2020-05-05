@@ -6,15 +6,17 @@ MESSAGE("smurff")
 
 # OPTIONS
 
-OPTION(ENABLE_OPENBLAS "Look only for OPENBLAS library" OFF)
-OPTION(ENABLE_MKL "Look only for MKL library" OFF)
-OPTION(ENABLE_OPENCL "Enable OpenCL acceleration" OFF)
+SET(ALGEBRA_LIB_NAME "LAPACKE" CACHE STRING "BLAS/LaPACK Library")
+SET_PROPERTY(CACHE ALGEBRA_LIB_NAME PROPERTY STRINGS MKL LAPACKE OPENBLAS)
+
+SET(ACCEL_BACKEND "NONE" CACHE STRING "Acceleration Backend Library")
+SET_PROPERTY(CACHE ACCEL_BACKEND PROPERTY STRINGS NONE CUDA OPENCL)
+
+SET(ACCEL_FRONTEND "NONE" CACHE STRING "Acceleration Frontend Library")
+SET_PROPERTY(CACHE ACCEL_FRONTEND PROPERTY STRINGS NONE VIENNACL ARRAYFIRE)
 
 OPTION(ENABLE_PROFILING "Enable performance counters" OFF)
 OPTION(ENABLE_ASAN "Enable address sanitizer in Debug mode" OFF)
-
-OPTION(ENABLE_VERBOSE_COMPILER_LOG "Enable verbose compilation log" OFF)
-OPTION(ENABLE_VERBOSE_LINKER_LOG "Enable verbose linker log" OFF)
 
 OPTION(ENABLE_BOOST "Enable usage of Boost for program options" ON)
 
@@ -31,63 +33,13 @@ MESSAGE( STATUS "CMAKE_VERSION: " ${CMAKE_VERSION} )
 MESSAGE( STATUS "CMAKE_SYSTEM_NAME: " ${CMAKE_SYSTEM_NAME} )
 # only the version part of CMAKE_SYSTEM
 MESSAGE( STATUS "CMAKE_SYSTEM_VERSION: " ${CMAKE_SYSTEM_VERSION} )
-# the processor name (e.g. "Intel(R) Pentium(R) M processor 2.00GHz")
-MESSAGE( STATUS "CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR} )
 
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g -fstrict-aliasing")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -g -fstrict-aliasing")
-
-# Add new build types
-SET(CMAKE_CXX_FLAGS_RELNOOPENMP
-    "${GCC_RELEASE_FLAGS}"
-    CACHE STRING "Flags used by the C++ compiler for release-without-OpenMP builds."
-    )
-SET(CMAKE_C_FLAGS_RELNOOPENMP
-    "${GCC_RELEASE_FLAGS}"
-    CACHE STRING "Flags used by the C compiler for release-without-OpenMP builds."
-    )
-SET(CMAKE_EXE_LINKER_FLAGS_RELNOOPENMP
-    ""
-    CACHE STRING "Flags used for linking binaries for release-without-OpenMP builds."
-    )
-SET(CMAKE_SHARED_LINKER_FLAGS_RELNOOPENMP
-    ""
-    CACHE STRING "Flags used by the shared libraries for release-without-OpenMP builds."
-    )
-MARK_AS_ADVANCED(
-    CMAKE_CXX_FLAGS_RELNOOPENMP
-    CMAKE_C_FLAGS_RELNOOPENMP
-    CMAKE_EXE_LINKER_FLAGS_RELNOOPENMP
-    CMAKE_SHARED_LINKER_FLAGS_RELNOOPENMP )
-
-# FETCH OS
-
-message("Fetching os and compiler ...")
-
-#Fetch OS state and mixture thereof, like cygwin(unix+windows), OSX(unix+apple)
-if (UNIX)
-  MESSAGE( STATUS "OS: Unix system")
-endif()
-if (WIN32)
-  MESSAGE( STATUS "OS: Windows system" )
-endif()
-if (APPLE)
-  MESSAGE( STATUS "OS: Apple system")
-endif()
-if (MINGW)
-  MESSAGE( STATUS "Compiler is a MINGW variant")
-endif()
-if (CYGWIN)
-  MESSAGE( STATUS "Compiler is a CYGWIN variant")
-endif()
-if (BORLAND)
-  MESSAGE( STATUS "Compiler is a BORLAND variant")
-endif()
-if (CMAKE_COMPILER_IS_GNUCC)
-  MESSAGE( STATUS "Compiler is a gcc variant")
-endif()
-
-# FETCH COMPILER
+# Add new build type: Release w/o OpenMP (RelNoOpenMP)
+SET(CMAKE_CXX_FLAGS_RELNOOPENMP "${GCC_RELEASE_FLAGS}" CACHE STRING "Flags used by the C++ compiler for release-without-OpenMP builds.")
+SET(CMAKE_C_FLAGS_RELNOOPENMP "${GCC_RELEASE_FLAGS}" CACHE STRING "Flags used by the C compiler for release-without-OpenMP builds.")
+SET(CMAKE_EXE_LINKER_FLAGS_RELNOOPENMP "" CACHE STRING "Flags used for linking binaries for release-without-OpenMP builds.")
+SET(CMAKE_SHARED_LINKER_FLAGS_RELNOOPENMP "" CACHE STRING "Flags used by the shared libraries for release-without-OpenMP builds.")
+MARK_AS_ADVANCED( CMAKE_CXX_FLAGS_RELNOOPENMP CMAKE_C_FLAGS_RELNOOPENMP CMAKE_EXE_LINKER_FLAGS_RELNOOPENMP CMAKE_SHARED_LINKER_FLAGS_RELNOOPENMP )
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -96,123 +48,20 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # https://pybind11.readthedocs.io/en/stable/faq.html#someclass-declared-with-greater-visibility-than-the-type-of-its-field-someclass-member-wattributes
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-if (MSVC OR MSVC_IDE OR MSVC_VERSION OR MSVC60 OR MSVC70 OR MSVC71 OR MSVC80 OR MSVC90 OR MSVC10 OR MSVC11 OR MSVC12)
-   message( STATUS "Compiler is a Microsoft variant")
-   message( STATUS "MSVC: " ${MSVC} )
-   message( STATUS "MSVC_IDE: " ${MSVC_IDE} )
-   message( STATUS "MSVC_VERSION: " ${MSVC_VERSION} )
-   message( STATUS "MSVC60: " ${MSVC60} )
-   message( STATUS "MSVC70: " ${MSVC70} )
-   message( STATUS "MSVC71: " ${MSVC71} )
-   message( STATUS "MSVC80: " ${MSVC80} )
-   message( STATUS "MSVC90: " ${MSVC90} )
-   message( STATUS "MSVC10: " ${MSVC10} )
-   message( STATUS "MSVC11: " ${MSVC11} )
-   message( STATUS "MSVC12: " ${MSVC12} )
-
-   add_definitions (/W3)
-
-   #hide some irritating c++ unsafe function warnings
-   add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-   
-   add_definitions(-D_WINDOWS)
-
-   set (CMAKE_EXE_LINKER_FLAGS "/SAFESEH:NO")
-
-elseif (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
-   if(APPLE)
-      message(STATUS "   -- OSX: System root directory found at: ${CMAKE_OSX_SYSROOT}")
-      message(STATUS "   -- OSX: c compiler found at: ${CMAKE_C_COMPILER}")
-      message(STATUS "   -- OSX: c++ compiler found at: ${CMAKE_CXX_COMPILER}")
-
-      add_definitions(-DMAC_OSX)
-   endif()
-
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -Wno-parentheses -fPIC")
-   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas -fPIC")
+if (NOT MSVC)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -Wno-parentheses")
+   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas")
+   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g -fstrict-aliasing")
+   set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -g -fstrict-aliasing")
 
    if (${ENABLE_ASAN})
        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
        set (CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
    endif()
-
-else()
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor")
-   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unknown-pragmas")
 endif()
 
-# INIT VERSIONING
-
-message("Initializing versioning...")
-
-#get GIT commit count we can later use as patch level
-execute_process(
-  COMMAND git rev-list HEAD --count
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  RESULT_VARIABLE GIT_COMMIT_COUNT_ERROR
-  OUTPUT_VARIABLE GIT_COMMIT_COUNT
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-if(NOT "${GIT_COMMIT_COUNT_ERROR}" STREQUAL "0")
-   set(GIT_COMMIT_COUNT "Unknown")
-endif()
-
-message(STATUS "GIT commit count ${GIT_COMMIT_COUNT}")
-
-#get GIT commit SHA
-execute_process(
-  COMMAND git rev-parse HEAD
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  RESULT_VARIABLE GIT_COMMIT_ERROR
-  OUTPUT_VARIABLE GIT_COMMIT
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-if(NOT "${GIT_COMMIT_ERROR}" STREQUAL "0")
-   set(GIT_COMMIT "Unknown")
-endif()
-
-message(STATUS "GIT commit SHA ${GIT_COMMIT}")
-
-#get GIT branch
-execute_process(
-  COMMAND git name-rev --name-only HEAD
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  RESULT_VARIABLE GIT_BRANCH_ERROR
-  OUTPUT_VARIABLE GIT_BRANCH
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-if(NOT "${GIT_BRANCH_ERROR}" STREQUAL "0")
-   set(GIT_BRANCH "Unknown")
-endif()
-
-message(STATUS "GIT branch ${GIT_BRANCH}")
-
-#get GIT describe
-execute_process(
-  COMMAND git describe
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  RESULT_VARIABLE SMURFF_VERSION_ERROR
-  OUTPUT_VARIABLE SMURFF_VERSION
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-if(NOT "${SMURFF_VERSION_ERROR}" STREQUAL "0")
-   set(SMURFF_VERSION "Unknown")
-endif()
-
-message(STATUS "GIT describe ${SMURFF_VERSION}")
-
-string(REGEX REPLACE "-[^-]+$"
-    "" SMURFF_VERSION_CLEAN
-    ${SMURFF_VERSION})
-
-add_definitions(-DSMURFF_VERSION=\"${SMURFF_VERSION}\")
-
-message(STATUS "Cleaned version: ${SMURFF_VERSION_CLEAN}")
+include(cmake/InitGit.cmake)
+init_git()
 
 # CONFIGURE BUILD TYPE
 
@@ -238,30 +87,13 @@ if(NOT MSVC)
   endif()
 endif()
 
-# CONFIGURE LOGGING
-
-message(STATUS "Initializing logging options...")
-
-if (UNIX)
-    #set verbose output of cmake
-    if (${ENABLE_VERBOSE_COMPILER_LOG})
-        set(CMAKE_VERBOSE_MAKEFILE ON)
-    endif()
-
-    #enable make verbose linker log
-    if (${ENABLE_VERBOSE_LINKER_LOG})
-        SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -###" )
-    endif()
-endif()
-
 # CONFIGURE DEPENDENCIES
 
 message("Checking build dependencies...")
 
 #set additional search paths for cmake scripts
-
-add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
-message(STATUS "Using '${SMURFF_FLOAT_TYPE}' as main computing type")
+set (SCRIPT_DIR "${CMAKE_SOURCE_DIR}/cmake/")
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(cmake/DependenciesConfig.cmake)
 
 configure_highfive()
@@ -269,45 +101,20 @@ configure_boost()
 configure_eigen()
 configure_openmp()
 
+# MKL, OpenBLAS, ...
+include(cmake/ConfigureAlgebra.cmake)
+configure_algebra()
+
+include(cmake/ConfigureAccel.cmake)
+report_accel()
+configure_accel_backend() # OpenCL, CUDA or NONE
+configure_accel_frontend() # ArrayFire or ViennaCL
+
 if(ENABLE_MPI)
   configure_mpi()
 endif()
 
-set(ALGEBRA_LIB_FOUND OFF)
 
-if(${ENABLE_OPENBLAS})
-  if(${ENABLE_MKL})
-    message(FATAL_ERROR "You cannot both enable OpenBLAS and MKL")
-  endif()
-  configure_openblas()
-  set(ALGEBRA_LIBS ${BLAS_LIBRARIES})
-  set(ALGEBRA_LIB_NAME OPENBLAS)
-elseif(${ENABLE_MKL})
-  configure_mkl()
-  set(ALGEBRA_LIBS ${MKL_LIBRARIES})
-  set(ALGEBRA_LIB_NAME MKL)
-else()
-  configure_lapack()
-  set(ALGEBRA_LIBS ${LAPACKE_LIBRARIES} ${LAPACK_LIBRARIES})
-  set(ALGEBRA_LIB_NAME LAPACK)
-endif()
-
-FIND_PACKAGE(ArrayFire REQUIRED)
-INCLUDE_DIRECTORIES(${ArrayFire_INCLUDE_DIRS})
-
-if(ArrayFire_CUDA_FOUND)
-  set(ALGEBRA_LIBS ${ALGEBRA_LIBS} ArrayFire::afcuda)
-  add_definitions(-DUSE_AF)
-  add_definitions(-DUSE_AF_CUDA)
-elseif(ArrayFire_OpenCL_FOUND)
-  set(ALGEBRA_LIBS ${ALGEBRA_LIBS} ArrayFire::afopencl)
-  add_definitions(-DUSE_AF)
-  add_definitions(-DUSE_AF_OPENCL)
-else()
-  set(ALGEBRA_LIBS ${ALGEBRA_LIBS} ArrayFire::afcpu)
-  add_definitions(-DUSE_AF)
-  add_definitions(-DUSE_AF_CPU)
-endif()
 
 message(STATUS "Algebra libs: ${ALGEBRA_LIBS}")
 
@@ -315,6 +122,8 @@ if(${ENABLE_PROFILING})
     add_definitions(-DPROFILING)
 endif()
 
+add_definitions(-DSMURFF_FLOAT_TYPE=${SMURFF_FLOAT_TYPE})
+message(STATUS "Using '${SMURFF_FLOAT_TYPE}' as main computing type")
 
 # support for running "make test" (or alike)
 

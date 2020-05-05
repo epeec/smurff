@@ -88,10 +88,10 @@ void MacauPrior::sample_beta()
     COUNTER("sample_beta");
     if (use_FtF)
     {
-        #if 1
-            // uses: FtF, Ft_y,
-            // writes: beta()
-            // complexity: num_feat^3
+        // uses: FtF, Ft_y,
+        // writes: beta()
+        // complexity: num_feat^3
+        #ifdef USE_AF_CUDA
 
             // copy if needed
             if (gpu_FtF.local().isempty())
@@ -143,7 +143,7 @@ void MacauPrior::sample_beta()
         #else
             Matrix FtF_plus_precision = FtF;
             FtF_plus_precision.diagonal().array() += beta_precision;
-            auto FtF_llt = FtF_plus_precision.llt();
+            Eigen::LLT<Eigen::Ref<Matrix>> FtF_llt(FtF_plus_precision);
             beta() = FtF_llt.solve(Ft_y);
         #endif
     }
