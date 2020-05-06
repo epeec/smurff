@@ -21,7 +21,7 @@ OPTION(ENABLE_ASAN "Enable address sanitizer in Debug mode" OFF)
 OPTION(ENABLE_BOOST "Enable usage of Boost for program options" ON)
 
 OPTION(ENABLE_PYTHON "Enable Python Wrapper" ON)
-OPTION(ENABLE_MPI "Enable MPI Support" ON)
+OPTION(ENABLE_MPI "Enable MPI Support" OFF)
 
 SET(SMURFF_FLOAT_TYPE "double" CACHE STRING "Main compute type")
 
