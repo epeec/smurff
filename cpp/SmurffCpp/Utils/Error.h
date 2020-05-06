@@ -9,13 +9,6 @@
 
 #ifdef USE_ARRAYFIRE
 #include <arrayfire.h>
-
-template<>
-inline void show_internal(const char *name, const af::array& arr)
-{
-   af::print(name, arr);
-
-}
 #endif
 
 template<typename Matrix>
@@ -41,6 +34,15 @@ inline void show_internal(const char *name, const int& variable)
 {
    std::cout << name << " =\n" << variable << std::endl << std::endl;
 }
+
+#ifdef USE_ARRAYFIRE
+template<>
+inline void show_internal(const char *name, const af::array& arr)
+{
+   af::print(name, arr);
+
+}
+#endif
 
 
 #define SHOW(M) show_internal(#M, M);

@@ -1,0 +1,74 @@
+
+macro(init_git)
+
+message("Initializing versioning...")
+
+#get GIT commit count we can later use as patch level
+execute_process(
+  COMMAND git rev-list HEAD --count
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  RESULT_VARIABLE GIT_COMMIT_COUNT_ERROR
+  OUTPUT_VARIABLE GIT_COMMIT_COUNT
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if(NOT "${GIT_COMMIT_COUNT_ERROR}" STREQUAL "0")
+   set(GIT_COMMIT_COUNT "Unknown")
+endif()
+
+message(STATUS "GIT commit count ${GIT_COMMIT_COUNT}")
+
+#get GIT commit SHA
+execute_process(
+  COMMAND git rev-parse HEAD
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  RESULT_VARIABLE GIT_COMMIT_ERROR
+  OUTPUT_VARIABLE GIT_COMMIT
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if(NOT "${GIT_COMMIT_ERROR}" STREQUAL "0")
+   set(GIT_COMMIT "Unknown")
+endif()
+
+message(STATUS "GIT commit SHA ${GIT_COMMIT}")
+
+#get GIT branch
+execute_process(
+  COMMAND git name-rev --name-only HEAD
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  RESULT_VARIABLE GIT_BRANCH_ERROR
+  OUTPUT_VARIABLE GIT_BRANCH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if(NOT "${GIT_BRANCH_ERROR}" STREQUAL "0")
+   set(GIT_BRANCH "Unknown")
+endif()
+
+message(STATUS "GIT branch ${GIT_BRANCH}")
+
+#get GIT describe
+execute_process(
+  COMMAND git describe
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  RESULT_VARIABLE SMURFF_VERSION_ERROR
+  OUTPUT_VARIABLE SMURFF_VERSION
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if(NOT "${SMURFF_VERSION_ERROR}" STREQUAL "0")
+   set(SMURFF_VERSION "Unknown")
+endif()
+
+message(STATUS "GIT describe ${SMURFF_VERSION}")
+
+string(REGEX REPLACE "-[^-]+$"
+    "" SMURFF_VERSION_CLEAN
+    ${SMURFF_VERSION})
+
+add_definitions(-DSMURFF_VERSION=\"${SMURFF_VERSION}\")
+
+message(STATUS "Cleaned version: ${SMURFF_VERSION_CLEAN}")
+
+endmacro(init_git)
