@@ -9,11 +9,11 @@ MESSAGE("smurff")
 SET(ALGEBRA_LIB_NAME "LAPACKE" CACHE STRING "BLAS/LaPACK Library")
 SET_PROPERTY(CACHE ALGEBRA_LIB_NAME PROPERTY STRINGS MKL LAPACKE OPENBLAS)
 
-SET(ACCEL_BACKEND "NONE" CACHE STRING "Acceleration Backend Library")
-SET_PROPERTY(CACHE ACCEL_BACKEND PROPERTY STRINGS NONE CUDA OPENCL)
+SET(ACCEL_BACKEND "None" CACHE STRING "Acceleration Backend Library")
+SET_PROPERTY(CACHE ACCEL_BACKEND PROPERTY STRINGS None CUDA OpenCL)
 
-SET(ACCEL_FRONTEND "NONE" CACHE STRING "Acceleration Frontend Library")
-SET_PROPERTY(CACHE ACCEL_FRONTEND PROPERTY STRINGS NONE VIENNACL ARRAYFIRE)
+SET(ACCEL_FRONTEND "None" CACHE STRING "Acceleration Frontend Library")
+SET_PROPERTY(CACHE ACCEL_FRONTEND PROPERTY STRINGS None ViennaCL ArrayFire)
 
 OPTION(ENABLE_PROFILING "Enable performance counters" OFF)
 OPTION(ENABLE_ASAN "Enable address sanitizer in Debug mode" OFF)
@@ -107,7 +107,7 @@ configure_algebra()
 
 include(cmake/ConfigureAccel.cmake)
 report_accel()
-configure_accel_backend() # OpenCL, CUDA or NONE
+configure_accel_backend() # OpenCL, CUDA or None
 configure_accel_frontend() # ArrayFire or ViennaCL
 
 if(ENABLE_MPI)
