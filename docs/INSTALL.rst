@@ -48,7 +48,7 @@ Run CMake:
 
     # checkout and install Smurff
     git clone https://github.com/ExaScience/smurff.git
-    cd smurff/lib/smurff-cpp/
+    cd smurff/cpp/
     mkdir build
     cd build
     cmake ../cmake -DENABLE_OPENBLAS=ON -DCMAKE_BUILD_TYPE=Debug
@@ -203,7 +203,7 @@ Execute the following commands from command prompt:
 ::
 
     git clone https://github.com/ExaScience/smurff.git
-    cd smurff\lib\smurff-cpp\cmake
+    cd smurff\cpp\cmake
     mkdir build
     cd build
     cmake ../ -G "Visual Studio 14 2015 Win64" -DENABLE_OPENBLAS=ON -DENABLE_VERBOSE_COMPILER_LOG=ON

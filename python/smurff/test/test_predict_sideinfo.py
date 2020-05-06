@@ -23,14 +23,14 @@ class TestPredictSession(unittest.TestCase):
         nmodes = len(self.Ytrain.shape)
         priors = ['normal'] * nmodes
 
-        session = smurff.TrainSession(priors = priors, num_latent=32,
+        trainSession = smurff.TrainSession(priors = priors, num_latent=32,
                 burnin=10, nsamples=15, verbose=verbose,
-                save_freq = 1)
+                save_freq = 1, save_name=smurff.helper.temp_savename())
 
-        session.addTrainAndTest(self.Ytrain, self.Ytest)
-        session.addSideInfo(0, self.side_info, direct=True)
-        session.run()
-        return session
+        trainSession.addTrainAndTest(self.Ytrain, self.Ytest)
+        trainSession.addSideInfo(0, self.side_info, direct=True)
+        trainSession.run()
+        return trainSession
 
     def test_simple(self):
         train_session = self.run_train_session()

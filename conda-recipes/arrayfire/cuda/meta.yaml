@@ -1,0 +1,23 @@
+package:
+  name: arrayfire-cuda
+  version: "3.7.1"
+
+source:
+    git_url: https://github.com/arrayfire/arrayfire
+    git_rev: v3.7.1
+
+requirements:
+  build:
+    - {{ compiler("cxx") }}
+    - cmake
+  host:
+    - boost
+    - cudnn
+  run:
+    - cudatoolkit
+
+
+about:
+  home: http://arrayfire.org/
+  license: Open Source
+  summary: 'ArrayFire is a high performance software library for parallel computing with an easy-to-use API. Its array based function set makes parallel programming more accessible.'
