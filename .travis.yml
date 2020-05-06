@@ -12,19 +12,9 @@ env:
 install:
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
   - mkdir -p "${DEPS_DIR}" && cd "${DEPS_DIR}"
-  - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      if [[ -z "$(ls -A ${DEPS_DIR}/cmake/bin)" ]]; then
-        CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-Linux-x86_64.tar.gz"
-        mkdir -p cmake && travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar --strip-components=1 -xz -C cmake
-      fi
-      export PATH="${DEPS_DIR}/cmake/bin:${PATH}"
-      export OMP_NUM_THREADS=1
-    fi
   - wget -q https://arrayfire.s3.amazonaws.com/3.6.1/ArrayFire-v3.6.1_Linux_x86_64.sh
   - sudo chmod +x ArrayFire-v*_Linux_x86_64.sh
   - sudo ./ArrayFire-v*_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
-
 addons:
   apt:
     sources:
