@@ -39,7 +39,7 @@ macro(configure_accel_frontend)
     add_definitions(-DUSE_VIENNACL)
 
     if(${ACCEL_BACKEND} STREQUAL "CUDA")
-      add_definitions(-DVIENNACL_WITH_OPENCL)
+      add_definitions(-DVIENNACL_WITH_CUDA)
     elseif(${ACCEL_BACKEND} STREQUAL "OpenCL")
       add_definitions(-DVIENNACL_WITH_OPENCL)
     endif()
