@@ -6,7 +6,6 @@
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Priors/NormalPrior.h>
-
 #include <SmurffCpp/SideInfo/ISideInfo.h>
 
 namespace smurff {
@@ -31,7 +30,7 @@ public:
 
 #ifdef USE_ARRAYFIRE
    // gpu versions
-   thread_vector<af::array> gpu_FtF;    // num_feat x num_feat
+   af::array gpu_FtF;    // num_feat x num_feat
 #endif
 
    int blockcg_iter;

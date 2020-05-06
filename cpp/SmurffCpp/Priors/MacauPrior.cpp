@@ -91,30 +91,31 @@ void MacauPrior::sample_beta()
         // uses: FtF, Ft_y,
         // writes: beta()
         // complexity: num_feat^3
-        #ifdef USE_AF_CUDA
+        #ifdef USE_ARRAYFIRE
+            af::setDevice(0);
 
             // copy if needed
-            if (gpu_FtF.local().isempty())
-                gpu_FtF.local() = af::array(num_feat(), num_feat(), FtF.data());
+            if (gpu_FtF.isempty())
+                gpu_FtF = af::array(num_feat(), num_feat(), FtF.data());
 
             af::array gpu_Ft_y = af::array(Ft_y.cols(), Ft_y.rows(), Ft_y.data());
 
             //SHOW(FtF.norm());
-            //SHOW(af::norm(gpu_FtF.local()));
+            //SHOW(af::norm(gpu_FtF));
             //SHOW(Ft_y.norm());
             //SHOW(af::norm(gpu_Ft_y));
 
             // update diagonal of FtF with new beta_precision
             af::array diag_vec = af::constant(beta_precision, num_feat());
             af::array diag_mat = af::diag(diag_vec, 0, false);
-            auto gpu_FtF_beta = gpu_FtF.local() + diag_mat;
+            auto gpu_FtF_beta = gpu_FtF + diag_mat;
             //SHOW(af::norm(gpu_FtF_beta));
 
 
             /*
             // update llt(FtF)
             af::array gpu_FtF_lu, gpu_FtF_pivot;
-            af::lu(gpu_FtF_lu, gpu_FtF_pivot, gpu_FtF.local());
+            af::lu(gpu_FtF_lu, gpu_FtF_pivot, gpu_FtF);
             af::array gpu_beta = af::solveLU(gpu_FtF_lu, gpu_FtF_pivot, gpu_Ft_y.T());
             */
 
