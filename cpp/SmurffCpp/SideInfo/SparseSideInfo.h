@@ -34,7 +34,7 @@ public:
 
    void At_mul_A(Matrix& out) override;
 
-   Matrix A_mul_B(Matrix& A) override;
+   void A_mul_B(const Matrix& A, Matrix &out) override;
 
    int solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error = false) override;
 

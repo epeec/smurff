@@ -8,6 +8,7 @@ namespace smurff {
 DenseSideInfo::DenseSideInfo(const DataConfig &side_info)
 {
    m_side_info = side_info.getDenseMatrixData();
+   m_side_info_t = m_side_info.transpose();
 }
 
 int DenseSideInfo::cols() const
@@ -41,9 +42,9 @@ void DenseSideInfo::At_mul_A(Matrix& out)
    out = m_side_info.transpose() * m_side_info;
 }
 
-Matrix DenseSideInfo::A_mul_B(Matrix& A)
+void DenseSideInfo::A_mul_B(const Matrix& A, Matrix &out)
 {
-   return m_side_info.transpose() * A;
+   out = m_side_info_t * A;
 }
 
 int DenseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)

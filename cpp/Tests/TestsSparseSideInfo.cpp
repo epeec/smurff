@@ -46,7 +46,9 @@ TEST_CASE( "SparseSideInfo/A_mul_B", "[A_mul_B] for SparseSideInfo" )
         2.54, 0., 0., 0., 0., 2.44;
 
     Matrix Xt = X.transpose();
-    Matrix AB = si.A_mul_B(Xt).transpose();
+    Matrix AB;
+    si.A_mul_B(Xt, AB);
+    AB.transposeInPlace();
 
     REQUIRE( AB(0,0) == 0 );
     REQUIRE( AB(1,1) == 0 );

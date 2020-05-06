@@ -50,10 +50,10 @@ void SparseSideInfo::At_mul_A(Matrix& out)
     out = Ft * F;
 }
 
-Matrix SparseSideInfo::A_mul_B(Matrix& A)
+void SparseSideInfo::A_mul_B(const Matrix& A, Matrix &out)
 {
     COUNTER("A_mul_B");
-    return F.transpose() * A;
+    out = Ft * A;
 }
 
 int SparseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)

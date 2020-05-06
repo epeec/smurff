@@ -26,7 +26,7 @@ namespace smurff {
 
       virtual void At_mul_A(Matrix& out) = 0;
 
-      virtual Matrix A_mul_B(Matrix& A) = 0;
+      virtual void A_mul_B(const Matrix& A, Matrix &out) = 0;
 
       virtual int solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error = false) = 0;
 
