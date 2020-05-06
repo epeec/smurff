@@ -13,5 +13,5 @@ int get_thread_num();
 
 namespace opencl
 {
-    void init(int verbose, int device);
+    void init(int verbose, int device = 0);
 } // end namespace opencl

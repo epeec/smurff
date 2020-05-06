@@ -4,7 +4,9 @@
 
 #include <SmurffCpp/Utils/Error.h>
 
-#ifdef VIENNACL_WITH_OPENCL
+#if defined(USE_ARRAYFIRE)
+#include "arrayfire.h"
+#elif defined(VIENNACL_WITH_OPENCL)
 #include "viennacl/ocl/backend.hpp"
 #endif
 
@@ -75,36 +77,33 @@ namespace threads
 
 namespace opencl
 {
-    static int m_device = -1;
+    static int m_device;
 
     void init(int verbose, int device_idx)
     {
-        if (m_device < 0)
-        {
-
-    #ifdef VIENNACL_WITH_OPENCL
-        const std::vector<viennacl::ocl::device> devices = viennacl::ocl::platform().devices();
-        viennacl::ocl::setup_context(0, devices[device_idx]);
-        viennacl::ocl::switch_context(0);
-        if (verbose) {
-            std::cout << "Using OpenCL Device:\n" << devices[device_idx].info() << std::endl;
-        }
-    #endif
+#if defined(USE_ARRAYFIRE)
+            af::setDevice(device_idx);
+#elif defined(VIENNACL_WITH_OPENCL)
+            const std::vector<viennacl::ocl::device> devices = viennacl::ocl::platform().devices();
+            viennacl::ocl::setup_context(0, devices[device_idx]);
+            viennacl::ocl::switch_context(0);
+            if (verbose) {
+                std::cout << "Using OpenCL Device:\n" << devices[device_idx].info() << std::endl;
+            }
+#endif
 
         m_device = device_idx;
 
-        }
-        else if (m_device != device_idx)
-        {
-            THROWERROR("Cannot change OpenCL device")
-        }
 
-#ifdef VIENNACL_WITH_OPENCL
         if (verbose)
         {
+#if defined(USE_ARRAYFIRE)
+            af::info();
+#elif defined(VIENNACL_WITH_OPENCL)
             const std::vector<viennacl::ocl::device> devices = viennacl::ocl::platform().devices();
-            std::cout << "Using OpenCL Device:\n" << devices[m_device].info() << std::endl;
-        }
+            std::cout << "Using OpenCL Device:\n"
+                      << devices[m_device].info() << std::endl;
 #endif
+        }
     }
 } // namespace opencl
