@@ -8,6 +8,11 @@
 #include <functional>
 #include <random>
 
+#ifdef EIGEN_USE_MKL_ALL
+#include <mkl.h>
+#endif
+
+#include "SmurffCpp/Utils/counters.h"
 #include "SmurffCpp/Utils/ThreadVector.hpp"
 #include "SmurffCpp/Utils/omp_util.h"
 #include "SmurffCpp/Utils/gamma_distribution.hpp"
@@ -18,37 +23,20 @@
 
 namespace smurff {
 
-struct xorshift_rng
-{
-   typedef std::uint64_t result_type;
-
-   mutable result_type s[2]; // state
-
-   xorshift_rng(result_type _s = 1234) : s{_s, _s} {}
-
-   result_type operator()() const
-   {
-      result_type s1 = s[0];
-      const result_type s0 = s[1];
-      const result_type result = s0 + s1;
-      s[0] = s0;
-      s1 ^= s1 << 23;                          // a
-      s[1] = s1 ^ s0 ^ (s1 >> 18) ^ (s0 >> 5); // b, c
-      return result;
-   }
-   static constexpr result_type max() { return std::numeric_limits<result_type>::max(); }
-   static constexpr result_type min() { return std::numeric_limits<result_type>::min(); }
-};
-
 typedef std::mt19937 rng;
 typedef smurff::gamma_distribution<double> gamma_dist;
 typedef std::uniform_real_distribution<double> uniform_dist;
+typedef std::normal_distribution<double> normal_dist;
 
 /*
  *  Init functions
  */
  
 static thread_vector<rng> rngs;
+
+#ifdef EIGEN_USE_MKL_ALL
+static thread_vector<VSLStreamStatePtr> streams;
+#endif
 
 void init_bmrng() 
 {
@@ -59,10 +47,17 @@ void init_bmrng()
 
 void init_bmrng(int seed)
 {
-   std::vector<rng> v;
+   std::vector<rng> r;
    for (int i = 0; i < threads::get_max_threads(); i++)
-      v.push_back(rng(seed + i * 1999));
-   rngs.init(v);
+      r.push_back(rng(seed + i * 1999));
+   rngs.init(r);
+
+#ifdef EIGEN_USE_MKL_ALL
+   std::vector<VSLStreamStatePtr> s(threads::get_max_threads());
+   for (unsigned i = 0; i < s.size(); i++)
+      vslNewStream(&s.at(i), VSL_BRNG_MT19937, (seed + i * 1999));
+   streams.init(s);
+#endif
 }
 
 template <typename Distribution>
@@ -82,6 +77,10 @@ unsigned rand()
  
 static void rand_normal(float_type* x, long n) 
 {
+   COUNTER("rand_normal");
+#ifdef EIGEN_USE_MKL_ALL
+   vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,streams.local(),n,x,0.0,1.0);
+#else
    uniform_dist unif(-1.0, 1.0);
 
    for (long i = 0; i < n; i += 2) 
@@ -103,6 +102,7 @@ static void rand_normal(float_type* x, long n)
          x[i+1] = x2 * w;
       }
    }
+#endif
 }
 
 double rand_normal() 
