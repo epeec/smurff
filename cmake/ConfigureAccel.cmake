@@ -13,7 +13,7 @@ macro(configure_accel_backend)
     endif()
     include_directories(${OpenCL_INCLUDE_DIRS})
     set(ALGEBRA_LIBS ${ALGEBRA_LIBS} ${OPENCL_LIBRARIES})
-  elseif(NOT ${ACCEL_BACKEND} STREQUAL "NONE")
+  elseif(NOT ${ACCEL_BACKEND} STREQUAL "None")
     message(FATAL_ERROR "ACCEL_BACKEND should not be ${ACCEL_BACKEND}
     Valid options: CUDA, OpenCL, or None
     ")
@@ -44,7 +44,7 @@ macro(configure_accel_frontend)
       add_definitions(-DVIENNACL_WITH_OPENCL)
     endif()
 
-  elseif(NOT ${ACCEL_FRONTEND} STREQUAL "NONE")
+  elseif(NOT ${ACCEL_FRONTEND} STREQUAL "None")
     message(FATAL_ERROR "ACCEL_FRONTEND should not be ${ACCEL_FRONTEND}
     Valid options are: ArrayFire, ViennaCL or None
     ")
