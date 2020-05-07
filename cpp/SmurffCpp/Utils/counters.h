@@ -28,8 +28,8 @@ struct Counter {
 
     void operator+=(const Counter &other);
 
-    std::string as_string(const Counter &total) const;
-    std::string as_string() const;
+    std::string as_string(const Counter &total, bool hier) const;
+    std::string as_string(bool hier) const;
 };
 
 struct TotalsCounter {
@@ -44,14 +44,14 @@ struct TotalsCounter {
         void operator+=(const TotalsCounter &other);
 
         //prints results
-        void print(int) const;
+        void print(int, bool) const;
 
         Counter &operator[](const std::string &name) {
             return data[name];
         }
 };
 
-extern thread_vector<TotalsCounter> perf_data;
+extern thread_vector<TotalsCounter> hier_perf_data, flat_perf_data;
 
 void perf_data_init();
 void perf_data_print();

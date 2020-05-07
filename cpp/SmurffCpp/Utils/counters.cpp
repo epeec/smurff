@@ -19,24 +19,35 @@
 #include "SmurffCpp/Utils/omp_util.h"
 
 static thread_vector<Counter *> active_counters(0);
-thread_vector<TotalsCounter> perf_data;
+thread_vector<TotalsCounter> hier_perf_data, flat_perf_data;
 
 void perf_data_init()
 {
     active_counters.init();
-    perf_data.init();
+    hier_perf_data.init();
+    flat_perf_data.init();
 }
 
-void perf_data_print() {
+void perf_data_print(const thread_vector<TotalsCounter> &data, bool hier) {
+    std::string title = hier ? 
+        "\nHierarchical view:\n==================\n" :
+        "\nFlat view:\n==========\n";
+    std::cout << title;
     TotalsCounter sum_all_threads;
     int threadid = 0;
-    for(auto &p : perf_data)
+    for(auto &p : data)
     {
-        p.print(threadid++);
+        p.print(threadid++, hier);
         sum_all_threads += p;
     }
 
-    sum_all_threads.print(-1);
+    if (data.size() > 1)
+        sum_all_threads.print(-1, hier);
+}
+
+void perf_data_print() {
+    perf_data_print(hier_perf_data, true);
+    perf_data_print(flat_perf_data, false);
 }
 
 Counter::Counter(std::string name)
@@ -61,7 +72,8 @@ Counter::~Counter() {
     stop = tick();
     diff = stop - start;
 
-    perf_data.local()[fullname] += *this;
+    hier_perf_data.local()[fullname] += *this;
+    flat_perf_data.local()[name] += *this;
     active_counters.local() = parent;
 }
 
@@ -75,18 +87,20 @@ void Counter::operator+=(const Counter &other) {
     count += other.count;
 }
 
-std::string Counter::as_string(const Counter &total) const {
+std::string Counter::as_string(const Counter &total, bool hier) const {
     std::ostringstream os;
+    std::string n = hier ? fullname : name;
     int percent = round(100.0 * diff / (total.diff + 0.000001));
-    os << ">> " << fullname << ":\t" << std::fixed << std::setw(11)
+    os << ">> " << n << ":\t" << std::fixed << std::setw(11)
        << std::setprecision(4) << diff << "\t(" << percent << "%) in\t" << count << "\n";
     return os.str();
 }
 
-std::string Counter::as_string() const
+std::string Counter::as_string(bool hier) const
 {
     std::ostringstream os;
-    os << ">> " << fullname << ":\t" << std::fixed << std::setw(11)
+    std::string n = hier ? fullname : name;
+    os << ">> " << n << ":\t" << std::fixed << std::setw(11)
        << std::setprecision(4) << diff << " in\t" << count << "\n";
     return os.str();
 }
@@ -99,22 +113,23 @@ void TotalsCounter::operator+=(const TotalsCounter &other)
     for(auto &t : other.data) data[t.first] += t.second;
 }
 
-void TotalsCounter::print(int threadid) const {
+void TotalsCounter::print(int threadid, bool hier) const {
     if (data.empty()) return;
     char hostname[1024];
     gethostname(hostname, 1024);
     std::cout << "\nTotals on " << hostname << " (" << procid << ") / ";
     if (threadid < 0)
-        std::cout << "sum of all threads\n";
+        std::cout << "sum of all threads / ";
     else
-        std::cout << "thread " << threadid << ":\n";
+        std::cout << "thread " << threadid << " / ";
+    std::cout << (hier ? "hierarchical\n" : "flat\n");
 
     const auto total = data.find("main");
     for(auto &t : data)
         if (total != data.end())
-            std::cout << t.second.as_string(total->second);
+            std::cout << t.second.as_string(total->second, hier);
         else
-            std::cout << t.second.as_string();
+            std::cout << t.second.as_string(hier);
 }
 
 #endif // PROFILING
