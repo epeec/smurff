@@ -22,18 +22,17 @@ inline void show_internal(const char *name, const Matrix& variable)
 }
 
 
-template<>
-inline void show_internal(const char *name, const double& variable)
-{
+#define SHOW_SCALAR_IMPL(T) \
+template<> inline void show_internal(const char *name, const T& variable) \
+{ std::cout << name << " =\n" << variable << std::endl << std::endl; } 
 
-   std::cout << name << " =\n" << variable << std::endl << std::endl;
-}
+SHOW_SCALAR_IMPL(float)
+SHOW_SCALAR_IMPL(double)
+SHOW_SCALAR_IMPL(int)
+SHOW_SCALAR_IMPL(unsigned int)
+SHOW_SCALAR_IMPL(long)
+SHOW_SCALAR_IMPL(unsigned long)
 
-template<>
-inline void show_internal(const char *name, const int& variable)
-{
-   std::cout << name << " =\n" << variable << std::endl << std::endl;
-}
 
 #ifdef USE_ARRAYFIRE
 template<>
