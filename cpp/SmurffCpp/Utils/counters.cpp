@@ -87,24 +87,23 @@ void Counter::operator+=(const Counter &other) {
     count += other.count;
 }
 
-std::string Counter::as_string(const Counter &total, bool hier) const {
+std::string Counter::as_string(bool hier) const {
     std::ostringstream os;
     std::string n = hier ? fullname : name;
-    int percent = round(100.0 * diff / (total.diff + 0.000001));
-    os << ">> " << n << ":\t" << std::fixed << std::setw(11)
-       << std::setprecision(4) << diff << "\t(" << percent << "%) in\t" << count << "\n";
+    if (parent)
+    {
+        int percent = round(100.0 * diff / (parent->diff + 0.000001));
+        os << ">> " << n << ":\t" << std::fixed << std::setw(11)
+        << std::setprecision(4) << diff << "\t(" << percent << "%) in\t" << count << "\n";
+    }
+        else
+        {
+        os << ">> " << n << ":\t" << std::fixed << std::setw(11)
+        << std::setprecision(4) << diff << " in\t" << count << "\n";
+
+        }
     return os.str();
 }
-
-std::string Counter::as_string(bool hier) const
-{
-    std::ostringstream os;
-    std::string n = hier ? fullname : name;
-    os << ">> " << n << ":\t" << std::fixed << std::setw(11)
-       << std::setprecision(4) << diff << " in\t" << count << "\n";
-    return os.str();
-}
-
 
 TotalsCounter::TotalsCounter(int p) : procid(p) {}
 
@@ -124,12 +123,8 @@ void TotalsCounter::print(int threadid, bool hier) const {
         std::cout << "thread " << threadid << " / ";
     std::cout << (hier ? "hierarchical\n" : "flat\n");
 
-    const auto total = data.find("main");
     for(auto &t : data)
-        if (total != data.end())
-            std::cout << t.second.as_string(total->second, hier);
-        else
-            std::cout << t.second.as_string(hier);
+        std::cout << t.second.as_string(hier);
 }
 
 #endif // PROFILING
