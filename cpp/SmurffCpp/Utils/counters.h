@@ -28,6 +28,7 @@ struct Counter {
 
     void operator+=(const Counter &other);
 
+    std::string as_string(const Counter &total, bool hier) const;
     std::string as_string(bool hier) const;
 };
 

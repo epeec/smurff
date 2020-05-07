@@ -66,8 +66,6 @@ void TrainSession::init()
     //initialize random generator
     initRng();
 
-    //init performance counters
-    perf_data_init();
 
     //initialize test set
     m_pred.init();
