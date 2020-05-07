@@ -51,7 +51,7 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 if (NOT MSVC)
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wno-unknown-pragmas -Wnon-virtual-dtor -Wno-parentheses")
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wno-unknown-pragmas")
-   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}-fstrict-aliasing")
+   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fstrict-aliasing")
    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fstrict-aliasing")
 
    if (${ENABLE_ASAN})
