@@ -168,16 +168,24 @@ const Vector MacauPrior::fullMu(int n) const
 void MacauPrior::compute_Ft_y(Matrix& Ft_y)
 {
     COUNTER("compute Ft_y");
-   // Ft_y = (U .- mu + Normal(0, Lambda^-1)) * F + std::sqrt(beta_precision) * Normal(0, Lambda^-1)
-   // Ft_y is [ num_latent x num_feat ] matrix
+    // Ft_y = (U .- mu + Normal(0, Lambda^-1)) * F + std::sqrt(beta_precision) * Normal(0, Lambda^-1)
+    // Ft_y is [ num_latent x num_feat ] matrix
 
-   //HyperU: num_latent x num_item
-   HyperU = (U() + MvNormal(Lambda, num_item())).rowwise() - mu();
-   Features->A_mul_B(HyperU, Ft_y); // num_latent x num_feat
+        HyperU = (U() + MvNormal(Lambda, num_item())).rowwise() - mu();
+    {
+        COUNTER("part1");
 
-   //--  add beta_precision 
-   HyperU2 = MvNormal(Lambda, num_feat()); // num_latent x num_feat
-   Ft_y += std::sqrt(beta_precision) * HyperU2;
+        //HyperU: num_latent x num_item
+        Features->A_mul_B(HyperU, Ft_y); // num_latent x num_feat
+    }
+
+    {
+        COUNTER("part2");
+
+        //--  add beta_precision
+        HyperU2 = MvNormal(Lambda, num_feat()); // num_latent x num_feat
+        Ft_y += std::sqrt(beta_precision) * HyperU2;
+    }
 }
 
 void MacauPrior::addSideInfo(const std::shared_ptr<ISideInfo>& side, double bp, double to, bool di, bool sa, bool th)
