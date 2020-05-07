@@ -17,6 +17,7 @@
 
 #include "counters.h"
 #include "SmurffCpp/Utils/omp_util.h"
+#include "SmurffCpp/Utils/StringUtils.h"
 
 static thread_vector<Counter *> active_counters(0);
 thread_vector<TotalsCounter> hier_perf_data, flat_perf_data;
@@ -53,6 +54,12 @@ void perf_data_print() {
 Counter::Counter(std::string name)
     : name(name), diff(0), count(1), total_counter(false)
 {
+    if (name == "main")
+    {
+        //init performance counters
+        perf_data_init();
+    }
+
     parent = active_counters.local();
     active_counters.local() = this;
 
@@ -87,23 +94,24 @@ void Counter::operator+=(const Counter &other) {
     count += other.count;
 }
 
-std::string Counter::as_string(bool hier) const {
+std::string Counter::as_string(const Counter &total, bool hier) const {
     std::ostringstream os;
     std::string n = hier ? fullname : name;
-    if (parent)
-    {
-        int percent = round(100.0 * diff / (parent->diff + 0.000001));
-        os << ">> " << n << ":\t" << std::fixed << std::setw(11)
-        << std::setprecision(4) << diff << "\t(" << percent << "%) in\t" << count << "\n";
-    }
-        else
-        {
-        os << ">> " << n << ":\t" << std::fixed << std::setw(11)
-        << std::setprecision(4) << diff << " in\t" << count << "\n";
-
-        }
+    int percent = round(100.0 * diff / (total.diff + 0.000001));
+    os << ">> " << n << ":\t" << std::fixed << std::setw(11)
+       << std::setprecision(4) << diff << "\t(" << percent << "%) in\t" << count << "\n";
     return os.str();
 }
+
+std::string Counter::as_string(bool hier) const
+{
+    std::ostringstream os;
+    std::string n = hier ? fullname : name;
+    os << ">> " << n << ":\t" << std::fixed << std::setw(11)
+       << std::setprecision(4) << diff << " in\t" << count << "\n";
+    return os.str();
+}
+
 
 TotalsCounter::TotalsCounter(int p) : procid(p) {}
 
@@ -123,8 +131,18 @@ void TotalsCounter::print(int threadid, bool hier) const {
         std::cout << "thread " << threadid << " / ";
     std::cout << (hier ? "hierarchical\n" : "flat\n");
 
+    const auto total = data.find("main");
     for(auto &t : data)
-        std::cout << t.second.as_string(hier);
+    {
+        auto parent_name = t.first.substr(0, t.first.find_last_of("/"));
+        const auto parent = data.find(parent_name);
+        if (hier && parent != data.end())
+            std::cout << t.second.as_string(parent->second, hier);
+        else if (!hier && total != data.end())
+            std::cout << t.second.as_string(total->second, hier);
+        else
+            std::cout << t.second.as_string(hier);
+    }
 }
 
 #endif // PROFILING
