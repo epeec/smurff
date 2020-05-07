@@ -143,7 +143,6 @@ double rand_gamma(double shape, double scale)
 }
 
 
-//#define TEST_MVNORMAL
 
 Matrix WishartUnit(int m, int df)
 {
@@ -259,21 +258,21 @@ std::pair<Vector, Matrix> CondNormalWishart(const Matrix &U, const Vector &mu, c
    return CondNormalWishart(N, NS, NU, mu, kappa, T, nu);
 }
 
-// Normal(0, Lambda^-1) for nn columns
+// Normal(0, Lambda^-1) for num_samples rows
 Matrix MvNormal(const Matrix & Lambda, int num_samples)
 {
-   int ndims = Lambda.rows(); // Dimensionality 
+   int dimen = Lambda.rows(); // Dimensionality 
    Eigen::LLT<Matrix> chol(Lambda);
 
-   Matrix r(num_samples, ndims);
+   Matrix r(num_samples, dimen);
    rand_normal(r);
    Matrix ret = chol.matrixU().solve(r.transpose()).transpose();
 
 #ifdef TEST_MVNORMAL
-   std::cout << "MvNormal/2 {\n" << std::endl;
+   std::cout << "MvNormal/mean=0 {\n" << std::endl;
    std::cout << "  Lambda\n" << Lambda << std::endl;
-   std::cout << "  nrows\n" << nrows << std::endl;
-   std::cout << "  ret\n" << ret << std::endl;
+   std::cout << "  dimen\n" << dimen << std::endl;
+   //std::cout << "  ret\n" << ret << std::endl;
    std::cout << "}\n" << std::endl;
 #endif
 
@@ -281,20 +280,31 @@ Matrix MvNormal(const Matrix & Lambda, int num_samples)
 
 }
 
-Matrix MvNormal(const Matrix & Lambda, const Vector & mean, int num_samples)
+Matrix MvNormal(const Matrix & prec, const Vector & mean, int num_samples)
 {
-   Matrix r = MvNormal(Lambda, num_samples);
+   unsigned long dimen = mean.size();
+//#ifdef EIGEN_USE_MKL_ALL
+#if 0
+   //std::cout << "Using vdRngGaussianMV" <<std::endl;
+   Matrix r(num_samples, dimen);
+   auto status = vdRngGaussianMV(VSL_RNG_METHOD_GAUSSIANMV_BOXMULLER2, streams.local(), num_samples, r.data(), dimen, VSL_MATRIX_STORAGE_FULL, mean.data(), prec.data() );
+   THROWERROR_ASSERT(status == VSL_STATUS_OK);
+#else
+   //std::cout << "NOT using vdRngGaussianMV" <<std::endl;
+   Matrix r = MvNormal(prec, num_samples);
    r.rowwise() += mean;
-  
-#ifdef TEST_MVNORMAL
-   THROWERROR_ASSERT(r.rows() == nrows);
-   std::cout << "MvNormal/2 {\n" << std::endl;
-   std::cout << "  Lambda\n" << Lambda << std::endl;
-   std::cout << "  mean\n" << mean << std::endl;
-   std::cout << "  nrows\n" << nrows << std::endl;
-   std::cout << "  r\n" << r << std::endl;
-   std::cout << "}\n" << std::endl;
 #endif
+   Vector actual_mean = r.colwise().mean();
+   auto centered = r.rowwise() - actual_mean;
+   Matrix actual_cov = (centered.adjoint() * centered) / double(r.rows() - 1);
+
+   //std::cout << "MvNormal/2 {\n" << std::endl;
+   //SHOW(dimen);
+   //SHOW(mean);
+   //SHOW(actual_mean);
+   //SHOW(prec);
+   //SHOW(actual_cov);
+   //std::cout << "}\n" << std::endl;
 
    return r;
 }
