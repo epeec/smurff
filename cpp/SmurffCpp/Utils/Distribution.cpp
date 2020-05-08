@@ -77,7 +77,6 @@ unsigned rand()
  
 static void rand_normal(float_type* x, long n) 
 {
-   COUNTER("rand_normal");
 #ifdef EIGEN_USE_MKL_ALL
    vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,streams.local(),n,x,0.0,1.0);
 #else

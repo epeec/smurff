@@ -51,7 +51,7 @@ void MacauPrior::update_prior()
 
     // sampling Hyper Params
     {
-        COUNTER("sample hyper mu/Lambda");
+        COUNTER("sample_hyper");
         // uses: U, Uhat
         // writes: mu and Lambda
         // complexity: num_latent x num_items
@@ -171,9 +171,9 @@ void MacauPrior::compute_Ft_y(Matrix& Ft_y)
     // Ft_y = (U .- mu + Normal(0, Lambda^-1)) * F + std::sqrt(beta_precision) * Normal(0, Lambda^-1)
     // Ft_y is [ num_latent x num_feat ] matrix
 
-        HyperU = (U() + MvNormal(Lambda, num_item())).rowwise() - mu();
     {
         COUNTER("part1");
+        HyperU = (U() + MvNormal(Lambda, num_item())).rowwise() - mu();
 
         //HyperU: num_latent x num_item
         Features->A_mul_B(HyperU, Ft_y); // num_latent x num_feat
