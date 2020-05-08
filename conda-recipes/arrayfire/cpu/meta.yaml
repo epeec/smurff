@@ -1,31 +1,23 @@
 package:
-  name: arrayfire
-  version: "3.6.4"
+  name: arrayfire-cpu
+  version: "3.7.1"
 
 build:      
-  number: 1
-  string: cpu
+  number: 4
 
 source:
     git_url: https://github.com/arrayfire/arrayfire
-    git_rev: v3.6.4
-    sha1: 743c1dc00c6680229d8cc87d44debe5a71d15c01
+    git_rev: v3.7.1
 
 requirements:
   build:
     - {{ compiler("cxx") }}
-    - {{ compiler("fortran") }} # [not win]
     - cmake
   host:
-    - mkl-devel
-    - fftw
+    - mkl-devel <2020.0
     - boost
   run:
-    - mkl
-    - intel-openmp
-    - libboost
-    - fftw
-
+    - mkl <2020.0
 
 about:
   home: http://arrayfire.org/

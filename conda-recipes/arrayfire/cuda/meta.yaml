@@ -2,6 +2,9 @@ package:
   name: arrayfire-cuda
   version: "3.7.1"
 
+build:      
+  number: 1
+
 source:
     git_url: https://github.com/arrayfire/arrayfire
     git_rev: v3.7.1
