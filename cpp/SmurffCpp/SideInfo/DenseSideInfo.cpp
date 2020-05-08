@@ -1,4 +1,5 @@
 #include <SmurffCpp/Utils/Error.h>
+#include <SmurffCpp/Utils/MatrixUtils.h>
 
 #include "DenseSideInfo.h"
 #include "linop.h"
@@ -9,6 +10,9 @@ DenseSideInfo::DenseSideInfo(const DataConfig &side_info)
 {
    m_side_info = side_info.getDenseMatrixData();
    m_side_info_t = m_side_info.transpose();
+
+   m_si = matrix_utils::to_af(m_side_info);
+   m_si_t = m_si.T();
 }
 
 int DenseSideInfo::cols() const
@@ -45,6 +49,9 @@ void DenseSideInfo::At_mul_A(Matrix& out)
 void DenseSideInfo::A_mul_B(const Matrix& A, Matrix &out)
 {
    out = m_side_info_t * A;
+   af::array A_arr = matrix_utils::to_af(A);
+   af::array out_arr = af::matmul(m_si_t.T(), A_arr.T()).T();
+   matrix_utils::to_eigen(out_arr, out);
 }
 
 int DenseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)

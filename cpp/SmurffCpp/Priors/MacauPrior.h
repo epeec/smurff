@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <arrayfire.h>
 
 #include <SmurffCpp/Types.h>
 
@@ -28,10 +29,8 @@ public:
    Matrix Ft_y;    // num_latent x num_feat -- RHS
    Matrix BtB;     // num_latent x num_latent
 
-#ifdef USE_ARRAYFIRE
    // gpu versions
    af::array gpu_FtF;    // num_feat x num_feat
-#endif
 
    int blockcg_iter;
    

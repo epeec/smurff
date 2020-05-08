@@ -79,5 +79,16 @@ bool matrix_utils::equals_vector(const Vector& v1, const Vector& v2, double epsi
    return equals(v1, v2, epsilon);
 }
 
+af::array matrix_utils::to_af(const Matrix &m)
+{
+   return af::array(m.cols(), m.rows(), m.data());
+}
+
+void matrix_utils::to_eigen(const af::array a, Matrix &m)
+{
+   THROWERROR_ASSERT(a.dims(0) == m.cols());
+   THROWERROR_ASSERT(a.dims(1) == m.rows());
+   a.host(m.data());
+}
 
 } // end namespace

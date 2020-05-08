@@ -1,8 +1,9 @@
 #pragma once
 
-#include <SmurffCpp/Utils/Tensor.h>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
+
+#include <SmurffCpp/Utils/Tensor.h>
 
 namespace smurff {
    typedef SMURFF_FLOAT_TYPE float_type;

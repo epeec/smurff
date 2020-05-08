@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-
+#include <arrayfire.h>
 #include <SmurffCpp/Types.h>
 
 #include <SmurffCpp/Configs/DataConfig.h>
@@ -15,6 +15,7 @@ namespace smurff {
    {
    private:
       Matrix m_side_info, m_side_info_t;
+      af::array m_si, m_si_t;
 
    public:
       DenseSideInfo(const DataConfig &);

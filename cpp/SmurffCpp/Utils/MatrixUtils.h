@@ -1,10 +1,9 @@
 #pragma once
 
 #include <limits>
+#include <arrayfire.h>
 
 #include <SmurffCpp/Types.h>
-#include <SmurffCpp/Types.h>
-
 #include <SmurffCpp/Utils/Error.h>
 
 namespace smurff { namespace matrix_utils {
@@ -68,4 +67,8 @@ namespace smurff { namespace matrix_utils {
 
    bool equals(const Matrix& m1, const Matrix& m2, double epsilon = std::numeric_limits<double>::epsilon());
    bool equals_vector(const Vector& v1, const Vector& v2, double epsilon = std::numeric_limits<double>::epsilon() * 100);
+
+
+   af::array to_af(const Matrix &m);
+   void to_eigen(const af::array a, Matrix &m);
 }}
