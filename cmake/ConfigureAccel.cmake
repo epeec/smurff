@@ -13,9 +13,13 @@ macro(configure_accel_backend)
     endif()
     include_directories(${OpenCL_INCLUDE_DIRS})
     set(ALGEBRA_LIBS ${ALGEBRA_LIBS} ${OPENCL_LIBRARIES})
+  elseif(${ACCEL_BACKEND} STREQUAL "CPU")
+      if (NOT ${ALGEBRA_LIB_NAME} STREQUAL "MKL")
+        message(FATAL_ERROR "ArrayFire + CPU requires MKL as Algebra library")
+      endif()
   elseif(NOT ${ACCEL_BACKEND} STREQUAL "None")
     message(FATAL_ERROR "ACCEL_BACKEND should not be ${ACCEL_BACKEND}
-    Valid options: CUDA, OpenCL, or None
+    Valid options: CUDA, OpenCL, CPU, or None
     ")
   endif()
 endmacro(configure_accel_backend)
@@ -31,6 +35,8 @@ macro(configure_accel_frontend)
       set(ALGEBRA_LIBS ${ALGEBRA_LIBS} ArrayFire::afcuda)
     elseif(${ACCEL_BACKEND} STREQUAL "OPENCL")
       set(ALGEBRA_LIBS ${ALGEBRA_LIBS} ArrayFire::afopencl)
+    elseif(${ACCEL_BACKEND} STREQUAL "CPU")
+      set(ALGEBRA_LIBS ${ALGEBRA_LIBS} ArrayFire::afcpu)
     endif()
 
   elseif(${ACCEL_FRONTEND} STREQUAL "ViennaCL")
