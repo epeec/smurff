@@ -86,6 +86,10 @@ af::array matrix_utils::to_af(const Matrix &m)
 
 void matrix_utils::to_eigen(const af::array a, Matrix &m)
 {
+   if (m.nonZeros() == 0)
+   {
+      m.resize(a.dims(1), a.dims(0));
+   }
    THROWERROR_ASSERT(a.dims(0) == m.cols());
    THROWERROR_ASSERT(a.dims(1) == m.rows());
    a.host(m.data());
