@@ -48,9 +48,13 @@ void DenseSideInfo::At_mul_A(Matrix& out)
 
 void DenseSideInfo::A_mul_B(const Matrix& A, Matrix &out)
 {
-   out = m_side_info_t * A;
-   af::array A_arr = matrix_utils::to_af(A);
-   af::array out_arr = af::matmul(m_si_t.T(), A_arr.T()).T();
+   // out = m_side_info_t * A;
+
+   af::array A_arr;
+   af::array out_arr;
+
+   A_arr = matrix_utils::to_af(A);
+   out_arr = af::matmul(A_arr, m_si_t);
    matrix_utils::to_eigen(out_arr, out);
 }
 
