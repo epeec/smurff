@@ -57,6 +57,11 @@ if (NOT MSVC)
    if (${ENABLE_ASAN})
        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
        set (CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
+       if(APPLE)
+        # to avoid: warning: '_FORTIFY_SOURCE' macro redefined
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-macro-redefined")
+        set (CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -Wno-macro-redefined")
+       endif()
    endif()
 endif()
 
