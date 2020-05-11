@@ -51,16 +51,22 @@ void DenseSideInfo::At_mul_A(Matrix& out)
    out = m_side_info.transpose() * m_side_info;
 }
 
-void DenseSideInfo::A_mul_B(const Matrix& A, Matrix &out)
+void DenseSideInfo::A_mul_B(const Matrix &A, Matrix &out)
 {
-   // out = m_side_info_t * A;
 
-   af::array A_arr;
-   af::array out_arr;
+   if (1)
+   {
+      out = m_side_info_t * A;
+   }
+   else
+   {
+      af::array A_arr;
+      af::array out_arr;
 
-   A_arr = matrix_utils::to_af(A);
-   out_arr = af::matmul(A_arr, m_si_t);
-   matrix_utils::to_eigen(out_arr, out);
+      A_arr = matrix_utils::to_af(A);
+      out_arr = af::matmul(A_arr, m_si_t);
+      matrix_utils::to_eigen(out_arr, out);
+   }
 }
 
 int DenseSideInfo::solve_blockcg(Matrix& X, double reg, Matrix& B, double tol, const int blocksize, const int excess, bool throw_on_cholesky_error)
