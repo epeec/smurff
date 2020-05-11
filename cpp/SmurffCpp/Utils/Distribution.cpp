@@ -8,10 +8,13 @@
 #include <functional>
 #include <random>
 
+#include <arrayfire.h>
+
 #ifdef EIGEN_USE_MKL_ALL
 #include <mkl.h>
 #endif
 
+#include "SmurffCpp/Utils/MatrixUtils.h"
 #include "SmurffCpp/Utils/counters.h"
 #include "SmurffCpp/Utils/ThreadVector.hpp"
 #include "SmurffCpp/Utils/omp_util.h"
@@ -267,7 +270,7 @@ Matrix MvNormal(const Matrix & Lambda, int num_samples)
 
    Matrix r(num_samples, dimen);
    rand_normal(r);
-   Matrix ret = chol.matrixU().solve(r.transpose()).transpose();
+   Matrix ret = chol.solve(r.transpose()).transpose();
 
 #ifdef TEST_MVNORMAL
    std::cout << "MvNormal/mean=0 {\n" << std::endl;
@@ -281,11 +284,19 @@ Matrix MvNormal(const Matrix & Lambda, int num_samples)
 
 }
 
+af::array af_MvNormal(const Matrix &Lambda, unsigned long num_samples)
+{
+    int dimen = Lambda.rows(); // Dimensionality 
+    af::array r = af::randn(af::dim4(dimen, num_samples), af_type);
+    return af::solve(af::upper(matrix_utils::to_af(Lambda)), r);
+}
+
+
 Matrix MvNormal(const Matrix & prec, const Vector & mean, int num_samples)
 {
-   unsigned long dimen = mean.size();
 //#ifdef EIGEN_USE_MKL_ALL
 #if 0
+   unsigned long dimen = mean.size();
    //std::cout << "Using vdRngGaussianMV" <<std::endl;
    Matrix r(num_samples, dimen);
    auto status = vdRngGaussianMV(VSL_RNG_METHOD_GAUSSIANMV_BOXMULLER2, streams.local(), num_samples, r.data(), dimen, VSL_MATRIX_STORAGE_FULL, mean.data(), prec.data() );

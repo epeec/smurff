@@ -11,7 +11,7 @@ namespace smurff {
 
 namespace mu = smurff::matrix_utils;
 
-TEST_CASE( "mvnormal/prec" ) {
+TEST_CASE( "mvnormal" ) {
   init_bmrng(1234);
 
   const int num_samples = 1<<20; // around one million
@@ -19,17 +19,51 @@ TEST_CASE( "mvnormal/prec" ) {
 
   Vector mean = mu::make_dense({1, 10} , { 1., 2., 3., 4., 5., 6., 7., 8., 9., 10.});
   Matrix covar = Vector::Constant(10, var).asDiagonal(); /* 0.1 precision == 10. covar */
-  Matrix prec = Vector::Constant(10, 1./var).asDiagonal(); /* 0.1 precision == 10. covar */
+  covar.transposeInPlace();
+  Matrix prec = covar.inverse();
+
+  auto r = MvNormal(prec, mean, num_samples);
+
+  // check mean
+  Vector actual_mean = r.colwise().mean();
+  REQUIRE(mu::equals_vector(actual_mean, mean, 1.));
+
+  // check covar
+  auto centered = r.rowwise() - actual_mean;
+  Matrix actual_cov = (centered.adjoint() * centered) / double(r.rows() - 1);
+  SHOW(actual_cov);
+  SHOW(covar);
+  REQUIRE(mu::equals(actual_cov, covar, 1.));
+}
+
+TEST_CASE("af_mvnormal")
+{
+  init_bmrng(1234);
+
+  const int num_samples = 1 << 20; // around one million
+  const double var = 8.;
+
+  Vector mean = Vector::Zero(10);
+  Matrix covar = Vector::Constant(10, var).asDiagonal();     /* 0.1 precision == 10. covar */
+  Matrix prec = Vector::Constant(10, 1. / var).asDiagonal(); /* 0.1 precision == 10. covar */
 
   REQUIRE(mu::equals(covar.inverse(), prec, 0.001));
 
-  auto randomMatrix = MvNormal(prec, mean, num_samples);
+  auto arr = af_MvNormal(prec, num_samples);
+  Matrix r;
+  matrix_utils::to_eigen(arr, r);
 
   // check mean
-  REQUIRE(mu::equals_vector(randomMatrix.colwise().sum(), num_samples * mean, num_samples));
+  Vector actual_mean = r.colwise().mean();
+  REQUIRE(mu::equals_vector(actual_mean, mean, 1.));
 
+  // check covar
+  auto centered = r.rowwise() - actual_mean;
+  Matrix actual_cov = (centered.adjoint() * centered) / double(r.rows() - 1);
+  SHOW(actual_cov);
+  SHOW(covar);
+  REQUIRE(mu::equals(actual_cov, covar, 1.));
 }
-
 
 TEST_CASE( "CondNormalWishart" ) {
   init_bmrng(1234);

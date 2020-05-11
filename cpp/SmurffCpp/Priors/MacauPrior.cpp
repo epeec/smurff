@@ -166,13 +166,6 @@ const Vector MacauPrior::fullMu(int n) const
    return mu() + Uhat.row(n);
 }
 
-static af::array af_MvNormal(const Matrix &Lambda, unsigned long num_samples)
-{
-    int dimen = Lambda.rows(); // Dimensionality 
-    af::array r = af::randn(af::dim4(dimen, num_samples), af_type);
-    return af::solve(matrix_utils::to_af(Lambda), r);
-}
-
 void MacauPrior::compute_Ft_y(Matrix& Ft_y)
 {
     COUNTER("compute Ft_y");
@@ -183,22 +176,18 @@ void MacauPrior::compute_Ft_y(Matrix& Ft_y)
     af::array Ft_y1 =  af::matmul(h1, Features->arr().T());
     af::array h2 = af_MvNormal(Lambda, num_feat());
     af::array Ft_y_ar =  Ft_y1 + h2 * std::sqrt(beta_precision);
+    matrix_utils::to_eigen(Ft_y_ar, Ft_y);
 
+    if (0)
     {
-        COUNTER("part1");
-
         //HyperU: num_latent x num_item
         HyperU = (U() + MvNormal(Lambda, num_item())).rowwise() - mu();
         Features->A_mul_B(HyperU, Ft_y); // num_latent x num_feat
-    }
-
-    {
-        COUNTER("part2");
-
         //--  add beta_precision
         HyperU2 = MvNormal(Lambda, num_feat()); // num_latent x num_feat
         Ft_y += std::sqrt(beta_precision) * HyperU2;
     }
+
 }
 
 void MacauPrior::addSideInfo(const std::shared_ptr<ISideInfo>& side, double bp, double to, bool di, bool sa, bool th)

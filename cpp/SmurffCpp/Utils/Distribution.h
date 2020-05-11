@@ -37,6 +37,7 @@ namespace smurff
    
    // Multivariate normal gaussian
 
+   af::array af_MvNormal(const Matrix &Lambda, unsigned long num_samples);
    Matrix MvNormal(const Matrix & Lambda, int nn = 1);
    Matrix MvNormal(const Matrix & Lambda, const Vector & mean, int nn = 1);
 }
