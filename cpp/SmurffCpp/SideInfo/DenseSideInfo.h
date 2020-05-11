@@ -30,6 +30,8 @@ namespace smurff {
 
       bool is_dense() const override;
 
+      af::array arr() const override;
+
    public:
       //linop
 

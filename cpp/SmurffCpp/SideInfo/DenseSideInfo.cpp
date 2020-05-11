@@ -36,6 +36,11 @@ bool DenseSideInfo::is_dense() const
    return true;
 }
 
+af::array DenseSideInfo::arr() const
+{
+   return m_si;
+}
+
 void DenseSideInfo::compute_uhat(Matrix& uhat, Matrix& beta)
 {
    uhat = m_side_info * beta;

@@ -1,6 +1,7 @@
 
 #include "MacauPrior.h"
 
+#include <SmurffCpp/Utils/MatrixUtils.h>
 #include <SmurffCpp/Utils/Distribution.h>
 #include <SmurffCpp/Utils/Error.h>
 #include <SmurffCpp/Utils/counters.h>
@@ -165,17 +166,29 @@ const Vector MacauPrior::fullMu(int n) const
    return mu() + Uhat.row(n);
 }
 
+static af::array af_MvNormal(const Matrix &Lambda, unsigned long num_samples)
+{
+    int dimen = Lambda.rows(); // Dimensionality 
+    af::array r = af::randn(af::dim4(dimen, num_samples), af_type);
+    return af::solve(matrix_utils::to_af(Lambda), r);
+}
+
 void MacauPrior::compute_Ft_y(Matrix& Ft_y)
 {
     COUNTER("compute Ft_y");
     // Ft_y = (U .- mu + Normal(0, Lambda^-1)) * F + std::sqrt(beta_precision) * Normal(0, Lambda^-1)
     // Ft_y is [ num_latent x num_feat ] matrix
 
-        HyperU = (U() + MvNormal(Lambda, num_item())).rowwise() - mu();
+    af::array h1 = matrix_utils::to_af(U()) + af_MvNormal(Lambda, num_item()) - af::tile(matrix_utils::to_af(mu()), 1, num_item());
+    af::array Ft_y1 =  af::matmul(h1, Features->arr().T());
+    af::array h2 = af_MvNormal(Lambda, num_feat());
+    af::array Ft_y_ar =  Ft_y1 + h2 * std::sqrt(beta_precision);
+
     {
         COUNTER("part1");
 
         //HyperU: num_latent x num_item
+        HyperU = (U() + MvNormal(Lambda, num_item())).rowwise() - mu();
         Features->A_mul_B(HyperU, Ft_y); // num_latent x num_feat
     }
 

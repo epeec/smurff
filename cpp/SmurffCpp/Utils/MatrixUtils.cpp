@@ -81,7 +81,7 @@ bool matrix_utils::equals_vector(const Vector& v1, const Vector& v2, double epsi
 
 af::array matrix_utils::to_af(const Matrix &m)
 {
-   return af::array(m.cols(), m.rows(), m.data());
+   return af::array(af::dim4(m.cols(), m.rows()), m.data());
 }
 
 void matrix_utils::to_eigen(const af::array a, Matrix &m)

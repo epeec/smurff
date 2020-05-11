@@ -27,6 +27,8 @@ public:
    
    bool is_dense() const override;
 
+   af::array arr() const override { return af::array(); }
+
 public:
    //linop
 
