@@ -21,11 +21,15 @@ inline void show_internal(const char *name, const Matrix& variable)
       std::cout << name << " (" << variable.rows() << "," << variable.cols() << ") =\n" << variable << std::endl << std::endl;
 }
 
+inline void show_internal(const char *name, const char* value) 
+{ std::cout << value << std::endl; } 
+
 
 #define SHOW_SCALAR_IMPL(T) \
-template<> inline void show_internal(const char *name, const T& variable) \
+inline void show_internal(const char *name, const T& variable) \
 { std::cout << name << " =\n" << variable << std::endl << std::endl; } 
 
+SHOW_SCALAR_IMPL(std::string)
 SHOW_SCALAR_IMPL(float)
 SHOW_SCALAR_IMPL(double)
 SHOW_SCALAR_IMPL(int)
