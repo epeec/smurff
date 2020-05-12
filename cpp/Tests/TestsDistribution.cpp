@@ -26,14 +26,12 @@ TEST_CASE( "mvnormal" ) {
 
   // check mean
   Vector actual_mean = r.colwise().mean();
-  REQUIRE(mu::equals_vector(actual_mean, mean, 1.));
+  REQUIRE(mu::equals(actual_mean, mean, .1, false));
 
   // check covar
   auto centered = r.rowwise() - actual_mean;
   Matrix actual_cov = (centered.adjoint() * centered) / double(r.rows() - 1);
-  SHOW(actual_cov);
-  SHOW(covar);
-  REQUIRE(mu::equals(actual_cov, covar, 1.));
+  REQUIRE(mu::equals(actual_cov, covar, .1, false));
 }
 
 TEST_CASE("af_mvnormal")
@@ -47,7 +45,7 @@ TEST_CASE("af_mvnormal")
   Matrix covar = Vector::Constant(10, var).asDiagonal();     /* 0.1 precision == 10. covar */
   Matrix prec = Vector::Constant(10, 1. / var).asDiagonal(); /* 0.1 precision == 10. covar */
 
-  REQUIRE(mu::equals(covar.inverse(), prec, 0.001));
+  REQUIRE(mu::equals(covar.inverse(), prec, .1, false));
 
   auto arr = af_MvNormal(prec, num_samples);
   Matrix r;
@@ -55,14 +53,12 @@ TEST_CASE("af_mvnormal")
 
   // check mean
   Vector actual_mean = r.colwise().mean();
-  REQUIRE(mu::equals_vector(actual_mean, mean, 1.));
+  REQUIRE(mu::equals(actual_mean, mean, .1, false));
 
   // check covar
   auto centered = r.rowwise() - actual_mean;
   Matrix actual_cov = (centered.adjoint() * centered) / double(r.rows() - 1);
-  SHOW(actual_cov);
-  SHOW(covar);
-  REQUIRE(mu::equals(actual_cov, covar, 1.));
+  REQUIRE(mu::equals(actual_cov, covar, .1, false));
 }
 
 TEST_CASE( "CondNormalWishart" ) {

@@ -47,7 +47,7 @@ SparseMatrix matrix_utils::make_sparse(
    return sparse_to_eigen(smurff::SparseTensor(dims, columns, values));
 }
 
-bool matrix_utils::equals(const Matrix& m1, const Matrix& m2, double epsilon)
+bool matrix_utils::equals(const Matrix& m1, const Matrix& m2, double epsilon, bool relative)
 {
    if (m1.rows() != m2.rows() || m1.cols() != m2.cols())
       return false;
@@ -60,7 +60,10 @@ bool matrix_utils::equals(const Matrix& m1, const Matrix& m2, double epsilon)
          auto abs_m2 = std::abs(m2(i, j));
          auto abs_diff = std::abs(m2(i, j) - m1(i, j));
 
-			if ((abs_diff / (abs_m1 + abs_m2)) > epsilon)
+         bool relative_ok = !relative || ((abs_diff / (abs_m1 + abs_m2)) <= epsilon);
+         bool absolute_ok = relative ||  (abs_diff <= epsilon);
+
+			if (!relative_ok || !absolute_ok)
          {
             std::cout << "@" << i << "," << j << ":"
                       << abs_m1 << " != " << abs_m2 << "(diff: " << abs_diff << ")" 
@@ -71,12 +74,6 @@ bool matrix_utils::equals(const Matrix& m1, const Matrix& m2, double epsilon)
    }
 
    return true;
-}
-
-// make sure they are both row-vectors
-bool matrix_utils::equals_vector(const Vector& v1, const Vector& v2, double epsilon)
-{
-   return equals(v1, v2, epsilon);
 }
 
 af::array matrix_utils::to_af(const Matrix &m)
