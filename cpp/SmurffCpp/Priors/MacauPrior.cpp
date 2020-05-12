@@ -202,7 +202,7 @@ void MacauPrior::compute_Ft_y(Matrix &Ft_y)
 
     Matrix Ft_y_;
     af::array h1 = matrix_utils::to_af(U()) + af_MvNormal(Lambda, num_item()) - af::tile(matrix_utils::to_af(mu()), 1, num_item());
-    af::array Ft_y1 = af::matmul(h1, Features->arr().T());
+    af::array Ft_y1 = af::matmul(Features->arr(), h1.T()).T();
     af::array h2 = af_MvNormal(Lambda, num_feat());
     af::array Ft_y_ar = Ft_y1 + h2 * std::sqrt(beta_precision);
     matrix_utils::to_eigen(Ft_y_ar, Ft_y);
