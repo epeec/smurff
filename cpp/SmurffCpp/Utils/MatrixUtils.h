@@ -67,6 +67,8 @@ namespace smurff { namespace matrix_utils {
 
    bool equals(const Matrix& m1, const Matrix& m2, double epsilon = std::numeric_limits<double>::epsilon(), bool relative = true);
 
-   af::array to_af(const Matrix &m);
+   af::array to_af(const Matrix &);
+   af::array to_af(const SparseMatrix &);
    void to_eigen(const af::array a, Matrix &m);
+   void to_eigen(const af::array a, SparseMatrix &m);
 }}

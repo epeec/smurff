@@ -81,6 +81,15 @@ af::array matrix_utils::to_af(const Matrix &m)
    return af::array(af::dim4(m.cols(), m.rows()), m.data());
 }
 
+
+af::array matrix_utils::to_af(const SparseMatrix &X)
+{
+   // Create sparse array (CSR) from af::arrays containing values,
+   // row pointers, and column indices.
+   return af::sparse(X.rows(), X.cols(), X.nonZeros(), X.valuePtr(), X.outerIndexPtr(), X.innerIndexPtr(), 
+     smurff::af_type, X.IsRowMajor ? AF_STORAGE_CSR : AF_STORAGE_CSC);
+}
+
 void matrix_utils::to_eigen(const af::array a, Matrix &m)
 {
    if (m.nonZeros() == 0)
@@ -90,6 +99,11 @@ void matrix_utils::to_eigen(const af::array a, Matrix &m)
    THROWERROR_ASSERT(a.dims(0) == m.cols());
    THROWERROR_ASSERT(a.dims(1) == m.rows());
    a.host(m.data());
+}
+
+void matrix_utils::to_eigen(const af::array a, SparseMatrix &m)
+{
+   THROWERROR_NOTIMPL();
 }
 
 } // end namespace

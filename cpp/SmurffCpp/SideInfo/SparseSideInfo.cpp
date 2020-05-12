@@ -10,8 +10,8 @@ namespace smurff {
 SparseSideInfo::SparseSideInfo(const DataConfig &mc) {
     F = mc.getSparseMatrixData();
     Ft = F.transpose();
-    // m_sideinfo = matrix_utils::to_af(F);
-    // m_sideinfo_t = m_sideinfo.T();
+    m_sideinfo = matrix_utils::to_af(F);
+    m_sideinfo_t = m_sideinfo.T();
 }
 
 SparseSideInfo::~SparseSideInfo() {}
