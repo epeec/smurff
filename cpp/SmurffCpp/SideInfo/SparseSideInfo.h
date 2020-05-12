@@ -14,6 +14,7 @@ class SparseSideInfo : public ISideInfo
 public:
    SparseMatrix F;
    SparseMatrix Ft;
+   af::array m_sideinfo, m_sideinfo_t;
 
    SparseSideInfo(const DataConfig &);
    ~SparseSideInfo() override;
@@ -27,7 +28,7 @@ public:
    
    bool is_dense() const override;
 
-   af::array arr() const override { return af::array(); }
+   af::array arr() const override;
 
 public:
    //linop

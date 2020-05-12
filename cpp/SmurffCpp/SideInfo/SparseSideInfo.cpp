@@ -10,6 +10,8 @@ namespace smurff {
 SparseSideInfo::SparseSideInfo(const DataConfig &mc) {
     F = mc.getSparseMatrixData();
     Ft = F.transpose();
+    // m_sideinfo = matrix_utils::to_af(F);
+    // m_sideinfo_t = m_sideinfo.T();
 }
 
 SparseSideInfo::~SparseSideInfo() {}
@@ -36,6 +38,11 @@ std::ostream& SparseSideInfo::print(std::ostream &os) const
 bool SparseSideInfo::is_dense() const
 {
    return false;
+}
+
+af::array SparseSideInfo::arr() const
+{
+    return m_sideinfo;
 }
 
 void SparseSideInfo::compute_uhat(Matrix& uhat, Matrix& beta)
