@@ -12,6 +12,8 @@
 
 namespace smurff {
 
+namespace mu = smurff::matrix_utils;
+
 MacauPrior::MacauPrior(TrainSession &trainSession, uint32_t mode)
     : NormalPrior(trainSession, mode, "MacauPrior"), blockcg_iter(-1)
 {
@@ -56,7 +58,33 @@ void MacauPrior::update_prior()
         // uses: U, Uhat
         // writes: mu and Lambda
         // complexity: num_latent x num_items
-        std::tie(mu(), Lambda) = CondNormalWishart(U() - Uhat, mu0, b0, WI + beta_precision * BtB, df + num_feat());
+        af::array U_arr = mu::to_af(U());
+        af::array Uhat_arr = mu::to_af(Uhat); 
+        auto Udelta_arr = U_arr - Uhat_arr;
+        auto N = Udelta_arr.dims(1);
+        auto NS_arr = af::matmulNT(Udelta_arr, Udelta_arr);
+        auto NU_arr = af::sum(Udelta_arr, 1);
+
+        Matrix NS, NU;
+        mu::to_eigen(NS_arr, NS);
+        mu::to_eigen(NU_arr, NU);
+
+        if (0)
+        {
+            SHOW(NS);
+            SHOW(NU);
+            SHOW(N);
+
+            auto Udelta = U() - Uhat;
+            N = Udelta.rows();
+            NS = Udelta.transpose() * Udelta;
+            NU = Udelta.colwise().sum();
+            SHOW(NS);
+            SHOW(NU);
+            SHOW(N);
+        }
+
+        std::tie(mu(), Lambda) = CondNormalWishart(N, NS, NU, mu0, b0, WI + beta_precision * BtB, df + num_feat());
     }
 
     // uses: U, F
@@ -166,29 +194,26 @@ const Vector MacauPrior::fullMu(int n) const
    return mu() + Uhat.row(n);
 }
 
-void MacauPrior::compute_Ft_y(Matrix& Ft_y)
+void MacauPrior::compute_Ft_y(Matrix &Ft_y)
 {
     COUNTER("compute Ft_y");
     // Ft_y = (U .- mu + Normal(0, Lambda^-1)) * F + std::sqrt(beta_precision) * Normal(0, Lambda^-1)
     // Ft_y is [ num_latent x num_feat ] matrix
 
-    if (0)
-    {
+    Matrix Ft_y_;
+    af::array h1 = matrix_utils::to_af(U()) + af_MvNormal(Lambda, num_item()) - af::tile(matrix_utils::to_af(mu()), 1, num_item());
+    af::array Ft_y1 = af::matmul(h1, Features->arr().T());
+    af::array h2 = af_MvNormal(Lambda, num_feat());
+    af::array Ft_y_ar = Ft_y1 + h2 * std::sqrt(beta_precision);
+    matrix_utils::to_eigen(Ft_y_ar, Ft_y);
 
-        af::array h1 = matrix_utils::to_af(U()) + af_MvNormal(Lambda, num_item()) - af::tile(matrix_utils::to_af(mu()), 1, num_item());
-        af::array Ft_y1 = af::matmul(h1, Features->arr().T());
-        af::array h2 = af_MvNormal(Lambda, num_feat());
-        af::array Ft_y_ar = Ft_y1 + h2 * std::sqrt(beta_precision);
-        matrix_utils::to_eigen(Ft_y_ar, Ft_y);
-    }
-    else
     {
         //HyperU: num_latent x num_item
         HyperU = (U() + MvNormal(Lambda, num_item())).rowwise() - mu();
-        Features->A_mul_B(HyperU, Ft_y); // num_latent x num_feat
+        Features->A_mul_B(HyperU, Ft_y_); // num_latent x num_feat
         //--  add beta_precision
         HyperU2 = MvNormal(Lambda, num_feat()); // num_latent x num_feat
-        Ft_y += std::sqrt(beta_precision) * HyperU2;
+        Ft_y_ += std::sqrt(beta_precision) * HyperU2;
     }
 }
 
