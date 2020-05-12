@@ -270,7 +270,7 @@ Matrix MvNormal(const Matrix & Lambda, int num_samples)
 
    Matrix r(num_samples, dimen);
    rand_normal(r);
-   Matrix ret = chol.solve(r.transpose()).transpose();
+   Matrix ret = chol.matrixU().solve(r.transpose()).transpose();
 
 #ifdef TEST_MVNORMAL
    std::cout << "MvNormal/mean=0 {\n" << std::endl;
@@ -287,8 +287,11 @@ Matrix MvNormal(const Matrix & Lambda, int num_samples)
 af::array af_MvNormal(const Matrix &Lambda, unsigned long num_samples)
 {
     int dimen = Lambda.rows(); // Dimensionality 
+    af::array l = matrix_utils::to_af(Lambda);
+    af::choleskyInPlace(l);
+
     af::array r = af::randn(af::dim4(dimen, num_samples), af_type);
-    return af::solve(af::upper(matrix_utils::to_af(Lambda)), r);
+    return af::solve(l, r);
 }
 
 
