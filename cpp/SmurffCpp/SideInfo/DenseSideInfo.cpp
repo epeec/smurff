@@ -41,6 +41,11 @@ af::array DenseSideInfo::arr() const
    return m_si;
 }
 
+af::array DenseSideInfo::arr_t() const
+{
+   return m_si_t;
+}
+
 void DenseSideInfo::compute_uhat(Matrix& uhat, Matrix& beta)
 {
    uhat = m_side_info * beta;

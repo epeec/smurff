@@ -20,6 +20,7 @@ namespace smurff {
       virtual bool is_dense() const = 0;
 
       virtual af::array arr() const = 0; 
+      virtual af::array arr_t() const = 0; 
 
    public:
       //linop

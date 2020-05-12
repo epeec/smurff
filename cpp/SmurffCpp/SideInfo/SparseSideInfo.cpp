@@ -11,7 +11,7 @@ SparseSideInfo::SparseSideInfo(const DataConfig &mc) {
     F = mc.getSparseMatrixData();
     Ft = F.transpose();
     m_sideinfo = matrix_utils::to_af(F);
-    m_sideinfo_t = m_sideinfo.T();
+    m_sideinfo_t = matrix_utils::to_af(Ft);
 }
 
 SparseSideInfo::~SparseSideInfo() {}
@@ -43,6 +43,11 @@ bool SparseSideInfo::is_dense() const
 af::array SparseSideInfo::arr() const
 {
     return m_sideinfo;
+}
+
+af::array SparseSideInfo::arr_t() const
+{
+    return m_sideinfo_t;
 }
 
 void SparseSideInfo::compute_uhat(Matrix& uhat, Matrix& beta)
