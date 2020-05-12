@@ -52,7 +52,7 @@ void MacauPrior::update_prior()
 
     // sampling Hyper Params
     {
-        COUNTER("sample hyper mu/Lambda");
+        COUNTER("sample hyper");
         // uses: U, Uhat
         // writes: mu and Lambda
         // complexity: num_latent x num_items
