@@ -291,7 +291,7 @@ af::array af_MvNormal(const Matrix &Lambda, unsigned long num_samples)
     af::choleskyInPlace(l);
 
     af::array r = af::randn(af::dim4(dimen, num_samples), af_type);
-    return af::solve(l, r);
+    return af::solve(l, r, AF_MAT_UPPER); 
 }
 
 
