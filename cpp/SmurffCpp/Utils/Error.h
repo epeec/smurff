@@ -36,6 +36,8 @@ SHOW_SCALAR_IMPL(int)
 SHOW_SCALAR_IMPL(unsigned int)
 SHOW_SCALAR_IMPL(long)
 SHOW_SCALAR_IMPL(unsigned long)
+SHOW_SCALAR_IMPL(long long)
+SHOW_SCALAR_IMPL(unsigned long long)
 
 
 #ifdef USE_ARRAYFIRE
