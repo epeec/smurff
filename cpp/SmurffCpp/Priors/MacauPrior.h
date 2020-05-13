@@ -23,9 +23,11 @@ public:
    Matrix BtB;     // num_latent x num_latent
 
    // gpu versions
-   af::array FtF;   // num_feat x num_feat
-   af::array Ft_y;  // num_latent x num_feat -- RHS
-   af::array beta;  // num_latent x num_feat -- link matrix
+   af::array FtF;      // num_feat x num_feat
+   af::array Ft_y;     // num_latent x num_feat -- RHS
+   af::array beta;     // num_latent x num_feat -- link matrix
+   af::array Uhat_lcl; // num_latent x num_items
+   af::array U_lcl;    // num_latent x num_items
 
    int blockcg_iter;
    

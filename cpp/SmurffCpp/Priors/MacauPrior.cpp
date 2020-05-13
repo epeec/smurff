@@ -40,6 +40,7 @@ namespace smurff
 
         Uhat.resize(num_item(), num_latent());
         Uhat.setZero();
+        Uhat_lcl = mu::to_af(Uhat);
 
         BtB.resize(num_latent(), num_latent());
         BtB.setZero();
@@ -51,22 +52,22 @@ namespace smurff
     {
         COUNTER("update_prior");
 
+        U_lcl = mu::to_af(U());
+
         // sampling Hyper Params
         {
             COUNTER("sample hyper");
             // uses: U, Uhat
             // writes: mu and Lambda
             // complexity: num_latent x num_items
-            af::array U_arr = mu::to_af(U());
-            af::array Uhat_arr = mu::to_af(Uhat);
-            auto Udelta_arr = U_arr - Uhat_arr;
-            auto N = Udelta_arr.dims(1);
-            auto NS_arr = af::matmulNT(Udelta_arr, Udelta_arr);
-            auto NU_arr = af::sum(Udelta_arr, 1);
+            auto Udelta_lcl = U_lcl - Uhat_lcl;
+            auto N = Udelta_lcl.dims(1);
+            auto NS_lcl = af::matmulNT(Udelta_lcl, Udelta_lcl);
+            auto NU_lcl = af::sum(Udelta_lcl, 1);
 
             Matrix NS, NU;
-            mu::to_eigen(NS_arr, NS);
-            mu::to_eigen(NU_arr, NU);
+            mu::to_eigen(NS_lcl, NS);
+            mu::to_eigen(NU_lcl, NU);
             std::tie(mu(), Lambda) = CondNormalWishart(N, NS, NU, mu0, b0, WI + beta_precision * BtB, df + num_feat());
         }
 
@@ -74,7 +75,6 @@ namespace smurff
         // writes: Ft_y
         // complexity: num_latent x num_feat x num_item
         compute_Ft_y();
-
         sample_beta();
 
         if (enable_beta_precision_sampling)
@@ -90,8 +90,8 @@ namespace smurff
             // uses: beta, F
             // output: Uhat
             // complexity: num_feat x num_latent x num_item
-            af::array Uhat_ = af::matmul(Features->arr_t(), beta).T(); 
-            matrix_utils::to_eigen(Uhat_, Uhat);
+            Uhat_lcl = af::matmul(Features->arr_t(), beta).T(); 
+            matrix_utils::to_eigen(Uhat_lcl, Uhat);
         }
     }
 
@@ -125,7 +125,7 @@ namespace smurff
         // Ft_y is [ num_latent x num_feat ] matrix
 
         af::array h1 = matrix_utils::to_af(U()) + af_MvNormal(Lambda, num_item()) - af::tile(matrix_utils::to_af(mu()), 1, num_item());
-        af::array Ft_y1 = af::matmul(Features->arr(), h1.T()).T();
+        af::array Ft_y1 = af::matmulNT(Features->arr(), h1).T();
         af::array h2 = af_MvNormal(Lambda, num_feat());
         Ft_y = Ft_y1 + h2 * std::sqrt(beta_precision);
     }
