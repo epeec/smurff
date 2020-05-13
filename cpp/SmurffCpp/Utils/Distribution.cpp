@@ -286,8 +286,8 @@ Matrix MvNormal(const Matrix & Lambda, int num_samples)
 af::array af_MvNormal(const Matrix &Lambda, unsigned long num_samples)
 {
     int dimen = Lambda.rows(); // Dimensionality 
-    af::array l = matrix_utils::to_af(Lambda);
-    af::choleskyInPlace(l);
+    Matrix LambdaU = Lambda.llt().matrixU();
+    af::array l = matrix_utils::to_af(LambdaU);
 
     af::array r = af::randn(af::dim4(dimen, num_samples), af_type);
     return af::solve(l, r, AF_MAT_UPPER); 
