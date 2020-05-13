@@ -90,7 +90,7 @@ namespace smurff
             // uses: beta, F
             // output: Uhat
             // complexity: num_feat x num_latent x num_item
-            af::array Uhat_ = af::matmul(Features->arr_t(), beta.T()).T(); 
+            af::array Uhat_ = af::matmul(Features->arr_t(), beta).T(); 
             matrix_utils::to_eigen(Uhat_, Uhat);
         }
     }
@@ -107,10 +107,10 @@ namespace smurff
         af::array diag_mat = af::diag(diag_vec, 0, false);
         auto FtF_beta = FtF + diag_mat;
 
-        beta = af::solve(FtF_beta, Ft_y.T()).T();
+        beta = af::solve(FtF_beta, Ft_y.T());
 
         // complexity: num_feat x num_feat x num_latent
-        matrix_utils::to_eigen(af::matmulNT(beta, beta), BtB);
+        matrix_utils::to_eigen(af::matmulTN(beta, beta), BtB);
     }
 
     const Vector MacauPrior::fullMu(int n) const
@@ -181,7 +181,7 @@ namespace smurff
         indent += "  ";
         os << indent << "mu           = " << mu() << std::endl;
         os << indent << "Uhat mean    = " << Uhat.colwise().mean() << std::endl;
-        os << indent << "blockcg iter = " << blockcg_iter << std::endl;
+        if (!use_FtF) os << indent << "blockcg iter = " << blockcg_iter << std::endl;
         os << indent << "FtF          = " << af::norm(FtF) << std::endl;
         os << indent << "Beta         = " << af::norm(beta) << std::endl;
         os << indent << "beta_precision  = " << beta_precision << std::endl;
