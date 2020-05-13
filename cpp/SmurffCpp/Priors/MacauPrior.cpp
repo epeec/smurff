@@ -128,7 +128,7 @@ namespace smurff
         // Ft_y is [ num_latent x num_feat ] matrix
 
         af::array h1 = U_lcl + af_MvNormal(Lambda, num_item()) - af::tile(matrix_utils::to_af(mu()), 1, num_item());
-        af::array Ft_y1 = af::matmulNT(Features->arr(), h1).T();
+        af::array Ft_y1 = af::matmul(Features->arr(), h1.T()).T();
         af::array h2 = af_MvNormal(Lambda, num_feat());
         Ft_y = Ft_y1 + h2 * std::sqrt(beta_precision);
     }
