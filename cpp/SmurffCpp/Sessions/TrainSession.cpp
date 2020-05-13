@@ -1,6 +1,6 @@
 #include "TrainSession.h"
 
-
+#include <thread>
 #include <fstream>
 #include <string>
 #include <iomanip>
@@ -115,11 +115,13 @@ bool TrainSession::step()
     if (isStep)
     {
         auto starti = tick();
+        std::vector<std::thread> children;
         for (auto p : m_priors)
         {
             p->sample_latents();
-            p->update_prior();
+            children.push_back(std::thread([p]() { p->update_prior(); }));
         }
+        for ( auto &t : children ) t.join();
         
         data().update(model());
         auto endi = tick();
