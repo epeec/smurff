@@ -110,7 +110,6 @@ void ILatentPrior::sample_latents()
    for (int n = 0; n < U().rows(); n++)
 #pragma omp task
    {
-      COUNTER("sample_latent");
       sample_latent(n);
       const auto &row = U().row(n);
       Urow.local().noalias() += row;

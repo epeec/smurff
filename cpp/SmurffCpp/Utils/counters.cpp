@@ -36,13 +36,18 @@ void perf_data_print(const thread_vector<TotalsCounter> &data, bool hier) {
     std::cout << title;
     TotalsCounter sum_all_threads;
     int threadid = 0;
+    int num_active_threads = 0;
     for(auto &p : data)
     {
-        p.print(threadid++, hier);
-        sum_all_threads += p;
+        if (!p.empty())
+        {
+            p.print(threadid++, hier);
+            sum_all_threads += p;
+            num_active_threads++;
+        }
     }
 
-    if (data.size() > 1)
+    if (num_active_threads > 1)
         sum_all_threads.print(-1, hier);
 }
 

@@ -49,6 +49,8 @@ struct TotalsCounter {
         Counter &operator[](const std::string &name) {
             return data[name];
         }
+
+        bool empty() const { return data.empty(); }
 };
 
 extern thread_vector<TotalsCounter> hier_perf_data, flat_perf_data;
