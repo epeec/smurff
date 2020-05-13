@@ -34,19 +34,17 @@ namespace smurff
 
         THROWERROR_ASSERT_MSG(Features->rows() == num_item(), "Number of rows in train must be equal to number of rows in features");
 
-        if (use_FtF)
-        {
-            FtF.resize(num_feat(), num_feat());
-            Features->At_mul_A(FtF);
-        }
+        Matrix tmp(num_feat(), num_feat());
+        Features->At_mul_A(tmp);
+        FtF = matrix_utils::to_af(tmp);
 
         Uhat.resize(num_item(), num_latent());
         Uhat.setZero();
 
-        beta().resize(num_feat(), num_latent());
-        beta().setZero();
+        BtB.resize(num_latent(), num_latent());
+        BtB.setZero();
 
-        BtB = beta().transpose() * beta();
+        af::setDevice(0);
     }
 
     void MacauPrior::update_prior()
@@ -69,22 +67,6 @@ namespace smurff
             Matrix NS, NU;
             mu::to_eigen(NS_arr, NS);
             mu::to_eigen(NU_arr, NU);
-
-            if (0)
-            {
-                SHOW(NS);
-                SHOW(NU);
-                SHOW(N);
-
-                auto Udelta = U() - Uhat;
-                N = Udelta.rows();
-                NS = Udelta.transpose() * Udelta;
-                NU = Udelta.colwise().sum();
-                SHOW(NS);
-                SHOW(NU);
-                SHOW(N);
-            }
-
             std::tie(mu(), Lambda) = CondNormalWishart(N, NS, NU, mu0, b0, WI + beta_precision * BtB, df + num_feat());
         }
 
@@ -97,10 +79,9 @@ namespace smurff
 
         if (enable_beta_precision_sampling)
         {
-            // uses: BtB
-            // writes: FtF
+            // uses: BtB 
             COUNTER("sample_beta_precision");
-            beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, beta().rows());
+            beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, num_feat());
         }
 
         {
@@ -109,7 +90,8 @@ namespace smurff
             // uses: beta, F
             // output: Uhat
             // complexity: num_feat x num_latent x num_item
-            Features->compute_uhat(Uhat, beta());
+            af::array Uhat_ = af::matmul(Features->arr_t(), beta.T()).T(); 
+            matrix_utils::to_eigen(Uhat_, Uhat);
         }
     }
 
@@ -117,30 +99,18 @@ namespace smurff
     {
         COUNTER("sample_beta");
         // uses: FtF, Ft_y,
-        // writes: beta()
+        // writes: beta
         // complexity: num_feat^3
-        af::setDevice(0);
-
-        // copy if needed
-        if (gpu_FtF.isempty())
-            gpu_FtF = af::array(num_feat(), num_feat(), FtF.data());
-
-        //SHOW(FtF.norm());
-        //SHOW(af::norm(gpu_FtF));
-        //SHOW(af::norm(Ft_y));
 
         // update diagonal of FtF with new beta_precision
         af::array diag_vec = af::constant(beta_precision, num_feat());
         af::array diag_mat = af::diag(diag_vec, 0, false);
-        auto gpu_FtF_beta = gpu_FtF + diag_mat;
+        auto FtF_beta = FtF + diag_mat;
 
-        af::array gpu_beta = af::solve(gpu_FtF_beta, Ft_y.T()).T();
-
-        //copy back
-        gpu_beta.host(beta().data());
+        beta = af::solve(FtF_beta, Ft_y.T()).T();
 
         // complexity: num_feat x num_feat x num_latent
-        BtB = beta().transpose() * beta();
+        matrix_utils::to_eigen(af::matmulNT(beta, beta), BtB);
     }
 
     const Vector MacauPrior::fullMu(int n) const
@@ -212,10 +182,8 @@ namespace smurff
         os << indent << "mu           = " << mu() << std::endl;
         os << indent << "Uhat mean    = " << Uhat.colwise().mean() << std::endl;
         os << indent << "blockcg iter = " << blockcg_iter << std::endl;
-        os << indent << "FtF .        = " << FtF.norm() << std::endl;
-        os << indent << "HyperU       = " << HyperU.norm() << std::endl;
-        os << indent << "HyperU2      = " << HyperU2.norm() << std::endl;
-        os << indent << "Beta         = " << beta().norm() << std::endl;
+        os << indent << "FtF          = " << af::norm(FtF) << std::endl;
+        os << indent << "Beta         = " << af::norm(beta) << std::endl;
         os << indent << "beta_precision  = " << beta_precision << std::endl;
         return os;
     }

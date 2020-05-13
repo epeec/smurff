@@ -19,18 +19,13 @@ namespace smurff {
 class MacauPrior : public NormalPrior
 {
 public:
-   Matrix &beta() { return model().getLinkMatrix(getMode()); }
-   const Matrix &beta() const { return model().getLinkMatrix(getMode()); }
-                   // num_latent x num_feat -- link matrix
    Matrix Uhat;    // num_latent x num_items
-   Matrix FtF;     // num_feat   x num feat
-   Matrix HyperU;  // num_latent x num_items
-   Matrix HyperU2; // num_latent x num_feat
    Matrix BtB;     // num_latent x num_latent
 
    // gpu versions
-   af::array gpu_FtF;    // num_feat x num_feat
-   af::array Ft_y;    // num_latent x num_feat -- RHS
+   af::array FtF;   // num_feat x num_feat
+   af::array Ft_y;  // num_latent x num_feat -- RHS
+   af::array beta;  // num_latent x num_feat -- link matrix
 
    int blockcg_iter;
    
