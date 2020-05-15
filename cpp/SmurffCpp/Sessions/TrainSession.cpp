@@ -115,14 +115,16 @@ bool TrainSession::step()
 
     if (isStep)
     {
+        bool deps[MaxDims];
         auto starti = tick();
         #pragma omp parallel 
         #pragma omp master 
-        for (auto p : m_priors)
+        for (unsigned i=0; i<m_priors.size(); ++i)
         {
-            p->sample_latents();
-            #pragma omp task
-            p->update_prior();
+            #pragma omp task depend(in: deps[i-1]) depend(out:deps[i])
+            m_priors[i]->sample_latents();
+            #pragma omp task depend(in: deps[i])
+            m_priors[i]->update_prior();
         }
         
         data().update(model());
