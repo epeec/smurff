@@ -116,8 +116,7 @@ bool TrainSession::step()
     {
         bool deps[MaxDims];
         auto starti = tick();
-        #pragma omp parallel 
-        #pragma omp master 
+        #pragma omp parallel for
         for (unsigned i=0; i<m_priors.size(); ++i)
         {
             #pragma omp task depend(in: deps[i-1]) depend(out:deps[i])
@@ -136,7 +135,6 @@ bool TrainSession::step()
         m_secs_total += m_secs_per_iter;
 
         printStatus(std::cout);
-
         save();
     }
 
