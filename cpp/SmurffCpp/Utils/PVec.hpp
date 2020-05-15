@@ -12,8 +12,10 @@
 
 namespace smurff
 {
+const int MaxDims = 3;
+
    
-template <size_t MaxSize = 3>
+template <size_t MaxSize = MaxDims>
 class PVec
 {
  private:
