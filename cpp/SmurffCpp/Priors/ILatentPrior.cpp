@@ -105,8 +105,6 @@ void ILatentPrior::sample_latents()
    COUNTER("sample_latents");
    data().update_pnm(model(), m_mode);
 
-#pragma omp parallel 
-#pragma omp master 
    for (int n = 0; n < U().rows(); n++)
 #pragma omp task
    {
