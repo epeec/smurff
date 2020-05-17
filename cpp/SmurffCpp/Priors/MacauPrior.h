@@ -1,6 +1,9 @@
 #pragma once
 
 #include <memory>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
 
 #include <arrayfire.h>
 
@@ -22,12 +25,17 @@ public:
    Matrix Uhat;    // num_latent x num_items
    Matrix BtB;     // num_latent x num_latent
 
-   // gpu versions
+   // ArrayFire versions
    af::array FtF;      // num_feat x num_feat
    af::array Ft_y;     // num_latent x num_feat -- RHS
    af::array beta;     // num_latent x num_feat -- link matrix
    af::array Uhat_lcl; // num_latent x num_items
    af::array U_lcl;    // num_latent x num_items
+
+   std::condition_variable update_prior_cv;
+   std::mutex              update_prior_mutex;
+   std::thread             update_prior_thread;
+   bool                    update_prior_go;
 
    int blockcg_iter;
    
@@ -40,7 +48,6 @@ public:
    bool use_FtF;
    bool enable_beta_precision_sampling;
    bool throw_on_cholesky_error;
-   bool use_ViennaCL = true;
 
 public:
    MacauPrior(TrainSession &trainSession, uint32_t mode);
@@ -50,6 +57,8 @@ public:
    void init() override;
 
    void update_prior() override;
+   void update_prior_worker();
+   void sample_latents() override;
 
    const Vector fullMu(int n) const override;
 

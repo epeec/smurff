@@ -34,7 +34,6 @@ namespace smurff
 
         THROWERROR_ASSERT_MSG(Features->rows() == num_item(), "Number of rows in train must be equal to number of rows in features");
 
-        af::setDevice(0);
 
         Matrix tmp(num_feat(), num_feat());
         Features->At_mul_A(tmp);
@@ -47,54 +46,75 @@ namespace smurff
         BtB.resize(num_latent(), num_latent());
         BtB.setZero();
 
+        update_prior_thread = std::thread(&MacauPrior::update_prior_worker, this);
+    }
+
+    void MacauPrior::sample_latents()
+    {
+        std::unique_lock<std::mutex> lk(update_prior_mutex);
+        NormalPrior::sample_latents();
     }
 
     void MacauPrior::update_prior()
     {
         COUNTER("update_prior");
+        update_prior_go = true;
+        update_prior_cv.notify_one();
+    }
 
+    void MacauPrior::update_prior_worker()
+    {
         af::setDevice(0);
+        std::unique_lock<std::mutex> lk(update_prior_mutex);
+        update_prior_go = false;
 
-        U_lcl = mu::to_af(U());
-
-        // sampling Hyper Params
+        for (int i = 0; i < getConfig().getNIter(); ++i)
         {
-            COUNTER("sample hyper");
-            // uses: U, Uhat
-            // writes: mu and Lambda
-            // complexity: num_latent x num_items
-            auto Udelta_lcl = U_lcl - Uhat_lcl;
-            auto N = Udelta_lcl.dims(1);
-            auto NS_lcl = af::matmulNT(Udelta_lcl, Udelta_lcl);
-            auto NU_lcl = af::sum(Udelta_lcl, 1);
+            // Wait until update_prior() sends go signal
+            update_prior_cv.wait(lk, [this] { return update_prior_go; });
+            update_prior_go = false;
 
-            Matrix NS, NU;
-            mu::to_eigen(NS_lcl, NS);
-            mu::to_eigen(NU_lcl, NU);
-            std::tie(mu(), Lambda) = CondNormalWishart(N, NS, NU, mu0, b0, WI + beta_precision * BtB, df + num_feat());
-        }
+            U_lcl = mu::to_af(U());
 
-        // uses: U, F
-        // writes: Ft_y
-        // complexity: num_latent x num_feat x num_item
-        compute_Ft_y();
-        sample_beta();
+            // sampling Hyper Params
+            {
+                COUNTER("sample hyper");
+                // uses: U, Uhat
+                // writes: mu and Lambda
+                // complexity: num_latent x num_items
+                auto Udelta_lcl = U_lcl - Uhat_lcl;
+                auto N = Udelta_lcl.dims(1);
+                auto NS_lcl = af::matmulNT(Udelta_lcl, Udelta_lcl);
+                auto NU_lcl = af::sum(Udelta_lcl, 1);
 
-        if (enable_beta_precision_sampling)
-        {
-            // uses: BtB 
-            COUNTER("sample_beta_precision");
-            beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, num_feat());
-        }
+                Matrix NS, NU;
+                mu::to_eigen(NS_lcl, NS);
+                mu::to_eigen(NU_lcl, NU);
+                std::tie(mu(), Lambda) = CondNormalWishart(N, NS, NU, mu0, b0, WI + beta_precision * BtB, df + num_feat());
+            }
 
-        {
-            COUNTER("compute_uhat");
-            // Uhat = beta * F
-            // uses: beta, F
-            // output: Uhat
-            // complexity: num_feat x num_latent x num_item
-            Uhat_lcl = af::matmul(Features->arr_t(), beta).T(); 
-            matrix_utils::to_eigen(Uhat_lcl, Uhat);
+            // uses: U, F
+            // writes: Ft_y
+            // complexity: num_latent x num_feat x num_item
+            compute_Ft_y();
+            sample_beta();
+
+            if (enable_beta_precision_sampling)
+            {
+                // uses: BtB
+                COUNTER("sample_beta_precision");
+                beta_precision = sample_beta_precision(BtB, Lambda, beta_precision_nu0, beta_precision_mu0, num_feat());
+            }
+
+            {
+                COUNTER("compute_uhat");
+                // Uhat = beta * F
+                // uses: beta, F
+                // output: Uhat
+                // complexity: num_feat x num_latent x num_item
+                Uhat_lcl = af::matmul(Features->arr_t(), beta).T();
+                matrix_utils::to_eigen(Uhat_lcl, Uhat);
+            }
         }
     }
 
