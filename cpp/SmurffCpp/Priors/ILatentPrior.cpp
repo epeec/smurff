@@ -105,6 +105,7 @@ void ILatentPrior::sample_latents()
    COUNTER("sample_latents");
    data().update_pnm(model(), m_mode);
 
+#pragma omp parallel for
    for (int n = 0; n < U().rows(); n++)
 #pragma omp task
    {
@@ -116,7 +117,6 @@ void ILatentPrior::sample_latents()
       if (m_session.inSamplingPhase())
          model().updateAggr(m_mode, n);
    }
-#pragma omp taskwait
 
    if (m_session.inSamplingPhase())
       model().updateAggr(m_mode);
