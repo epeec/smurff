@@ -397,6 +397,11 @@ public:
       m_nsamples = value;
    }
 
+   int getNIter() const
+   {
+      return getBurnin() + getNSamples();
+   }
+
    int getNumLatent() const
    {
       return m_num_latent;
