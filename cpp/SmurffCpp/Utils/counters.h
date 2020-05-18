@@ -36,6 +36,7 @@ struct TotalsCounter {
     private:
         std::map<std::string, Counter> data;
         int procid;
+        void print_body(const std::string &, bool) const;
 
     public:
         //c-tor starts PAPI
@@ -44,7 +45,8 @@ struct TotalsCounter {
         void operator+=(const TotalsCounter &other);
 
         //prints results
-        void print(int, bool) const;
+        void print(const std::thread::id, bool) const;
+        void print(bool) const;
 
         Counter &operator[](const std::string &name) {
             return data[name];

@@ -35,20 +35,21 @@ void perf_data_print(const thread_vector<TotalsCounter> &data, bool hier) {
         "\nFlat view:\n==========\n";
     std::cout << title;
     TotalsCounter sum_all_threads;
-    int threadid = 0;
     int num_active_threads = 0;
     for(auto &p : data)
     {
-        if (!p.empty())
+        const auto &threadid = p.first;
+        const auto &d = p.second;
+        if (!d.empty())
         {
-            p.print(threadid++, hier);
-            sum_all_threads += p;
+            d.print(threadid, hier);
+            sum_all_threads += d;
             num_active_threads++;
         }
     }
 
     if (num_active_threads > 1)
-        sum_all_threads.print(-1, hier);
+        sum_all_threads.print(hier);
 }
 
 void perf_data_print() {
@@ -125,15 +126,21 @@ void TotalsCounter::operator+=(const TotalsCounter &other)
     for(auto &t : other.data) data[t.first] += t.second;
 }
 
-void TotalsCounter::print(int threadid, bool hier) const {
+void TotalsCounter::print(bool hier) const {
+    print_body("sum of all threads / ", hier);
+}
+
+void TotalsCounter::print(const std::thread::id threadid, bool hier) const {
+    std::ostringstream s;
+    s << "thread " << threadid << " / ";
+    print_body(s.str(), hier);
+}
+
+void TotalsCounter::print_body(const std::string &thread_str, bool hier) const {
     if (data.empty()) return;
     char hostname[1024];
     gethostname(hostname, 1024);
-    std::cout << "\nTotals on " << hostname << " (" << procid << ") / ";
-    if (threadid < 0)
-        std::cout << "sum of all threads / ";
-    else
-        std::cout << "thread " << threadid << " / ";
+    std::cout << "\nTotals on " << hostname << " (" << procid << ") / " << thread_str;
     std::cout << (hier ? "hierarchical\n" : "flat\n");
 
     const auto total = data.find("main");

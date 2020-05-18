@@ -26,7 +26,7 @@
 
 namespace smurff {
 
-typedef std::mt19937 rng;
+typedef std::mt19937 rng_type;
 typedef smurff::gamma_distribution<double> gamma_dist;
 typedef std::uniform_real_distribution<double> uniform_dist;
 typedef std::normal_distribution<double> normal_dist;
@@ -35,10 +35,10 @@ typedef std::normal_distribution<double> normal_dist;
  *  Init functions
  */
  
-static thread_vector<rng> rngs;
+static thread_local rng_type rng;
 
 #ifdef EIGEN_USE_MKL_ALL
-static thread_vector<VSLStreamStatePtr> streams;
+static thread_local VSLStreamStatePtr stream;
 #endif
 
 void init_bmrng() 
@@ -50,28 +50,25 @@ void init_bmrng()
 
 void init_bmrng(int seed)
 {
-   std::vector<rng> r;
-   for (int i = 0; i < threads::get_max_threads(); i++)
-      r.push_back(rng(seed + i * 1999));
-   rngs.init(r);
+   #pragma omp parallel
+   {
+   rng = rng_type(seed + threads::get_thread_num() * 1999);
 
 #ifdef EIGEN_USE_MKL_ALL
-   std::vector<VSLStreamStatePtr> s(threads::get_max_threads());
-   for (unsigned i = 0; i < s.size(); i++)
-      vslNewStream(&s.at(i), VSL_BRNG_MT19937, (seed + i * 1999));
-   streams.init(s);
+   vslNewStream(&stream, VSL_BRNG_MT19937, (seed + threads::get_thread_num() * 1999));
 #endif
+   }
 }
 
 template <typename Distribution>
 double generate(Distribution &d)
 {
-   return d(rngs.local());
+   return d(rng);
 }
 
 unsigned rand()
 {
-   return rngs.local()(); 
+   return rng(); 
 }
 
 /*

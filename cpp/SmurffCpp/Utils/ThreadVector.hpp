@@ -2,10 +2,9 @@
 
 #include <algorithm>
 #include <numeric>
-#include <vector>
+#include <thread>
+#include <map>
 #include <cassert>
-
-#include "omp_util.h"
 
 template <typename T>
 class thread_vector
@@ -18,22 +17,33 @@ public:
     template <typename F>
     T combine(F f) const
     {
-        return std::accumulate(_m.begin(), _m.end(), _i, f);
+        T sum = _i;
+        for(const auto &v : _m) sum = f(sum, v.second);
+        return sum;
     }
+
     T combine() const
     {
-        return std::accumulate(_m.begin(), _m.end(), _i, std::plus<T>());
+        return combine([](const T &a, const T &b) { return a+b; });
     }
 
     T &local()
     {
-        return _m.at(threads::get_thread_num());
+        auto pos = _m.find(std::this_thread::get_id());
+
+        if (pos == _m.end())
+        {
+            auto r = _m.insert(std::make_pair(std::this_thread::get_id(), _i));
+            pos = r.first;
+        }
+
+        return pos->second;
     }
     void reset()
     {
-        for (auto &t : _m)
-            t = _i;
+        _m.clear();
     }
+
     template <typename F>
     T combine_and_reset(F f) const
     {
@@ -41,26 +51,22 @@ public:
         reset();
         return ret;
     }
+
     T combine_and_reset()
     {
         T ret = combine();
         reset();
         return ret;
     }
+
     void init(const T &t = T())
     {
         _i = t;
-        _m.resize(threads::get_max_threads());
         reset();
     }
-    void init(const std::vector<T> &v)
-    {
-        assert((int)v.size() == threads::get_max_threads());
-        _m.resize(threads::get_max_threads());
-        _m = v;
-    }
 
-    typedef typename std::vector<T>::const_iterator const_iterator;
+    typedef typename std::map<std::thread::id, T> container_type;
+    typedef typename container_type::const_iterator const_iterator;
 
     const_iterator begin() const
     {
@@ -78,6 +84,6 @@ public:
     }
 
 private:
-    std::vector<T> _m;
+    std::map<std::thread::id, T> _m;
     T _i;
 };
