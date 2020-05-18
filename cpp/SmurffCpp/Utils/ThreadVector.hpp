@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <numeric>
 #include <thread>
+#include <mutex>
 #include <map>
 #include <cassert>
 
@@ -33,6 +34,7 @@ public:
 
         if (pos == _m.end())
         {
+            const std::lock_guard<std::mutex> lock(_mtx);
             auto r = _m.insert(std::make_pair(std::this_thread::get_id(), _i));
             pos = r.first;
         }
@@ -84,6 +86,7 @@ public:
     }
 
 private:
+    std::mutex _mtx;
     std::map<std::thread::id, T> _m;
     T _i;
 };
