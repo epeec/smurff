@@ -78,7 +78,7 @@ public:
         return _m.end();
     }
 
-    typename std::vector<T>::size_type size() const 
+    typename container_type::size_type size() const 
     {
         return _m.size();
     }
