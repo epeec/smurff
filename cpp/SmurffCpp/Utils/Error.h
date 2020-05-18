@@ -84,6 +84,6 @@ inline void show_internal(const char *name, const af::array& arr)
 #define THROWERROR_FILE_NOT_EXIST(file) THROWERROR_BASE_COND((std::string("File '") + file + std::string("' not found")), CONCAT_VAR(ss, __LINE__), std::runtime_error, smurff::generic_io::file_exists(file))
 
 
-#define THROWERROR_ASSERT(cond) THROWERROR_COND("assert: ", cond)
+#define THROWERROR_ASSERT(cond) THROWERROR_COND("assert: " #cond, cond)
 
-#define THROWERROR_ASSERT_MSG(cond, msg) THROWERROR_COND((std::string("assert: ")  + msg), cond)
+#define THROWERROR_ASSERT_MSG(cond, msg) THROWERROR_COND((std::string("assert: ") + msg), cond)
