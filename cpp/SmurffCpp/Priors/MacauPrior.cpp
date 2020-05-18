@@ -53,18 +53,22 @@ namespace smurff
 
     void MacauPrior::sample_latents()
     {
-        std::lock_guard<std::mutex> lk(update_prior_mutex);
+        std::unique_lock<std::mutex> lk(update_prior_mutex);
+        THROWERROR_ASSERT(lk.owns_lock());
+        // Wait until update_prior() sends go signal
+        sample_latents_cv.wait(lk, [this] { return !update_prior_go; });
+        THROWERROR_ASSERT(lk.owns_lock());
+
         static int iter = 0;
         std::cout << "sample_latents " << getMode() << " iter " << iter << " go " << std::endl;
         NormalPrior::sample_latents();
+        update_prior_go = true;
         std::cout << "sample_latents " << getMode() << " iter " << iter << " done " << std::endl;
         iter++;
     }
 
     void MacauPrior::update_prior()
     {
-        std::lock_guard<std::mutex> lk(update_prior_mutex);
-        update_prior_go = true;
         update_prior_cv.notify_one();
         std::cout << "update_prior " << getMode() << " notified "<< std::endl;
     }
@@ -73,16 +77,18 @@ namespace smurff
     {
         COUNTER("update_prior_worker");
         af::setDevice(0);
-        std::unique_lock<std::mutex> update_prior_lock(update_prior_mutex);
+        std::unique_lock<std::mutex> lk(update_prior_mutex, std::defer_lock);
         update_prior_go = false;
 
         std::cout << "Starting update_prior_worker " << getMode() << std::endl;
 
         for (int i = 0; i < getConfig().getNIter(); ++i)
         {
+            lk.lock();
+            THROWERROR_ASSERT(lk.owns_lock());
             // Wait until update_prior() sends go signal
-            update_prior_cv.wait(update_prior_lock, [this] { return update_prior_go; });
-            update_prior_go = false;
+            update_prior_cv.wait(lk, [this] { return update_prior_go; });
+            THROWERROR_ASSERT(lk.owns_lock());
 
             std::cout << "update_prior_worker " << getMode() << ", iteration " << i << std::endl;
 
@@ -128,6 +134,11 @@ namespace smurff
                 matrix_utils::to_eigen(Uhat_lcl, Uhat);
             }
 
+            std::cout << "update_prior_worker " << getMode() << ", iteration " << i << " releasing lock." << std::endl;
+            THROWERROR_ASSERT(lk.owns_lock());
+            update_prior_go = false;
+            lk.unlock();
+            sample_latents_cv.notify_one();
             std::cout << "update_prior_worker " << getMode() << ", iteration " << i << " done." << std::endl;
         }
 

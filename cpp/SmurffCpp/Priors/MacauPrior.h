@@ -33,6 +33,7 @@ public:
    af::array U_lcl;    // num_latent x num_items
 
    std::condition_variable update_prior_cv;
+   std::condition_variable sample_latents_cv;
    std::mutex              update_prior_mutex;
    std::thread             update_prior_thread;
    bool                    update_prior_go;
