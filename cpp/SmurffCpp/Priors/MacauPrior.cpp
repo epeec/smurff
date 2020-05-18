@@ -26,6 +26,8 @@ namespace smurff
 
     MacauPrior::~MacauPrior()
     {
+        std::cout << "Joining update_prior_workder " << getMode() << std::endl;
+        update_prior_thread.join();
     }
 
     void MacauPrior::init()
@@ -67,6 +69,8 @@ namespace smurff
         af::setDevice(0);
         std::unique_lock<std::mutex> lk(update_prior_mutex);
         update_prior_go = false;
+
+        std::cout << "Starting update_prior_worker " << getMode() << std::endl;
 
         for (int i = 0; i < getConfig().getNIter(); ++i)
         {
@@ -116,6 +120,8 @@ namespace smurff
                 matrix_utils::to_eigen(Uhat_lcl, Uhat);
             }
         }
+
+        std::cout << "Update_prior_worker " << getMode() << ": all done" << std::endl;
     }
 
     void MacauPrior::sample_beta()
