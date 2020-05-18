@@ -53,21 +53,27 @@ namespace smurff
 
     void MacauPrior::sample_latents()
     {
-        std::unique_lock<std::mutex> lk(update_prior_mutex);
+        std::lock_guard<std::mutex> lk(update_prior_mutex);
+        static int iter = 0;
+        std::cout << "sample_latents " << getMode() << " iter " << iter << " go " << std::endl;
         NormalPrior::sample_latents();
+        std::cout << "sample_latents " << getMode() << " iter " << iter << " done " << std::endl;
+        iter++;
     }
 
     void MacauPrior::update_prior()
     {
-        COUNTER("update_prior");
+        std::lock_guard<std::mutex> lk(update_prior_mutex);
         update_prior_go = true;
         update_prior_cv.notify_one();
+        std::cout << "update_prior " << getMode() << " notified "<< std::endl;
     }
 
     void MacauPrior::update_prior_worker()
     {
+        COUNTER("update_prior_worker");
         af::setDevice(0);
-        std::unique_lock<std::mutex> lk(update_prior_mutex);
+        std::unique_lock<std::mutex> update_prior_lock(update_prior_mutex);
         update_prior_go = false;
 
         std::cout << "Starting update_prior_worker " << getMode() << std::endl;
@@ -75,8 +81,10 @@ namespace smurff
         for (int i = 0; i < getConfig().getNIter(); ++i)
         {
             // Wait until update_prior() sends go signal
-            update_prior_cv.wait(lk, [this] { return update_prior_go; });
+            update_prior_cv.wait(update_prior_lock, [this] { return update_prior_go; });
             update_prior_go = false;
+
+            std::cout << "update_prior_worker " << getMode() << ", iteration " << i << std::endl;
 
             U_lcl = mu::to_af(U());
 
@@ -119,6 +127,8 @@ namespace smurff
                 Uhat_lcl = af::matmul(Features->arr_t(), beta).T();
                 matrix_utils::to_eigen(Uhat_lcl, Uhat);
             }
+
+            std::cout << "update_prior_worker " << getMode() << ", iteration " << i << " done." << std::endl;
         }
 
         std::cout << "Update_prior_worker " << getMode() << ": all done" << std::endl;
