@@ -43,6 +43,9 @@ ic50 = sio.mmread("chembl-IC50-346targets.mm")
 ic50_train, ic50_test = smurff.make_train_test(ic50, 0.2, 1234)
 
 feat = sio.mmread("chembl-IC50-compound-feat.mm")
+limit = feat.shape[0] / 100 # feature appears in at least 1% compounds
+top_feat = feat.tocsr()[:,feat.getnnz(0)>limit]
+
 ic50_100c = ic50.tocsr()[0:100,:]
 ic50_100c_train, ic50_100c_test = smurff.make_train_test(ic50_100c, 0.2, 1234)
 
@@ -70,6 +73,7 @@ generated_files = [
         ( "0e5ad24fd4549f16ba102073519da006b94bdb83c51ecbfecf06be31c6a14648", "chembl-IC50-346targets-train.sdm", ic50_train, ),
         ( "f50c2d6f83884a3c80f3e83ec1bf3588ad069297218c195f0c0826062631fdb6", "chembl-IC50-346targets-test.sdm", ic50_test, ),
         ( "badfa23abb83e0b731e969e1117fd4269f2df16e1faf14eb54c53c60465e87f1", "chembl-IC50-compound-feat.sdm", feat, ),
+        ( "38f403d1e37c01e4c1bf7d251e4b69680677f35cb400eb1bb7f10fed176ce45b", "chembl-IC50-compound-topfeat.sdm", top_feat, ),
         ]
 
 for expected_sha, output, data in generated_files:
