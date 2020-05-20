@@ -56,7 +56,7 @@ const Vector NormalPrior::fullMu(int n) const
    return mu();
 }
 
-const Matrix NormalPrior::getLambda(int n) const
+Eigen::Ref<const Matrix> NormalPrior::getLambda(int n) const
 {
    if (getConfig().hasPropagatedPosterior(getMode()))
    {

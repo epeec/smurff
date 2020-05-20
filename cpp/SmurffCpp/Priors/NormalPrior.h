@@ -37,7 +37,7 @@ public:
   //however successors of this class can override this method
   //for example in MacauPrior mu depends on Uhat.row(n)
   virtual const Vector fullMu(int n) const;
-  const Matrix getLambda(int n) const;
+  Eigen::Ref<const Matrix> getLambda(int n) const;
   
   void sample_latent(int n) override;
 
