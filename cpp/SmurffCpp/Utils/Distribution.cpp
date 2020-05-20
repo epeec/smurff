@@ -36,9 +36,10 @@ typedef std::normal_distribution<double> normal_dist;
  */
  
 static thread_local rng_type rng;
+static int rng_seed = -1;
 
 #ifdef EIGEN_USE_MKL_ALL
-static thread_local VSLStreamStatePtr stream;
+static thread_local VSLStreamStatePtr stream = 0;
 #endif
 
 void init_bmrng() 
@@ -50,6 +51,7 @@ void init_bmrng()
 
 void init_bmrng(int seed)
 {
+   rng_seed = seed;
    #pragma omp parallel
    {
    rng = rng_type(seed + threads::get_thread_num() * 1999);
@@ -77,9 +79,11 @@ unsigned rand()
  
 static void rand_normal(float_type* x, long n) 
 {
-#if 0
-//#ifdef EIGEN_USE_MKL_ALL
-   vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,streams.local(),n,x,0.0,1.0);
+#ifdef EIGEN_USE_MKL_ALL
+   if (!stream)
+      vslNewStream(&stream, VSL_BRNG_MT19937, rng_seed);
+
+   vdRngGaussian(VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,stream,n,x,0.0,1.0);
 #else
    uniform_dist unif(-1.0, 1.0);
 
