@@ -40,6 +40,8 @@ for url, expected_sha, output in urls:
     urllib.request.urlretrieve(url, output)
 
 ic50 = sio.mmread("chembl-IC50-346targets.mm")
+ic50_train, ic50_test = smurff.make_train_test(ic50, 0.2, 1234)
+
 feat = sio.mmread("chembl-IC50-compound-feat.mm")
 ic50_100c = ic50.tocsr()[0:100,:]
 ic50_100c_train, ic50_100c_test = smurff.make_train_test(ic50_100c, 0.2, 1234)
@@ -65,6 +67,8 @@ generated_files = [
         ( "b2d7f742f434e9b933c22dfd45fa28d9189860edd1e42a6f0a5477f6f6f7d122", "chembl-IC50-346targets-100compounds-test.sdm", ic50_100c_test,),
         ( "bcf5cee9702e318591b76f064859c1d0769158d0b0f5c44057392c2f9385a591", "chembl-IC50-346targets-11.sdm", ic50_11,),
         ( "1defd1c82ac3243ad60a23a753287df494d3b50f2fd5ff7f4a074182b07e3318", "chembl-IC50-346targets.sdm", ic50, ),
+        ( "0e5ad24fd4549f16ba102073519da006b94bdb83c51ecbfecf06be31c6a14648", "chembl-IC50-346targets-train.sdm", ic50_train, ),
+        ( "f50c2d6f83884a3c80f3e83ec1bf3588ad069297218c195f0c0826062631fdb6", "chembl-IC50-346targets-test.sdm", ic50_test, ),
         ( "badfa23abb83e0b731e969e1117fd4269f2df16e1faf14eb54c53c60465e87f1", "chembl-IC50-compound-feat.sdm", feat, ),
         ]
 
