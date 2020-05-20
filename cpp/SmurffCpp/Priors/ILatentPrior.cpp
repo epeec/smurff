@@ -1,5 +1,10 @@
-#include "ILatentPrior.h"
+
+#include <omp.h>
+#ifdef EIGEN_USE_MKL_ALL
+#include <mkl.h>
+#endif
 #include <SmurffCpp/Utils/counters.h>
+#include "ILatentPrior.h"
 
 namespace smurff {
 
@@ -102,21 +107,37 @@ bool ILatentPrior::run_slave()
 
 void ILatentPrior::sample_latents()
 {
+   std::mutex m;
    COUNTER("sample_latents");
    data().update_pnm(model(), m_mode);
+   const auto nitem = num_item();
 
-#pragma omp parallel for
-   for (int n = 0; n < U().rows(); n++)
-#pragma omp task
+#pragma omp parallel
    {
-      sample_latent(n);
-      const auto &row = U().row(n);
-      Urow.local().noalias() += row;
-      UUrow.local().noalias() += row.transpose() * row;
 
-      if (m_session.inSamplingPhase())
-         model().updateAggr(m_mode, n);
-   }
+#ifdef EIGEN_USE_MKL_ALL
+      mkl_set_num_threads_local(1);
+#endif
+
+#pragma omp single
+#pragma omp taskloop 
+      for (int n = 0; n < nitem; n++)
+      {
+         if (getConfig().getVerbose() > 2)
+         {
+            std::lock_guard<std::mutex> lk(m);
+            std::cout << "task " << n << " running on thread " << omp_get_thread_num() << " in team of " << omp_get_num_threads() << std::endl;
+         }
+
+         sample_latent(n);
+         const auto &row = U().row(n);
+         Urow.local().noalias() += row;
+         UUrow.local().noalias() += row.transpose() * row;
+
+         if (m_session.inSamplingPhase())
+            model().updateAggr(m_mode, n);
+      } // end taskloop
+   }    // end omp parallel
 
    if (m_session.inSamplingPhase())
       model().updateAggr(m_mode);
