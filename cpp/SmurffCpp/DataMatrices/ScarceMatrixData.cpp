@@ -82,12 +82,12 @@ void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, in
        thread_vector<Vector> rrs(Vector::Zero(num_latent));
        thread_vector<Matrix> MMs(Matrix::Zero(num_latent, num_latent));
 
+       #pragma omp taskgroup
        for(int j = from; j < to; j += task_size) 
        {
            #pragma omp task shared(rrs, MMs)
            getMuLambdaBasic(j, std::min(j + task_size, to), rrs.local(), MMs.local());
        }
-       #pragma omp taskwait
        
        // accumulate 
        MM += MMs.combine();
