@@ -16,6 +16,7 @@ requirements:
   host:
     - mkl-devel <2020.0
     - boost
+    - fftw
   run:
     - mkl <2020.0
 
