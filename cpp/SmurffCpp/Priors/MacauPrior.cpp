@@ -26,7 +26,7 @@ namespace smurff
 
     MacauPrior::~MacauPrior()
     {
-        std::cout << "Joining update_prior_workder " << getMode() << std::endl;
+        // std::cout << "Joining update_prior_workder " << getMode() << std::endl;
         update_prior_thread.join();
     }
 
@@ -60,10 +60,10 @@ namespace smurff
         THROWERROR_ASSERT(lk.owns_lock());
 
         static int iter = 0;
-        std::cout << "sample_latents " << getMode() << " iter " << iter << " go " << std::endl;
+        // std::cout << "sample_latents " << getMode() << " iter " << iter << " go " << std::endl;
         NormalPrior::sample_latents();
         update_prior_go = true;
-        std::cout << "sample_latents " << getMode() << " iter " << iter << " done " << std::endl;
+        // std::cout << "sample_latents " << getMode() << " iter " << iter << " done " << std::endl;
         iter++;
     }
 
@@ -75,7 +75,7 @@ namespace smurff
             U_lcl = mu::to_af(U());
         }
         update_prior_cv.notify_one();
-        std::cout << "update_prior " << getMode() << " notified " << std::endl;
+        // std::cout << "update_prior " << getMode() << " notified " << std::endl;
     }
 
     void MacauPrior::update_prior_worker()
@@ -85,7 +85,7 @@ namespace smurff
         std::unique_lock<std::mutex> lk(update_prior_mutex, std::defer_lock);
         update_prior_go = false;
 
-        std::cout << "Starting update_prior_worker " << getMode() << std::endl;
+        // std::cout << "Starting update_prior_worker " << getMode() << std::endl;
 
         for (int i = 0; i < getConfig().getNIter(); ++i)
         {
@@ -98,7 +98,7 @@ namespace smurff
                 THROWERROR_ASSERT(lk.owns_lock());
             }
 
-            std::cout << "update_prior_worker " << getMode() << ", iteration " << i << std::endl;
+            // std::cout << "update_prior_worker " << getMode() << ", iteration " << i << std::endl;
 
 
             // sampling Hyper Params
@@ -141,15 +141,15 @@ namespace smurff
                 matrix_utils::to_eigen(Uhat_lcl, Uhat);
             }
 
-            std::cout << "update_prior_worker " << getMode() << ", iteration " << i << " releasing lock." << std::endl;
+            // std::cout << "update_prior_worker " << getMode() << ", iteration " << i << " releasing lock." << std::endl;
             THROWERROR_ASSERT(lk.owns_lock());
             update_prior_go = false;
             lk.unlock();
             sample_latents_cv.notify_one();
-            std::cout << "update_prior_worker " << getMode() << ", iteration " << i << " done." << std::endl;
+            // std::cout << "update_prior_worker " << getMode() << ", iteration " << i << " done." << std::endl;
         }
 
-        std::cout << "Update_prior_worker " << getMode() << ": all done" << std::endl;
+        // std::cout << "Update_prior_worker " << getMode() << ": all done" << std::endl;
     }
 
     void MacauPrior::sample_beta()
