@@ -94,16 +94,7 @@ void ScarceMatrixData::getMuLambda(const SubModel& model, std::uint32_t mode, in
        rr += rrs.combine();
    } 
    else 
-   {
-      Vector my_rr = Vector::Zero(num_latent);
-      Matrix my_MM = Matrix::Zero(num_latent, num_latent);
-
-      getMuLambdaBasic(from, to, my_rr, my_MM);
-
-      // add to global
-      rr += my_rr;
-      MM += my_MM;
-   }
+      getMuLambdaBasic(from, to, rr, MM);
 }
 
 void ScarceMatrixData::update_pnm(const SubModel &, std::uint32_t mode)
