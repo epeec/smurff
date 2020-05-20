@@ -93,14 +93,7 @@ void  NormalPrior::sample_latent(int n)
    //Solve system of linear equations for x: MM * x = rr - not exactly correct  because we have random part
    //Sample from multivariate normal distribution with mean rr and precision matrix MM
 
-   Eigen::LLT<Matrix> chol;
-   {
-      chol = MM.llt(); // compute the Cholesky decomposition X = L * U
-      if(chol.info() != Eigen::Success)
-      {
-         THROWERROR("Cholesky Decomposition failed!");
-      }
-   }
+   Eigen::LLT<Eigen::Ref<Matrix>> chol(MM); // destroys MM
 
    chol.matrixL().solveInPlace(rr.transpose()); // solve for y: y = L^-1 * b
    rr.noalias() += Vector::NullaryExpr(num_latent(), RandNormalGenerator());
