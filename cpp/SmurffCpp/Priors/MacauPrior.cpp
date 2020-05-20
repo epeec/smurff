@@ -69,8 +69,13 @@ namespace smurff
 
     void MacauPrior::update_prior()
     {
+
+        {
+            COUNTER("copy U HtoD");
+            U_lcl = mu::to_af(U());
+        }
         update_prior_cv.notify_one();
-        std::cout << "update_prior " << getMode() << " notified "<< std::endl;
+        std::cout << "update_prior " << getMode() << " notified " << std::endl;
     }
 
     void MacauPrior::update_prior_worker()
@@ -84,15 +89,17 @@ namespace smurff
 
         for (int i = 0; i < getConfig().getNIter(); ++i)
         {
-            lk.lock();
-            THROWERROR_ASSERT(lk.owns_lock());
-            // Wait until update_prior() sends go signal
-            update_prior_cv.wait(lk, [this] { return update_prior_go; });
-            THROWERROR_ASSERT(lk.owns_lock());
+            {
+                COUNTER("waiting");
+                lk.lock();
+                THROWERROR_ASSERT(lk.owns_lock());
+                // Wait until update_prior() sends go signal
+                update_prior_cv.wait(lk, [this] { return update_prior_go; });
+                THROWERROR_ASSERT(lk.owns_lock());
+            }
 
             std::cout << "update_prior_worker " << getMode() << ", iteration " << i << std::endl;
 
-            U_lcl = mu::to_af(U());
 
             // sampling Hyper Params
             {
