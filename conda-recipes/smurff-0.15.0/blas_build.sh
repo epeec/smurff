@@ -12,8 +12,17 @@ else
 fi
 
 
-cmake ../lib/smurff-cpp/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX \
-    -DENABLE_MKL=ON $OPENMP_FLAGS
+if [ "$1" == "mkl" ]
+then
+    BLAS_FLAGS="-DENABLE_MKL=ON"
+elif [ $1 == "openblas" ]
+then
+    BLAS_FLAGS="-DENABLE_OPENBLAS=ON"
+fi
+
+cmake ../lib/smurff-cpp/cmake -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=$PREFIX \
+    $BLAS_FLAGS $OPENMP_FLAGS
 
 make -j$CPU_COUNT
 make install

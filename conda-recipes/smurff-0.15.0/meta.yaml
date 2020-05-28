@@ -8,6 +8,7 @@ source:
 
 build:
    number: 1
+   script: $RECIPE_DIR/blas_build.sh {{ blas_impl }}
 
 requirements:
    build:
@@ -18,7 +19,7 @@ requirements:
    host:
      - llvm-openmp              # [osx]
      - intel-openmp
-     - mkl-devel
+     - {{ blas_impl }}-devel
      - eigen3
      - boost
      - cython >=0.25
@@ -28,14 +29,14 @@ requirements:
    run:
      - llvm-openmp              # [osx]
      - intel-openmp
-     - mkl
+     - {{ blas_impl }}
      - libboost
      - python
      - numpy >=1.13
      - scipy
      - pandas
      - scikit-learn
-     - matrix_io
+     - matrix_io >=0.5
 
 test:
     commands:
