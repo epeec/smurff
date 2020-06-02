@@ -41,7 +41,9 @@ macro(configure_openmp)
       message(STATUS "OpenMP_CXX_LIB_NAMES ${OpenMP_CXX_LIB_NAMES}")
       message(STATUS "OpenMP_CXX_LIBRARY ${OpenMP_CXX_LIBRARY}")
       message(STATUS "OpenMP_CXX_LIBRARIES ${OpenMP_CXX_LIBRARIES}")
+      message(STATUS "OpenMP_CXX_INCLUDE_DIRS ${OpenMP_CXX_INCLUDE_DIRS}")
       message(STATUS "OpenMP_CXX_FLAGS ${OpenMP_CXX_FLAGS}")
+      include_directories(${OpenMP_CXX_INCLUDE_DIRS})
   else()
       message(STATUS "OpenMP not found")
   endif()
@@ -68,7 +70,7 @@ macro(configure_openblas)
   find_package( BLAS REQUIRED )
   endif()
 
-  add_definitions(-DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKEyy)
+  add_definitions(-DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE)
 
   message(STATUS BLAS: ${BLAS_LIBRARIES} )
  
