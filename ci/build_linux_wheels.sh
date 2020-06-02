@@ -2,7 +2,9 @@
 
 set -e
 
-for PYVER in "cp27-cp27mu" "cp34-cp34m" "cp35-cp35m" "cp36-cp36m"; do
+cd python/smurff
+
+for PYVER in "cp35-cp35m" "cp36-cp36m" "cp37-cp37m" "cp38-cp38" ; do
   PYBIN="/opt/python/${PYVER}/bin"
   "${PYBIN}/pip" install Cython
   "${PYBIN}/python" setup.py bdist_wheel
