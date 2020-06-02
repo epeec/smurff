@@ -18,6 +18,7 @@ target_link_libraries (${PROJECT} smurff-cpp
                                   ${Boost_LIBRARIES}
                                   ${BOOST_RANDOM_LIBRARIES}
                                   ${ALGEBRA_LIBS}
+                                  ${OpenMP_CXX_LIBRARIES}
                                   ${CMAKE_THREAD_LIBS_INIT})
 
 #SETUP INCLUDES

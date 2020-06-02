@@ -30,6 +30,7 @@ install(TARGETS ${PROJECT} RUNTIME DESTINATION libexec)
 #LINK LIBRARIES
 target_link_libraries (${PROJECT} smurff-cpp
                                   ${ALGEBRA_LIBS}
+                                  ${OpenMP_CXX_LIBRARIES}
                                   ${CMAKE_THREAD_LIBS_INIT})
 
 #SETUP INCLUDES

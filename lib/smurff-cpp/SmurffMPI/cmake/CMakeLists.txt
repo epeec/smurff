@@ -28,6 +28,7 @@ install(TARGETS ${PROJECT} RUNTIME DESTINATION bin)
 target_link_libraries (${PROJECT} smurff-cpp
                                   ${Boost_LIBRARIES}
                                   ${BOOST_RANDOM_LIBRARIES}
+                                  ${OpenMP_CXX_LIBRARIES}
                                   ${ALGEBRA_LIBS}
                                   ${CMAKE_THREAD_LIBS_INIT}
                                   ${MPI_LIBRARIES})
