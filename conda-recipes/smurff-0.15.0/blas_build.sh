@@ -1,5 +1,4 @@
 #!/bin/bash
-
 rm -rf build 
 mkdir build
 cd build
@@ -18,11 +17,13 @@ then
 elif [ $1 == "openblas" ]
 then
     BLAS_FLAGS="-DENABLE_OPENBLAS=ON"
+else
+    exit -1
 fi
 
 cmake ../lib/smurff-cpp/cmake -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=$PREFIX \
-    $BLAS_FLAGS $OPENMP_FLAGS
+    -DENABLE_MPI=OFF \
+    -DCMAKE_INSTALL_PREFIX=$PREFIX $BLAS_FLAGS $OPENMP_FLAGS
 
 make -j$CPU_COUNT
 make install
