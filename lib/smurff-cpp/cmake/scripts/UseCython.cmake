@@ -110,7 +110,7 @@ set(CYTHON_FLAGS "" CACHE STRING
     "Extra flags to the cython compiler.")
 mark_as_advanced(CYTHON_ANNOTATE CYTHON_FLAGS)
 
-find_package(PythonLibs REQUIRED)
+find_package (Python REQUIRED)
 
 set(CYTHON_CXX_EXTENSION "cxx")
 set(CYTHON_C_EXTENSION "c")
@@ -153,7 +153,7 @@ function(add_cython_target _name)
     message(FATAL_ERROR "Either C or CXX must be enabled to use Cython")
   endif()
 
-  if("${PYTHONLIBS_VERSION_STRING}" MATCHES "^2.")
+  if(${Python_VERSION_MAJOR} EQUAL 2)
     set(_input_syntax "PY2")
   else()
     set(_input_syntax "PY3")
