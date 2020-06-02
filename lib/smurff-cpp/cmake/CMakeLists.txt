@@ -22,7 +22,7 @@ OPTION(ENABLE_BOOST_RANDOM "Enable usage of Boost random library" OFF)
 
 OPTION(ENABLE_PYTHON "Enable Python Wrapper" ON)
 
-OPTION(ENABLE_MPI "Enable MPI Support" ON)
+OPTION(ENABLE_MPI "Enable MPI Support" OFF)
 
 # INIT CMAKE
 
