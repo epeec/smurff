@@ -3,7 +3,7 @@
 set -e
 
 brew update
-for BREW_PKG in pyenv boost openblas 
+for BREW_PKG in pyenv openblas 
 do
     brew outdated $BREW_PKG || brew upgrade $BREW_PKG
 done
@@ -11,7 +11,7 @@ done
 
 export MACOSX_DEPLOYMENT_TARGET=10.9
 export PATH=~/.pyenv/shims:$PATH
-CMAKE_ARGS="-DCMAKE_PREFIX_PATH=/usr/local/opt/openblas;/usr/local/opt/boost -DENABLE_OPENBLAS=ON"
+CMAKE_ARGS="-DCMAKE_PREFIX_PATH=/usr/local/opt/openblas -DENABLE_OPENBLAS=ON -DENABLE_BOOST=OFF "
 
 for PYVER in "3.5.9" "3.6.10" "3.7.7" "3.8.2"; do
   pyenv install --skip-existing ${PYVER}
@@ -20,6 +20,6 @@ for PYVER in "3.5.9" "3.6.10" "3.7.7" "3.8.2"; do
   python setup.py --extra-cmake-args "$CMAKE_ARGS" bdist_wheel
 done
 
-mkdir fixed_wheels
+mkdir -p fixed_wheels
 delocate-wheel -w fixed_wheels dist/*.whl
 
