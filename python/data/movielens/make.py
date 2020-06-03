@@ -7,7 +7,7 @@ import os
 import re
 from scipy import sparse
 import scipy.io as sio
-import matrix_io as mio
+import smurff.matrix_io as mio
 
 
 url = "http://files.grouplens.org/datasets/movielens/ml-100k.zip"

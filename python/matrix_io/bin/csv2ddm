@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import matrix_io
+import smurff.matrix_io
 import sys
 import os
 import pandas

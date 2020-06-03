@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import smurff
-import matrix_io as mio
+import smurff.matrix_io as mio
 
 #load data
 ic50 = mio.read_matrix("chembl-IC50-346targets.mm")

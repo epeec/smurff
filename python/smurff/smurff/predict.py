@@ -5,7 +5,7 @@ from scipy import sparse
 import pandas as pd
 import os
 import os.path
-import matrix_io as mio
+import smurff.matrix_io as mio
 from glob import glob
 import re
 import csv

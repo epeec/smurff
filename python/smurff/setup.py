@@ -102,6 +102,6 @@ setup(
     author_email = "Tom.VanderAa@imec.be",
     classifiers = CLASSIFIERS,
     keywords = "bayesian factorization machine-learning high-dimensional side-information",
-    install_requires = [ 'numpy', 'scipy', 'pandas', 'scikit-learn', 'h5sparse' ]
+    install_requires = [ 'numpy', 'scipy', 'pandas', 'scikit-learn' ]
 )
 

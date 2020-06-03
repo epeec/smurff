@@ -1,7 +1,7 @@
 import os
 import shutil
 import unittest
-import matrix_io
+import smurff.matrix_io
 
 import numpy
 import scipy
