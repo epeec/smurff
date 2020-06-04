@@ -2,11 +2,11 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from setuptools import find_packages
 
-
 import os
 import shutil
 import sys
 import subprocess
+from sysconfig import get_paths
 
 from subprocess import Popen, PIPE
 
@@ -59,7 +59,8 @@ class CMakeBuild(build_ext):
         cmake_args = [
                         '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                         '-DPYTHON_EXECUTABLE=' + sys.executable,
-                        '-DCMAKE_BUILD_TYPE=' + cfg
+                        '-DCMAKE_BUILD_TYPE=' + cfg,
+                        '-DPYTHON_INCLUDE_DIR=' + get_paths()['include'],
                         ] + ext.extra_cmake_args
 
         cmake_srcdir = os.path.join(ext.sourcedir, 'lib', 'smurff-cpp', 'cmake')
@@ -78,12 +79,18 @@ install_binaries = False
 if "--extra-cmake-args" in sys.argv:
     index = sys.argv.index('--extra-cmake-args')
     sys.argv.pop(index)
-    extra_cmake_args = sys.argv.pop(index)
+    extra_cmake_args += " " + sys.argv.pop(index)
+
+if "CMAKE_ARGS" in os.environ:
+    extra_cmake_args += " " + os.environ.get("CMAKE_ARGS")
 
 if "--extra-build-args" in sys.argv:
     index = sys.argv.index('--extra-build-args')
     sys.argv.pop(index)
-    extra_build_args = sys.argv.pop(index)
+    extra_build_args += " " + sys.argv.pop(index)
+
+if "BUILD_ARGS" in os.environ:
+    extra_build_args += " " + os.environ.get("BUILD_ARGS")
 
 try:
     index = sys.argv.index('--install-binaries')
@@ -96,7 +103,10 @@ setup(
     name = 'smurff',
     package_dir={'':'python/smurff'},
     packages = [ 'smurff' ],
-    version = git_describe_version(),
+    use_scm_version={
+        'version_scheme': 'post-release',
+        'local_scheme': 'dirty-tag'
+    },
     url = "http://github.com/ExaScience/smurff",
     ext_modules=[CMakeExtension('smurff/wrapper', '.', extra_cmake_args, extra_build_args)],
     cmdclass=dict(build_ext=CMakeBuild), 
@@ -108,6 +118,7 @@ setup(
     author_email = "Tom.VanderAa@imec.be",
     classifiers = CLASSIFIERS,
     keywords = "bayesian factorization machine-learning high-dimensional side-information",
-    install_requires = [ 'numpy', 'scipy', 'pandas', 'scikit-learn' ]
+    install_requires = [ 'numpy', 'scipy', 'pandas', 'scikit-learn' ],
+    setup_requires=['setuptools_scm'],
 )
 
