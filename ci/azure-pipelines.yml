@@ -80,6 +80,9 @@ jobs:
   variables:
     CIBW_BUILD: cp3*-manylinux_x86_64
     CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux2014_x86_64
+    CIBW_ENVIRONMENT: "CMAKE_ARGS='-DENABLE_BOOST=OFF -DENABLE_OPENBLAS=ON'"
+    CIBW_MANYLINUX_X86_64_IMAGE: 'vanderaa/manylinux2014_x86_64_smurff'
+    CIBW_TEST_COMMAND: 'python -m unittest discover {project}/python/smurff/test'
   pool: {vmImage: 'Ubuntu-16.04'}
   steps:
     - task: UsePythonVersion@0
