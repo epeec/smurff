@@ -1,9 +1,12 @@
 steps:
-    - task: CondaEnvironment@1
-      inputs:
-        updateConda: true
-        packageSpecs: 'conda-build' # Optional
+    - bash: echo "##vso[task.prependpath]$CONDA/bin"
+      displayName: Add conda to PATH
+    - bash: sudo chown -R $USER $CONDA
+      displayName: Take ownership of conda installation
+    - bash: conda create --yes --quiet --name buildEnv conda-build
+      displayName: Create Build environment
     - script: |
         cd conda-recipes
+        source activate buildEnv
         conda build -c vanderaa smurff-latest
-      displayName: Build
+      displayName: Build using 'conda build'
