@@ -79,8 +79,8 @@ jobs:
 - job: linux_wheel
   variables:
     CIBW_BUILD: cp3*-manylinux_x86_64
-    CIBW_ENVIRONMENT: "CMAKE_ARGS='-DENABLE_BOOST=OFF -DENABLE_OPENBLAS=ON'"
     CIBW_MANYLINUX_X86_64_IMAGE: 'vanderaa/manylinux2014_x86_64_smurff'
+    CIBW_ENVIRONMENT: "CMAKE_ARGS='-DENABLE_BOOST=OFF -DENABLE_OPENBLAS=ON'"
     CIBW_TEST_COMMAND: 'python -m unittest discover {project}/python/smurff/test'
   pool: {vmImage: 'Ubuntu-16.04'}
   steps:
@@ -95,25 +95,15 @@ jobs:
 - job: macos_wheel
   variables:
     CIBW_BUILD: cp3*-macosx_x86_64
+    CIBW_BEFORE_BUILD: 'brew install eigen openblas'
+    CIBW_ENVIRONMENT: "CMAKE_ARGS='-DENABLE_BOOST=OFF -DENABLE_OPENBLAS=ON -DCMAKE_PREFIX_PATH=/usr/local/opt/openblas'"
+    CIBW_TEST_COMMAND: 'python -m unittest discover {project}/python/smurff/test'
   pool: {vmImage: 'macOS-10.15'}
   steps:
     - task: UsePythonVersion@0
     - bash: |
         python3 -m pip install --upgrade pip
         pip3 install cibuildwheel==1.4.2
-        cibuildwheel --output-dir wheelhouse .
-    - task: PublishBuildArtifacts@1
-      inputs: {pathtoPublish: 'wheelhouse'}
-
-- job: windows_wheel
-  pool: {vmImage: 'vs2017-win2016'}
-  steps:
-    - task: UsePythonVersion@0
-    - script: choco install vcpython27 -f -y
-      displayName: Install Visual C++ for Python 2.7
-    - bash: |
-        python -m pip install --upgrade pip
-        pip install cibuildwheel==1.4.2
         cibuildwheel --output-dir wheelhouse .
     - task: PublishBuildArtifacts@1
       inputs: {pathtoPublish: 'wheelhouse'}
