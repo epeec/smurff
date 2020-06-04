@@ -11,18 +11,22 @@ import subprocess
 from subprocess import Popen, PIPE
 
 def git_describe_version():
-    p = Popen(['git', 'describe', '--long'],
-                stdout=PIPE, stderr=PIPE)
-    p.stderr.close()
-    line = p.stdout.readlines()[0].strip().decode()
-    version, post, hash = line.split('-')
-    version = version.lstrip('v')
+    try:
+        p = Popen(['git', 'describe', '--long'],
+                    stdout=PIPE, stderr=PIPE)
+        p.stderr.close()
+        line = p.stdout.readlines()[0].strip().decode()
+        version, post, hash = line.split('-')
+        version = version.lstrip('v')
 
-    if (int(post)) != 0:
-        # v0.15.0-411-gd585b05e -> 0.15.0.post411
-        version = version + ".post" + post # v0.15.0-411-gd585b05e -> 
+        if (int(post)) != 0:
+            # v0.15.0-411-gd585b05e -> 0.15.0.post411
+            version = version + ".post" + post # v0.15.0-411-gd585b05e -> 
 
-    return version
+        return version
+    except:
+        return '0.99.9'
+
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
@@ -41,6 +45,7 @@ CLASSIFIERS = [
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir='', extra_cmake_args='', extra_build_args=''):
         Extension.__init__(self, name, sources=[])
+        print("Created CMake Extension:", vars(self))
         self.sourcedir = os.path.abspath(sourcedir)
         self.extra_cmake_args = extra_cmake_args.split()
         self.extra_build_args = extra_build_args.split()
@@ -89,10 +94,11 @@ except ValueError:
 
 setup(
     name = 'smurff',
+    package_dir={'':'python/smurff'},
     packages = [ 'smurff' ],
     version = git_describe_version(),
     url = "http://github.com/ExaScience/smurff",
-    ext_modules=[CMakeExtension('smurff/wrapper', '../..', extra_cmake_args, extra_build_args)],
+    ext_modules=[CMakeExtension('smurff/wrapper', '.', extra_cmake_args, extra_build_args)],
     cmdclass=dict(build_ext=CMakeBuild), 
     zip_safe = False,
     license = "MIT",
