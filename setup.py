@@ -1,32 +1,10 @@
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
-from setuptools import find_packages
 
 import os
-import shutil
 import sys
 import subprocess
 from sysconfig import get_paths
-
-from subprocess import Popen, PIPE
-
-def git_describe_version():
-    try:
-        p = Popen(['git', 'describe', '--long'],
-                    stdout=PIPE, stderr=PIPE)
-        p.stderr.close()
-        line = p.stdout.readlines()[0].strip().decode()
-        version, post, hash = line.split('-')
-        version = version.lstrip('v')
-
-        if (int(post)) != 0:
-            # v0.15.0-411-gd585b05e -> 0.15.0.post411
-            version = version + ".post" + post # v0.15.0-411-gd585b05e -> 
-
-        return version
-    except:
-        return '0.99.9'
-
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
