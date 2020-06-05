@@ -1,7 +1,14 @@
-SMURFF - Scalable Matrix Factorization Framework
-================================================
+SMURFF - Scalable Matrix Factorization Framework :: The EPEEC Edition
+=====================================================================
 
 |Azure Build Status| |Travis Build Status| |Anaconda-Server Badge|
+
+This is a fork of SMURFF with devlopments done in the EPEEC project.
+EPEEC features include:
+ - support for reading/writing HDF5 files
+ - a much more modern PyBIND11 Python interface 
+ - GPU support using ArrayFire
+ - Extra performance thanks to OpenMP tasking
 
 What is Bayesian Matrix Factorization
 -------------------------------------
